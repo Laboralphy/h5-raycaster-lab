@@ -1,0 +1,146 @@
+@CHARSET "UTF-8";
+
+body {
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+canvas, img {
+	display: block;
+	padding: 0px;
+	margin: 0px;
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimize-contrast;
+	image-rendering: pixelated;
+}
+
+#screen {
+	margin: auto;
+}
+
+
+
+
+/****** LOGO AND LOGIN WINDOW ******/
+
+
+#logo div.title {
+	height: 320px;
+	color: #FFF;
+	font-family: monospace;
+}
+
+#logo span.blight {
+	color: #FFF; 
+	font-size: 300%; 
+	text-shadow: 0 0 4px white, 0 -5px 4px #FF3, 2px -10px 6px #FD3, -2px -15px 11px #F80, 2px -25px 18px #F20;
+}
+
+#logo span.magic {
+	color: #83F; 
+	font-size: 300%; 
+	text-shadow: 0 0 4px #83F, 0 -5px 4px #70B, 2px -10px 6px #50A, -2px -15px 11px #008, 2px -25px 18px #004;
+}
+
+#logo span.network {
+	color: #AFA; 
+	font-size: 200%; 
+	text-shadow: -6px 0 4px #0A0, 6px 0 4px #0AA, -12px -3px 6px #080, 12px -3px 6px #088, -18px -6px 10px #040, 18px -6px 10px #044;
+}
+
+div.miniWindow {
+	text-align: center;
+	background-color: #AAA;
+	border: solid 4px #666;
+	padding: 24px;
+	margin: auto;
+	font-family: monospace;
+}
+
+#error {
+	color: #800;
+	font-weight: bold;
+}
+
+#login {
+	width: 400px;
+}
+
+
+#status {
+	font-family: 'monospace';
+	font-size: 12px;
+	margin-top: 16px;
+}
+
+#status table {
+	width: 400px;
+}
+
+#status table th {
+	background-color: #666;
+	color: white;
+	font-weight: bold;
+	text-align: right;
+	padding: 2px;
+	padding-right: 8px;
+}
+
+#status table td {
+	background-color: #AAA;
+	color: #000;
+	padding: 2px;
+	padding-left: 8px;
+}
+
+
+/****** CHAT BOX ********/
+
+div.chatbox {
+	background-color: #444;
+	padding: 6px;
+}
+
+/****** COMMANDS ******/
+span#options_switch {
+	font-size: 80%;
+	color: #444;
+}
+
+span#options_switch:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+div#options {
+	display: none;
+}
+
+
+/****** MICROSYTE ******/
+
+div#page {
+  position: absolute;
+  top: 0px;
+  background-color: #CCC;
+  border: 2px #666 solid;
+  font-family: arial;
+  font-size: 12px;
+  color: black;
+  padding: 8px;
+}
+
+div#page div.title {
+	background-color: #004;
+	border: 1px #00A solid; 
+	color: white;
+	font-weight: bold;
+	font-size: 125%;
+	padding: 4px;
+}
+
+

@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# compile and build
+
+
+# efface les texture du repertoire de resources
+# $1 : project
+clearTextures() {
+	rm ../../sources/$1/gfx/textures/*
+}
+
+# construction d'un niveau
+wp() {
+	php -f wp.php -- $*
+}
+
+buildModule() {
+	local wd=`pwd`
+	cd ../packer
+	rm -r ../../modules/$1/*
+	php -f build.php -- $1
+	cd $wd
+}
+
+
+wp $*
+buildModule $1
+

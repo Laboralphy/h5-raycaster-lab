@@ -1,0 +1,276 @@
+#!/bin/sh
+
+rc_dir=~/public_html/raycaster
+server_dir=`pwd`
+dest_dir=$server_dir/www/mw
+server_mod_dir=$server_dir/node_modules/mwgame/modules
+server_tests_dir=$server_dir/node_modules/mwgame/tests
+module_dir=$rc_dir/modules/magewar
+module_file=$module_dir/magewar.js
+
+
+# supprime des fichier d'un répertoire si celui-ci en contient.
+# param 1 chemin du répertoire à vider
+rmFiles() {
+	local nCount=`ls -1 $1 2>/dev/null|wc -l`
+	if [ $nCount -gt 0 ]
+	then
+		rm $1/*
+	fi
+}
+
+
+# nettoyage des répertoire de destination
+# le répertoire de module
+# et le répertoire document root de node
+cleanDir() {
+	echo "(i) reseting client module directory"
+
+	if [ -d $module_dir ]
+	then
+		rm -r $module_dir
+	fi
+	if [ -d $dest_dir ]
+	then
+		rm -r $dest_dir/*
+	fi
+}
+
+# empaquetage des fichiers clients,
+# si un paramètre "pack" est spécifié, on compresse le tout.
+buildProject() {
+	echo "(i) build client side project"
+	cd $rc_dir/dynamics/packer
+	php -f build.php -- magewar nopack > /dev/null
+	cd $server_dir
+
+	rmFiles $server_mod_dir
+}
+
+# compression du projet
+packProject() {
+	echo "(i) packing client files"
+	php -f ../../dynamics/packer/pack.php -- $module_file $module_file
+}
+
+# compie le module vers le répertoire web du server
+importModule() {
+	echo "(i) copying packed client files to node document root"
+	rm -rf $dest_dir
+	mkdir -p $dest_dir
+	cp -ru $module_dir/* $dest_dir
+}
+
+# installation d'un plugin
+# copie les fichiers client et les ressources
+installPlugin() {
+	echo -n "(i) installing plugin : $1 ("
+	local plugin_path=mwplugins/$1
+
+	if [ -d $plugin_path/client ]
+	then
+		echo -n "client "
+		# accrocher les js au module principal
+		cat $plugin_path/client/*.js >>$module_file
+
+		if [ -d $plugin_path/client/resources ]
+		then
+			echo -n "resources "
+			# copier les ressources
+			cp -ru $plugin_path/client/resources $module_dir	
+		fi
+	fi
+	if [ -d $plugin_path/server ]
+	then
+		echo -n "server "
+		# copier la classe du serveur
+		mkdir -p node_modules/$plugin_path
+		cp -r $plugin_path/server/* node_modules/$plugin_path/
+	fi
+	echo "...done)"
+}
+
+# installer tous les plugins
+installPlugins() {
+	local i
+	rm -r node_modules/mwplugins/*
+	for i in `ls mwplugins`
+	do
+		installPlugin $i
+	done
+}
+
+
+# effectue la compilation du projet source (import + pack)
+goCompile() {
+	printVersionToday node_modules/mwgame/version.js
+	cleanDir
+	buildProject
+	installPlugins
+	if [ "$1" = "pack" ]
+	then
+		packProject
+	fi
+	importModule
+}
+
+# compression de tout le dossier dans un tar.gz
+goArchive() {
+	local sFile="magewar.tar.gz"
+	find . -name "*~" -delete
+	if [ -f "$sFile" ]
+	then
+		rm $sFile
+	fi
+	tar -czf "$sFile" *
+}
+
+# gestion des plugins
+goPlugin() {
+	local sSubCommand="$1"
+	if [ -n "$sSubCommand" ]
+	then
+		shift
+	fi
+	case "$sSubCommand" in
+		"listall")
+			echo "(i) list of plugins project sources"
+			ls mwplugins_projects
+		;;
+
+		"list")
+			echo "(i) list of active plugins"
+			ls mwplugins
+		;;
+
+		"add")
+			if [ -n "$1" -a -h "mwplugins/$1" ]
+			then
+				echo "(!) plugin $1 is already active"
+			elif [ -n "$1" -a -e "mwplugins_projects/$1" ]
+			then
+				ln -s "../mwplugins_projects/$1" "mwplugins/$1"
+				echo "(i) added plugin $1"
+			else
+				echo "(!) cannot find plugin $1"
+			fi
+		;;
+
+		"rem")
+			if [ -n "$1" -a -h "mwplugins/$1" ]
+			then
+				rm mwplugins/$1
+				echo "(i) removed plugin $1"
+			else
+				echo "(!) cannot find plugin $1"
+			fi
+		;;
+
+		*)
+			echo "!! no sub command spcified."
+			echo " * $0 plugin list : list of active plugins (can be 'rem')"
+			echo " * $0 plugin listall : list of all plugin project sources (can be 'add')"
+			echo " * $0 plugin add <plugin> : add a plugin to the compilation list"
+			echo " * $0 plugin rem <plugin> : remove a plugin from the compilation list"
+		;;
+	esac
+}
+
+goDeploy() {
+	echo "(i) deploying $1"
+	local sTag="$1"
+	rm -rf build/*
+	mkdir -p build/logs
+	local i
+	for i in "env/$sTag/*" node_modules www index.js mw-start
+	do
+		cp -r $i build/
+	done
+	echo "(i) archiving..."
+	cd build
+	tar -czf mwserver-$sTag.tar.gz *
+	mv -f mwserver-$sTag.tar.gz ..
+	cd ..
+	echo "(i) cleaning temporary stuff..."
+	rm -rf build/*
+}
+
+
+
+goMaps() {
+	local sMap="$1"
+
+	if [ -n "$1" ]
+	then
+		cp -v ../../dynamics/mweditor/files/exports/$1 node_modules/mwgame/data/maps/
+	else
+		ls -v ../../dynamics/mweditor/files/exports/
+	fi
+}
+
+printVersionToday() {
+	local sY=`date +%Y`
+	local sY2=`expr $sY - 2015`
+	local sM=`date +%m`
+	local sD=`date +%d`
+	local sD2=`expr $sD - 1`
+	local sM2="`expr substr ABCDEFGHIJKLMNOPQRSTUVWXYZ $sM 1`"
+	local sDate=$sY2$sM2$sD2
+	if [ -n "$1" ]
+	then
+		echo "module.exports = '$sDate ($sY-$sM-$sD)';" > $1
+	else
+		echo "$sDate ($sY-$sM-$sD)"
+	fi
+}
+
+
+case $1 in
+	"run")
+		goCompile
+		chmod +x mw-start
+		./mw-start		
+	;;
+
+	"build")
+		goCompile pack
+		echo "(i) compilation done"
+	;;
+
+	"deploy")
+		goCompile pack
+		shift
+		goDeploy $*
+		echo "(i) deployment done" 
+	;;
+	
+	"plugin")
+		shift
+		goPlugin $*
+	;;
+
+	"map")
+		shift
+		goMaps $*
+	;;
+	
+	"test")
+		cd node_modules/mwgame/tests
+		node testmwgame.js
+		cd ../../..
+	;;
+	
+	"peekversion")
+		printVersionToday $2
+	;;
+
+	*)
+		echo "!! no command specified."
+		echo " * $0 run : project compilation and execution"
+		echo " * $0 build : project compilation and packing"
+		echo " * $0 deploy <env> : project building and deployment using specified environement"
+		echo " * $0 plugin <cmd> <name> : plugin management"
+		echo " * $0 map <map> : imports map from MWEditor (if no <map> specified, lists all available maps)"
+		echo " * $0 test : project testing"
+	;;
+esac

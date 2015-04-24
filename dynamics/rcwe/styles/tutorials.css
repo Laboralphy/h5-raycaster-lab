@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+div.slideshow div.content {
+	padding: 16px;
+	padding-top: 0;	
+}
+
+div.slideshow div.content .title {
+	padding: 0px;
+	margin-bottom: 0px;
+	font-size: 150%;
+	font-weight: bold;
+}
+
+div.slideshow div.content div.images {
+	text-align: center;
+	width: 100%;
+}
+
+
+div.slideshow div.content img {
+	border: solid 3px black;
+}
+
+div.slideshow div.content table td {
+	background: none;
+}

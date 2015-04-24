@@ -1,0 +1,55 @@
+[
+"0x00",	"floor",{"phys":"0","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"","ceil":"6","floor":"0"},
+"0x01",	"floor - wood",{"phys":"0","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"","ceil":"6","floor":"4"},
+
+"0x10",	"wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"0","right":"0","ceil":"","floor":""},
+"0x11",	"doorway x",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"0","right":"4","ceil":"","floor":""},
+"0x12",	"doorway y",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"4","right":"0","ceil":"","floor":""},
+"0x13",	"window",{"phys":"10","offs":"32","acnt":"","adel":"","yoyo":false,"left":"5","right":"5","ceil":"3","floor":"2"},
+"0x14",	"wall - secret stopper",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"6","right":"6","ceil":"","floor":""},
+"0x15",	"chest",{"phys":"10","offs":"32","acnt":"3","adel":"2","yoyo":true,"left":"7","right":"7","ceil":"3","floor":"2"},
+"0x16",	"chest - open",{"phys":"10","offs":"32","acnt":"","adel":"","yoyo":false,"left":"10","right":"10","ceil":"3","floor":"2"},
+
+"0x20",	"fancy wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"11","right":"11","ceil":"","floor":""},
+"0x21",	"fancy - deco 1",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"12","right":"12","ceil":"","floor":""},
+"0x22",	"bookshelves",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"15","right":"15","ceil":"","floor":""},
+"0x23",	"fireplace",{"phys":"1","offs":"","acnt":"4","adel":"2","yoyo":true,"left":"16","right":"16","ceil":"","floor":""},
+"0x24",	"fancy floor",{"phys":"0","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"","ceil":"5","floor":"1"},
+"0x25",	"fancy - deco 2",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"13","right":"13","ceil":"","floor":""},
+"0x26",	"fancy - deco 3",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"14","right":"14","ceil":"","floor":""},
+
+"0x30",	"crate - full",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"20","right":"20","ceil":"6","floor":"0"},
+"0x31",	"crate - half",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"21","right":"21","ceil":"6","floor":"0"},
+"0x32",	"wood logs",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"22","right":"23","ceil":"6","floor":"0"},
+
+"0x40",	"pub - wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"24","right":"24","ceil":"","floor":""},
+"0x41",	"pub - desk",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"25","right":"25","ceil":"6","floor":"4"},
+"0x42",	"pub - drinks x",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"26","right":"20","ceil":"","floor":""},
+"0x43",	"pub - drinks y",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"20","right":"26","ceil":"","floor":""},
+"0x44",	"pub - table",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"35","right":"35","ceil":"6","floor":"7"},
+"0x45",	"pub - floor",{"phys":"0","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"","ceil":"6","floor":"4"},
+
+"0x60",	"jail - wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"27","right":"27","ceil":"","floor":""},
+"0x61",	"jail - bars",{"phys":"10","offs":"32","acnt":"","adel":"","yoyo":false,"left":"28","right":"28","ceil":"3","floor":"2"},
+
+"0x68",	"bank - wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"29","right":"29","ceil":"","floor":""},
+"0x69",	"bank - bars",{"phys":"10","offs":"32","acnt":"","adel":"","yoyo":false,"left":"30","right":"30","ceil":"6","floor":"0"},
+
+"0x70",	"special poster",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"31","right":"31","ceil":"","floor":""},
+
+"0x80",	"door - double",{"phys":"8","offs":"","acnt":"","adel":"","yoyo":false,"left":"32","right":"32","ceil":"3","floor":"2"},
+"0x81",	"door - armored",{"phys":"2","offs":"","acnt":"","adel":"","yoyo":false,"left":"33","right":"33","ceil":"3","floor":"2"},
+"0x82",	"curtain",{"phys":"3","offs":"","acnt":"","adel":"","yoyo":false,"left":"34","right":"34","ceil":"3","floor":"2"},
+"0x8F",	"wall - secret door",{"phys":"9","offs":"","acnt":"","adel":"","yoyo":false,"left":"6","right":"6","ceil":"6","floor":"0"},
+
+"0xA1",	"wall - var 1",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"1","right":"1","ceil":"","floor":""},
+"0xA2",	"wall - var 2",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"2","right":"2","ceil":"","floor":""},
+"0xA3",	"wall - var 3",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"3","right":"3","ceil":"","floor":""},
+
+"0xB0", "ext - floor",{"phys":"0","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"","ceil":"","floor":"8"},
+"0xB1", "ext - roofstep",{"phys":"10","offs":"0","acnt":"","adel":"","yoyo":false,"left":"36","right":"36","ceil":"","floor":""},
+"0xB2",	"ext - grid x",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"30","right":"","ceil":"","floor":"8"},
+"0xB3",	"ext - grid y",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"","right":"30","ceil":"","floor":"8"},
+"0xB4",	"ext - upper soft wall",{"phys":"10","offs":"","acnt":"","adel":"","yoyo":false,"left":"37","right":"37","ceil":"","floor":""},
+"0xB5",	"ext - upper hard wall",{"phys":"1","offs":"","acnt":"","adel":"","yoyo":false,"left":"37","right":"37","ceil":"","floor":""}
+]

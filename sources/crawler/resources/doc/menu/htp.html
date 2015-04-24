@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html> 
+  <head> 
+    <meta charset="UTF-8"/>
+    <title>Reikaster underland - Credits</title>
+    <link href="styles.css" rel="stylesheet" media="screen"></link>
+    <script type="text/javascript">
+
+function hasPointerLockFeature() {
+	return 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+}
+
+function main() {
+	var sDisplay;
+	if (hasPointerLockFeature()) {
+		sDisplay = 'kbd_mouse';
+	} else {
+		sDisplay = 'kbd_only';
+	}
+	document.getElementById(sDisplay).removeAttribute('class');
+	window.addEventListener('keydown', function(e) {
+		if (e.keyCode === 27) {
+			parent.location.href = '../../../';
+		}
+	});
+}
+
+    </script>
+  </head> 
+  <body onload="main()">
+    <div class="main">
+      <h1>How to play - <i>Reikaster underland</i></h1>
+      <div id="kbd_only" class="hidden">
+		<p>This game is a First Person Shooter. <b>Your browser does not support Pointer Lock</b>,
+		an experimental feature only available on most recent versions of Firefox and Chrome (and Chromium).
+		This means you must use your keyboard to control your character.</p>
+		<img src="htp-keyboard-only.png" />
+		<p>However you may use the mouse to control the user interface (inventory window...)</p>
+      </div>
+      <div id="kbd_mouse" class="hidden">
+		<p>This game is a First Person Shooter. <b>Your browser supports Pointer Lock</b>,
+		an experimental feature only available on most recent versions of Firefox and Chrome (and Chromium).
+		This means you may use your keyboard and your mouse to control your character, like most of modern FPS games.</p>
+		<img src="htp-keyboard-mouse.png" />
+		<p>Make sure you click on the game screen to activate your Pointer Lock System.</p>
+      </div>
+      <hr />
+      To return to menu, <a href="../../../">[click here]</a> or press ESCAPE.
+    </div>
+  </body> 
+</html> 

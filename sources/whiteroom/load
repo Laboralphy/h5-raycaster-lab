@@ -1,0 +1,4 @@
+load ../../libraries
+load ../../sources/whiteroom
+top ../../libraries/o2.js
+pack

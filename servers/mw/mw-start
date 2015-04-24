@@ -1,0 +1,97 @@
+#!/bin/sh
+
+NODE_JS="node"
+PROGRAM_JS="index.js"
+LOG_PATH="logs"
+CONFIG_PATH="config"
+STOPFILE="stop"
+
+
+cfgDeactivateAll() {
+	local i
+	for i in $CONFIG_PATH/*.js
+	do
+		mv "$i" "$i.dis"
+	done
+}
+
+cfgActivate() {
+	local sMod
+	while [ -n "$1" ]
+	do
+		sMod="$1"
+		if [ -f "$CONFIG_PATH/$sMod.js.dis" ]
+		then
+			mv "$CONFIG_PATH/$sMod.js.dis" "$CONFIG_PATH/$sMod.js"
+		fi
+		shift
+	done
+}
+
+cfgDeactivate() {
+	local sMod
+	while [ -n "$1" ]
+	do
+		sMod="$1"
+		if [ -f "$CONFIG_PATH/$sMod.js" ]
+		then
+			mv "$CONFIG_PATH/$sMod.js" "$CONFIG_PATH/$sMod.js.dis"
+		fi
+		shift
+	done
+}
+
+cfgManage() {
+	if [ -n "$1" ]
+	then
+		cfgDeactivateAll
+		cfgActivate server $*
+	fi
+}
+
+runServer() {
+	local sLogLastErr="$LOG_PATH/last-error.log"
+	local sLogErr="$LOG_PATH/errors.log"
+	local sLogServer="$LOG_PATH/server.log"
+	if [ ! -d $LOGS_PATH ]
+	then
+		echo "error ! log directory not found"
+		exit 1
+	fi
+	echo "-------------------------------------------------" >> $sLogServer
+	# lancement du serveur avec récupération d'une eventuelle sortie erreur,
+	# et sauvegarde de la sortie standard.
+	echo " "
+	
+	$NODE_JS $PROGRAM_JS 2> $sLogLastErr | tee -a $sLogServer
+	# affichage et archivage de la dernière erreur.
+	if [ -f $sLogLastErr ]
+	then
+		cat $sLogLastErr
+		echo "-------------------------------------------------" >> $sLogErr
+		date >> $sLogErr
+		cat $sLogLastErr >> $sLogErr
+		rm $sLogLastErr
+	fi
+}
+
+runServerForever() {
+	echo "1" > $STOPFILE
+	while [ -f $STOPFILE ]
+	do
+		runServer
+	done
+}
+
+
+# type : screen -S "mwserver" -d -m sh mw-start
+# for a bg running server
+cfgManage mwgame
+if [ "$1" = "forever" ]
+then
+	echo "server will restart forever (delete the '$STOPFILE' file to prevent this). "
+	runServerForever
+else
+	runServer
+fi
+

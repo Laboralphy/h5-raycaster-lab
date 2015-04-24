@@ -1,0 +1,29 @@
+Note on "load" files
+
+"load" files are read by /dynamics/packer/compile.php
+the index.html file of a project should contain :
+
+   <script type="text/javascript" src="../../dynamics/packer/compile.php?f=crawler"></script>
+
+(this is an example for the project named "crawler") 
+
+
+
+load file content :
+---------------------------------------------------
+load path/to/library1
+load path/to/library2
+...
+
+top /path/to/file
+...
+---------------------------------------------------
+
+example of loader file for the CRAWLER project
+
+load ../../libraries
+load ../../sources/crawler
+top ../../libraries/o2.js
+
+most of the time, loader file will look like this example.
+

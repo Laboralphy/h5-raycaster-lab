@@ -1,0 +1,18 @@
+[
+	"d_barrel",
+	"d_chain_long",
+	"d_chain_short",
+	"d_cooking_pot",
+	"d_cross",
+	"d_cross_heavy",
+	"d_cross_stone",
+	["d_light_candle", 3, 100, 4],
+	["d_light_lamp", 4, 100, 4],
+	["d_light_torch", 4, 100, 4],
+	"d_pillar_wood",
+	"d_pole_skull",
+	"d_pole_two_skulls",
+	"d_statue_gargoyle",
+	"d_table_fancy",
+	"d_tree"
+]

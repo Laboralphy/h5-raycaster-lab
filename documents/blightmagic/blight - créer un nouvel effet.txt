@@ -1,0 +1,25 @@
+Le parchement de magnétisme créé un effet qui attire les projectile sur la cible affectée.
+On va ajouter un halo gris pour indique quand le sort est actif et quand il se dissipe.
+
+exemple : Créer un halo gris pour les créatures sous l'influence de Magnet
+
+Instance.js - soulAttributeChanged()
+	ajouter un case magnet (avec les autre case d'attributs)
+
+
+feedback.js
+	ajouter une entrée pour magnet
+	definir un flash et un son
+Game.js - scOS_me()
+	ajouter un case magnet (avec les autre case d'attributs)
+Game.js - scOS_other()
+	ajouter un case magnet avec un setHaze adhoc
+playerThinker.js
+	ajouter un VEIL_MAGNET
+	ajouter une entrée dans oAttributes (init)
+	ajouter dans setupEffect un truc pour magnet
+	ajouter un case dans setupVeil
+GXColorVeil.js
+	ajouter un setupMagnet
+hazes.js
+	ajouter une entrée Magnet et choisir un haze

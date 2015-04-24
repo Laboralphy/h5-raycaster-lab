@@ -1,0 +1,23 @@
+; id			icon	effect	level
+
+ear_pharma_1	0c	bpha	1
+ear_pharma_2	*	*		2
+ear_pharma_3	*	*		3
+
+ear_magres_1	0p	rmag	2
+ear_magres_2	*	*		4
+ear_magres_3	*	*		6
+
+ear_magplus_1	1b	bxmp	2
+ear_magplus_2	*	*		4
+ear_magplus_3	*	*		6
+
+; combined amulet of magic affinity
+ear_affmag_1	1p	bxmp	2
+*				*	rmag	*
+ear_affmag_2	*	bxmp	4
+*				*	rmag	*
+ear_affmag_3	*	bxmp	6
+*				*	rmag	*
+
+

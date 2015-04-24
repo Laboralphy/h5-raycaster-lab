@@ -1,0 +1,40 @@
+div.colorf3 {
+	background: #AAA;
+	border: solid 4px #666;
+	position: absolute;
+}
+
+div.colorf3 td.titlebar {
+	background-color: #00F; 	
+}
+
+
+div.colorf3 td.titlebar span.titletext {
+	color: #FFF; 
+	font-family: monospace; 
+	font-size: 11px;
+}
+
+div.colorf3 td.titlebar span.close {
+	background-color: #AAA; 
+	color: #900; 
+	display: block; 
+	cursor: pointer; 
+	float: right; 
+	right: 0px; 
+}
+
+div.colorf3 td.titlebar span.close:hover {
+	color: #F00;
+	background-color: #CCC;	
+} 
+
+div.colorf3 td.label {
+	text-align: right;
+	padding-right: 4px;
+	font-size: 85%;	
+}
+
+div.colorf3 canvas.result {
+	border: solid thin black;
+}

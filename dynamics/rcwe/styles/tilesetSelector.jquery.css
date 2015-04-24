@@ -1,0 +1,26 @@
+table.tilesetSelector span.cursor {
+	font-weight: bold;
+	font-family: monospace;
+	border: solid thin;
+	padding-left: 4px;
+	padding-right: 4px;
+	border-color: white;
+	color: white;
+}
+
+table.tilesetSelector span.m0 {
+	background-color: #D80;
+}
+
+table.tilesetSelector span.m1 {
+	background-color: #08F;
+}
+
+table.tilesetSelector tr.head td {
+	height: 20px;
+	text-align: center;
+}
+
+table.tilesetSelector tr.head {
+	height: 20px;
+}

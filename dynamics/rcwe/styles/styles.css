@@ -1,0 +1,140 @@
+body {
+	background-color: black;
+	color: black;
+	padding: 0px;
+	margin: 0px;
+}
+
+div.window {
+	background-color: #DDD;
+	border: solid 4px #666;
+	padding: 8px;
+	margin: 0px;
+	min-width: 192px;
+	min-height: 128px;
+}
+
+div.window h1 {
+	font-size: 16px;
+	font-family: monospace;
+	background-color: #00F;
+	color: white;
+	border: solid 2px #00A;
+	padding: 2px;
+	padding-left: 8px;
+	margin-top: 0px;
+	margin-bottom: 2px;
+}
+
+div.window span.label {
+	font-family: monospace;
+	font-size: 10px;
+}
+
+div.window div.toolbar {
+	background-color: #AAA;
+	border: solid thin #666;
+}
+
+div.window td {
+	vertical-align: top;
+	margin: 0px;
+}
+
+div.window div.toolbar button {
+	font-family: monospace;
+}
+
+
+table.RCWE > tbody > tr > td {
+	vertical-align: top;
+}
+
+div.document {
+	width: 320px;
+}
+
+div.document table th {
+	white-space: nowrap;
+}
+div.document table td, div.document table th {
+	vertical-align: top;
+	background-color: #BBB;
+	padding: 4px;
+}
+
+div.popup  {
+	-moz-box-shadow: 0px 0px 32px 16px rgba(0, 0, 0, 0.6);
+	-webkit-box-shadow: 0px 0px 32px 16px rgba(0, 0, 0, 0.6);
+	-o-box-shadow: 0px 0px 32px 16px rgba(0, 0, 0, 0.6);
+	box-shadow: 0px 0px 32px 16px rgba(0, 0, 0, 0.6);
+	border-color: black;
+}
+
+div.popup.error h1 {
+	background-color: #A00;
+	border-color: #800;
+	color: #FAA;
+}
+
+div.pad9 button {
+	width: 32px;
+	height: 32px;
+	font-family: 'monospace';
+	font-size: 20px;
+	font-color: #00F;
+}
+
+
+
+div.fileopendialog div.thumbnail {
+	margin: 2px;
+	float: left;
+	border: solid thin #666;
+	background-color: #CCC;
+	cursor: pointer; 
+}
+
+div.fileopendialog div.thumbnail div.title {
+	height: 18px;
+	margin: 2px;
+	padding: 4px;
+	background-color: #444;
+	color: #CCC;
+	font-family: monospace;
+	border: solid thin #000;
+}
+
+div.fileopendialog div.thumbnail.selected div.title {
+	background-color: #AAA;
+	color: #FFF;
+	border: solid thin #555;
+}
+
+div.fileopendialog div.thumbnail.selected img {
+	opacity: 0.75;
+}
+
+div.fileopendialog div.thumbnail div.title span{
+	margin: auto;
+}
+
+div.fileopendialog div.thumbnail img {
+	margin: 2px;
+}
+
+
+
+
+/****** TUTORIAL SCREEN ******/
+/****** TUTORIAL SCREEN ******/
+/****** TUTORIAL SCREEN ******/
+
+div#tuto_screen {
+	margin: auto;
+	background-color: #999;
+	width: 620px;
+	height: 424px;
+	border: solid 2px #777;
+	display: none;
+}

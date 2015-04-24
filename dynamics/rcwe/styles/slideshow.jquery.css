@@ -1,0 +1,30 @@
+@CHARSET "UTF-8";
+
+div.slideshow div.btnNext, div.slideshow div.btnPrev {
+	background-color: #CCC;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	bottom: 24px;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 26px;
+	font-weight: bold;
+	color: #000;
+	cursor: pointer;
+	text-shadow: 3px 3px 3px #888;
+}
+
+div.slideshow div.btnNext:hover, div.slideshow div.btnPrev:hover {
+	color: #666;
+	background-color: #EEE;
+}
+	
+div.slideshow div.btnPrev {
+	left: 24px;
+}
+
+div.slideshow div.btnNext {
+	right: 24px;
+}
+

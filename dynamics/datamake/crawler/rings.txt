@@ -1,0 +1,31 @@
+; id					ico	effect	level
+
+; power
+ring_power_1			0p	bpow	2
+ring_power_2			*	*		4
+ring_power_3			*	*		6
+
+; defense
+ring_thermdef_1			0y	rfir	2
+*						*	rcld	*
+ring_thermdef_2			*	rfir	4
+*						*	rcld	*
+ring_thermdef_3			*	rfir	6
+*						*	rcld	*
+ring_elecdef_1			0b	rele	2
+ring_elecdef_2			*	*	4
+ring_elecdef_3			*	*	6
+ring_integrity_1		0g	rtox	2
+*						*	rphy	*
+ring_integrity_2		*	rtox	4
+*						*	rphy	*
+ring_integrity_3		*	rtox	6
+*						*	rphy	*
+
+; special
+; body to mind
+ring_btm_1				2f	rene	1
+*						*	xphy	*
+
+
+

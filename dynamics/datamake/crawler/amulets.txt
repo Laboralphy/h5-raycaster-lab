@@ -1,0 +1,18 @@
+; id			icon	effect	level
+
+; lucky charm
+amu_luck_1		0b	blck	2
+amu_luck_2		*	*		4
+amu_luck_3		*	*		6
+
+; immunity
+amu_deathward	0p	rdth	1
+amu_antidote	0g	rant	*
+amu_remedy		0mp	rbod	*
+amu_cleansing	0b	rmin	*
+amu_freedom		0ro	rmov	*
+
+; combined amulet of health
+amu_health		0c	rant	*
+*				*	rbod	*
+*				*	rmin	*
