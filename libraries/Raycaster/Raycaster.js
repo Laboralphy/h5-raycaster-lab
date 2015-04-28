@@ -1273,6 +1273,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.oRenderContext.drawImage(oBG, 0, 0, wBG, hBG, -xBG, yBG, wBG, hBG);
 		}
 		
+		// drawing gradient if no floor texture is defined.
+		if (this.bGradient && !this.bFloor) {
+			this.oRenderContext.fillStyle = this.oVisual.gradients[0];
+			this.oRenderContext.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height >> 1);
+			this.oRenderContext.fillStyle = this.oVisual.gradients[1];
+			this.oRenderContext.fillRect(0, (this.oCanvas.height >> 1), this.oCanvas.width, this.oCanvas.height >> 1);
+		}
+		
 		// 2ndFloor
 		if (this.oUpper) {
 			this.drawUpper();
@@ -1289,11 +1297,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				}
 				this.drawFloor();
 			}
-		} else if (this.bGradient) {
-			this.oRenderContext.fillStyle = this.oVisual.gradients[0];
-			this.oRenderContext.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height >> 1);
-			this.oRenderContext.fillStyle = this.oVisual.gradients[1];
-			this.oRenderContext.fillRect(0, (this.oCanvas.height >> 1), this.oCanvas.width, this.oCanvas.height >> 1);
 		}
 		
 		zbl = this.aZBuffer.length;
