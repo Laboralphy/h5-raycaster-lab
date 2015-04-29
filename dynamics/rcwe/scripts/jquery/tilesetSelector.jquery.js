@@ -1,3 +1,6 @@
+/**
+ * This plugin allow the user to select a tile among a set of size-fixed tiles
+ */
 (function ($) {
 	var sPluginName = 'tilesetSelector';
 	var oPlugin = {};
@@ -117,7 +120,6 @@
 					}
 				} catch (e) {
 					// un bug de firefox nous contraint à faire ce genre de connerie
-					console.log('failed', e, n);
 					setTimeout(function() {
 						toLoad(n + 1);
 					}, n * 100);

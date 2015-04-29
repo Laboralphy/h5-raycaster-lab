@@ -1,0 +1,39 @@
+div.window {
+	background-color: #DDD;
+	border: solid 4px #666;
+	padding: 8px;
+	margin: 0px;
+	min-width: 192px;
+	min-height: 128px;
+}
+
+div.window h1 {
+	font-size: 16px;
+	font-family: monospace;
+	background-color: #00F;
+	color: white;
+	border: solid 2px #00A;
+	padding: 2px;
+	padding-left: 8px;
+	margin-top: 0px;
+	margin-bottom: 2px;
+}
+
+div.window span.label {
+	font-family: monospace;
+	font-size: 10px;
+}
+
+div.window div.toolbar {
+	background-color: #AAA;
+	border: solid thin #666;
+}
+
+div.window td {
+	vertical-align: top;
+	margin: 0px;
+}
+
+div.window div.toolbar button {
+	font-family: monospace;
+}

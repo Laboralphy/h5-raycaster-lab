@@ -1,0 +1,41 @@
+/*
+ * The whole page must be 100% in width and height
+ * with no padding and no margin
+ */
+html, body, table.o876structure {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+/*
+ * All cells must be with no padding and no margin
+ */
+table.o876structure > tbody > tr > td {
+	padding: 0;
+	margin: 0;
+	border: solid thin black;
+}
+
+/*
+ * Floating height rows
+ */
+tr.floatingHeight {
+	height: 100%;
+}
+
+tr.floatingHeight > td {
+	height: 0;
+}
+
+tr.floatingHeight > td > div {
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+tr.floatingWidth > td {
+	width: 100%
+}
+
