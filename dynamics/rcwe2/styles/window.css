@@ -1,13 +1,12 @@
-div.window {
+table.o876window {
+	box-sizing: border-box;
 	background-color: #DDD;
 	border: solid 4px #666;
-	padding: 8px;
+	padding: 4px;
 	margin: 0px;
-	min-width: 192px;
-	min-height: 128px;
 }
 
-div.window h1 {
+table.o876window h1 {
 	font-size: 16px;
 	font-family: monospace;
 	background-color: #00F;
@@ -19,21 +18,21 @@ div.window h1 {
 	margin-bottom: 2px;
 }
 
-div.window span.label {
+table.o876window span.label {
 	font-family: monospace;
 	font-size: 10px;
 }
 
-div.window div.toolbar {
+table.o876window tr.toolbar > td > div {
 	background-color: #AAA;
 	border: solid thin #666;
 }
 
-div.window td {
+table.o876window td {
 	vertical-align: top;
 	margin: 0px;
 }
 
-div.window div.toolbar button {
+table.o876window div.toolbar button {
 	font-family: monospace;
 }

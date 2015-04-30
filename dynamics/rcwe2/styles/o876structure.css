@@ -15,7 +15,7 @@ html, body, table.o876structure {
 table.o876structure > tbody > tr > td {
 	padding: 0;
 	margin: 0;
-	border: solid thin black;
+	border: none;
 }
 
 /*

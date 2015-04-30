@@ -17,11 +17,12 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	onDrawOver: null,
 	onclick: null,
 	
-	oLastRedrawBox: null,
+	aUndo: null, // undo stack
+	aClipBoard: null, // clipboard
 	
-	aUndo: null, // tableau d'undo
-	aClipBoard: null,
-	
+	/**
+	 * builds the DOM structure
+	 */
 	build: function() {
 		this.aUndo = [];
 		
@@ -46,22 +47,14 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			x2: null,
 			y2: null
 		};
+
 		
-		this.oLastRedrawBox = {
-			xf: -1,
-			yf: -1,
-			xt: -1,
-			xt: -1
-		};
-		
-		var c = this.getContainer();
-		c.css('height', '100%'); 
+		var c = this.getBody();
 
 		var $oScrollZone = $('<div></div>');
 		$oScrollZone.css({
-			'overflow': 'scroll',
-			'width': '720px',
-			'height': '100%'
+			'height': '100%',
+			'overflow': 'scroll'
 		});
 		this.oScrollZone = $oScrollZone;
 		c.append($oScrollZone);
@@ -77,30 +70,47 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		$oCanvas.bind('mouseup', this.cmd_mouseUp.bind(this));
 	},
 
-	
-	getSize: function() {
+	/**
+	 * Return the size of the grid
+	 * Note : The grid is allways squared sized
+	 * @return int
+	 */
+	getGridSize: function() {
 		return this.aGrid.length;
 	},
 	
+	/**
+	 * Set the selected region
+	 * @param x1 coordinates of the top-left corner of the selected region
+	 * @param y1 coordinates of the top-left corner of the selected region
+	 * @param x2 coordinates of the bottom-right corner of the selected region
+	 * @param y2 coordinates of the bottom-right corner of the selected region
+	 */
 	setSelect: function(x1, y1, x2, y2) {
 		var s = this.oSelect;
-		var n = this.getSize() - 1;
+		var n = this.getGridSize() - 1;
 		s.x1 = Math.max(0, Math.min(n, x1));
 		s.y1 = Math.max(0, Math.min(n, y1));
 		s.x2 = Math.max(0, Math.min(n, x2));
 		s.y2 = Math.max(0, Math.min(n, y2));
 	},
 	
+	/**
+	 * Set the size of each cell (in pixels)
+	 * @param w size
+	 */
 	setCellSize: function(w) {
 		this.wCell = w;
 		this.oCanvas.height = this.oCanvas.width = w * this.wCell;
 	},
 
 	/**
-	 * Redimensionne la grille sans toucher aux anciennes valeurs
-	 * les nouvelle valeur sont mises à 0
+	 * set a new grid size (number of cells)
+	 * if the grid is enlarged, the new cells will have a value of 0
+	 * if the grid shrinks, the remaining cells won't lose their value
+	 * @param w new size
 	 */
-	setSize: function(w) {
+	setGridSize: function(w) {
 		if (w < 1 || w > 100) {
 			return;
 		}
@@ -123,7 +133,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 
 	/**
-	 * redessine la grille à l'écran
+	 * redraw the entire grid
+	 * events onDraw and onDrawOver are triggered
 	 */
 	redraw: function(xf, yf, xt, yt) {
 		var g = this.aGrid;
@@ -164,6 +175,13 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		}
 	},
 	
+	/**
+	 * Set a cell's value
+	 * if the given coordinates are out of bounds, nothing happens
+	 * @param x cell coordinates
+	 * @param y cell coordinates
+	 * @param c new cell value
+	 */
 	setCell: function(x, y, c) {
 		var g = this.aGrid;
 		if (y >= 0 && y < g.length && x >= 0 && x < g[y].length) {
@@ -171,15 +189,24 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		} 
 	},
 
+	/**
+	 * Get a cell's value
+	 * if the given coordinates are out of bounds, the function returns 0
+	 * @param x cell coordinates
+	 * @param y cell coordinates
+	 * @return cell value
+	 */
 	getCell: function(x, y) {
 		var g = this.aGrid;
 		if (y >= 0 && y < g.length && x >= 0 && x < g[y].length) {
 			return g[y][x];
-		} 
+		} else {
+			return 0
+		}
 	},
 	
 	/**
-	 * Renvoie true si il y a un second étage
+	 * Returns true if a second floor is defined
 	 * @return bool
 	 */
 	hasUpperFloor: function() {
@@ -195,9 +222,11 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Renvoie les codes composant la carte (étage inférieur)
-	 * Utilise les métacodes spécifié pour traduire les code logique en code physique
-	 * @param mc objet associatif code logique -> code physique
+	 * Returns a level map.
+	 * Uses a given dictionary of meta codes to translate the grid cells codes
+	 * into the corresponding code in the dictionary.
+	 * @param mc dictionary of metacodes (a simple object)
+	 * @return 2D array of whatever the dictionary contains
 	 */
 	getMap: function(mc, bUpper) {
 		var x, y, g = this.aGrid;
@@ -217,15 +246,16 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		return a;
 	},
 	
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
-	////// EVENEMENT SOURIS ////// EVENEMENT SOURIS ////// EVENEMENT SOURIS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
+	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 
 	/**
-	 * Déclenché lorsque l'on appuie sur un bouton de la souris
+	 * Triggered when the mouse bouton is pressed
+	 * @param oEvent javascript event
 	 */
 	cmd_mouseDown: function(oEvent) {
 		var $target = $(oEvent.target);
@@ -235,7 +265,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.xLastClick = x;
 		this.yLastClick = y;
 		switch (oEvent.which) {
-			case 1:
+			case 1: // only left button is handled
 				this.oSelect.x2 = this.oSelect.x1 = x / this.wCell | 0;
 				this.oSelect.y2 = this.oSelect.y1 = y / this.wCell | 0;
 				this.bStartDrag = true;
@@ -248,7 +278,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Déclenché lorsque la souris se déplace sur le canvas
+	 * Triggered when the mouse is moved over the canvas
+	 * @param oEvent javascript event
 	 */
 	cmd_mouseMove: function(oEvent) {
 		if (this.bStartDrag) {
@@ -274,7 +305,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 
 	/**
-	 * Déclenché lorsque l'on relache un bouton de la souris
+	 * Triggered when the mouse bouton is released
+	 * @param oEvent javascript event
 	 */
 	cmd_mouseUp: function(oEvent) {
 		this.cmd_mouseMove(oEvent);
@@ -283,23 +315,27 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Augmentation de la taille de la grille.
+	 * Increase the grid size by one row and one column
 	 */
 	cmd_sizeInc: function() {
-		this.setSize(this.aGrid.length + 1);
+		this.setGridSize(this.aGrid.length + 1);
 		this.redraw();
 	},
 
 	/**
-	 * Diminution de la taille de la grille.
+	 * Decrease the grid size by one row and one column
 	 */
 	cmd_sizeDec: function() {
-		this.setSize(this.aGrid.length - 1);
+		this.setGridSize(this.aGrid.length - 1);
 		this.redraw();
 	},
 
 	
-	cmd_copy: function(oEvent) {
+	/**
+	 * Copy the selected region into the clipboard
+	 * undoable operation
+	 */
+	cmd_copy: function() {
 		this.undoPush();
 		var a = this.aUndo.pop();
 		var x1 = Math.min(this.oSelect.x1, this.oSelect.x2);
@@ -311,7 +347,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.aClipBoard = a;
 	},
 	
-	cmd_paste: function(oEvent) {
+	/**
+	 * Paste the clipboard content on the grid, from the selected region top-left corner
+	 */
+	cmd_paste: function() {
 		var a = this.aClipBoard;
 		var x1 = Math.min(this.oSelect.x1, this.oSelect.x2);
 		var y1 = Math.min(this.oSelect.y1, this.oSelect.y2);
@@ -354,7 +393,14 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	////// DRAW FUNCTIONS ////// DRAW FUNCTIONS ////// DRAW FUNCTIONS //////
 	////// DRAW FUNCTIONS ////// DRAW FUNCTIONS ////// DRAW FUNCTIONS //////
 	
-	iterateSelectedBlock: function(pCallBack) {
+	/**
+	 * For each cells inside the selected region,
+	 * a callback function is called.
+	 * The grid is redrawn after.
+	 * @param pCallback callback function called for each cells
+	 * parameters are : x, y, code
+	 */
+	iterateSelectedBlock: function(pCallback) {
 		if (!pCallBack) {
 			return;
 		}
@@ -368,7 +414,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		
 			for (y = y1; y <= y2; ++y) {
 				for (x = x1; x <= x2; ++x) {
-					this.setCell(x, y, pCallBack(x, y, this.getCell(x, y)));
+					this.setCell(x, y, pCallback(x, y, this.getCell(x, y)));
 				}
 			}
 		}
@@ -376,7 +422,9 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Supprime tous les block compris dans al zone rectangulaire spécifiée
+	 * Clears the selected cells.
+	 * Means that values of the cells are set to 0.
+	 * undoable operation
 	 */
 	clearFullBox: function() {
 		this.undoPush();
@@ -384,9 +432,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Dessine une box pleine avec le code spécifié
-	 * Seul l'étage inférieur est affecté 
-	 * voir drawUpperFullBox pour affecter l'étage supérieur
+	 * Fill the selected region with the specified code
+	 * Only the first floor is affected (see drawUpperFullBox for second floor)
+	 * undoable operation
+	 * @param nCode new value for selected cells
 	 */
 	drawFullBox: function(nCode) {
 		nCode = nCode | 0;
@@ -395,14 +444,19 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	/**
-	 * Dessine une box pleine avec le code spécifié
-	 * Seul l'étage supérieur est affecté 
+	 * Fill the selected region with the specified code
+	 * Only the second floor is affected (see drawFullBox for first floor)
+	 * undoable operation
+	 * @param nCode new value for selected cells
 	 */
 	drawUpperFullBox: function(nCode) {
 		nCode = (nCode | 0) << 8;
 		this.undoPush();
 		this.iterateSelectedBlock(function(x, y, n) { return n & 0xFF | nCode; });
 	},
+	
+	
+	
 	////// UNDO FUNCTIONS ////// UNDO FUNCTIONS ////// UNDO FUNCTIONS //////
 	////// UNDO FUNCTIONS ////// UNDO FUNCTIONS ////// UNDO FUNCTIONS //////
 	////// UNDO FUNCTIONS ////// UNDO FUNCTIONS ////// UNDO FUNCTIONS //////
@@ -411,7 +465,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	////// UNDO FUNCTIONS ////// UNDO FUNCTIONS ////// UNDO FUNCTIONS //////
 
 	/**
-	 * Ajoute un historique à l'undo
+	 * Pushes a new grid state onto the undo stack
 	 */
 	undoPush: function() {
 		var a = [];
@@ -420,7 +474,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 
 	/**
-	 * dépile le dernier historique d'undo et l'applique dans la grille
+	 * Pop the topmost grid state from the undo stack, and update the grid
 	 */
 	undoPop: function() {
 		var a = this.aUndo.pop();
@@ -432,13 +486,18 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.redraw();
 	},
 	
+	/**
+	 * Returns data meant to be serialized
+	 */
 	serialize: function() {
 		return this.aGrid;
 	},
 	
+	/**
+	 * get data from serialized stream, and update the grid
+	 */
 	unserialize: function(a) {
 		this.aGrid = a;
-		this.setSize(this.aGrid.length);
+		this.setGridSize(this.aGrid.length);
 	}
-
 });
