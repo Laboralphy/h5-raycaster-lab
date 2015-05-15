@@ -782,3 +782,55 @@ O876 Modulable Server - dev version 2015-02-04
 [2015-05-15T11:29:48.218Z] client disconnected : 127.0.0.1
 [2015-05-15T11:29:48.227Z] main > terminating...
 [2015-05-15T11:29:48.227Z] main > loading map golden-temple
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:05:24.710Z] main > loading map crimson-castle
+[2015-05-15T12:05:24.718Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:08:28.604Z] main > loading map crimson-castle
+[2015-05-15T12:08:28.610Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:10:39.494Z] main > loading map crimson-castle
+[2015-05-15T12:10:39.499Z] server is listening on port 10876...
+[2015-05-15T12:12:07.762Z] client connected : 127.0.0.1
+[2015-05-15T12:12:07.851Z] client identification # 1 - address: 127.0.0.1 - name: zerzer
+[2015-05-15T12:12:17.291Z] main > starting alchemy : zerzer
+[2015-05-15T12:12:19.100Z] main > starting alchemy : zerzer
+[2015-05-15T12:12:50.912Z] main > starting alchemy : zerzer
+[2015-05-15T12:13:09.961Z] client disconnected : 127.0.0.1
+[2015-05-15T12:13:09.981Z] main > terminating...
+[2015-05-15T12:13:09.982Z] main > loading map golden-temple
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:15:29.857Z] main > loading map crimson-castle
+[2015-05-15T12:15:29.862Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:16:08.647Z] main > loading map crimson-castle
+[2015-05-15T12:16:08.653Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:22:10.224Z] main > loading map crimson-castle
+[2015-05-15T12:22:10.229Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:32:19.070Z] main > loading map crimson-castle
+[2015-05-15T12:32:19.076Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:32:46.696Z] main > loading map crimson-castle
+[2015-05-15T12:32:46.702Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:33:03.619Z] main > loading map crimson-castle
+[2015-05-15T12:33:03.627Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:35:44.751Z] main > loading map crimson-castle
+[2015-05-15T12:35:44.756Z] server is listening on port 10876...
+-------------------------------------------------
+O876 Modulable Server - dev version 2015-02-04
+[2015-05-15T12:37:38.862Z] main > loading map crimson-castle
+[2015-05-15T12:37:38.867Z] server is listening on port 10876...

@@ -175,7 +175,10 @@ O2.extendClass = function(sName, pParent, pPrototype) {
 };
 
 O2.createObject('CONST', {
-	MISSILE_SIZE_NORMAL: 14
+	MISSILE_SIZE_NORMAL: 14,
+	
+	// general config
+	MINIMUM_FPS: 20   // minimum number of frame per second in high detail mode
 });
 
 O2.createClass('SoundSystem',  {
@@ -10297,6 +10300,7 @@ O2.createClass('MW.HowToPlay', {
 			'resources/pages/man-controls-adv.html',
 			'resources/pages/man-spacebar.html',
 			'resources/pages/man-alchemy.html',
+			'resources/pages/man-end.html'
 		];
 		this.display(0);
 	}
@@ -14081,7 +14085,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	},
 	
 	onFrameCount: function(nFPS, nAVG, nTime) {
-		if (nTime > 5 && this.oRaycaster.oCanvas.width > 400 && nAVG < 20) {
+		if (nTime > 5 && this.oRaycaster.oCanvas.width > 400 && nAVG < CONST.MINIMUM_FPS) {
 			this.oRaycaster.downgrade();
 			this.sendSignal('ui_resize');
 			window.screenResize(null);

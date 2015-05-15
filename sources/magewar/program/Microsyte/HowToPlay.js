@@ -45,6 +45,7 @@ O2.createClass('MW.HowToPlay', {
 			'resources/pages/man-controls-adv.html',
 			'resources/pages/man-spacebar.html',
 			'resources/pages/man-alchemy.html',
+			'resources/pages/man-end.html'
 		];
 		this.display(0);
 	}
