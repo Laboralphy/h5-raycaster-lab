@@ -281,5 +281,6 @@ case $1 in
 		echo " * $0 plugin <cmd> <name> : plugin management"
 		echo " * $0 map <map> : imports map from MWEditor (if no <map> specified, lists all available maps)"
 		echo " * $0 test : project testing"
+		echo " * $0 peekversion : check project version number"
 	;;
 esac
