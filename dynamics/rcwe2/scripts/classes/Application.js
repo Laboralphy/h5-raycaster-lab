@@ -2,13 +2,15 @@ O2.createClass('RCWE.Application', {
 	
 	oStructure: null,
 	
+	oMapGrid: null,
+	
 	__construct: function() {
 		this.buildStructure($('body').get(0));
 	},
 
 	buildStructure: function(oRoot) {
 		var $structure = $(
-		'<table class="o876structure window">' +
+		'<table class="o876structure window main">' +
 		'	<tbody>' +
 		'		<tr class="floatingHeight">' +
 		'			<td class="c10 floatingWidth">' +
@@ -46,23 +48,33 @@ O2.createClass('RCWE.Application', {
 		oFlatBrowser.nAllowedWidth = 64;
 		oFlatBrowser.nAllowedHeight = 64;
 		oFlatBrowser.build('Flat textures', {markers: ['Fl', 'Ce']});
-		$(this.oStructure.d11).append(oFlatBrowser.getContainer());*/
-	/*	
-		var oLabyGrid = new RCWE.LabyGrid();
-		oLabyGrid.build();
-		$(this.oStructure.d10).append(oLabyGrid.getContainer());
-		* */
+		$(this.oStructure.d11).append(oFlatBrowser.getContainer());
+		 */
 		
 		
-		var test = new RCWE.LabyGrid();
-		test.build();
-		test.setSize('100%', '100%');
-		test.setGridSize(32);
-		this.linkWidget('d10', test);
+		var oMapGrid = new RCWE.LabyGrid();
+		oMapGrid.build();
+		oMapGrid.setSize('100%', '100%');
+		oMapGrid.setGridSize(32);
+		this.linkWidget('d10', oMapGrid);
 		
-		test.onDraw = this.labyGridDrawCell.bind(this);
-		test.redraw();
+		oMapGrid.onDraw = this.labyGridDrawCell.bind(this);
+		oMapGrid.redraw();
 		
+		var nD11Width = 464;
+		
+		var oBlockEditor = new RCWE.BlockEditor();
+		oBlockEditor.build();
+		oBlockEditor.setSize(nD11Width, 192);
+		this.linkWidget('d11', oBlockEditor);
+
+		var oTileBrowser = new RCWE.TileBrowser();
+		oTileBrowser.build();
+		oTileBrowser.setSize(nD11Width, 200);
+		this.linkWidget('d11', oTileBrowser);
+		
+		this.oMapGrid = oMapGrid;
+		this.resizeWindow();		
 	},
 	
 	labyGridDrawCell: function(nCode, oContext, x, y, wCell, hCell) {
@@ -79,6 +91,19 @@ O2.createClass('RCWE.Application', {
 	 */
 	linkWidget: function(sSection, w) {
 		this.oStructure[sSection].append(w.getContainer());
+	},
+
+
+	resizeWindow: function() {
+		if (this.oMapGrid) {
+			var $canvas = $(this.oMapGrid.oCanvas);
+			var $scrollzone = this.oMapGrid.oScrollZone;
+			$canvas.hide();
+			$scrollzone.width('');
+			var w = $canvas.parent().width();
+			$canvas.show();
+			$scrollzone.width(w);
+		}
 	},
 
 });

@@ -17,6 +17,7 @@ O2.extendClass('MW.UIPlugin', MW.Plugin, {
 		this.register('ui_open');
 		this.register('ui_close');
 		this.register('ui_switch');
+		this.register('ui_resize');
 	},
 
 	render: function() {
@@ -81,6 +82,10 @@ O2.extendClass('MW.UIPlugin', MW.Plugin, {
 		} else {
 			this.ui_open();
 		}
+	},
+
+	ui_resize: function() {
+		this.oSystem.setRenderCanvas(this.oCanvas);
 	}
-	
+
 });

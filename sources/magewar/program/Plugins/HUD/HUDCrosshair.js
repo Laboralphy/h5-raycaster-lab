@@ -1,6 +1,6 @@
 O2.extendClass('MW.HUDCrosshair', UI.HUDElement, {
 	
-	update: function() {
+	redraw: function() {
 		var c = this.oContext;
 		var w = this.oCanvas.width;
 		var h = this.oCanvas.height;
@@ -12,5 +12,9 @@ O2.extendClass('MW.HUDCrosshair', UI.HUDElement, {
 		c.moveTo(w >> 1, 0);
 		c.lineTo(w >> 1, h);
 		c.stroke();
+	},
+	
+	update: function() {
+		this.redraw();
 	}
 });

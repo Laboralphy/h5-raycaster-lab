@@ -271,6 +271,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.xScrSize >>= 1;
 		this.yScrSize >>= 1;
 		this.backgroundRedim();
+		if (this.oUpper) {
+			this.oUpper.xScrSize >>= 1;
+			this.oUpper.yScrSize >>= 1;
+		}
 	},
 	
 	/** Rendu graphique de l'arme

@@ -7,15 +7,13 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	oMouseDevice : null,
 	oThinkerManager : null,
 	oObjectIndex : null,
+	
+	oFrameCounter: null,
 
 	nLastTimeStamp : 0,
 	nShadedTiles : 0,
 	nShadedTileCount : 0,
 	
-	bCheckFPS: false, // when true the FPS is being checked... 
-	// if FPS is too low we decrease the LOD
-	aFPSStats: null,
-
 	__construct : function() {
 		__inherited('stateInitialize');
 		this.resume();
@@ -55,10 +53,11 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 *            paramètre optionnels à transmettre à l'évènement
 	 * @return retour éventuel de la fonction évènement
 	 */
-	_callGameEvent : function(sEvent, oParams) {
+	_callGameEvent : function(sEvent) {
 		if (sEvent in this && this[sEvent]) {
 			var pFunc = this[sEvent];
-			return pFunc.apply(this, [ oParams ]);
+			var aParams = Array.prototype.slice.call(arguments, 1);
+			return pFunc.apply(this, aParams);
 		}
 		return null;
 	},
@@ -261,34 +260,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		return this.oRaycaster.oHorde.spawnMobile(sBlueprint, x, y, fAngle);
 	},
 	
-	/**
-	 * Starts to count frames per second
-	 */
-	startCheckingFPS: function() {
-		this.aFPSStats = [this.nLastTimeStamp];
-		this.bCheckFPS = true;
-	},
-
-	/**
-	 * count frames per second
-	 */
-	checkFPS: function(nNowTimeStamp) {
-		if (this.bCheckFPS) {
-			var a = this.aFPSStats;
-			a.push(nNowTimeStamp);
-			if (a.length > 100) {
-				this.bCheckFPS = false;
-				var i;
-				var f = 0;
-				for (i = a.length - 1; i > 0; --i) {
-					a[i] = a[i] - a[i - 1];
-					f += a[i];
-				}
-				this._callGameEvent('onFrameCount', [ 1000 * (a.length - 1) / f ]);
-			}
-		}
-	},
-
 	// /////////// EVENEMENTS /////////////
 
 	// onInitialize: null,
@@ -359,7 +330,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this.oRaycaster.initialize();
 		this.oThinkerManager = this.oRaycaster.oThinkerManager;
 		this.oThinkerManager.oGameInstance = this;
-		this._callGameEvent('onLoading', [ 'lvl', 0, 2 ]);
+		this._callGameEvent('onLoading', 'lvl', 0, 2);
 		this.setDoomloop('stateBuildLevel');
 	},
 
@@ -373,9 +344,9 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			this._halt('no world data : without world data I can\'t build the world. (onRequestLevelData did not return object)');
 		}
 		this.oRaycaster.defineWorld(oData);
-		this._callGameEvent('onLoading', [ 'lvl', 1, 2 ]);
+		this._callGameEvent('onLoading', 'lvl', 1, 2);
 		this.oRaycaster.buildLevel();
-		this._callGameEvent('onLoading', [ 'lvl', 2, 2 ]);
+		this._callGameEvent('onLoading', 'lvl', 2, 2);
 		this.setDoomloop('stateLoadComplete');
 	},
 
@@ -393,10 +364,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				}
 			}
 			this.oRaycaster.backgroundRedim();
-			this._callGameEvent('onLoading', [ 'shd', this.nShadedTiles = 0, this.nShadedTileCount ]);
+			this._callGameEvent('onLoading', 'shd', this.nShadedTiles = 0, this.nShadedTileCount);
 			this.setDoomloop('stateShading');
 		} else {
-			this._callGameEvent('onLoading', [ 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading() ]);
+			this._callGameEvent('onLoading', 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading());
 		}
 	},
 
@@ -404,15 +375,16 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Procède à l'ombrage des textures
 	 */
 	stateShading : function() {
-		this._callGameEvent('onLoading', [ 'shd', ++this.nShadedTiles, this.nShadedTileCount ]);
+		this._callGameEvent('onLoading', 'shd', ++this.nShadedTiles, this.nShadedTileCount);
 		if (!this.oRaycaster.shadeProcess()) {
 			return;
 		}
-		// this._callGameEvent('onLoading', ['shd', 1, 1]);
+		// this._callGameEvent('onLoading', 'shd', 1, 1);
 		this.nLastTimeStamp = Date.now();
-		this.startCheckingFPS();
+		this.oFrameCounter = new O876_Raycaster.FrameCounter();
+		this.oFrameCounter.start(this.nLastTimeStamp);
 		this.setDoomloop('stateRunning');
-		this._callGameEvent('onLoading', [ 'end', 1, 1 ]);
+		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
 	},
 
@@ -436,8 +408,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		if (nFrames) {
 			this.oRaycaster.frameRender();
 			this._callGameEvent('onFrameRendered');
+			if (this.oFrameCounter.check(nNowTimeStamp)) {
+				this._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
+			}
 		}
-		this.checkFPS(nNowTimeStamp);
 	},
 
 	/**
@@ -457,8 +431,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		if (nFrames) {
 			E.oRaycaster.frameRender();
 			E._callGameEvent('onFrameRendered');
+			if (E.oFrameCounter.check(nNowTimeStamp)) {
+				E._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
+			}
 		}
-		this.checkFPS(nNowTimeStamp);
 	},
 
 	/**

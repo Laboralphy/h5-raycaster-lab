@@ -50,9 +50,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 
 		
 		var c = this.getBody();
-
+		$oCanvas.css('position', 'relative');
 		var $oScrollZone = $('<div></div>');
 		$oScrollZone.css({
+			'box-sizing': 'border-box',
 			'height': '100%',
 			'overflow': 'scroll'
 		});
@@ -157,8 +158,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		var wTile = this.wCell;
 		if (this.onDraw) {
 			for (y = ymin; y <= ymax; ++y) {
-				for (x = xmin; x <= xmax; ++x) {
-					this.onDraw(g[y][x], this.oContext, x * wTile , y * wTile, wTile, wTile);
+				if (g[y]) {
+					for (x = xmin; x <= xmax; ++x) {
+						this.onDraw(g[y][x], this.oContext, x * wTile , y * wTile, wTile, wTile);
+					}
 				}
 			}
 		}

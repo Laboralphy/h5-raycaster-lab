@@ -22,16 +22,16 @@ O2.createClass('UI.HUD', {
 		if (typeof w == 'string') {
 			r = w.match(/^(-?[0-9]+)%$/);
 			if (r) {
-				w = this.oClientCanvas.width * (r[1] | 0) / 100 | 0; 
+				w = this.oClientCanvas.width * (r[1] | 0) / 100 | 0;
 			}
 		}
 		if (typeof h == 'string') {
 			r = h.match(/^(-?[0-9]+)%$/);
 			if (r) {
-				h = this.oClientCanvas.width * (r[1] | 0) / 100 | 0; 
+				h = this.oClientCanvas.height * (r[1] | 0) / 100 | 0;
 			}
 		}
-		e.setSize(w, h);
+		e.setSize(w, h); 
 		e.moveTo(x, y);
 		this.oElements[sId] = e;
 		return e;

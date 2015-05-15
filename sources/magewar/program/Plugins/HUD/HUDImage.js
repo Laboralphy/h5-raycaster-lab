@@ -2,7 +2,7 @@ O2.extendClass('MW.HUDImage', UI.HUDElement, {
 	
 	oImage: null,
 	
-	draw: function() {
+	redraw: function() {
 		if (this.oImage) {
 			var c = this.oContext;
 			var w = this.oCanvas.width;
@@ -22,9 +22,9 @@ O2.extendClass('MW.HUDImage', UI.HUDElement, {
 		}
 		this.oImage = oImage;
 		if (this.oImage.complete) {
-			this.draw();
+			this.redraw();
 		} else {
-			this.oImage.addEventListener('load', this.draw.bind(this));
+			this.oImage.addEventListener('load', this.redraw.bind(this));
 		}
 	}
 });

@@ -21,13 +21,33 @@
 			<input id="nickname" type="text" title="Must be at least 2 character length"/><button id="connect" type="button" title="Click here to connect and join the game">Connect</button>
 			<div id="error" class="error">&nbsp;</div>
 			<div>
-				<span id="options_switch" class="command">Show options</span>
+				<span id="options_switch" class="command">Show options</span> | <span id="htp_switch" class="command">How to play</span>
 				<div id="options">
-					<input name="opt_hires" id="opt_hires" type="checkbox" /><label for="opt_hires" title="Setup screen resolution to 800 x 500 pixels">Play in high detail mode.</label> 
+					<table>
+						<tbody><tr>
+							<td>
+								<input name="opt_hires" id="opt_hires" type="checkbox"/>
+								<label for="opt_hires" title="Playing with double screen resolution, looks nicer but needs a faster computer.">
+									Play in high detail mode.
+								</label>
+							</td>
+						</tr></tbody>
+					</table>
+				</div>
+				<div id="htp">
+					<table>
+						<tbody><tr>
+							<td>
+								<input name="opt_hires" id="opt_hires" type="checkbox"/>
+								<label for="opt_hires" title="Playing with double screen resolution, looks nicer but needs a faster computer.">
+									Play in high detail mode.
+								</label>
+							</td>
+						</tr></tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 		<canvas oncontextmenu="return false;" id="screen" width="400" height="250" moz-opaque="moz-opaque"></canvas>
-    	<div id="page" style="display: none"></div>
-	</body> 
+    	<div id="page" style="display: none"></div>	</body> 
 </html> 

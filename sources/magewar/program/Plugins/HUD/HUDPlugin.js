@@ -5,13 +5,13 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	oData: {
 		life: ['MW.HUDLifeBar', 4, -4, 50, 12],
 		charge: ['MW.HUDChargeBar', null, -4, 50, 12],
-		scores: ['MW.HUDScores', -2, 2, 96, 128],
+		//scores: ['MW.HUDScores', -2, 2, 96, 128],
 		crosshair: ['MW.HUDCrosshair', null, null, 16, 16],
 		target: ['MW.HUDTarget', null, 64, 192, 24],
 		chat: ['MW.HUDChat', 4, -20, '50%', '25%'],
-		avatar: ['MW.HUDImage', -4, -4, 32, 32],
+		//avatar: ['MW.HUDImage', -4, -4, 32, 32],
 		spells: ['MW.HUDSpellSelector', -40, -4, (6 + 2) * 16 - 4, 64],
-		ping: ['MW.HUDPing', -100, 2, 32, 32],
+		//ping: ['MW.HUDPing', -100, 2, 32, 32],
 		attributes: ['MW.HUDIconPad', 60, -2, 128, 16]
 	},
 	
@@ -25,34 +25,36 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	
 	centerElement: function(oElement) {
 		var c = this.oHUD.getCanvas();
-		if (oElement[1] === null) {
-			oElement[1] = (c.width - oElement[3]) >> 1;
+		var e = oElement.slice(0);
+		if (e[1] === null) {
+			e[1] = (c.width - e[3]) >> 1;
 		}
-		if (oElement[2] === null) {
-			oElement[2] = (c.height - oElement[4]) >> 1;
+		if (e[2] === null) {
+			e[2] = (c.height - e[4]) >> 1;
 		}
 		var r, v;
-		if (typeof oElement[1] === 'string') {
-			r = oElement[1].match(/^(-?[0-9]+)%$/);
+		if (typeof e[1] === 'string') {
+			r = e[1].match(/^(-?[0-9]+)%$/);
 			if (r) {
 				v = r[1] | 0;
-				oElement[1] = v * c.width / 100 | 0;
+				e[1] = v * c.width / 100 | 0;
 			}
 		}
-		if (typeof oElement[2] === 'string') {
-			r = oElement[2].match(/^(-?[0-9]+)%$/);
+		if (typeof e[2] === 'string') {
+			r = e[2].match(/^(-?[0-9]+)%$/);
 			if (r) {
 				v = r[1] | 0;
-				oElement[2] = v * c.height / 100 | 0;
+				e[2] = v * c.height / 100 | 0;
 			}
 		}
+		return e;
 	},
 	
 	activateElement: function(sElement) {
 		var d, p;
 		d = this.oData[sElement];
 		p = this.oClassLoader.loadClass(d[0]);
-		this.centerElement(d);
+		d = this.centerElement(d);
 		var oElement = new p();
 		oElement._sClass = sElement;
 		oElement.oGame = this.oGame;
@@ -95,6 +97,7 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 		this.register('exitlevel');
 		this.register('key');
 		this.register('hud_update');
+		this.register('ui_resize');
 	},
 	
 	enterlevel: function() {
@@ -171,6 +174,19 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 		if (e) {
 			var aArgs = Array.prototype.slice.call(arguments, 1);
 			e.update.apply(e, aArgs);
+		}
+	},
+	
+	/**
+	 * Recomputes the position and the size of all HUD elements.
+	 */
+	ui_resize: function() {
+		var oElement, d;
+		for (var sElement in this.oIndex) {
+			oElement = this.oIndex[sElement];
+			d = this.centerElement(this.oData[sElement]);
+			this.oHUD.addNewElement(oElement, sElement, d[1], d[2], d[3], d[4]);
+			oElement.redraw();
 		}
 	}
 });

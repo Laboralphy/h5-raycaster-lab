@@ -1,9 +1,8 @@
 O2.extendClass('MW.ModAlchemy', UI.HUDClient, {
 	
-	aComponents: null,
+	aComponents: ['Viridian Leaf', 'Toadstool', 'Ruby Dust', 'Mandrake'],
 	
-	init: function() {
-		this.aComponents = ['Viridian Leaf', 'Toadstool', 'Ruby Dust', 'Mandrake'];
+	redraw: function() {
 	},
 	
 	/**

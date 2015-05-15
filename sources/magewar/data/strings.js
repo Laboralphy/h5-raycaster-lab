@@ -154,6 +154,8 @@ O2.createObject('STRINGS', {
 		alert_level_change_60: 'One minute before the game ends.',
 		alert_level_change_30: '30 seconds before the game ends.',
 		alert_level_change_10: '10 seconds before the game ends.',
+		
+		alert_wtf_tooslow: 'Your computer is too slow to play high detail mode.',
 			
 		load_lvl: 'map data...',
 		load_gfx: 'loading assets...',

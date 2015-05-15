@@ -1,9 +1,13 @@
 O2.extendClass('MW.ModAccuracy', UI.HUDClient, {
+	
+	fAccuracy: 0;
+	
 	/** 
 	 * Ecriture du nombre, au milieu du composant
 	 * @param fAcc nombre à écrire
 	 */
-	write: function(fAcc) {
+	redraw: function() {
+		var fAcc = this.fAccuracy;
 		var c = this.oContext;
 		var h = this.oCanvas.height;
 		var w = this.oCanvas.width;
@@ -23,6 +27,9 @@ O2.extendClass('MW.ModAccuracy', UI.HUDClient, {
 	 * ici : update(fAcc)  parce que le plugin-serveur appelle Instance::updateHud([entities], "accuracy", fAcc);
 	 */
 	update: function(fAcc) {
-		this.write(fAcc);
+		if (fAcc != this.fAccuracy) {
+			this.fAccuracy = fAcc;
+			this.redraw();
+		}
 	}
 });

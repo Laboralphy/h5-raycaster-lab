@@ -36,6 +36,10 @@ tr.floatingHeight > td > div {
 }
 
 tr.floatingWidth > td {
-	width: 100%
+	width: 0;
+}
+
+tr.floatingWidth > td > div {
+	width: 100%;
 }
 

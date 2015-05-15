@@ -25,7 +25,6 @@ rmFiles() {
 # et le répertoire document root de node
 cleanDir() {
 	echo "(i) reseting client module directory"
-
 	if [ -d $module_dir ]
 	then
 		rm -r $module_dir
@@ -93,6 +92,15 @@ installPlugin() {
 # installer tous les plugins
 installPlugins() {
 	local i
+	if [ ! -d node_modules/mwplugins ]
+	then
+		mkdir -p node_modules/mwplugins
+	fi
+	if [ ! -d mwplugins ]
+	then
+		echo
+		return
+	fi
 	rm -r node_modules/mwplugins/*
 	for i in `ls mwplugins`
 	do
@@ -149,6 +157,7 @@ goPlugin() {
 				echo "(!) plugin $1 is already active"
 			elif [ -n "$1" -a -e "mwplugins_projects/$1" ]
 			then
+				mkdir -p mwplugins
 				ln -s "../mwplugins_projects/$1" "mwplugins/$1"
 				echo "(i) added plugin $1"
 			else

@@ -24,8 +24,17 @@ O2.extendClass('MW.HUDChat', UI.HUDElement, {
 		}
 	},
 	
+	setSize: function(w, h) {
+		__inherited(w, h);
+		this.nMessageCount = (this.oCanvas.height / 10 | 0) - 1;
+		this.aMessages = [];
+		for (i = 0; i < this.nMessageCount; ++i) {
+			this.aMessages.push('');
+		}
+	},
+	
+	
 	update: function(sMessage, nTimeMs) {
-		var i;
 		var c = this.oContext;
 		if (sMessage === null) {
 			this.autoFadeout(nTimeMs);
@@ -33,6 +42,7 @@ O2.extendClass('MW.HUDChat', UI.HUDElement, {
 		} else {
 			this.nLastTimestamp = nTimeMs;
 		}
+		// calculate max number of messages in the window
 		if (this.aMessages === null) {
 			c.font = '10px monospace';
 			this.nMessageCount = (this.oCanvas.height / 10 | 0) - 1;
@@ -41,14 +51,21 @@ O2.extendClass('MW.HUDChat', UI.HUDElement, {
 				this.aMessages.push('');
 			}
 		}
+		// pushing the message and shift the oldest one
 		this.aMessages.push(sMessage);
 		this.aMessages.shift();
+		this.redraw();
+	},
+	
+	redraw: function() {
+		var i;
+		var c = this.oContext;
 		if (this.oText === null) {
 			this.oText = new H5UI.Text();
-			this.oText.setSize(this.oCanvas.width, this.nMaxHeight);
 			this.oText.setAutosize(false);
 			this.oText.setWordWrap(true);
 		}
+		this.oText.setSize(this.oCanvas.width, this.nMaxHeight);
 		var nLen = this.aMessages.length;
 		var y = this.oCanvas.height - 4;
 		c.clearRect(0, 0, this.oCanvas.width, this.oCanvas.height);

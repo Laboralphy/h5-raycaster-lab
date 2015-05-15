@@ -1,6 +1,9 @@
 O2.extendClass('MW.HUDPing', UI.HUDElement, {
-	
-	update: function(aPings) {
+
+	aPings: null,
+
+	redraw: function() {
+		var aPings = this.aPings;
 		var c = this.oContext;
 		var w = this.oCanvas.width;
 		var h = this.oCanvas.height;
@@ -44,5 +47,10 @@ O2.extendClass('MW.HUDPing', UI.HUDElement, {
 		c.strokeStyle = '#000';
 		c.strokeText(nSum, 0, 10);
 		c.fillText(nSum, 0, 10);
+	},
+	
+	update: function(aPings) {
+		this.aPings = aPings;
+		this.redraw();
 	}
 });

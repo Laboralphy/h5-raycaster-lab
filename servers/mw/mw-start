@@ -53,10 +53,10 @@ runServer() {
 	local sLogLastErr="$LOG_PATH/last-error.log"
 	local sLogErr="$LOG_PATH/errors.log"
 	local sLogServer="$LOG_PATH/server.log"
-	if [ ! -d $LOGS_PATH ]
+	if [ ! -d $LOG_PATH ]
 	then
-		echo "error ! log directory not found"
-		exit 1
+		echo "/!\ warning ! log directory not found. creating : $LOG_PATH"
+		mkdir -p $LOG_PATH
 	fi
 	echo "-------------------------------------------------" >> $sLogServer
 	# lancement du serveur avec récupération d'une eventuelle sortie erreur,
@@ -76,6 +76,7 @@ runServer() {
 }
 
 runServerForever() {
+	echo "(i) server will restart forever (delete the '$STOPFILE' file to prevent this). "
 	echo "1" > $STOPFILE
 	while [ -f $STOPFILE ]
 	do
@@ -89,7 +90,6 @@ runServerForever() {
 cfgManage mwgame
 if [ "$1" = "forever" ]
 then
-	echo "server will restart forever (delete the '$STOPFILE' file to prevent this). "
 	runServerForever
 else
 	runServer

@@ -6,6 +6,24 @@ O2.extendClass('MW.HUDLifeBar', UI.HUDElement, {
 	sBGColor: 'rgba(0, 0, 0, 0.5)',
 	sFGColor: 'rgb(255, 0, 0)',
 	
+	
+	/**
+	 * Redraw function
+	 */
+	redraw: function() {
+		var nMax = this.nMax;
+		var n = this.n;
+		var c = this.oContext;
+		var w = this.oCanvas.width;
+		var h = this.oCanvas.height;
+		c.fillStyle = this.sBGColor;
+		c.clearRect(0, 0, w, h);
+		c.fillRect(0, 0, w, h);
+		c.fillStyle = this.sFGColor;
+		c.fillRect(1, 1, n * (w - 2) / nMax | 0, h - 2);
+	},
+	
+	
 	/**
 	 * mise à jour de la barre de vie
 	 * @param n Point de vie en cour, si n est null cela signifie qu'on ne veut modifier que
@@ -21,16 +39,9 @@ O2.extendClass('MW.HUDLifeBar', UI.HUDElement, {
 			nMax = this.nMax;
 		}
 		if (nMax && (this.n != n || this.nMax != nMax)) {
-			var c = this.oContext;
-			var w = this.oCanvas.width;
-			var h = this.oCanvas.height;
-			c.fillStyle = this.sBGColor;
-			c.clearRect(0, 0, w, h);
-			c.fillRect(0, 0, w, h);
-			c.fillStyle = this.sFGColor;
-			c.fillRect(1, 1, n * (w - 2) / nMax | 0, h - 2);
 			this.nMax = nMax;
 			this.n = n;
+			this.redraw();
 		}
 	}
 });

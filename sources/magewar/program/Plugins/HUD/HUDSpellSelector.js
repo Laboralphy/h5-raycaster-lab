@@ -22,6 +22,7 @@ O2.extendClass('MW.HUDSpellSelector', UI.HUDClient, {
 	nLastActiveTime: 0, // last active time
 	nCurrentTime: 0, // current game time
 	
+	/*
 	draw: function() {
 		if (this.oImage) {
 			var c = this.oContext;
@@ -29,6 +30,10 @@ O2.extendClass('MW.HUDSpellSelector', UI.HUDClient, {
 			var h = this.oCanvas.height;
 			c.drawImage(this.oImage, 0, 0, this.oImage.width, this.oImage.height, 0, 0, w, h);
 		}
+	},*/
+	
+	redraw: function() {
+		this.update_display(null);
 	},
 	
 	getItemName: function(n) {

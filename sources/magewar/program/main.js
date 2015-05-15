@@ -89,10 +89,10 @@ function screenResize(oEvent) {
 	}
 }
 
-
-
-
-
+function howToPlay() {
+	var htp = new MW.HowToPlay();
+	htp.run();
+}
 
 function loginForm() {
 	XHR.get('/mwstatus/', document.getElementById('status'));
@@ -102,17 +102,24 @@ function loginForm() {
 	var oLogin = document.getElementById('login');
 	var oScreen = document.getElementById('screen');
 	var oError = document.getElementById('error');
-	var oOpt = {
+	// options section
+	// getting all option stuff
+	var oOpt = { 
 		sw: document.getElementById('options_switch'),
 		sw_val: false,
 		opt: document.getElementById('options'),
 		hires: document.getElementById('opt_hires')
 	};
+	// clicking on "show options" will toggle display
 	oOpt.sw.addEventListener('click', function(oEvent) {
 		oOpt.opt.style.display = oOpt.sw_val ? 'none' : 'block';
 		oOpt.sw.innerHTML = oOpt.sw_val ? 'Show options' : 'Hide options';
 		oOpt.sw_val = !oOpt.sw_val;
 	});
+	
+	// "how to play" section
+	// clicking on how to play will display a small window
+	document.getElementById('htp_switch').addEventListener('click', howToPlay);
 	
 	var doLogin = function() {
 		var sLogin = oNickname.value;

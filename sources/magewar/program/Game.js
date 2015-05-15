@@ -764,10 +764,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 * Evènement appelé quand une ressource et chargée sert à faire des barres
 	 * de progressions
 	 */
-	onLoading : function(data) {
-		var s = data[0];
-		var n = data[1];
-		var nMax = data[2];
+	onLoading : function(s, n, nMax) {
 		var oCanvas = this.oRaycaster.oCanvas;
 		var oContext = this.oRaycaster.oContext;
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
@@ -853,6 +850,15 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 */
 	onFrameRendered : function() {
 		this.sendSignal('render');
+	},
+	
+	onFrameCount: function(nFPS, nAVG, nTime) {
+		if (nTime > 5 && this.oRaycaster.oCanvas.width > 400 && nAVG < CONST.MINIMUM_FPS) {
+			this.oRaycaster.downgrade();
+			this.sendSignal('ui_resize');
+			window.screenResize(null);
+			this.popupMessage(STRINGS._('~alert_wtf_tooslow'), MW.ICONS.wtf_alert, null, 'amb_chat');
+		}
 	},
 
 	// //// COMMANDS ////// COMMANDS ////// COMMANDS ////// COMMANDS //////

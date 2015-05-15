@@ -1,6 +1,5 @@
 O2.extendClass('MW.ModArena', UI.HUDClient, {
 	
-	bInitialized: false,
 	aScores: null,
 	
 	displayScores: function() {
@@ -73,17 +72,19 @@ O2.extendClass('MW.ModArena', UI.HUDClient, {
 				);
 			break;
 		}
+		this.aScores = aScores;
+		this.redraw();
+	},
+	
+	redraw: function() {
 		var c = this.oContext;
 		var h = this.oCanvas.height;
 		var w = this.oCanvas.width;
 		c.clearRect(0, 0, w, h);
-		if (!this.bInitialized) {
-			c.strokeStyle = 'black';
-			c.fillStyle = 'white';
-			c.font = '10px monospace';
-			this.bInitialized = true;
-		}
-		aScores.forEach(function(s, i) {
+		c.strokeStyle = 'black';
+		c.fillStyle = 'white';
+		c.font = '10px monospace';
+		this.aScores.forEach(function(s, i) {
 			var wn = c.measureText(s[0]).width;
 			var ws = c.measureText(s[1]).width;
 			c.strokeText(s[0], 96 - wn, i * 10 + 10);
@@ -91,6 +92,5 @@ O2.extendClass('MW.ModArena', UI.HUDClient, {
 			c.strokeText(s[1], 126 - ws, i * 10 + 10);
 			c.fillText(s[1], 126 - ws, i * 10 + 10);
 		});
-		this.aScores = aScores;
 	}
 });

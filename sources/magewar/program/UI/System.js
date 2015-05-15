@@ -15,6 +15,7 @@ O2.createClass('UI.System', {
 
 	__construct : function() {
 		this.oScreen = new UI.Screen();
+		this.oScreen .hide();
 	},
 
 	/**
@@ -104,7 +105,9 @@ O2.createClass('UI.System', {
 			this.oRenderCanvas.__ratio = 1;
 		}
 		this.oScreen.setSize(oCanvas.width, oCanvas.height);
-		this.oScreen.hide();
+		if (this.oWidget) {
+			this.centerWidget(this.oWidget);
+		}
 	},
 
 	eventScreenClick : function(e) {

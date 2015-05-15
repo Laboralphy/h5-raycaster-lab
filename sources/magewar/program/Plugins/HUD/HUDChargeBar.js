@@ -4,7 +4,7 @@
  * et un petit clignotement lorsque la barre est au maximum
  */
 O2.extendClass('MW.HUDChargeBar', MW.HUDLifeBar, {
-
+	
 	/**
 	 * mise à jour de la barre.
 	 * Les quantités spécifiée sont compilé pour en faire une jolie barre de progression. 

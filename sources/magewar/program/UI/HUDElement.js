@@ -43,6 +43,9 @@ O2.createClass('UI.HUDElement', {
 		
 	},
 	
+	redraw: function() {
+	},
+	
 	update: function() {
 	},
 	

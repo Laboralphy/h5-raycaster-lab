@@ -1,14 +1,23 @@
+/**
+ * Rectangular Region Toolkit
+ */
+
 O2.createClass('RCWE.Region', {
 	xmin: null, 
 	ymin: null,
 	xmax: null, 
 	ymax: null,
+	
+	/**
+	 * The constructor accepts 4 integers
+	 * to initialize the region
+	 */
 	__construct: function(x1, y1, x2, y2) {
 		this.set(x1, y1, x2, y2);
 	},
 	
 	/**
-	 * Assigner de nouvelles coordonnées à la région
+	 * Assign new coordinates
 	 */
 	set: function(x1, y1, x2, y2) {
 		this.xmin = Math.min(x1, x2);
@@ -19,9 +28,11 @@ O2.createClass('RCWE.Region', {
 	},
 	
 	/**
-	 * Etend la région de manière à englober ce point
+	 * Extends the region
 	 * @param x coordonnée du point à englober
 	 * @param y
+	 * @param x2 second point
+	 * @param y2
 	 * @returns
 	 */
 	extend: function(x, y, x2, y2) {

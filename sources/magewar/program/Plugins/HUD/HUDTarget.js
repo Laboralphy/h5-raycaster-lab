@@ -29,10 +29,10 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 	
 	setName: function(sName) {
 		this.sName = sName;
-		this.write();
+		this.redraw();
 	},
 	
-	write: function() {
+	redraw: function() {
 		var c = this.oContext;
 		var w = this.oCanvas.width;
 		var h = this.oCanvas.height;
@@ -54,14 +54,14 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 			// régénérer alpha au besoin
 			if (this.getAlpha() < 1) {
 				this.setAlpha(1);
-				//this.write();
+				//this.redraw();
 			}
 		} else {
 			// pas le même nom : mettre à jour
 			if (sName == '') {
 				// nouveau nom vide : faire fade out sur l'ancien
 				this.fadeOut(0.1);
-				this.write();
+				this.redraw();
 				if (this.getAlpha() === 0) {
 					this.setName(sName);
 				}
@@ -69,7 +69,7 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 				// nouveau nom
 				this.setName(sName);
 				this.setAlpha(1);
-				this.write();
+				this.redraw();
 			}
 		}
 	}

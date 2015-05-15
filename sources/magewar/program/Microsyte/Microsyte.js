@@ -9,7 +9,12 @@ O2.createObject('MW.Microsyte', {
 	 * @param int h hauteur de la fenetre en pixels
 	 */
 	open: function(sTitle, w, h) {
-		G._getKeyboardDevice().unplugEvents();
+		if (MW.Microsyte.bOpen) {
+			MW.Microsyte.close();
+		}
+		if ('G' in window) {
+			G._getKeyboardDevice().unplugEvents();
+		}
 		MW.Microsyte.oMicrosyte = new O876.Microsyte('page');
 		MW.Microsyte.bOpen = true;
 		var m = MW.Microsyte.oMicrosyte;
@@ -30,7 +35,9 @@ O2.createObject('MW.Microsyte', {
 		m.clear();
 		m.hide();
 		MW.Microsyte.bOpen = false;
-		G._getKeyboardDevice().plugEvents();
+		if ('G' in window) {
+			G._getKeyboardDevice().plugEvents();
+		}
 	},
 	
 	
