@@ -62,8 +62,10 @@ O2.extendClass('MW.PopupPlugin', MW.Plugin, {
 		oGX.buildPath();
 		if (nIcon !== undefined) {
 			sTile = sTile || 'i_icons32';
-			var oIcons = r.oHorde.oTiles[sTile]; 
-			oGX.setIcon(oIcons.oImage, nIcon * this.nIconSize, 0, this.nIconSize, this.nIconSize);
+			if (r.oHorde) {
+				var oIcons = r.oHorde.oTiles[sTile]; 
+				oGX.setIcon(oIcons.oImage, nIcon * this.nIconSize, 0, this.nIconSize, this.nIconSize);
+			}
 		}
 		if (sSound !== undefined) {
 			oGX.__sound = sSound;
