@@ -89,6 +89,22 @@ installPlugin() {
 	echo "...done)"
 }
 
+listPlugins() {
+	local plugin_path=mwplugins
+	local avail_plugin_path=mwplugins_projects
+	local i
+	for i in `ls "$avail_plugin_path/"`
+	do
+		if [ -e "$plugin_path/$i" ]
+		then
+			echo -n "[X] "
+		else
+			echo -n "[ ] "
+		fi
+		echo "$i"
+	done
+}
+
 # installer tous les plugins
 installPlugins() {
 	local i
@@ -141,14 +157,9 @@ goPlugin() {
 		shift
 	fi
 	case "$sSubCommand" in
-		"listall")
-			echo "(i) list of plugins project sources"
-			ls mwplugins_projects
-		;;
-
 		"list")
-			echo "(i) list of active plugins"
-			ls mwplugins
+			echo "(i) list of plugins"
+			listPlugins
 		;;
 
 		"add")
@@ -178,7 +189,6 @@ goPlugin() {
 		*)
 			echo "!! no sub command spcified."
 			echo " * $0 plugin list : list of active plugins (can be 'rem')"
-			echo " * $0 plugin listall : list of all plugin project sources (can be 'add')"
 			echo " * $0 plugin add <plugin> : add a plugin to the compilation list"
 			echo " * $0 plugin rem <plugin> : remove a plugin from the compilation list"
 		;;
@@ -238,7 +248,7 @@ case $1 in
 	"run")
 		goCompile
 		chmod +x mw-start
-		./mw-start		
+		./mw-start
 	;;
 
 	"build")
@@ -252,7 +262,7 @@ case $1 in
 		goDeploy $*
 		echo "(i) deployment done" 
 	;;
-	
+
 	"plugin")
 		shift
 		goPlugin $*
@@ -262,13 +272,13 @@ case $1 in
 		shift
 		goMaps $*
 	;;
-	
+
 	"test")
 		cd node_modules/mwgame/tests
 		node testmwgame.js
 		cd ../../..
 	;;
-	
+
 	"peekversion")
 		printVersionToday $2
 	;;

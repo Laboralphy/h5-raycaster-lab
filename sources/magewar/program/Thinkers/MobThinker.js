@@ -28,7 +28,9 @@ O2.extendClass('MW.MobThinker', O876_Raycaster.CommandThinker, {
 		m.bVisible = true;
 		m.oSprite.bTranslucent = false;
 		var oSounds = m.getData('sounds');
-		this.oGame.playSound(oSounds.die, m.x, m.y);
+		if ('die' in oSounds) {
+			this.oGame.playSound(oSounds.die, m.x, m.y);
+		}
 		this.bDying = true;
 		__inherited();
 	},

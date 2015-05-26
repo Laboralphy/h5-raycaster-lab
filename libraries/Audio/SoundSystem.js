@@ -200,7 +200,7 @@ O2.createClass('SoundSystem',  {
 		oChan.load();
 		oChan.play();
 	},
-	
+
 	/**
 	 * Diminue graduellement le volume sonore du canal musical
 	 * puis change le fichier sonore

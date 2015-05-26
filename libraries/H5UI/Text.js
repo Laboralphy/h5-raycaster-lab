@@ -18,6 +18,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 
 	__construct : function() {
 		__inherited();
+		O876.CanvasFactory.setImageSmoothing(this.getSurface(), true);
 		this.font = new H5UI.Font(this);
 	},
 

@@ -1,10 +1,26 @@
+/**
+ * Canvas factory
+ */
 O2.createObject('O876.CanvasFactory', {
+	
+	/**
+	 * Create a new canvas
+	 */
 	getCanvas: function() {
 		var oCanvas = document.createElement('canvas');
 		var oContext = oCanvas.getContext('2d');
-		oContext.webkitImageSmoothingEnabled = false;
-		oContext.mozImageSmoothingEnabled = false;
-		oContext.imageSmoothingEnabled = false;
+		O876.CanvasFactory.setImageSmoothing(oContext, false);
 		return oCanvas;
+	},
+	
+	/**
+	 * Set canvas image smoothing flag on or off
+	 * @param Context2D oContext
+	 * @param bool b on = smoothing on // false = smoothing off
+	 */
+	setImageSmoothing: function(oContext, b) {
+		oContext.webkitImageSmoothingEnabled = b;
+		oContext.mozImageSmoothingEnabled = b;
+		oContext.imageSmoothingEnabled = b;
 	}
 });

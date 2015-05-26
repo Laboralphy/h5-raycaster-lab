@@ -26,7 +26,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 			sounds : {
 				die : 'x_death'
 			},
-			speed : 5
+			speed : 3
 		}
 	},
 	
@@ -41,7 +41,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 			sounds : {
 				die : 'x_death'
 			},
-			speed : 5
+			speed : 4
 		}
 	},
 
@@ -56,7 +56,37 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 			sounds : {
 				die : 'x_death'
 			},
-			speed : 5
+			speed : 4
+		}
+	},
+
+	m_pumpkin: {
+		type : RC.OBJECT_TYPE_MOB,
+		tile : "m_pumpkin",
+		width : 40,
+		height : 64,
+		thinker : "MW.Mob",
+		fx : 2,
+		data : {
+			sounds : {
+				die : 'x_death'
+			},
+			speed : 2
+		}
+	},
+
+	m_bigknight: {
+		type : RC.OBJECT_TYPE_MOB,
+		tile : "m_bigknight",
+		width : 40,
+		height : 64,
+		thinker : "MW.Mob",
+		fx : 0,
+		data : {
+			sounds : {
+				die : 'x_death'
+			},
+			speed : 3
 		}
 	},
 
@@ -281,6 +311,20 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 			sounds : {
 				spawn : 'atk_ice',
 				die : 'hit_ice'
+			}
+		}
+	},
+
+	p_slash : {
+		type : RC.OBJECT_TYPE_MISSILE,
+		tile : "p_slash",
+		width: CONST.MISSILE_SIZE_NORMAL,
+		height : 16,
+		thinker : "MW.MagicMissile",
+		fx : 2,
+		data : {
+			sounds : {
+				spawn : 'atk_dag'
 			}
 		}
 	},

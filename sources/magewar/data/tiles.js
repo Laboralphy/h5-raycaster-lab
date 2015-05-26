@@ -45,6 +45,31 @@ O2.createObject('MW.TILES_DATA', {
 				[ 49, 49, 49, 49, 49, 49, 49, 49 ], 11, 50, 0 ] ]
 	},
 
+	m_pumpkin : {
+		src : 'resources/gfx/sprites/m_pumpkin.png',
+		width : 64,
+		height : 96,
+		frames : 19,
+		noshading: true,
+		animations : [ [ 
+				[ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ], [
+				[ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ], [
+				[ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ], [
+				[ 8, 8, 8, 8, 8, 8, 8, 8 ], 11, 50, 0 ] ]
+	},
+
+	m_bigknight : {
+		src : 'resources/gfx/sprites/m_bigknight.png',
+		width : 64,
+		height : 96,
+		frames : 51,
+		animations : [ 
+				[ [ 21, 26, 31, 36, 1, 6, 11, 16 ], 1, 0, 0 ],			// stand
+				[ [ 20, 25, 30, 35, 0, 5, 10, 15 ], 3, 166, 2 ],		// walk
+				[ [ 23, 28, 33, 38, 3, 8, 13, 18 ], 2, 100, 1 ],		// attack
+				[ [ 40, 40, 40, 40, 40, 40, 40, 40 ], 11, 50, 0 ] ] 	// death
+	},
+
 	p_fireball : {
 		src : 'resources/gfx/sprites/p_fireball.png',
 		width : 50,
@@ -54,6 +79,7 @@ O2.createObject('MW.TILES_DATA', {
 		animations : [ [ [ 16, 16, 16, 16, 16, 16, 16, 16 ], 4, 100, 0 ],
 				[ [ 8, 10, 12, 14, 0, 2, 4, 6 ], 2, 100, 1 ] ]
 	},
+
 	p_magbolt : {
 		src : 'resources/gfx/sprites/p_magbolt.png',
 		width : 48,
@@ -177,6 +203,17 @@ O2.createObject('MW.TILES_DATA', {
 		animations : [ [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], 6, 100, 0 ],
 				[ [ 12, 15, 18, 21, 0, 3, 6, 9 ], 3, 150, 1 ] ]
 	},
+	
+	p_slash : {
+		src : 'resources/gfx/sprites/p_slash.png',
+		width : 64,
+		height : 96,
+		frames : 4,
+		noshading: true,
+		animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 3, 100, 0 ],
+				       [ [ 3, 3, 3, 3, 3, 3, 3, 3 ], 1, 0, 0 ] ]
+	},
+	
 
 	e_hazes: {
 		src : 'resources/gfx/sprites/e_hazes.png',
