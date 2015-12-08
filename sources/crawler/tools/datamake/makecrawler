@@ -1,0 +1,6 @@
+#!/bin/sh
+php -f main.php -- crawler
+cp items.js ../../sources/crawler/data/
+cp monsters.js ../../sources/crawler/data/
+cp spells.js ../../sources/crawler/data/
+cp craft.js ../../sources/crawler/data/

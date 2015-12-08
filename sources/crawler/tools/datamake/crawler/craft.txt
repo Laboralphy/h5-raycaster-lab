@@ -1,0 +1,147 @@
+; id				type	level	reagent 		quantity
+
+pot_heal_1			brew	1		ccc_h2o			1
+*					*		*		ccc_herb1		1
+pot_heal_2			*		2		ccc_h2o			1
+*					*		*		ccc_herb1		2
+pot_heal_3			*		3		ccc_h2o			1
+*					*		*		ccc_herb1		4
+pot_regen_1			*		1		ccc_h2o			1
+*					*		*		ccc_herb1		2
+pot_regen_2			*		2		ccc_h2o			1
+*					*		*		ccc_herb1		3
+pot_regen_3			*		3		ccc_h2o			1
+*					*		*		ccc_herb1		6
+pot_ether_1			*		1		ccc_h2o			1
+*					*		*		ccc_herb1		1
+*					*		*		ccc_herb2		1
+pot_ether_2			*		2		ccc_h2o			1			
+*					*		*		ccc_herb1		1
+*					*		*		ccc_herb2		2
+pot_ether_3			*		3		ccc_h2o			1
+*					*		*		ccc_herb1		4
+*					*		*		ccc_herb2		2
+
+
+pot_star_1			*		3		ccc_holyh2o		1
+*					*		*		ccc_herb4		2
+pot_star_2			*		5		ccc_holyh2o		1
+*					*		*		ccc_herb4		3
+
+pot_power_1			*		1		ccc_h2o			1
+*					*		*		ccc_herb2		2
+pot_power_2			*		2		ccc_h2o			1
+*					*		*		ccc_herb2		3			
+pot_power_3			*		3		ccc_h2o			1
+*					*		*		ccc_herb2		4
+			
+pot_haste			*		2		ccc_h2o			1
+*					*		*		ccc_herb2		2
+*					*		*		ccc_herb3		1
+			
+pot_esp				*		1		ccc_holyh2o		1
+*					*		*		ccc_herb3		1
+
+pot_vital_1			*		1		ccc_h2o			1
+*					*		*		ccc_herb1		2
+*					*		*		ccc_herb2		1
+pot_vital_2			*		2		ccc_h2o			1
+*					*		*		ccc_herb1		3
+*					*		*		ccc_herb2		2
+pot_vital_3			*		3		ccc_h2o			1
+*					*		*		ccc_herb1		4
+*					*		*		ccc_herb2		3
+
+pot_luck_1			*		1		ccc_holyh2o		1
+*					*		*		ccc_herb2		1
+*					*		*		ccc_herb3		1
+pot_luck_2			*		2		ccc_holyh2o		1
+*					*		*		ccc_herb2		2
+*					*		*		ccc_herb3		1
+pot_luck_3			*		3		ccc_holyh2o		1
+*					*		*		ccc_herb2		3
+*					*		*		ccc_herb3		1
+				
+pot_antidote		*		1		ccc_h2o			1
+*					*		*		ccc_herb1		2
+
+pot_remedy			*		2		ccc_holyh2o		1
+*					*		*		ccc_herb1		1
+*					*		*		ccc_herb2		2
+pot_cleansing		*		2		ccc_holyh2o		1
+*					*		*		ccc_herb1		1
+*					*		*		ccc_herb3		2
+pot_freedom			*		2		ccc_h2o			1
+*					*		*		ccc_herb1		1
+*					*		*		ccc_herb2		1
+*					*		*		ccc_herb3		1
+
+pot_resphy_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		1	
+pot_resphy_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		2	
+pot_resphy_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		3	
+
+pot_resfir_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		1	
+pot_resfir_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		2	
+pot_resfir_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		3	
+
+pot_rescld_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		1	
+pot_rescld_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		2	
+pot_rescld_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		3	
+
+pot_resele_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		1	
+pot_resele_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		2	
+pot_resele_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb2		2	
+*					*		*		ccc_herb5		3	
+
+pot_restox_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb1		2	
+*					*		*		ccc_herb5		1	
+pot_restox_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb1		2	
+*					*		*		ccc_herb5		2	
+pot_restox_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb1		2	
+*					*		*		ccc_herb5		3	
+
+pot_resmag_1		*		1		ccc_h2o			1
+*					*		*		ccc_herb3		2	
+*					*		*		ccc_herb5		1	
+pot_resmag_2		*		2		ccc_h2o			1
+*					*		*		ccc_herb3		2	
+*					*		*		ccc_herb5		2	
+pot_resmag_3		*		3		ccc_h2o			1
+*					*		*		ccc_herb3		2	
+*					*		*		ccc_herb5		3	
+
+pot_dispell			*		1		ccc_h2o			1
+*					*		*		ccc_herb3		1
+*					*		*		ccc_herb4		1
+
+
+ccc_meal			cook	1		ccc_meat		1
+*					*		*		ccc_vegs		1
+*					*		*		ccc_herb0		1
+*					*		*		ccc_h2o			1

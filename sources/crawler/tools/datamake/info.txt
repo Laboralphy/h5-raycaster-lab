@@ -1,0 +1,5 @@
+makedata
+
+The Reikaster Underland data maker program.
+
+This directory hosts the program used to make Reikaster Underland game data.

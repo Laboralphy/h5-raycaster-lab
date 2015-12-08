@@ -1,0 +1,50 @@
+; id				tile			w	thinker			fx		hp	sp	weapon					flags	properties	score
+
+; *** champi
+m_myco				m_myco			50	Rusher			0		4	30	dag_brass				0		0			10
+m_myco2				m_myco2			50	Rushooter		0		6	30	wand_myco_1				0		0			10
+m_myco3				m_myco3			50	Rushooter		0		15	40	wand_myco_1				0		0			20
+
+; *** brutes
+m_bigface			m_bigface		50	Rusher			0		6	80	dag_brass				0		0			10
+m_madface			m_bigface2		50	Rusher			0		15 	100	dag_brass				0		0			15
+m_bigarmor			m_bigarmor		50	Rusher			0		25	70	dag_steel				0		nrphyC/		20
+*					*				*	*				*		*	*	*						*		nveleC/		*
+m_bigpirate			m_bigpirate		50	Rusher			1		30	60	dag_steel				0		nrtoxC/		20
+
+
+; *** blobs
+m_acidblob			m_acidblob		40	Boomer			0		10 	80	wand_booma_1			0		nrtoxC/		25
+m_fireblob			m_fireblob		40	Boomer			2		10 	80	wand_boomf_1			0		nrfirC/		25
+
+; *** volatiles et vermines
+m_wasp				m_wasp			25	Dasher			0		3	80	dag_poisonsting_1		0		0			15
+m_raven				m_raven			30	Stealer			0		4 	100	dag_ravenbeak_1			0		0			20
+m_spider			m_spider		40	Rusher			0		6	140	dag_poisonsting_1		0		0			25
+
+; *** imps
+m_imp1				m_imp1			35	Shooter			0		13	100	wand_imp_1				0		0			30
+m_imp2				m_imp2			35	Healer			0		11	120	wand_imp_1				0		0			30
+
+; *** robots
+m_turret			m_turret		40	Sentry			0		30	0	wand_turret_1			0		nrphyC/		30
+m_cube				m_cube			25	Rushooter		0		10	70	wand_cube_1				0		0			30
+
+; *** horreurs
+m_phanto			m_phanto		35	Shooter			0		30	200	wand_imp_1				0		0			50
+m_pumpkin			m_pumpkin		40	Healer			0		25	40	wand_imp_1				0		0			50
+
+; *** sorciers
+m_warlock			m_warlock		40	Shooter			0		25	80	wand_warlock_1			0		0			40
+m_warlock2			m_warlock2		40	Shooter			0		25	80	wand_warlock_1			0		0			40
+
+; *** Poissons
+m_pira				m_pira			40	Wavedasher		0		15	90	dag_brass				0		0			10
+m_medusa			m_medusa		40	Rushooter		0		15	40	wand_medusa_1			0		nbantH/		25
+
+; *** BOSS
+m_bigfaceboss		m_bigfaceboss	50	Rusher			2		200	100	dag_steel				B		0			100
+m_bigarmorboss		m_bigarmorboss  50	Rusher			2		220 100 dag_steel				B		nrphyE/		300
+m_warlockboss		m_warlockboss	40	Shooter			2		200	100 wand_warlock_1			B		nrfirE/		500
+m_medusaqueen		m_medusaqueen	45	Rushooter		2		200	50	wand_medusa_1			B		nbantH/		200
+*					*				*	*				*		*	*	*						*		nrheaC/		*
