@@ -1,0 +1,112 @@
+#!/bin/bash
+
+# extraction des niveaux.
+# copie le niveau spécifié dans les répertoire du jeu
+# 1: clé du niveau
+# 2: nom du niveau
+# exemple : importLevel gamename courtyard
+importRCWELevel() {
+	local sLevelName=$1
+	local sLevelPath="../../dynamics/rcwe/games/work.storage/$sLevelName"
+	if [ -d $sLevelPath ]
+	then
+		echo "(i) importing level $sLevelName"
+		local sLevelName="`cat $sLevelPath/gamename`"
+		sed -e s/WORLD_DATA.level/WORLD_DATA.$sLevelName/ $sLevelPath/data/world.js > data/world/$sLevelName.js
+		cp $sLevelPath/resources/gfx/* resources/gfx
+	else
+		echo "/!\\ no level $sLevelName"
+	fi
+}
+
+# supprime si ca existe
+clearIfExists() {
+	if [ "`ls $1 | wc -l`" != 0 ]
+	then
+		rm $1/*
+	fi
+}
+
+# supprime tous les niveaux précédemment importés
+clearImportedLevels() {
+	clearIfExists data/world
+	clearIfExists resources/gfx
+}
+
+
+goMaps() {
+	local sLevelFile="levels"
+	local i
+	touch $sLevelFile
+	local sCmd="$1"
+	shift
+	case $sCmd in
+		"list")
+			# affiche la liste des niveau qui seront automatiquement importé
+			echo "(i) list of maps"
+			cat $sLevelFile
+		;;
+		
+		"add")
+			# ajoute un niveau à la liste d'importation automatique
+			cp $sLevelFile $sLevelFile-2
+			echo $1 >> $sLevelFile-2
+			rm $sLevelFile
+			awk '!seen[$0]++' $sLevelFile-2 > $sLevelFile
+			rm $sLevelFile-2
+			goMaps list
+		;;
+		
+		"rem")
+			# supprime un niveau de la liste d'importation automatique
+			local sExpr=$1
+			sExpr="/^$sExpr\$/d"
+			sed -i "$sExpr" $sLevelFile
+			goMaps list
+		;;
+		
+		"import")
+			# effectue l'importation
+			# importe tous les niveau spécifié dans la liste d'importation
+			clearImportedLevels
+			for i in `cat $sLevelFile`
+			do
+				importRCWELevel $i $i
+			done
+		;;
+	
+		*)
+			echo "!! no maps command specified."
+			echo " * $0 maps list : lists all imported levels"
+			echo " * $0 maps add : add a new level to be imported"
+			echo " * $0 maps rem : remove a level from import list"
+			echo " * $0 maps import : re-imports all levels"
+		;;
+	esac
+}
+
+
+
+
+
+
+if [ "$BASH" = "/bin/bash" ]
+then
+	sCmd="$1"
+	shift
+	case $sCmd in
+		"maps")
+			goMaps $*
+		;;
+
+		*)
+			echo "!! no command specified."
+			echo " * $0 maps : level maps management"
+		;;
+	esac
+else
+	echo " "
+	echo "/!\\ Executing this script requires /bin/bash"
+	echo "try 'bash $0'"
+	echo " "
+fi

@@ -60,28 +60,20 @@ abstract class LevelGenerator extends RoomGenerator {
 		return LabyRoomHelper::run($sHelper, $oRoom, $this->oRnd);
 	}
 
+	public function setOptions($s) {
+		if (preg_match_all('/-([a-zA-Z]+)([0-9]+)/', $s, $aRegs)) {
+			foreach ($aRegs[1] as $nOption => $sOption) {
+				$this->aOptions[$sOption] = $aRegs[2][$nOption];
+			}
+		}
+	}
+
 	/**
 	 * Renvoie la valeur de l'option ou 0 si l'option n'est pas présente
 	 * @param char $x option
 	 * @return int
 	 */
 	public function getOption($x) {
-		global $argv, $argc;
-		if ($this->aOptions === null) {
-			$this->aOptions = array();
-			if (isset($_GET['o'])) {
-				$s = $_GET['o'];
-			} elseif ($argc > 3) {
-				$s = $argv[3];
-			} else {
-				$s = '';
-			}
-			if (preg_match_all('/-([a-zA-Z]+)([0-9]+)/', $s, $aRegs)) {
-				foreach ($aRegs[1] as $nOption => $sOption) {
-					$this->aOptions[$sOption] = $aRegs[2][$nOption];
-				}
-			}
-		}
 		if (isset($this->aOptions[$x])) {
 			return $this->aOptions[$x];
 		} else {

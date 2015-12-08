@@ -37,8 +37,8 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 	oStyle: {
 		background: 'rgb(255, 255, 255)',
 		border: 'rgb(64, 64, 64)',
-		text: 'rgb(220, 220, 220)',
-		shadow: 'rgb(0, 0, 0)',
+		shadow: 'rgb(220, 220, 220)',
+		text: 'rgb(0, 0, 0)',
 		width: 512,
 		height: 40,
 		font: 'monospace 13',
@@ -184,9 +184,9 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 			}
 			var nTextWidth = oCtx.measureText(sMessage).width;
 			if ((nTextWidth + this.xTextPos + 2) < this.wSize) {
-				oCtx.fillStyle = this.oStyle.text;
-				oCtx.fillText(sMessage, this.xTextPos + 2, this.yTextPos + 2);
 				oCtx.fillStyle = this.oStyle.shadow;
+				oCtx.fillText(sMessage, this.xTextPos + 2, this.yTextPos + 2);
+				oCtx.fillStyle = this.oStyle.text;
 				oCtx.fillText(sMessage, this.xTextPos, this.yTextPos);
 			} else {
 				// faut mettre sur deux lignes (mais pas plus)

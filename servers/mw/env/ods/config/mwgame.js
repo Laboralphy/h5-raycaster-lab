@@ -1,12 +1,12 @@
 module.exports = {
 	games: {
 		main: {
-			map: 'crimson-castle',
-			maplist: ['golden-temple', 'gray-halls'],
+			map: 'crimson-keep',
+			maplist: ['golden-temple'],
 			duration: 10
 		}
 	},
-	type: 'arena with dark imps',
+	type: 'arena',
 	name: 'Odyssées server',
-	motd: 'Testing...'
+	motd: 'started ' + (new Date()).toString()
 };

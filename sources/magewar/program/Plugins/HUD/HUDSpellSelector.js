@@ -17,20 +17,10 @@ O2.extendClass('MW.HUDSpellSelector', UI.HUDClient, {
 	nDisplayed : -1,
 	nMaxDisp: 7,
 	sCooldownText: '',
-	nLastDrawnIcon: 0,
+	nLastDrawnIcon: -1,
 	
 	nLastActiveTime: 0, // last active time
 	nCurrentTime: 0, // current game time
-	
-	/*
-	draw: function() {
-		if (this.oImage) {
-			var c = this.oContext;
-			var w = this.oCanvas.width;
-			var h = this.oCanvas.height;
-			c.drawImage(this.oImage, 0, 0, this.oImage.width, this.oImage.height, 0, 0, w, h);
-		}
-	},*/
 	
 	redraw: function() {
 		this.update_display(null);
@@ -52,7 +42,7 @@ O2.extendClass('MW.HUDSpellSelector', UI.HUDClient, {
 			this.aData = {};
 		}
 		if (this.aGiven === null) {
-			this.aCooldown = [];
+			this.aGiven = [];
 		}
 		if (this.aCooldown === null) {
 			this.aCooldown = [];

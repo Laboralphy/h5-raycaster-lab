@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 rc_dir=~/public_html/raycaster
 server_dir=`pwd`
@@ -131,6 +131,7 @@ goCompile() {
 	cleanDir
 	buildProject
 	installPlugins
+	installMaps
 	if [ "$1" = "pack" ]
 	then
 		packProject
@@ -201,30 +202,80 @@ goDeploy() {
 	rm -rf build/*
 	mkdir -p build/logs
 	local i
-	for i in "env/$sTag/*" node_modules www index.js mw-start
+	for i in "env/$sTag/*" node_modules www index.js runserver o876runserv.inc data
 	do
 		cp -r $i build/
 	done
 	echo "(i) archiving..."
 	cd build
-	tar -czf mwserver-$sTag.tar.gz *
-	mv -f mwserver-$sTag.tar.gz ..
+	local sArc=mwserver-$sTag.tar.gz
+	tar -czf $sArc *
+	mv -f $sArc ..
 	cd ..
 	echo "(i) cleaning temporary stuff..."
 	rm -rf build/*
+	goUpload $sArc
 }
 
+goUpload() {
+	local sHost=ftp.laboralphy.org  #This is the FTP servers host or IP address.
+	local sPath=/www/blightmagic/download/
+	local sFtpuser             #This is the FTP user that has access to the server.
+	local sPassword          #This is the password for the FTP user.
 
+	read -p "type user name : " sFtpuser
+	read -s -p "password for $sFtpuser : " sPassword
+	echo
 
-goMaps() {
+	curl -T $1 ftp://$sFtpuser:$sPassword@$sHost$sPath
+}
+
+# intègre une map dans le système
+goMapImport() {
 	local sMap="$1"
+	local sTilePath="www/maptiles"
+	local sDataPath="data/maps"
+	local sExportPath="maps_exports"
+	local sMWStorPath="../../dynamics/rcwe/games/mw.storage"
+	local sSrcPath="$sMWStorPath/$sMap"
+	local i
+	local a
 
 	if [ -n "$1" ]
 	then
-		cp -v ../../dynamics/mweditor/files/exports/$1 node_modules/mwgame/data/maps/
+		rm -r $sExportPath/$sMap
+		cp -r $sSrcPath $sExportPath
 	else
-		ls -v ../../dynamics/mweditor/files/exports/
+		echo "(i) imported maps"
+		ls $sExportPath
+		echo " "
+		echo "(i) maps available in editor but not imported yet"
+		for i in `diff <(cd $sMWStorPath && find . -maxdepth 1 | sort) <(cd $sExportPath && find . -maxdepth 1 | sort) | grep "^<"`
+		do
+			a=`expr substr $i 3 1000`
+			if [ -n "$a" ]
+			then
+				echo $a
+			fi
+		done
 	fi
+}
+
+installMaps() {
+	local sTilePath="www/maptiles"
+	local sDataPath="data/maps"
+	local sExportPath="maps_exports"
+	local i
+	rm -r $sDataPath
+	rm -r $sTilePath
+	for i in `ls $sExportPath`
+	do
+		echo "(i) import map $i"
+		mkdir -p $sTilePath
+		mkdir -p $sDataPath
+		cp -r $sExportPath/$i/data/map.json $sDataPath/$i.json
+		cp -r $sExportPath/$i/gfx/* $sTilePath
+	done
 }
 
 printVersionToday() {
@@ -243,54 +294,63 @@ printVersionToday() {
 	fi
 }
 
+if [ "$BASH" = "/bin/bash" ]
+then
+	case $1 in
+		"run")
+			goCompile
+			chmod +x runserver
+			./runserver
+		;;
 
-case $1 in
-	"run")
-		goCompile
-		chmod +x mw-start
-		./mw-start
-	;;
+		"build")
+			goCompile pack
+			echo "(i) compilation done"
+		;;
 
-	"build")
-		goCompile pack
-		echo "(i) compilation done"
-	;;
+		"deploy")
+			goCompile pack
+			shift
+			goDeploy $*
+			echo "(i) deployment done" 
+		;;
 
-	"deploy")
-		goCompile pack
-		shift
-		goDeploy $*
-		echo "(i) deployment done" 
-	;;
+		"plugin")
+			shift
+			goPlugin $*
+		;;
 
-	"plugin")
-		shift
-		goPlugin $*
-	;;
+		"map")
+			shift
+			goMapImport $*
+		;;
 
-	"map")
-		shift
-		goMaps $*
-	;;
+		"test")
+			cd node_modules/mwgame/tests
+			node testmwgame.js
+			cd ../../..
+		;;
 
-	"test")
-		cd node_modules/mwgame/tests
-		node testmwgame.js
-		cd ../../..
-	;;
+		"peekversion")
+			printVersionToday $2
+		;;
 
-	"peekversion")
-		printVersionToday $2
-	;;
+		*)
+			echo "!! no command specified."
+			echo " * $0 run : project compilation and execution"
+			echo " * $0 build : project compilation and packing"
+			echo " * $0 deploy <env> : project building and deployment using specified environement"
+			echo " * $0 plugin <cmd> <name> : plugin management"
+			echo " * $0 map <map> : imports map from MWEditor (if no <map> specified, lists all available maps)"
+			echo " * $0 test : project testing"
+			echo " * $0 peekversion : check project version number"
+		;;
+	esac
+else
+	echo " "
+	echo "/!\\ Executing this script requires /bin/bash"
+	echo "try 'bash $0'"
+	echo " "
+fi
 
-	*)
-		echo "!! no command specified."
-		echo " * $0 run : project compilation and execution"
-		echo " * $0 build : project compilation and packing"
-		echo " * $0 deploy <env> : project building and deployment using specified environement"
-		echo " * $0 plugin <cmd> <name> : plugin management"
-		echo " * $0 map <map> : imports map from MWEditor (if no <map> specified, lists all available maps)"
-		echo " * $0 test : project testing"
-		echo " * $0 peekversion : check project version number"
-	;;
-esac
+

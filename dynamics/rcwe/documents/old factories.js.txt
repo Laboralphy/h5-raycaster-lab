@@ -1,0 +1,168 @@
+/**
+ * This Factory produces Image which are visual representation of blocks
+ */
+O2.extendClass('RCWE.CellFactory', RCWE.Factory, {
+
+
+	_oCanvases: null,
+	_oNullCanvas: null,
+	CELL_WIDTH: 32,
+	CELL_HEIGHT: 32,
+	
+	__construct: function() {
+		this.reset();
+	},
+	
+	/**
+	 * Reset the factory
+	 */
+	reset: function() {
+		this._oCanvases = {};
+		this._oNullCanvas = null;
+	},
+	
+	/**
+	 * Change the size of items being factorized
+	 * @param int w width
+	 * @param int h height
+	 */
+	setItemSize: function(w, h) {
+		this.CELL_HEIGHT = h;
+		this.CELL_WIDTH = w;
+		this.reset();
+	},
+
+	/**
+	 * This fonction creates a factory key, a string corresponding to the
+	 * specified block properties. Only visual properties are revelant
+	 * Blocks sharing the same visual properties share the same key.
+	 * @param RCWE.Block oBlock 
+	 * @return string
+	 */
+	getBlockKey: function(oBlock) {
+		var sData = 'type floor ceil left right doortype';
+		var aData = sData.split(' ');
+		var aKeys = aData.map(function(sKey) {
+			return oBlock.getData(sKey);
+		});
+		return JSON.stringify(aKeys);
+	},
+
+	/**
+	 * Returns a canvas.
+	 * This canvas is drawn using the visual properties of the specified block
+	 * Two blocks with the same visual properties produce the same image
+	 * So the image is only drawn once.
+	 * @param RCWE.Block oBlock 
+	 * @return Canvas
+	 */
+	getBlockImage: function(oBlock) {
+		if (oBlock === undefined || oBlock === null) {
+			if (this._oNullCanvas === null) {
+				this._oNullCanvas = this._draw(null);
+			}
+			return this._oNullCanvas;
+		}
+		var sKey = this.getBlockKey(oBlock);
+		if (sKey in this._oCanvases) {
+			return this._oCanvases[sKey];
+		}
+		var oCanvas = this._draw(oBlock);
+		this._oCanvases[sKey] = oCanvas;
+		return oCanvas;
+	},
+
+	/**
+	 * Render a block, using its visual properties.
+	 * Returns the corresponding canvas.
+	 * @param RCWE.Block oBlock 
+	 * @return Canvas
+	 */
+	_draw: function(oBlock) {
+		var oCanvas = document.createElement('canvas');
+		oCanvas.width = this.CELL_WIDTH;
+		oCanvas.height = this.CELL_HEIGHT;
+		if (oBlock) {
+			oBlock.renderFlat(oCanvas);
+		} else {
+			var oContext = oCanvas.getContext('2d');
+			oContext.fillStyle = '#DDD';
+			oContext.strokeStyle = '#666';
+			oContext.fillRect(0, 0, this.CELL_WIDTH, this.CELL_HEIGHT);
+			oContext.strokeRect(0, 0, this.CELL_WIDTH, this.CELL_HEIGHT);
+		}
+		return oCanvas;
+	}
+});
+
+
+
+
+/**
+ * This Factory produces Image which are visual representation of tags
+ */
+O2.createClass('RCWE.TagFactory', {
+
+	_oCanvases: null,
+	_oNullCanvas: null,
+	CELL_WIDTH: 32,
+	CELL_HEIGHT: 32,
+	
+	__construct: function() {
+		this.reset();
+	},
+	
+	/**
+	 * Reset the factory
+	 */
+	reset: function() {
+		this._oCanvases = {};
+		this._oNullCanvas = null;
+	},
+
+	/**
+	 * Returns a canvas.
+	 * This canvas is drawn using the tag value
+	 * @param string sTag
+	 * @return Canvas
+	 */
+	getTagImage: function(sTag) {
+		if (sTag === undefined || sTag === null || sTag === '') {
+			if (this._oNullCanvas === null) {
+				this._oNullCanvas = this._draw(null);
+			}
+			return this._oNullCanvas;
+		}
+		if (sTag in this._oCanvases) {
+			return this._oCanvases[sTag];
+		}
+		var oCanvas = this._draw(sTag);
+		this._oCanvases[sTag] = oCanvas;
+		return oCanvas;
+	},
+
+	/**
+	 * Render a block, using its visual properties.
+	 * Returns the corresponding canvas.
+	 * @param RCWE.Block oBlock 
+	 * @return Canvas
+	 */
+	_draw: function(sTag) {
+		var oCanvas = document.createElement('canvas');
+		oCanvas.width = this.CELL_WIDTH;
+		oCanvas.height = this.CELL_HEIGHT;
+		if (sTag) {
+			var oContext = oCanvas.getContext('2d');
+			oContext.fillStyle = '#FFFF00';
+			oContext.strokeStyle = '#000000';
+			oContext.font = 'monospace 8px';
+			var aTag = sTag.split(' ');
+			oContext.strokeText(aTag[0], 0, 10);
+			oContext.fillText(aTag[0], 0, 10);
+			var sTagLine = aTag.slice(1);
+			oContext.strokeText(sTagLine, 0, 22);
+			oContext.fillText(sTagLine, 0, 22);
+		}
+		return oCanvas;
+	}
+});

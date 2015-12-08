@@ -1,0 +1,8 @@
+.TemplateLoader .template .title {
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.TemplateLoader .template img {
+	border: solid 2px black;
+}

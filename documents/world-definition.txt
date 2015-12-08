@@ -26,6 +26,7 @@ code-bloc-prop
   PHYS_SECRET_BLOCK:           0x09,  // correspond à un bloc secret qui souvre par enfoncement
   PHYS_TRANSPARENT_BLOCK:      0x0A,  // correspond à un bloc semi transparent : sa texture comporte des trous, des zones transparentes
   PHYS_INVISIBLE_BLOCK:        0x0B,  // correspond à un bloc invisible mais bloquant la progression
+  PHYS_OFFSET_BLOCK:           0x0C,  // correspond à un bloc solide muni d'un offset
 
 
 
@@ -35,7 +36,14 @@ levelData = {
     [ int, int, int, ... ],
     [ int, int, int, ... ],
     ...  
-  ],         
+  ],
+  
+  uppermap: [                    // Exactement le même type de tableau que "map"
+    [ int, int, int, ... ],      // Mais pour le second niveau
+    [ int, int, int, ... ],
+    [ int, int, int, ... ],
+    ...  
+  ],
       
   walls: {                       // Données concernant les bloc et les murs (textures et propriétés)
     src: string,                 // url de l'image contenant les textures
@@ -97,7 +105,7 @@ levelData = {
     light: int,                               // indice de luminosité (200 = lumineux, 50 = sombre
     fogDistance: int,                         // distance du fog (valeur conseillée 1)
     fogColor: {r: int, g: int, b: int},        // couleur du fog
-    filter: false |  {r: int, g: int, b: int}   // filtre de couleur pour les sprites
+    filter: false |  {r: float, g: float, b: float}   // filtre de couleur pour les sprites, chaque composante est un facteur multiplicateur
     diffuse: float,								// entre 0 et 1 ratio de lumière emise	
   },
   
@@ -124,7 +132,18 @@ levelData = {
       angle: int                            // Angle initial
     },
     ...
+  ],
+  
+  tags: [									// Enumération des tags
+	{
+		x: int,
+		y: int,
+		tag: string
+	}, 
+	...
   ]
+  
+  background: ...
 }
 
 

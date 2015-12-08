@@ -11,7 +11,7 @@ var FACTION = 222; // faction of mobs
 var PERIOD = 12;  // each period, a new mob may appear
 var MAX_MOBS = 8; // maximum number of mobs
 
-O2.extendClass('ModMobLife', Plugin, {
+var ModMobLife = O2.extendClass(Plugin, {
 	
 	nMaxMob: 0,
 	

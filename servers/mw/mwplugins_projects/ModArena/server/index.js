@@ -1,7 +1,8 @@
 var O2 = require('o2');	// requis car le module hérite de la classe Plugin
 var Plugin = require('mediator').Plugin; // requis : la classe parente
+var wsh = require('wshelper');
 
-O2.extendClass('ModArena', Plugin, {
+var ModArena = O2.extendClass(Plugin, {
 	
 	oScores: null,		// les stats de chaque client
 						// le client dispose d'un identifiant UNIQUE
@@ -36,11 +37,13 @@ O2.extendClass('ModArena', Plugin, {
 
 	playerIn: function(oInstance, oData) {
 		var oPlayer = oData.c;
+		var sColor = oPlayer.getData('color') || '#FFFFFF';
 		var id = oPlayer.getId();
 		this.oScores[id] = {
 			name: oPlayer.getName(),
 			kills: 0,
-			deaths: 0
+			deaths: 0,
+			color: sColor
 		};
 		this.send(oInstance, 'playerJoined', oPlayer.getName());
 		this.nPlayerCount = oInstance.getClientEntities().length;
@@ -118,7 +121,7 @@ O2.extendClass('ModArena', Plugin, {
 		var oX;
 		for (var sId in this.oScores) {
 			oX = this.oScores[sId];
-			s.push([oX.name, oX.kills, oX.deaths, sId]);
+			s.push([oX.name, oX.kills, oX.deaths, sId, oX.color]);
 		}
 		s.sort(this.sortScoresProc);
 		this.aScoreBoard = s;
@@ -141,7 +144,7 @@ O2.extendClass('ModArena', Plugin, {
 		var aScores = [], aSc;
 		for (var s in this.oScores) {
 			aSc = this.oScores[s];
-			aScores.push([aSc.name, aSc.kills, aSc.deaths]);
+			aScores.push([aSc.name, aSc.kills, aSc.deaths, aSc.color]);
 		}
 		aScores.sort(function(a, b) {
 			return b[1] - a[1];

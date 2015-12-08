@@ -61,10 +61,11 @@ div.miniWindow {
 	font-family: monospace;
 }
 
-#error {
+.error {
 	color: #800;
 	font-weight: bold;
 }
+
 
 #login {
 	width: 400px;
@@ -149,3 +150,28 @@ div#page div.title {
 }
 
 
+
+
+/******* error_message*******/
+#error_message {
+	background-color: #C99;
+	color: #800;
+	font-family: monospace;
+	width: 512px;
+	margin: auto;
+	margin-top: 64px;
+	border: solid 4px #600;
+	padding: 4px;
+}
+
+#error_message .title {
+	background-color: #800;
+	color: #FFF;
+	border: solid thin #600;
+	font-size: 125%;
+	padding: 4px;
+}
+
+#error_message .body {
+	padding: 16px;
+}

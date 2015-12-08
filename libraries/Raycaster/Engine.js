@@ -342,11 +342,25 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		var oData = this._callGameEvent('onRequestLevelData');
 		if (typeof oData != 'object') {
 			this._halt('no world data : without world data I can\'t build the world. (onRequestLevelData did not return object)');
+			return;
 		}
 		this.oRaycaster.defineWorld(oData);
-		this._callGameEvent('onLoading', 'lvl', 1, 2);
-		this.oRaycaster.buildLevel();
-		this._callGameEvent('onLoading', 'lvl', 2, 2);
+		try {
+			this.oRaycaster.buildLevel();
+		} catch (e) {
+			console.log(e.stack);
+			this._halt('invalid world data (' + e.message + ')');
+			return;
+		}
+
+		// calculer le nombre de shading à faire
+		this.nShadedTileCount = 0;
+		var iStc = '';
+		for (iStc in this.oRaycaster.oHorde.oTiles) {
+			if (this.oRaycaster.oHorde.oTiles[iStc].bShading) {
+				++this.nShadedTileCount;
+			}
+		}
 		this.setDoomloop('stateLoadComplete');
 	},
 
@@ -354,20 +368,11 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Patiente jusqu'à ce que les ressource soient chargée
 	 */
 	stateLoadComplete : function() {
+		this._callGameEvent('onLoading', 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading() + this.nShadedTileCount);
 		if (this.oRaycaster.oImages.complete()) {
-			// calculer le nombre de shading à faire
-			this.nShadedTileCount = 0;
-			var iStc = '';
-			for (iStc in this.oRaycaster.oHorde.oTiles) {
-				if (this.oRaycaster.oHorde.oTiles[iStc].bShading) {
-					++this.nShadedTileCount;
-				}
-			}
 			this.oRaycaster.backgroundRedim();
-			this._callGameEvent('onLoading', 'shd', this.nShadedTiles = 0, this.nShadedTileCount);
+			this.nShadedTiles = 0;
 			this.setDoomloop('stateShading');
-		} else {
-			this._callGameEvent('onLoading', 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading());
 		}
 	},
 
@@ -375,7 +380,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Procède à l'ombrage des textures
 	 */
 	stateShading : function() {
-		this._callGameEvent('onLoading', 'shd', ++this.nShadedTiles, this.nShadedTileCount);
+		this._callGameEvent('onLoading', 'shd', this.oRaycaster.oImages.countLoaded() + this.nShadedTiles, this.oRaycaster.oImages.countLoading() + this.nShadedTileCount);
+		++this.nShadedTiles;
 		if (!this.oRaycaster.shadeProcess()) {
 			return;
 		}

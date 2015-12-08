@@ -1,0 +1,117 @@
+// table :
+// module file format
+// block template format
+
+
+// module file format
+{
+	tiles: {
+		walls: {
+			ids: array of string		// liste des identifiants
+			tiles: string				// contenu de l'image
+		},
+		flats: {
+			ids: array of string		// liste des identifiants
+			tiles: string				// contenu de l'image
+		}
+	},
+	blocks: array of {
+		id: int,						// identifiant numérique à partir de 1
+		ceil: string,					// référence tile du plafond (ou vide)
+		floor: string,					// référence tile du sol (ou vide)
+		left: string,					// référence tile du mur gauche
+		right: string,					// référence tile du mur droit
+		type: int,						// type de bloc
+		doortype: int,					// type de porte lorsque le type est porte
+		frames: int,					// nombre de frames
+		delay: int,						// temps entre les frames
+		offset: int						// offset du bloc
+		yoyo: bool						// flag d'animation yoyo
+	}, ... 
+	grid: {
+		map: [[], [], ... ],			// map 2D, chaque int fait référence à un code block
+		start: {						// point de départ
+			x: int						// case x
+			y: int,						// case y
+			angle: float,				// angle de vue initial
+		},
+		tags: array of {				// liste des tags
+			x: int,						// case x
+			y: int,						// case y
+			tag: string					// tag
+		},
+	},
+	visuals: {
+		ceil: string,					// couleur du plafond à distance minimale
+		floor: string,					// couleur du sol à distance minimale
+		fog: string,					// couleur du brouillard à distance maximale
+		filtr: string,					// filtre de couleur pour les sprites
+		visib: int,						// visibilité de 0 à 10 (10 = max visibilité)
+		diffu: int						// diffusion de 0 à 10
+		sky: string						// image du ciel
+	},
+	blueprints: array of {				// liste des blueprint
+		id: int,						// identifiant numérique 1+
+		width: int,						// largeur en pixel (1 frame)
+		height: int,					// hauteur en pixel
+		image: string,					// image
+		delay: int,						// temps entre chaque frame
+		frames: int,					// nombre de frames
+		alpha50: bool,					// flag de semi transparence 
+		noshad: bool,					// flag de non-ombrage
+		transl: bool,					// flag de translucidité
+		yoyo: bool						// flag d'animation yoyo
+	}, ...
+	things: array of {
+		x: int,							// tier de case x
+		y: int,							// tier de case y
+		v: int							// identifiant de blueprint
+	}, ...
+}
+
+
+
+// block template format
+{
+	tiles: {
+		walls: {
+			ids: array of string,		// the list of used id, in "order of appearance"
+			tiles: string				// the image
+		},
+		flats: {
+			ids: array of string,		// the list of used id, in "order of appearance"
+			tiles: string				// the image
+		}
+	},
+	blocks: [
+		{
+			id: int,
+			type: int,
+			floor: string,
+			ceil: string,
+			left: string,
+			right: string,
+			doortype: int,
+			offset: int,
+			frames: int,
+			delay: int,
+			yoyo: bool
+		}
+	}
+}
+
+// thing template format
+{
+	things: [
+		id: int,
+		frames: int,
+		delay: int,
+		width: int,
+		height: int,
+		yoyo: bool,
+		transl: bool,
+		alpha50: bool,
+		noshad: bool,
+		image: string
+	]
+}

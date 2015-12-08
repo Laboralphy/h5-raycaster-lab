@@ -1,0 +1,14 @@
+.SkyEditor canvas.gradient, .SkyEditor img.sky {
+	border: solid thin black;
+}
+
+.SkyEditor form input {
+	width: 64px;
+}
+
+.SkyEditor form span.label {
+	display: block;
+	float: left;
+	width: 48px;
+	margin-top: 4px;
+}

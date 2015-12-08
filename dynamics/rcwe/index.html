@@ -3,48 +3,73 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Raycaster Laby Edit</title>
+		<link href="styles/o876structure.css" rel="stylesheet" type="text/css" media="screen" />
 		<link href="styles/styles.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href="styles/colorf3.jquery.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href="styles/tilesetSelector.jquery.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href="styles/slideshow.jquery.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href="styles/tutorials.css" rel="stylesheet" type="text/css" media="screen" />
+		
+		<link href="styles/window.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/blockeditor.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/thingeditor.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/blockbrowser.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/skyeditor.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/worldviewer.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/fileopendialog.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/thingbrowser.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/hintbox.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/templateloader.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="styles/advancedpad.css" rel="stylesheet" type="text/css" media="screen" />
+
+		<!-- plugin stylesheets -->
+		<link href="styles/mw.css" rel="stylesheet" type="text/css" media="screen" />
+		
+
+		<!-- O876 raycaster -->
 		<script type="text/javascript" src="cs.php"></script>
-		<!--  jquery -->
-<!--
-		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
--->
+	
+		<!-- externals -->
+		<script type="text/javascript" src="../../externals/md5/md5.js"></script>
+
+		<!-- JQuery plugins -->
 		<script type="text/javascript" src="../../externals/jquery/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="scripts/jquery/disableSelection.jquery.js"></script>
-		<script type="text/javascript" src="scripts/jquery/colorf3.jquery.js"></script>
-		<script type="text/javascript" src="scripts/jquery/tilesetSelector.jquery.js"></script>
-		<script type="text/javascript" src="scripts/jquery/slideshow.jquery.js"></script>
-		<script type="text/javascript" src="scripts/jquery/imageLoader.jquery.js"></script>
+		<script type="text/javascript" src="scripts/plugins/imageLoader.jquery.js"></script>
+		<script type="text/javascript" src="scripts/plugins/disableSelection.jquery.js"></script>
+		
+		<!-- json data -->
+		<script type="text/javascript" src="scripts/consts.js"></script> 
+
 		<!--  classes -->
-		<script type="text/javascript" src="scripts/classes/Region.js"></script>
-		<script type="text/javascript" src="scripts/classes/Window.js"></script>
-		<script type="text/javascript" src="scripts/classes/ListAndForm.js"></script>
-		<script type="text/javascript" src="scripts/classes/TileBrowser.js"></script>
-		<script type="text/javascript" src="scripts/classes/BlockBuilder.js"></script>
-		<script type="text/javascript" src="scripts/classes/LabyGrid.js"></script>
+		<script type="text/javascript" src="scripts/classes/Factory.js"></script>
 		<script type="text/javascript" src="scripts/classes/CellFactory.js"></script>
-		<script type="text/javascript" src="scripts/classes/WorldViewer.js"></script>
+		<script type="text/javascript" src="scripts/classes/TagFactory.js"></script>
+		<script type="text/javascript" src="scripts/classes/IdManager.js"></script>
+		<script type="text/javascript" src="scripts/classes/Window.js"></script>
+		<script type="text/javascript" src="scripts/classes/Region.js"></script>
+		<script type="text/javascript" src="scripts/classes/DragDrop.js"></script>
+		<script type="text/javascript" src="scripts/classes/LabyGrid.js"></script>
+		<script type="text/javascript" src="scripts/classes/BlockBrowser.js"></script>
+		<script type="text/javascript" src="scripts/classes/BlockEditor.js"></script>
+		<script type="text/javascript" src="scripts/classes/Block.js"></script>
+		<script type="text/javascript" src="scripts/classes/Thing.js"></script>
+		<script type="text/javascript" src="scripts/classes/SkyEditor.js"></script>
 		<script type="text/javascript" src="scripts/classes/Game.js"></script>
-		<script type="text/javascript" src="scripts/classes/Document.js"></script>
-		<script type="text/javascript" src="scripts/classes/Popup.js"></script>
-		<script type="text/javascript" src="scripts/classes/Backup.js"></script>
-		<script type="text/javascript" src="scripts/classes/ObjectBuilder.js"></script>
-		<script type="text/javascript" src="scripts/classes/ObjectPlacer.js"></script>
-		<script type="text/javascript" src="scripts/classes/SkyViewer.js"></script>
-		<script type="text/javascript" src="scripts/classes/GradBuilder.js"></script>
+		<script type="text/javascript" src="scripts/classes/WorldViewer.js"></script>
+		<script type="text/javascript" src="scripts/classes/ThingBrowser.js"></script>
+		<script type="text/javascript" src="scripts/classes/ThingEditor.js"></script>
+		<script type="text/javascript" src="scripts/classes/RCDataBuilder.js"></script>
+		<script type="text/javascript" src="scripts/classes/FileSystem.js"></script>
 		<script type="text/javascript" src="scripts/classes/FileOpenDialog.js"></script>
-		<script type="text/javascript" src="scripts/classes/SpriteSheet.js"></script>
-		<script type="text/javascript" src="scripts/classes/SlideShows.js"></script>
+		<script type="text/javascript" src="scripts/classes/ThingGrid.js"></script>
+		<script type="text/javascript" src="scripts/classes/HintBox.js"></script>
+		<script type="text/javascript" src="scripts/classes/AdvancedPad.js"></script>
+		<script type="text/javascript" src="scripts/classes/TemplateLoader.js"></script>
+		<script type="text/javascript" src="scripts/classes/StartPointLocator.js"></script>
 		<script type="text/javascript" src="scripts/classes/Application.js"></script>
-		<!--
-		-->
+		<!-- application plugins -->
+		<script type="text/javascript" src="scripts/classes/plugins/MW.js"></script>
+		<script type="text/javascript" src="scripts/classes/plugins/SOL.js"></script>
+
 		<!--  main -->
 		<script type="text/javascript" src="scripts/main.js"></script>
+		
 	</head>
-	<body>
-	</body>
+	<body></body>
 </html>

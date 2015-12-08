@@ -38,6 +38,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 	nBlueprintType: null,					// type de mobile : une des valeurs de GEN_DATA.blueprintTypes
 	bSlideWall: true,						// True: corrige la trajectoire en cas de collision avec un mur
 	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
+	bWallCollision: false,
 
 	oData: null,
 
@@ -146,6 +147,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 	
+	getAngle: function(f) {
+		return this.fTheta;
+	},	
+	
 	/** 
 	 * Renvoie les coordonnée du bloc devant le mobile
 	 * @param oMobile
@@ -226,29 +231,35 @@ O2.createClass('O876_Raycaster.Mobile', {
 		wc.y = 0;
 		var nXYFormula = (Math.abs(dx) > Math.abs(dy) ? 1 : 0) | ((dx > dy) || (dx == dy && dx < 0) ? 2 : 0);
 		var bCorrection = false;
+		var xClip, yClip;
+		var bCrashWall = !this.bSlideWall;
+		this.bWallCollision = false;
 		for (var i = 0; i < 4; ++i) {
 			if (nXYFormula == i) {
 				continue;
 			}
 			ix = nSize * xc[i] + x;
 			iy = nSize * yc[i] + y;
-			if (this.oRaycaster.clip(ix + dx, iy, 1)) {
+			xClip = this.oRaycaster.clip(ix + dx, iy, 1);
+			yClip = this.oRaycaster.clip(ix, iy + dy, 1);
+			if (xClip) {
 				dx = 0;
-				if (!this.bSlideWall) {
+				if (bCrashWall) {
 					dy = 0;
 				}
 				wc.x = xc[i];
 				bCorrection = true;
 			}
-			if (this.oRaycaster.clip(ix, iy + dy, 1)) {
+			if (yClip) {
 				dy = 0;
-				if (!this.bSlideWall) {
+				if (bCrashWall) {
 					dx = 0;
 				}
 				wc.y = yc[i];
 				bCorrection = true;
 			}
 		}
+		this.bWallCollision = bCorrection;
 		if (bCorrection) {
 			if (wc.x > 0) {
 				x = (x / ps | 0) * ps + ps - 1 - nSize;

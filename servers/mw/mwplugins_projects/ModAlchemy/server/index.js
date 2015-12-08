@@ -3,7 +3,7 @@ var Plugin = require('mediator').Plugin; // requis : la classe parente
 var u = require('mwgame/Utils.js');
 var Alchemy = require('./alchemy_recipes.js');
 
-O2.extendClass('ModAlchemy', Plugin, {
+var ModAlchemy = O2.extendClass(Plugin, {
 	
 	oPlayerData: null,
 	aComponents: null,

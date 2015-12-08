@@ -5,11 +5,9 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	oData: {
 		life: ['MW.HUDLifeBar', 4, -4, 50, 12],
 		charge: ['MW.HUDChargeBar', null, -4, 50, 12],
-		//scores: ['MW.HUDScores', -2, 2, 96, 128],
 		crosshair: ['MW.HUDCrosshair', null, null, 16, 16],
 		target: ['MW.HUDTarget', null, 64, 192, 24],
 		chat: ['MW.HUDChat', 4, -20, '50%', '25%'],
-		//avatar: ['MW.HUDImage', -4, -4, 32, 32],
 		spells: ['MW.HUDSpellSelector', -40, -4, (6 + 2) * 16 - 4, 64],
 		//ping: ['MW.HUDPing', -100, 2, 32, 32],
 		attributes: ['MW.HUDIconPad', 60, -2, 128, 16]
@@ -150,10 +148,15 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 		/** @TODO achanger bientôt : le moyen de mettre à jour les HUDE vivace */ 
 		var oMob = this.oGame.getFirstMobInSight();
 		var sMobName = '';
+		var sColor = '#FFFFFF', oMobData;
 		if (oMob) {
 			sMobName = oMob.getData('name');
+			oMobData = oMob.getData('extra');
+			if (oMobData && ('color' in oMobData)) {
+				sColor = oMobData.color;
+			}
 		}
-		this.hud_update('target', sMobName);
+		this.hud_update('target', sMobName, sColor);
 		this.hud_update('chat', null, this.oGame.getTime());
 		this.hud_update('spells', null, 'time', this.oGame.getTime());
 		this.oHUD.render();

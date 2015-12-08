@@ -1,30 +1,11 @@
-function checkLogin(sLogin) {
-	// checking login name
-	if (sLogin.length < 2) {
-		return false;
-	} else {
-		return true;
-	}
-}	
-
-
-function startGame(sLogin) {
-	screenResize();
-	window.addEventListener('resize', screenResize, true);
-	var g = new MW.Game();
-	window.G = g;
-	
-
-	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
-	if (O876_Raycaster.PointerLock.init()) {
-		oScreen.addEventListener('click', function(oEvent) {
-			lockPointer(oEvent.target);
-		});
-	} else {
-		document.getElementById('info').innerHTML = 'No PointerLock AP available on this browser';
-	}
-	
-	g.csLogin(sLogin);
+/**
+ * Calcule la position d'un élément par rapport au coin superieur gauche de la fenêtre du navigateur
+ * Cette fonction n'existe pas sur firefox.
+ * @param oElement élément dont on cherche la position
+ * @return array of int
+ */
+function getElementPos(oElement) {
+	return UI.System.prototype.getElementPos(oElement);
 }
 
 /**
@@ -54,18 +35,9 @@ function lockPointer(oElement) {
 	return true;
 }
 
-
-
 /**
- * Calcule la position d'un élément par rapport au coin superieur gauche de la fenêtre du navigateur
- * Cette fonction n'existe pas sur firefox.
- * @param oElement élément dont on cherche la position
- * @return array of int
+ * Gestionnaire de l'évènement de redimessionement écran
  */
-function getElementPos(oElement) {
-	return UI.System.prototype.getElementPos(oElement);
-}
-
 function screenResize(oEvent) {
 	var nPadding = 24;
 	var h = innerHeight;
@@ -79,77 +51,68 @@ function screenResize(oEvent) {
 	var rBase = oCanvas.height / oCanvas.width; 
 	if (r < rBase) { // utiliser height
 		h -= nPadding;
-		oCanvas.style.width = '';
+		oCanvas.style.width = (h / rBase | 0).toString() + 'px';
 		oCanvas.style.height = h.toString() + 'px';
 		oCanvas.__ratio = h / oCanvas.height;		
 	} else { // utiliser width
 		oCanvas.style.width = w.toString() + 'px';
-		oCanvas.style.height = '';
-		oCanvas.__ratio = w / oCanvas.width;		
+		oCanvas.style.height = (w * rBase | 0).toString() + 'px';
+		oCanvas.__ratio = w / oCanvas.width;
 	}
 }
 
-function howToPlay() {
-	var htp = new MW.HowToPlay();
-	htp.run();
-}
 
-function loginForm() {
-	XHR.get('/mwstatus/', document.getElementById('status'));
-	var oNickname = document.getElementById('nickname');
-	var oConnect = document.getElementById('connect');
-	var oLogo = document.getElementById('logo');
-	var oLogin = document.getElementById('login');
-	var oScreen = document.getElementById('screen');
-	var oError = document.getElementById('error');
-	// options section
-	// getting all option stuff
-	var oOpt = { 
-		sw: document.getElementById('options_switch'),
-		sw_val: false,
-		opt: document.getElementById('options'),
-		hires: document.getElementById('opt_hires')
-	};
-	// clicking on "show options" will toggle display
-	oOpt.sw.addEventListener('click', function(oEvent) {
-		oOpt.opt.style.display = oOpt.sw_val ? 'none' : 'block';
-		oOpt.sw.innerHTML = oOpt.sw_val ? 'Show options' : 'Hide options';
-		oOpt.sw_val = !oOpt.sw_val;
-	});
-	
-	// "how to play" section
-	// clicking on how to play will display a small window
-	document.getElementById('htp_switch').addEventListener('click', howToPlay);
-	
-	var doLogin = function() {
-		var sLogin = oNickname.value;
-		if (!checkLogin(sLogin)) {
-			oError.innerHTML = 'Invalid nickname.';
-			return;
-		}
-		oLogo.style.display = 'none';
-		oLogin.style.display = 'none';
-		if (oOpt.hires && oOpt.hires.checked) {
-			oScreen.width = 800;
-			oScreen.height = 500;
-		}
-		oScreen.style.display = '';
-		startGame(sLogin);
-	};
+function displayError(sError) {
+	var oError = document.getElementById('error_message');
+	var oErrorBody = document.getElementById('error_message_body');
+	oErrorBody.innerHTML = sError;
+	oError.style.display = 'block';
+	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
 	oScreen.style.display = 'none';
-	oNickname.addEventListener('keypress', function(oEvent) {
-		oError.innerHTML = '&nbsp;';
-		if (oEvent.keyCode == 13) {
-			doLogin();
-		}
-	});
-	oConnect.addEventListener('click', doLogin);
-	oNickname.focus();
 }
 
+
+function startGame(sLogin) {
+	screenResize();
+	window.addEventListener('resize', screenResize, true);
+
+	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
+	if (O876_Raycaster.PointerLock.init()) {
+		oScreen.addEventListener('click', function(oEvent) {
+			lockPointer(oEvent.target);
+		});
+	} else {
+		displayError('<p><b>Pointerlock feature is not available.</b></p>' + 
+		'<p>The Mouse Pointerlock feature provides access to raw mouse movement data and proper control for first person games. Unfortunatly this feature is not available on your browser. ' + 
+		'Try to install another browser like <b>Firefox</b>, ' + 
+		'<b>Chrome</b> or <b>Chromium</b> which are best suited for playing games.</p>' +
+		'<p>Please visit <a href="http://caniuse.com/#feat=pointerlock">this site</a> and check if your favorite browser supports this feature.</p>');
+		return;
+	}
+
+	var g = new MW.Game();
+	window.G = g;	
+		
+	g.csLogin(sLogin);
+}
+
+function processLogin(oLogin) {
+	var n = oLogin.getNickname();
+	var k = oLogin.getLoginKey();
+	if (oLogin.getOptionCheck('opt_nosnd')) {
+		CONFIG.game.sound = false;
+	}
+	if (k) {
+		startGame(k);
+	} else if (n) {
+		startGame(n);
+	}
+}
 
 function main() {
-	loginForm();
+	var oLogin = new MW.Login();
+	oLogin.onLogin = processLogin;
+	oLogin.run();
 }
 
 window.addEventListener('load', main);

@@ -1,0 +1,113 @@
+/* BLOCK EDITOR */
+#block_id {
+	color: #444;
+	font-size: 80%;
+	margin-left: 8px;
+}
+
+.BlockEditor div.body table.structure {
+	height: 100%;
+}
+
+.BlockEditor .tilesToolbar {
+	background-color: #AAA;
+	border: solid thin #666;
+}
+
+.BlockEditor .tilesSection h1 {
+	font-size: 16px;
+	font-family: monospace;
+	background-color: #00F;
+	color: white;
+	border: solid 2px #00A;
+	padding: 2px;
+	padding-left: 8px;
+	margin-top: 0px;
+	margin-bottom: 2px;
+}
+
+/* TILE SET SELECTOR */
+.BlockEditor canvas.tile,
+.BlockEditor table.tiledropzones canvas {
+	box-sizing: content-box;
+	margin: 4px;
+	border: solid 2px #888;
+}
+
+.BlockEditor table.tiledropzones td {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.BlockEditor {
+	font-size: 10px;
+	font-family: monospace;
+}
+
+.BlockEditor table.tiledropzones {
+	float: left;
+}
+
+.BlockEditor table.tiledropzones td.dropzone.active canvas {
+	border-color: #080;
+}
+
+.BlockEditor table.tiledropzones td.dropzone.active > div {
+	color: #080;
+}
+
+.BlockEditor table.tiledropzones td.dropzone.denied canvas {
+	border-color: #F00;
+}
+
+.BlockEditor table.tiledropzones td.dropzone.denied > div {
+	color: #F00;
+}
+
+.BlockEditor table.tiledropzones td.dropzone.disabled {
+	visibility: hidden;
+}
+
+
+.BlockEditor form th {
+	text-align: right;
+	width: 64px;
+}
+
+.BlockEditor form input[name="offset"] {
+	 width: 32px;
+}
+
+.BlockEditor form input[name="frames"] {
+	 width: 32px;
+}
+
+.BlockEditor form input[name="delay"] {
+	 width: 64px;
+}
+
+.BlockEditor .clearTile {
+	padding: 0;
+	margin-left: 4px;
+	line-height: 12px;
+	color: #A00;
+}
+
+.BlockEditor .clearTile:hover {
+	color: #C00;
+}
+
+.BlockEditor tr.builder button {
+	width: 96px;
+	height: 128px;
+}
+
+.BlockEditor tr.builder div.hint {
+	margin: 12px;
+}
+
+
+.BlockEditor canvas.tile.selected {
+	border: solid 4px #00F;
+	margin: 2px;
+}

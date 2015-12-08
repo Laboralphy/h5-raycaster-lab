@@ -27,8 +27,6 @@ require_once 'LevelToolKit.php';
 require_once 'LifeGame.php';
 require_once 'Painter.php';
 
-
-
 function getSeed() {
   global $argv, $argc;
   if (isset($_GET['s'])) {
@@ -37,6 +35,14 @@ function getSeed() {
     return (int) $argv[2];
   } else {
     return 0;
+  }
+}
+
+function getOptions() {
+  if (isset($_GET['o'])) {
+    return $_GET['o'];
+  } else {
+    return '';
   }
 }
 
@@ -133,6 +139,7 @@ function generateLaby($sGenerator, $nSeed) {
   $sClass = getGeneratorClass();
   $oLG = new $sClass();
   $oLG->oRnd = RandomGenerator::getInstance();
+  $oLG->setOptions(getOptions());
   $oLG->generate($nSeed);
   return $oLG;
 }

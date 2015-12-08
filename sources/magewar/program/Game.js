@@ -237,8 +237,12 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	scMD : function(xData) {
 		this.oData = xData.m;
 		this.aDoorsOpen = xData.d;
-		this.oData.tiles = MW.TILES_DATA;
-		this.oData.blueprints = MW.BLUEPRINTS_DATA;
+		for (var iTile in MW.TILES_DATA) {
+			this.oData.tiles[iTile] = MW.TILES_DATA[iTile];
+		}
+		for (var iBlueprint in MW.BLUEPRINTS_DATA) {
+			this.oData.blueprints[iBlueprint] = MW.BLUEPRINTS_DATA[iBlueprint];
+		}
 		this.bMapReady = true;
 		this.aEntities = [];
 		this.aInvisibles = [];
@@ -274,7 +278,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 
 	/**
 	 * OC { i: identifiant, x: position x, y: position y, a: angle initial, b:
-	 * blueprint } Object create : Le serveur indique la créatiob d'un objet
+	 * blueprint, n: nom affichable, d: données supplémentaires } Object create : Le serveur indique la création d'un objet
 	 */
 	scOC : function(xData) {
 		var id = xData.i;
@@ -288,6 +292,10 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		if ('n' in xData && xData.n) {
 			// entity has a name
 			m.setData('name', xData.n);
+		}
+		if ('d' in xData && xData.d) {
+			// entity has extra data
+			m.setData('extra', xData.d);
 		}
 		this.aEntities[id] = m;
 	},
@@ -676,6 +684,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		// Sound system
 		this.oSoundSystem = new SoundSystem();
 		this.oSoundSystem.addChans(8);
+		this.oSoundSystem.bMute = !CONFIG.game.sound;
 
 		// client socket
 		this.oClientSocket = new MW.ClientSocket();
@@ -751,12 +760,6 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData : function() {
-		this.oData.objects.map(function(o) {
-			return o.blueprint;
-		}).forEach(function(s) {
-			this.oData.tiles[s] = MW.TILES_DEC_DATA[s];
-			this.oData.blueprints[s] = MW.BLUEPRINTS_DEC_DATA[s];
-		}, this);
 		return this.oData;
 	},
 

@@ -64,8 +64,8 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	 * Evènement appelé quand une ressource et chargée
 	 * sert à faire des barres de progressions
 	 */
-	onLoading: function(aProgress) {
-		this.trigger('load', { phase: aProgress[0], progress: aProgress[1], max: aProgress[2] });
+	onLoading: function(sProgress, nValue, nMax) {
+		this.trigger('load', { phase: sProgress, progress: nValue, max: nMax });
 	},
 	
 	/**

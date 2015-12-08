@@ -49,6 +49,31 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 		this.oRaycaster.oCamera.fSpeed = 6;
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
+		
+		// test clone texture
+		/*var rc = this.oRaycaster;
+		var c = rc.cloneWall(1, 0, 1, function(rc, oCanvas, x, y, nSide) {
+			var oContext = oCanvas.getContext('2d');
+			oContext.strokeStyle = 'red';
+			oContext.beginPath();
+			oContext.moveTo(10, 10);
+			oContext.lineTo(54, 54);
+			oContext.stroke();
+		});*/
+
+		var rc = this.oRaycaster;
+		rc.cloneWall(8, 5, 0, function(rc, oCanvas, x, y, nSide) {
+			GfxTools.drawCircularHaze(oCanvas, 'upper strong');
+		});
+		rc.cloneWall(8, 7, 0, function(rc, oCanvas, x, y, nSide) {
+			GfxTools.drawCircularHaze(oCanvas, 'upper strong');
+		});
+		rc.cloneFlat(9, 4, 0, function(rc, oCanvas, x, y, nSide) {
+			GfxTools.drawCircularHaze(oCanvas, 'middle');
+		});
+		rc.cloneFlat(9, 5, 1, function(rc, oCanvas, x, y, nSide) {
+			GfxTools.drawCircularHaze(oCanvas, 'middle');
+		});
 	},
 
 	/**

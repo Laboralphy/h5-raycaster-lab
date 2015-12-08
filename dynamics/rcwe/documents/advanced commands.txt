@@ -1,0 +1,8 @@
+Advanced commands
+-----------------
+Map translation - translate the map, move everything one row up or down, or one column left or right.
+Build application - create an application.
+
+Templates :
+ - load block set : medieval ; haunted ; dungeon
+ - load thing set : medieval

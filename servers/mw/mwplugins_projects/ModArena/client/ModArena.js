@@ -87,6 +87,7 @@ O2.extendClass('MW.ModArena', UI.HUDClient, {
 		this.aScores.forEach(function(s, i) {
 			var wn = c.measureText(s[0]).width;
 			var ws = c.measureText(s[1]).width;
+			c.fillStyle = s[3];
 			c.strokeText(s[0], 96 - wn, i * 10 + 10);
 			c.fillText(s[0], 96 - wn, i * 10 + 10);
 			c.strokeText(s[1], 126 - ws, i * 10 + 10);

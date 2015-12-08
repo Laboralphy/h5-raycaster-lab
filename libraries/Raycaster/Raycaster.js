@@ -167,14 +167,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.nPlaneSpacing = this.oConfig.planeSpacing; 
 			this.xTexture = this.oConfig.planeSpacing; 
 		}
+		if (this.oConfig.wallHeight) {
+			this.yTexture = this.oConfig.wallHeight; 
+		}
 		if (this.oCanvas === null) {
 			this.initCanvas();
 		}
-		if (this.oConfig.zoom) {
-			this.setDetail(this.oConfig.zoom);
-		} else {
-			this.setDetail(1);
-		}
+		this.setDetail(1);
 		this.aZBuffer = [];
 		this.oEffects = new O876_Raycaster.GXManager();
 		if (this.oImages === null) {
@@ -276,6 +275,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.oUpper.yScrSize >>= 1;
 		}
 	},
+
+	addGXEffect: function(G) {
+		var g = new G(this);
+		this.oEffects.addEffect(g);
+		return g;
+	},
 	
 	/** Rendu graphique de l'arme
 	 * canvas : référence du canvas source
@@ -355,12 +360,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.oRenderContext.mozImageSmoothingEnabled = this.oConfig.smoothTextures;
 			this.oRenderContext.webkitImageSmoothingEnabled = this.oConfig.smoothTextures;
 		}
-		if ('ghostVision' in this.oConfig) {
-			if (this.oConfig.ghostVision > 0) {
-				this.oContext.globalAlpha = this.oConfig.ghostVision;
-			}
-		}
-		this.xScrSize = Math.floor(this.oCanvas.width / this.nZoom);
+		this.xScrSize = this.oCanvas.width;
 		this.yScrSize = this.oCanvas.height >> 1;
 	},
 
@@ -376,16 +376,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.drawFloorAndCeil = this.drawFloorAndCeil_zoom1;
 				break;
 				
-			case 2:
-			case 4:
-				this.nZoom = nDetail;
-				this.xScrSize = Math.floor(this.oCanvas.width / this.nZoom);
-				this.drawFloor = this.drawFloor_zoom2;
-				this.drawFloorAndCeil = this.drawFloorAndCeil_zoom2;
-				break;
-				
 			default:
-				throw new Error('invalid detail ' + nDetail + ' ! allowed values are 1, 2, 4');
+				throw new Error('setting detail is now deprecated. Use css resizing instead');
 		}
 	},
 
@@ -497,20 +489,29 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
-		var c = this.oXMap.cloneWall(this.oWall.image, this.aWorld.walls.codes[this.getMapXYTexture(x, y)][(1 - nSide & 1)], x, y, nSide);
-		if (ArrayTools.isArray(pDrawingFunction)) {
-			var oInst = pDrawingFunction[0];
-			var pFunc = pDrawingFunction[1];
-			pFunc.apply(oInst, [this, c, x, y, nSide]);
-		} else {
-			pDrawingFunction(this, c, x, y, nSide);
-		}
+		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapXYTexture(x, y)][(1 - nSide & 1)], x, y, nSide);
+		pDrawingFunction(this, c, x, y, nSide);
 		this.shadeCloneWall(c, x, y, nSide);
 	},
 
 	shadeCloneWall : function(oCanvas, x, y, nSide) {
-		this.oXMap.get(x, y, nSide).oWall = this.shadeImage(oCanvas,
-				false);
+		return this.oXMap.get(x, y, nSide).oCanvas = this.shadeImage(oCanvas, false);
+	},
+	
+	cloneFlat: function(x, y, nSide, pDrawingFunction) {
+		var iTexture = this.aWorld.flats.codes[this.getMapXYTexture(x, y)][nSide];
+		if (iTexture < 0) {
+			return;
+		}
+		var c = this.oXMap.cloneTexture(this.oFloor.image, iTexture, x, y, nSide + 4);
+		nSide += 4;
+		pDrawingFunction(this, c, x, y, nSide);
+		c = this.shadeCloneWall(c, x, y, nSide);
+		// faire l'image map du canvas
+		var b = this.oXMap.get(x, y, nSide);
+		var oCtx = c.getContext('2d');
+		b.imageData = oCtx.getImageData(0, 0, c.width, c.height);
+		b.imageData32 = new Uint32Array(b.imageData.data.buffer);
 	},
 
 	/* Code map
@@ -548,6 +549,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				throw new Error('invalid object structure: missing key [' + xKeys + ']');
 			}
 		} else {
+			if (typeof oObj != 'object') {
+				throw new Error('invalid object type : ' + (typeof oObj) + ' ; can not contain key [' + xKeys + ']');
+			}
+			if (oObj === null) {
+				throw new Error('object is null, and can not contain key [' + xKeys + ']');
+			}
 			if (xKeys in oObj) {
 				return true;
 			} else {
@@ -561,14 +568,19 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	buildMap : function() {
 		var oData = this.aWorld;
 		// verifier integrité des données
-		this.checkObjectStructure(oData, [
-		'map.length',
-		'walls.src',
-		'walls.codes',
-		'startpoint.x',
-		'startpoint.y',
-		'startpoint.angle'
-		]);
+		try {
+			this.checkObjectStructure(oData, [
+			'map.length',
+			'walls.src',
+			'walls.codes',
+			'startpoint.x',
+			'startpoint.y',
+			'startpoint.angle',
+			'visual'
+			]);
+		} catch (e) {
+			
+		}
 		this.nMapSize = oData.map.length;
 		this.oMobileSectors = new O876_Raycaster.MobileRegister(
 				this.nMapSize);
@@ -588,26 +600,43 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		};
 		if ('flats' in oData) {
 			this.bFloor = true;
-			var bAllEmpty = oData.flats.codes.every(function(item, index, array) {
+			var pEmpty = function(item, index, array) {
+				if (item) {
+					return item[1] === -1;
+				} else {
+					return true;
+				}
+			};
+			var bEmptyCeil = oData.flats.codes.every(function(item, index, array) {
 				if (item) {
 					return item[1] === -1;
 				} else {
 					return true;
 				}
 			});
-			this.bCeil = !bAllEmpty;
-			this.oFloor = {
-				image : this.loadImage(oData.flats.src),
-				codes : oData.flats.codes,
-				imageData : null,
-				imageData32 : null,
-				renderSurface32 : null
-			};
+			var bEmptyFloor = oData.flats.codes.every(function(item, index, array) {
+				if (item) {
+					return item[0] === -1;
+				} else {
+					return true;
+				}
+			});
+			this.bCeil = !bEmptyCeil;
+			this.bFloor = !bEmptyFloor;
+			if (this.bFloor) {
+				this.oFloor = {
+					image : this.loadImage(oData.flats.src),
+					codes : oData.flats.codes,
+					imageData : null,
+					imageData32 : null,
+					renderSurface32 : null
+				};
+			}
 		} else {
 			this.bFloor = false;
 			this.bCeil = false;
 		}
-		if ('background' in oData) {
+		if ('background' in oData && oData.background) {
 			this.oBackground = this.loadImage(oData.background);
 			this.bSky = true;
 		} else {
@@ -639,10 +668,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.buildGradient();
 		// Extra Map
 		this.oXMap = new O876_Raycaster.XMap();
-		this.oXMap.nWallWidth = this.xTexture;
-		this.oXMap.nWallHeight = this.yTexture;
+		this.oXMap.setBlockSize(this.xTexture, this.yTexture);
 		this.oXMap.setSize(this.nMapSize, this.nMapSize);
-		if ('uppermap' in oData) {
+		if ('uppermap' in oData && !!oData.uppermap) {
 			this.buildSecondFloor();
 		}
 	},
@@ -969,6 +997,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 			oData.xWall = xi;
 			oData.yWall = yi;
+			//oData.xPix = xint | 0;
+			//oData.yPix = yint | 0;
 			oData.fDist = t * nScale;
 			oData.bExterior = false;
 			if (this.isWallTransparent(oData.xWall, oData.yWall)) {
@@ -1009,8 +1039,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					// Lecture données extra du block;
 					oXBlock = this.oXMap.get(oData.xWall, oData.yWall,
 							oData.nSideWall);
-					if (oXBlock.oWall) {
-						oWall = oXBlock.oWall;
+					if (oXBlock.oCanvas) {
+						oWall = oXBlock.oCanvas;
 						nTextureBase = 0;
 					} else {
 						oWall = oData.oWall.image;
@@ -1204,7 +1234,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var nLast = 1;
 		var nLLast = 1;
 		var nLLLast = 1;
-		var z = this.nZoom;
+		var z = 1;
 		
 		// image 0
 		// sx  1
@@ -1261,6 +1291,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
 		
+		var rctx = this.oRenderContext;
 		
 
 		// phase 2 : rendering
@@ -1270,19 +1301,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			var oBG = this.oBackground;
 			var wBG = oBG.width;
 			var hBG = oBG.height;
-			var xBG = (this.fCameraBGOfs * this.nZoom) % wBG | 0;
+			var xBG = this.fCameraBGOfs % wBG | 0;
 			var yBG = this.yScrSize - (hBG >> 1);
 			hBG = hBG + yBG;
-			this.oRenderContext.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);
-			this.oRenderContext.drawImage(oBG, 0, 0, wBG, hBG, -xBG, yBG, wBG, hBG);
-		}
-		
-		// drawing gradient if no floor texture is defined.
-		if (this.bGradient && !this.bFloor) {
-			this.oRenderContext.fillStyle = this.oVisual.gradients[0];
-			this.oRenderContext.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height >> 1);
-			this.oRenderContext.fillStyle = this.oVisual.gradients[1];
-			this.oRenderContext.fillRect(0, (this.oCanvas.height >> 1), this.oCanvas.width, this.oCanvas.height >> 1);
+			rctx.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);
+			rctx.drawImage(oBG, 0, 0, wBG, hBG, -xBG, yBG, wBG, hBG);
+		} else if (this.bGradient) {
+			rctx.fillStyle = this.oVisual.gradients[0];
+			rctx.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height >> 1);
+			if (!this.bFloor) {
+				rctx.fillStyle = this.oVisual.gradients[1];
+				rctx.fillRect(0, (this.oCanvas.height >> 1), this.oCanvas.width, this.oCanvas.height >> 1);
+			}
 		}
 		
 		// 2ndFloor
@@ -1295,10 +1325,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			if (this.bCeil && this.fViewHeight != 1) {
 				this.drawFloorAndCeil();
 			} else {
-				if ((!this.bSky) && this.bGradient) {
-					this.oRenderContext.fillStyle = this.oVisual.gradients[0];
-					this.oRenderContext.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height >> 1);
-				}
 				this.drawFloor();
 			}
 		}
@@ -1444,11 +1470,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// dz = demi hauteur de la texture projetée
 		var oBG = this.oBackground;
 		var wBG = oBG.width, hBG = oBG.height;
-		sx = ((x + this.fCameraBGOfs) * this.nZoom) % wBG | 0;
+		sx = (x + this.fCameraBGOfs) % wBG | 0;
 		sy = Math.max(0, (hBG >> 1) - dzfv);
-		sw = this.nZoom;
+		sw = 1;
 		sh = Math.min(hBG, dz << 1);
-		dx = x * this.nZoom;
+		dx = x;
 		dy = Math.max(dzy, this.yScrSize - (hBG >> 1));
 		dw = sw;
 		dh = Math.min(sh, dz << 1);
@@ -1520,6 +1546,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var F = this.oFloor.codes;
 		var aFBlock;
 		
+		var fy64, fx64;
+		var oXMap = this.oXMap;
+		var oXBlock, oXBlockImage;
+		var oXBlockCeil;
+		var nXDrawn = 0; // 0: pas de texture perso ; 1 = texture perso sol; 2=texture perso plafond
 		
 		for (y = 1; y < h; ++y) {
 			fBx = wx1;
@@ -1538,127 +1569,40 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			for (x = 0; x < w; ++x) {
 				ofsDst = wy + x;
 				ofsDstCeil = wyCeil + x;
+				fy64 = fy / ps | 0; // sector
+				fx64 = fx / ps | 0;
 				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
-					nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[0];
-						ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-						aRenderSurf[ofsDst] = aFloorSurf[ofsSrc];
-						if (bCeil) {
-							xOfs = aFBlock[1];
-							if (xOfs >= 0) {
-								ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-								aRenderSurf[ofsDstCeil] = aFloorSurf[ofsSrc];
-							}
-						}
+					nXDrawn = 0;
+					oXBlock = oXMap.get(fx64, fy64, 4);
+					oXBlockCeil = oXMap.get(fx64, fy64, 5);
+					if (oXBlock.imageData32) {
+						oXBlockImage = oXBlock.imageData32;
+						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
+						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
+						nXDrawn += 1;
 					}
-				}
-				fy += yDeltaFront;
-				fx += xDeltaFront;
-			}
-		}
-		this.oRenderContext.putImageData(oFloor.renderSurface, 0, 0);
-	},
-
-	/**
-	 * Version zoomée de DrawFloor
-	 * Fonctionne avec zoom 2 et 4
-	 */
-	drawFloor_zoom2: function() {
-		var bCeil = this.bCeil;
-		var oFloor = this.oFloor;
-		var nZoom = this.nZoom;
-		var x, y, w = this.xScrSize * nZoom, h = this.yScrSize;
-		if (oFloor.imageData === null) {
-			var oFlat = O876.CanvasFactory.getCanvas();
-			oFlat.width = oFloor.image.width;
-			oFlat.height = oFloor.image.height;
-			var oCtx = oFlat.getContext('2d');
-			oCtx.drawImage(oFloor.image, 0, 0);
-			oFloor.image = oFlat;
-			oFloor.imageData = oCtx.getImageData(0, 0, oFlat.width, oFlat.height);
-			oFloor.imageData32 = new Uint32Array(oFloor.imageData.data.buffer);
-			oFloor.renderSurface = this.oRenderContext.getImageData(0, 0, w, h << 1);
-			oFloor.renderSurface32 = new Uint32Array(oFloor.renderSurface.data.buffer);
-		}
-		if (this.bFlatSky) {
-			// recommencer à lire le background pour prendre le ciel en compte
-			oFloor.renderSurface = this.oRenderContext.getImageData(0, 0, w, h << 1);
-			oFloor.renderSurface32 = new Uint32Array(oFloor.renderSurface.data.buffer);
-		}
-		var aFloorSurf = oFloor.imageData32;
-		var aRenderSurf = oFloor.renderSurface32;
-		// 1 : créer la surface
-		var wx1 = Math.cos(this.oCamera.fTheta - this.fViewAngle);
-		var wy1 = Math.sin(this.oCamera.fTheta - this.fViewAngle);
-		var wx2 = Math.cos(this.oCamera.fTheta + this.fViewAngle);
-		var wy2 = Math.sin(this.oCamera.fTheta + this.fViewAngle);
-
-		var fh = (this.yTexture >> 1) - ((this.fViewHeight - 1) * this.yTexture >> 1);
-		var xDelta = (wx2 - wx1) / this.xScrSize; // incrément d'optimisateur trigonométrique
-		var yDelta = (wy2 - wy1) / this.xScrSize; // incrément d'optimisateur trigonométrique
-		var xDeltaFront;
-		var yDeltaFront;
-		var ff = this.yScrSize << 1; // focale
-		var fx, fy; // coordonnée du texel finale
-		var dFront; // distance "devant caméra" du pixel actuellement pointé
-		var ofsDst; // offset de l'array pixel de destination (plancher)
-		var wy;
-		
-		var ofsDstCeil; // offset de l'array pixel de destination (plancher)
-		var wyCeil;
-
-		var xCam = this.oCamera.x; // coord caméra x
-		var yCam = this.oCamera.y; // coord caméra y
-		var nFloorWidth = oFloor.image.width; // taille pixel des tiles de flats
-		var ofsSrc; // offset de l'array pixel source
-		var xOfs = 0; // code du block flat à afficher
-		var yOfs = 0; // luminosité du block flat à afficher
-		var ps = this.nPlaneSpacing;
-		var nBlock;
-		var xyMax = this.nMapSize * ps;
-		var st = this.nShadingThreshold;
-		var sf = this.nShadingFactor;
-		var aMap = this.aMap;
-		var F = this.oFloor.codes;
-		var aFBlock;
-		var xz;
-		
-		
-		
-		for (y = 1; y < h; ++y) {
-			fBx = wx1;
-			fBy = wy1;
-			
-			// floor
-			dFront = fh * ff / y; 
-			fy = wy1 * dFront + yCam;
-			fx = wx1 * dFront + xCam;
-			xDeltaFront = xDelta * dFront;
-			yDeltaFront = yDelta * dFront;
-			wy = w * (h + y);
-			wyCeil = w * (h - y - 1);
-			yOfs = Math.min(st, dFront / sf | 0);
-			
-			for (x = 0; x < w; x += nZoom) {
-				ofsDst = wy + x;
-				ofsDstCeil = wyCeil + x;
-				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
-					nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[0];
-						ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-						for (xz = 0; xz < nZoom; ++xz) {
-							aRenderSurf[ofsDst + xz] = aFloorSurf[ofsSrc];
+					if (oXBlockCeil.imageData32) {
+						oXBlockImage = oXBlockCeil.imageData32;
+						if (nXDrawn === 0) {
+							ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
 						}
-						if (bCeil) {
-							xOfs = aFBlock[1];
-							if (xOfs >= 0) {
+						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
+						nXDrawn += 2;
+					}
+					if (nXDrawn != 3) {
+						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
+						aFBlock = F[nBlock];
+						if (aFBlock !== null) {
+							if (nXDrawn != 1) {
+								xOfs = aFBlock[0];
 								ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-								for (xz = 0; xz < nZoom; ++xz) {
-									aRenderSurf[ofsDstCeil + xz] = aFloorSurf[ofsSrc];
+								aRenderSurf[ofsDst] = aFloorSurf[ofsSrc];
+							}
+							if (bCeil && nXDrawn != 2) {
+								xOfs = aFBlock[1];
+								if (xOfs >= 0) {
+									ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
+									aRenderSurf[ofsDstCeil] = aFloorSurf[ofsSrc];
 								}
 							}
 						}
@@ -1669,7 +1613,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 		}
 		this.oRenderContext.putImageData(oFloor.renderSurface, 0, 0);
-	},	
+	},
 
 	
 	drawFloorAndCeil: null,
@@ -1740,7 +1684,17 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var F = this.oFloor.codes;
 		var aFBlock;
 		
+		
 		var bCeil = this.bCeil;
+		
+		// aFloorSurf -> doit pointer vers XMap.get(x, y)[4].imageData32
+		// test : if XMap.get(x, y)[4]
+		
+		var fy64, fx64;
+		var oXMap = this.oXMap;
+		var oXBlock, oXBlockCeil, oXBlockImage;
+		var nXDrawn;
+		
 		
 		for (y = 1; y < h; ++y) {
 			fBx = wx1;
@@ -1765,163 +1719,45 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				wyCeil = w * (h - y);
 				yOfsCeil = Math.min(st, dFrontCeil / sf | 0);
 			}
-			
 			for (x = 0; x < w; ++x) {
 				ofsDst = wy + x;
 				ofsDstCeil = wyCeil + x;
+				fy64 = fy / ps | 0;
+				fx64 = fx / ps | 0;
 				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
-					nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[0];
-						if (xOfs >= 0) {
-							ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-							aRenderSurf[ofsDst] = aFloorSurf[ofsSrc];
-						}
-					}
-				}
-				if (bCeil && fxCeil >= 0 && fyCeil >= 0 && fxCeil < xyMax && fyCeil < xyMax) {
-					nBlock = aMap[fyCeil / ps | 0][fxCeil / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[1];
-						if (xOfs >= 0) {
-							ofsSrc = (((fyCeil % ps) + yOfs * ps | 0) * nFloorWidth + (((fxCeil % ps) + xOfs * ps | 0)));
-							aRenderSurf[ofsDstCeil] = aFloorSurf[ofsSrc];
-						}
-					}
-				}
-				if (bCeil) {
-					fyCeil += yDeltaFrontCeil;
-					fxCeil += xDeltaFrontCeil;
-				}
-				fy += yDeltaFront;
-				fx += xDeltaFront;
-			}
-		}
-		this.oRenderContext.putImageData(oFloor.renderSurface, 0, 0);
-	},
-
-	/**
-	 * Rendu du floor et du ceil si le fViewHeight est différent de 1
-	 * (presque double ration de calcul....)
-	 * Optimizée pour les zoom > 1
-	 */
-	drawFloorAndCeil_zoom2: function() {
-		var oFloor = this.oFloor;
-		var nZoom = this.nZoom;
-		var x, y, w = this.xScrSize * nZoom, h = this.yScrSize;
-		if (oFloor.imageData === null) {
-			var oFlat = O876.CanvasFactory.getCanvas();
-			oFlat.width = oFloor.image.width;
-			oFlat.height = oFloor.image.height;
-			var oCtx = oFlat.getContext('2d');
-			oCtx.drawImage(oFloor.image, 0, 0);
-			oFloor.image = oFlat;
-			oFloor.imageData = oCtx.getImageData(0, 0, oFlat.width, oFlat.height);
-			oFloor.imageData32 = new Uint32Array(oFloor.imageData.data.buffer);
-			oFloor.renderSurface = this.oRenderContext.getImageData(0, 0, w, h << 1);
-			oFloor.renderSurface32 = new Uint32Array(oFloor.renderSurface.data.buffer);
-		}
-		if (this.bFlatSky) {
-			// recommencer à lire le background pour prendre le ciel en compte
-			oFloor.renderSurface = this.oRenderContext.getImageData(0, 0, w, h << 1);
-			oFloor.renderSurface32 = new Uint32Array(oFloor.renderSurface.data.buffer);
-		}
-		var aFloorSurf = oFloor.imageData32;
-		var aRenderSurf = oFloor.renderSurface32;
-		// 1 : créer la surface
-		var wx1 = Math.cos(this.oCamera.fTheta - this.fViewAngle);
-		var wy1 = Math.sin(this.oCamera.fTheta - this.fViewAngle);
-		var wx2 = Math.cos(this.oCamera.fTheta + this.fViewAngle);
-		var wy2 = Math.sin(this.oCamera.fTheta + this.fViewAngle);
-
-		var fh = (this.yTexture >> 1) - ((this.fViewHeight - 1) * this.yTexture >> 1);
-		var xDelta = (wx2 - wx1) / this.xScrSize; // incrément d'optimisateur trigonométrique
-		var yDelta = (wy2 - wy1) / this.xScrSize; // incrément d'optimisateur trigonométrique
-		var xDeltaFront;
-		var yDeltaFront;
-		var ff = this.yScrSize << 1; // focale
-		var fx, fy; // coordonnée du texel finale
-		var dFront; // distance "devant caméra" du pixel actuellement pointé
-		var ofsDst; // offset de l'array pixel de destination (plancher)
-		var wy;
-		
-		var fhCeil = (this.yTexture >> 1) + ((this.fViewHeight - 1) * this.yTexture >> 1);
-		var xDeltaFrontCeil = 0;
-		var yDeltaFrontCeil = 0;
-		var fxCeil = 0, fyCeil = 0; // coordonnée du texel finale
-		var dFrontCeil; // distance "devant caméra" du pixel actuellement pointé
-		var ofsDstCeil; // offset de l'array pixel de destination (plafon) 
-		var wyCeil = 0;
-
-		var xCam = this.oCamera.x; // coord caméra x
-		var yCam = this.oCamera.y; // coord caméra y
-		var nFloorWidth = oFloor.image.width; // taille pixel des tiles de flats
-		var ofsSrc; // offset de l'array pixel source
-		var xOfs = 0; // code du block flat à afficher
-		var yOfs = 0; // luminosité du block flat à afficher
-		var ps = this.nPlaneSpacing;
-		var nBlock;
-		var xyMax = this.nMapSize * ps;
-		var st = this.nShadingThreshold;
-		var sf = this.nShadingFactor;
-		var aMap = this.aMap;
-		var F = this.oFloor.codes;
-		var aFBlock;
-		var xz;
-		
-		var bCeil = this.bCeil;
-		
-		for (y = 1; y < h; ++y) {
-			fBx = wx1;
-			fBy = wy1;
-			
-			// floor
-			dFront = fh * ff / y; 
-			fy = wy1 * dFront + yCam;
-			fx = wx1 * dFront + xCam;
-			xDeltaFront = xDelta * dFront;
-			yDeltaFront = yDelta * dFront;
-			wy = w * (h + y);
-			yOfs = Math.min(st, dFront / sf | 0);
-
-			// ceill
-			if (bCeil) {
-				dFrontCeil = fhCeil * ff / y; 
-				fyCeil = wy1 * dFrontCeil + yCam;
-				fxCeil = wx1 * dFrontCeil + xCam;
-				xDeltaFrontCeil = xDelta * dFrontCeil;
-				yDeltaFrontCeil = yDelta * dFrontCeil;
-				wyCeil = w * (h - y - 1);
-				yOfsCeil = Math.min(st, dFrontCeil / sf | 0);
-			}
-			
-			for (x = 0; x < w; ++x) {
-				ofsDst = wy + x;
-				ofsDstCeil = wyCeil + x;
-				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
-					nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[0];
-						if (xOfs >= 0) {
-							ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
-							for (xz = 0; xz < nZoom; ++xz) {
-								aRenderSurf[ofsDst + xz] = aFloorSurf[ofsSrc];
+					oXBlock = oXMap.get(fx64, fy64, 4);
+					if (oXBlock.imageData32) {
+						oXBlockImage = oXBlock.imageData32;
+						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
+						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
+					} else {
+						nBlock = aMap[fy64][fx64] & 0xFF;
+						aFBlock = F[nBlock];
+						if (aFBlock !== null) {
+							xOfs = aFBlock[0];
+							if (xOfs >= 0) {
+								ofsSrc = (((fy % ps) + yOfs * ps | 0) * nFloorWidth + (((fx % ps) + xOfs * ps | 0)));
+								aRenderSurf[ofsDst] = aFloorSurf[ofsSrc];
 							}
 						}
 					}
 				}
 				if (bCeil && fxCeil >= 0 && fyCeil >= 0 && fxCeil < xyMax && fyCeil < xyMax) {
-					nBlock = aMap[fyCeil / ps | 0][fxCeil / ps | 0] & 0xFF;
-					aFBlock = F[nBlock];
-					if (aFBlock !== null) {
-						xOfs = aFBlock[1];
-						if (xOfs >= 0) {
-							ofsSrc = (((fyCeil % ps) + yOfs * ps | 0) * nFloorWidth + (((fxCeil % ps) + xOfs * ps | 0)));
-							for (xz = 0; xz < nZoom; ++xz) {
-								aRenderSurf[ofsDstCeil + xz] = aFloorSurf[ofsSrc];
+					fy64 = fyCeil / ps | 0;
+					fx64 = fxCeil / ps | 0;
+					oXBlockCeil = oXMap.get(fx64, fy64, 5);
+					if (oXBlockCeil.imageData32) {
+						oXBlockImage = oXBlockCeil.imageData32;
+						ofsSrc = (((fyCeil  % ps) + yOfs * ps | 0) * ps + (((fxCeil % ps) | 0)));
+						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
+					} else {
+						nBlock = aMap[fy64][fx64] & 0xFF;
+						aFBlock = F[nBlock];
+						if (aFBlock !== null) {
+							xOfs = aFBlock[1];
+							if (xOfs >= 0) {
+								ofsSrc = (((fyCeil % ps) + yOfs * ps | 0) * nFloorWidth + (((fxCeil % ps) + xOfs * ps | 0)));
+								aRenderSurf[ofsDstCeil] = aFloorSurf[ofsSrc];
 							}
 						}
 					}
@@ -1936,21 +1772,19 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		this.oRenderContext.putImageData(oFloor.renderSurface, 0, 0);
 	},
-	
-	
-	
+
 	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel) {
 		if (z === 0) {
 			z = 0.1;
 		} //  [nPanel & 0xFF][bDim ? 1 : 0]
 		//var dz = (this.yTexture / (z / this.yScrSize) + 0.5) | 0;
-		var nZoom = this.nZoom;
 		var ytex = this.yTexture;
 		var xtex = this.xTexture;
-		var dz = ytex * this.yScrSize / z;
+		var yscr = this.yScrSize;
+		var dz = ytex * yscr / z;
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
-		var dzy = this.yScrSize - (dz * fvh);
+		var dzy = yscr - (dz * fvh);
 		var nPhys = (nPanel >> 8) & 0x7F;
 		var nOffset = (nPanel >> 16) & 0xFF;
 		var nOpacity = z / this.nShadingFactor | 0;
@@ -1966,9 +1800,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				ytex * nOpacity, // sy  2
 				1, // sw  3
 				ytex, // sh  4
-				x * nZoom, // dx  5
+				x, // dx  5
 				dzy - 1, // dy  6
-				nZoom, // dw  7
+				1, // dw  7
 				(2 + dz * 2), // dh  8
 				z, // z 9
 				bDim ? RC.FX_DIM0 : 0
@@ -1979,14 +1813,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			case this.PHYS_DOOR_SLIDING_UP: // porte coulissant vers le haut
 				aData[2] += nOffset;
 				if (nOffset > 0) {
-					aData[4] = this.yTexture - nOffset;
-					aData[8] = ((aData[4] / (z / this.yScrSize) + 0.5)) << 1;
+					aData[4] = ytex - nOffset;
+					aData[8] = ((aData[4] / (z / yscr) + 0.5)) << 1;
 				}
 				break;
 
 			case this.PHYS_CURT_SLIDING_UP: // rideau coulissant vers le haut
 				if (nOffset > 0) {
-					aData[8] = (((this.yTexture - nOffset) / (z / this.yScrSize) + 0.5)) << 1;
+					aData[8] = (((ytex - nOffset) / (z / yscr) + 0.5)) << 1;
 				}
 				break;
 
@@ -1996,8 +1830,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 			case this.PHYS_DOOR_SLIDING_DOWN: // Porte coulissant vers le bas
 				if (nOffset > 0) {
-					aData[4] = this.yTexture - nOffset;
-					aData[8] = ((aData[4] / (z / this.yScrSize) + 0.5));
+					// 4: sh
+					// 6: dy
+					// 8: dh 
+					// on observe que dh est un peut trop petit, ou que dy es trop haut
+					aData[4] = ytex - nOffset;
+					aData[8] = ((aData[4] / (z / yscr) + 0.5));
 					aData[6] += (dz - aData[8]) << 1;
 					aData[8] <<= 1;
 				}

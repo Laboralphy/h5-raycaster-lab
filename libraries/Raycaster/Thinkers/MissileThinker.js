@@ -28,7 +28,7 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
   /** Renvoie true si le missile collisionne un objet ou un mur
    */
   isCollisioned: function() {
-    var bWallCollision = this.oMobile.oWallCollision.x != 0 || this.oMobile.oWallCollision.y != 0;  // collision murale
+    var bWallCollision = this.oMobile.bWallCollision;  // collision murale
     var bMobileCollision = this.oMobile.oMobileCollision !== null;                        // collision avec un mobile
     var nTargetType = bMobileCollision ? this.oMobile.oMobileCollision.getType() : 0;
     var bOwnerCollision = this.oMobile.oMobileCollision == this.oOwner;                   // collision avec le tireur

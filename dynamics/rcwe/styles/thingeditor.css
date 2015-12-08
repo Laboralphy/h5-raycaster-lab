@@ -1,0 +1,24 @@
+/* THING EDITOR */
+.ThingEditor form th {
+	text-align: right;
+	width: 96px;
+}
+
+.ThingEditor form input[name="frames"] {
+	width: 64px;
+}
+
+.ThingEditor form input[name="delay"] {
+	width: 64px;
+}
+
+.ThingEditor td.preview {
+	width: 256px;
+	max-width: 256px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.ThingEditor td.preview canvas{
+	padding-top: 16px;
+}

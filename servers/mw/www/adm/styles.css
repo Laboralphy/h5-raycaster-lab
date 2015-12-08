@@ -10,6 +10,7 @@ body {
 	border: solid 4px #666;
 	width: 640px;
 	margin: auto;
+	font-family: monospace;
 }
 
 h1 {
@@ -56,4 +57,10 @@ table.inspector caption {
 	color: white;
 	padding-top: 2px;
 	padding-bottom: 2px;
+}
+
+
+a.menu: {
+	font-size: 75%;
+	color: #444;
 }

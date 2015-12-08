@@ -8,7 +8,8 @@
 		<script type="text/javascript" src="../../dynamics/packer/compile.php?f=magewar"></script>
 	</head>
 	<body bgcolor="black">
-		<div id="logo">
+		<!-- LOGO -->
+		<div style="display: none" id="logo">
 			<div class="title" align="center"><br /><br />
 				<span class="blight">Blight</span>
 				<span class="magic">Magic</span><br /> 
@@ -16,10 +17,11 @@
 				<div id="status"></div>
 			</div>
 		</div>
-		<div id="login" class="miniWindow">
+		<!-- LOGIN WINDOW -->
+		<div style="display: none" id="login" class="miniWindow">
 			<p>Enter your nickname, and click on <b>Connect</b>.</p>
 			<input id="nickname" type="text" title="Must be at least 2 character length"/><button id="connect" type="button" title="Click here to connect and join the game">Connect</button>
-			<div id="error" class="error">&nbsp;</div>
+			<div id="nickname_error" class="error">&nbsp;</div>
 			<div>
 				<span id="options_switch" class="command">Show options</span> | 
 				<span id="htp_switch" class="command">How to play</span> | 
@@ -34,6 +36,11 @@
 									Play in high detail mode.
 								</label>
 							</td></tr><tr><td>
+								<input name="opt_nosnd" id="opt_nosnd" type="checkbox"/>
+							</td><td>
+								<label for="opt_nosnd" title="Disable sound.">
+									Disable sound.
+								</label>
 							</td><td>
 								
 							</td>
@@ -42,6 +49,14 @@
 				</div>
 			</div>
 		</div>
+		<!-- CANVAS -->
 		<canvas oncontextmenu="return false;" id="screen" width="400" height="250" moz-opaque="moz-opaque"></canvas>
-    	<div id="page" style="display: none"></div>	</body> 
+    	<!-- ERROR MESSAGE -->
+    	<div id="error_message" style="display: none">
+			<div class="title">ERROR</div>
+			<div id="error_message_body"class="body"></div>
+    	</div> 
+    	<!-- MANUAL -->
+    	<div id="page" style="display: none"></div>
+    </body> 
 </html> 

@@ -27,8 +27,17 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 		return this.getAlpha() > 0;
 	},
 	
-	setName: function(sName) {
+	setName: function(sName, sColor) {
 		this.sName = sName;
+		if (sColor) {
+			var a = GfxTools.buildStructure(sColor);
+			if (!'r' in a) {
+				console.log(a);
+			}
+			this.aFGColor.r = a.r;
+			this.aFGColor.g = a.g;
+			this.aFGColor.b = a.b;
+		}
 		this.redraw();
 	},
 	
@@ -48,13 +57,12 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 		c.strokeText(sName, x, y);
 		c.fillText(sName, x, y);
 	},
-	
-	update: function(sName) {
+
+	update: function(sName, sColor) {
 		if (sName == this.sName) {
 			// régénérer alpha au besoin
 			if (this.getAlpha() < 1) {
 				this.setAlpha(1);
-				//this.redraw();
 			}
 		} else {
 			// pas le même nom : mettre à jour
@@ -67,7 +75,7 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 				}
 			} else {
 				// nouveau nom
-				this.setName(sName);
+				this.setName(sName, sColor);
 				this.setAlpha(1);
 				this.redraw();
 			}

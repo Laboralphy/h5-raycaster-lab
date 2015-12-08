@@ -1,0 +1,11 @@
+.BlockBrowser canvas.block {
+	margin: 1px;
+	border: inset 4px transparent;
+	background-color: #999;
+}
+
+.BlockBrowser canvas.block.selected {
+	border: solid 4px #00F;
+	background-color: #0AF;
+}
+

@@ -144,7 +144,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
       return;
     }
     var nSeed = WORLD_DATA[sName].map;
-    var oMap = this.aTagMap = XHR.getSync(CONFIG.game.urlLaby + nSeed);
+    var oMap = this.aTagMap = JSON.parse(XHR.getSync(CONFIG.game.urlLaby + nSeed));
     var x, y;
     var x64, y64;
     var aMap = [], aMapRow;

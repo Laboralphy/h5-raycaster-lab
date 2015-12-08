@@ -1,6 +1,6 @@
 <?php
 require_once('ScriptLoader.php');
-require_once('class.JavaScriptPacker.php');
+require_once('JavascriptPacker.php');
 require_once('helper.php');
 
 define('PROJECT_PATH', '../../sources/');

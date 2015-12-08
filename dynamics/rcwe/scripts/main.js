@@ -1,17 +1,8 @@
-var WIDGETS = {};
 var W;
-var S;
 
-function resizeWindow(oEvent) {
-	W.resize();
-}
-
-function main() {
+function main() {
 	W = new RCWE.Application();
-	W.build($('body'));
-	S = new RCWE.SlideShows();
+	$(window).on('resize', W.resizeWindow.bind(W));
 }
 
-
-window.addEventListener('load', main, false);
-window.addEventListener('resize', resizeWindow, false);
+$(window).on('load', main); 

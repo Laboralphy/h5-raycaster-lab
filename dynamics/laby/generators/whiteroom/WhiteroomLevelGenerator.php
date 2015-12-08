@@ -8,6 +8,7 @@ class WhiteroomLevelGenerator extends RoomGenerator {
   protected $nRoomHeight = 7;
   protected $nMapWidth = 7;
   protected $nMapHeight = 7;
+  protected $oOptions;
 
   public $oMap;
   public $oBlox;
@@ -34,28 +35,16 @@ class WhiteroomLevelGenerator extends RoomGenerator {
 	}
 
 	public function getOption($x) {
-		global $argv, $argc;
-		if (isset($_GET['o'])) {
-			$s = $_GET['o'];
-		} elseif ($argc > 3) {
-			$s = $argv[3];
-		} else {
-			$s = '';
-		}
-		$n = strlen($s);
-		$o = 0;
-		for ($i = 0; $i < $n; $i++) {
-			$c = substr($s, $i, 1);
-			if ($c == $x) {
-				$o++;
-			}
-		}
-		return $o;
+		return $this->oOptions[$x];																																																																																																																			
+	}
+	
+	public function setOptions($o) {																					
+		$this->oOptions = $o;
 	}
 	
   public function setSize($x, $y) { 
     $this->nMapWidth = $x;
-    $this->nMapHeight = $y;
+    $this->nMapHeight = $y;																																	
     parent::setSize($x * ($this->nRoomWidth - 1) + 1, $y * ($this->nRoomHeight - 1) + 1);
   }
 
@@ -86,6 +75,7 @@ class WhiteroomLevelGenerator extends RoomGenerator {
     $yStart = $this->oRnd->getRandom(0, $h - 1);
 
     $oLaby->exploration($xStart, $yStart);            // générer l'itinéraire
+
 
     // Passe 1 choix des type de pièce
     $oRooms = new Grid();
@@ -153,6 +143,7 @@ class WhiteroomLevelGenerator extends RoomGenerator {
         $this->copyZero($oPeri, $x * ($this->nRoomWidth - 1), $y * ($this->nRoomHeight - 1));
       }
     }
+
 
     // Post traitement des valeurs posées lors de la première phase
     // rafinement des valeurs

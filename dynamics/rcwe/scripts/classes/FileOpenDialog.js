@@ -1,8 +1,13 @@
 O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 
+	_id: 'fileopendialog',
+
 	oScrollZone: null,
 	bMultiple: false,
-	THUMBNAIL_PATH: 'files/thumbnails',
+	
+	sLastOpened: '',
+	
+	oFileSystem: null,
 	
 	build: function() {
 		__inherited('Open File');
@@ -13,29 +18,33 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 		var $oScrollZone = $('<div></div>');
 		$oScrollZone.css({
 			'overflow-y': 'scroll',
-			'width': '720px',
-			'height': '512px'
+			'width': '100%',
+			'height': '100%'
 		});
 		this.oScrollZone = $oScrollZone;
-		c.append($oScrollZone);
-
-		c.hide();
+		this.getBody().append($oScrollZone);
+		this.addCommand('<b>↵</b>', 'Close the file open dialog and return to the editor', this.cmd_close.bind(this));
+		this.addCommand(' Open', 'Load the selected file', this.cmd_open.bind(this));
+		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Delete the selected file', this.cmd_delete.bind(this));
+		this.addCommandSeparator();
+		this.getToolBar().append('<span>Storage : <progress id="fileopendialog_progress" min="0" max="1" value="0"></progress></span>');
 	},
 
+	/**
+	 * Make a file thumbnail with the specified data structure
+	 * - name : the file name
+	 * - img : the image thumbnail
+	 */
 	makeFileThumbnail: function(aFileDef) {
 		var $oDiv = $('<div></div>');
 		$oDiv.addClass('thumbnail');
-		aFileDef.sort(function(a, b) {
-			return a[1] - b[1];
-		});
-		$oDiv.append('<div class="title">' + aFileDef[0] + '</div>');
-		if (aFileDef[2]) {
-			$oDiv.append('<img src="' + aFileDef[2] + '"/>');		
-		} else {
-			$oDiv.append('<img src="' + this.THUMBNAIL_PATH + '/' + aFileDef[0] + '.png"/>');		
+		$oDiv.append('<div class="title">' + aFileDef.name + '</div>');
+		if (aFileDef.img) {
+			$oDiv.append('<img src="' + aFileDef.img + '"/>');		
 		}
 		$oDiv.bind('click', this.thumbnailClick.bind(this));
 		this.oScrollZone.append($oDiv);
+		return $oDiv;
 	},
 	
 	thumbnailClick: function(oEvent) {
@@ -53,26 +62,32 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 		aList.forEach(this.makeFileThumbnail.bind(this));
 	},
 
-	open: function() {
-		this.getContainer().show();
-		// localStorage
-		if (localStorage.length > 0) {
-			var sFile, aRegs;
-			for (var i = 0; i < localStorage.length; ++i) {
-				sFile = localStorage.key(i);
-				aRegs = sFile.match(/^rcwe_file_(.*)/);
-				if (aRegs) {
-					sFile = aRegs[1];
-					this.makeFileThumbnail([sFile, localStorage.getItem('rcwe_mfiletime_' + sFile), localStorage.getItem('rcwe_thumbnail_' + sFile)]);
-				}
-			}
-		}
-		// remoteServer
-		$.get('fs.php?l=1', this.makeFileThumbnails.bind(this));
+	show: function() {
+		__inherited();
+		var fs = this.oFileSystem;
+		var u = fs.getStorageUsage();
+		$('#fileopendialog_progress')
+			.attr('min', 0)
+			.attr('max', u.capacity)
+			.attr('value', u.usage);
+		var aFiles = fs.list();
+		aFiles.forEach(function(f) {
+			var oData = fs.getData(f);
+			this.makeFileThumbnail({name: f, img: oData.thumb, date: oData.date});
+		}, this);
+		this.oScrollZone.append('<hr style="clear:both" />');
+		$.getJSON('services/?action=level.list', (function(data) {
+			data.forEach(function(f) {
+				$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/template.json', (function(temp) {
+					var $d = this.makeFileThumbnail({name: f, img: RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/thumbnail.png'});
+					$d.addClass('remote');
+				}).bind(this));
+			}, this);
+		}).bind(this));
 	},
 
-	close: function() {
-		this.getContainer().hide();
+	hide: function() {
+		__inherited();
 		this.oScrollZone.empty();
 	},
 	
@@ -86,6 +101,31 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 		} else {
 			return aFiles[0];
 		}
-	}
+	},
 
+	cmd_open: function() {
+		var sFile = this.getSelected();
+		this.sLastOpened = sFile;
+		var $load = $('div.thumbnail.selected', this.oScrollZone);
+		if ($load.hasClass('remote')) {
+			this.doAction('loadremote', sFile);
+		} else {
+			this.doAction('load', sFile);
+		}
+	},
+	
+	cmd_delete: function() {
+		var fs = this.oFileSystem;
+		var $removed = $('div.thumbnail.selected', this.oScrollZone);
+		if ($removed.hasClass('remote')) {
+			this.doAction('cantdelete');
+		} else {
+			fs.remove(this.getSelected());
+			$removed.fadeOut(function() { $removed.remove(); });
+		}
+	},
+	
+	cmd_close: function() {
+		this.doAction('close');
+	},
 });

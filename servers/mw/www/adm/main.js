@@ -1,12 +1,25 @@
 var $doc;
+var sPass;
+var sMWI;
+
+function setPass() {
+	var r = location.search.match(/(\?|&)p=([^\&]+|$)/);
+	if (r) {
+		sPass = r[2];
+		sMWI = '/mwinspect?p=' + encodeURIComponent(sPass) + '&';
+	} else {
+		sMWI = '/mwinspect?';
+	}
+}
 
 /**
  * Clears the document and begins a new one.
  * Insert title
  */
 function clearDocument() {
-	$doc.empty().append('<h1>mwserver inspector</h1><hr />');
+	$doc.empty().append('<a class="menu" href="/mw/">game</a> - <a class="menu" href="/adm/options.html">options</a><h1>mwserver inspector</h1><hr />');
 }
+
 
 /**
  * Inspects an entity
@@ -14,7 +27,7 @@ function clearDocument() {
  * @param int nEntity id of the entity
  */
 function inspectEntity(nInstance, nEntity) {
-	$.get('/mwinspect?a=ent&i=' + nInstance + '&e=' + nEntity).done(function(data) {
+	$.get(sMWI + 'a=ent&i=' + nInstance + '&e=' + nEntity).done(function(data) {
 		var $data = $(data);
 		clearDocument();
 		$doc.append('<button onclick="inspect()">root</button><button onclick="inspectInstance(' + nInstance + ')">instance #' + nInstance + '</button><button onclick="inspectEntity(' + nInstance + ', ' + nEntity + ')">↻</button>');
@@ -27,7 +40,7 @@ function inspectEntity(nInstance, nEntity) {
  * @param int nInstance id of the entity
  */
 function inspectInstance(nInstance) {
-	$.get('/mwinspect?a=inst&i=' + nInstance).done(function(data) {
+	$.get(sMWI + 'a=inst&i=' + nInstance).done(function(data) {
 		var $data = $(data);
 		clearDocument();
 		$doc.append('<button onclick="inspect()">root</button><button onclick="inspectInstance(' + nInstance + ')">↻</button>');
@@ -44,7 +57,7 @@ function inspectInstance(nInstance) {
  * inspects the game, displays a list of instances
  */
 function inspect() {
-	$.get('/mwinspect').done(function(data) {
+	$.get(sMWI).done(function(data) {
 		var $data = $(data);
 		clearDocument();
 		$doc.append('<button onclick="inspect()">↻</button>');
@@ -62,6 +75,7 @@ function inspect() {
  * @param oEvent
  */
 function main(oEvent) {
+	setPass();
 	$doc = $('#document');
 	inspect();
 }

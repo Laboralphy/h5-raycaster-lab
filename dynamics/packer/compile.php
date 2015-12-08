@@ -1,6 +1,6 @@
 <?php
 require_once('ScriptLoader.php');
-require_once('class.JavaScriptPacker.php');
+require_once('JavascriptPacker.php');
 require_once('helper.php');
 
 if (preg_match('/[a-z0-9]+/i', isset($_GET['f']))) {

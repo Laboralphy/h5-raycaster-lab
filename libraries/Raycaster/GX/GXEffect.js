@@ -6,9 +6,6 @@ O2.createClass('O876_Raycaster.GXEffect', {
   sClass: 'Effect',
   oRaycaster: null,     // référence de retour au raycaster (pour le rendu)
 
-  /** constructeur de l'effet, initialise la référence de raycaster
-   * @param oRaycaster référence du raycaster
-   */
   __construct: function(oRaycaster) {
     this.oRaycaster = oRaycaster;
   },

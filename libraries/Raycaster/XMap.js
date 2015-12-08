@@ -7,8 +7,8 @@ O2.createClass('O876_Raycaster.XMap', {
 	aMap : null,
 	nWidth : 0,
 	nHeight : 0,
-	nWallWidth : 0,
-	nWallHeight : 0,
+	nBlockWidth : 0,
+	nBlockHeight : 0,
 	nShadeFactor : 0,
 
 	/*
@@ -27,12 +27,11 @@ O2.createClass('O876_Raycaster.XMap', {
 			aRow = [];
 			for (x = 0; x < w; x++) {
 				aBlock = [];
-				for (nSide = 0; nSide < 4; nSide++) {
+				for (nSide = 0; nSide < 6; nSide++) {
 					aBlock.push({
 						x : x,
 						y : y,
-						oWall : null,
-						bWall : false
+						oCanvas : null
 					});
 				}
 				aRow.push(aBlock);
@@ -42,6 +41,9 @@ O2.createClass('O876_Raycaster.XMap', {
 	},
 
 	get : function(x, y, nSide) {
+		if (x < 0 || y < 0) {
+			throw new Error('x or y out of bound ' + x + ', ' + y);
+		}
 		return this.aMap[y][x][nSide];
 	},
 
@@ -49,28 +51,46 @@ O2.createClass('O876_Raycaster.XMap', {
 		this.aMap[y][x][nSide] = xValue;
 	},
 
+	setBlockSize: function(w, h) {
+		this.nBlockHeight = h;
+		this.nBlockWidth = w;
+	},
+
 	/**
-	 * Permet de créer une copie de la texture du mur spécifié.
+	 * créer une copie de la texture du mur spécifié.
 	 * Renvoie le canvas nouvellement créé pour qu'on puisse dessiner dessus.
 	 * Note : cette fonction est pas très pratique mais elle est utilisée par Raycaster.cloneWall
-	 * @param oWalls textures murale du laby
-	 * @param nWall numéro de la texture murale
+	 * @param oTextures textures murale du laby
+	 * @param iTexture numéro de la texture murale
 	 * @param x
 	 * @param y position du mur (pour indexation)
 	 * @param nSide face du block concernée.
 	 */
-	cloneWall : function(oWalls, nWall, x, y, nSide) {
+	cloneTexture: function(oTextures, iTexture, x, y, nSide) {
 		var oCanvas;
 		var oBlock = this.get(x, y, nSide);
-		if (oBlock.oWall === null) {
-			oBlock.oWall = oCanvas = O876.CanvasFactory.getCanvas();
+		if (oBlock.oCanvas === null) {
+			oBlock.oCanvas = oCanvas = O876.CanvasFactory.getCanvas();
 		} else {
-			oCanvas = oBlock.oWall;
+			oCanvas = oBlock.oCanvas;
+			delete oCanvas.__shaded;
 		}
-		oBlock.bWall = true;
-		oCanvas.width = this.nWallWidth;
-		oCanvas.height = this.nWallHeight;
-		oCanvas.getContext('2d').drawImage(oWalls, nWall * this.nWallWidth, 0, this.nWallWidth, this.nWallHeight, 0, 0, this.nWallWidth, this.nWallHeight);
+		var w = this.nBlockWidth;
+		var h;
+		if (nSide < 4) {
+			h = this.nBlockHeight;
+		} else {
+			// flat texture
+			h = w;
+			oBlock.imageData = null;
+			oBlock.imageData32 = null;
+			
+			//oFloor.imageData = oCtx.getImageData(0, 0, oFlat.width, oFlat.height);
+			//oFloor.imageData32 = new Uint32Array(oFloor.imageData.data.buffer);
+		}
+		oCanvas.width = w;
+		oCanvas.height = h;
+		oCanvas.getContext('2d').drawImage(oTextures, iTexture * w, 0, w, h, 0, 0, w, h);
 		return oCanvas;
-	}
+	},
 });

@@ -1,7 +1,7 @@
 var O2 = require('o2');	// requis car le module hérite de la classe Plugin
 var Plugin = require('mediator').Plugin; // requis : la classe parente
 
-O2.extendClass('ModAccuracy', Plugin, {
+var ModAccuracy = O2.extendClass(Plugin, {
 	
 	oStats: null,		// les stats de chaque client
 						// le client dispose d'un identifiant UNIQUE

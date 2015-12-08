@@ -19,6 +19,9 @@ O2.createClass('O876.Easing', {
 	bXCompute: true,
 	bYCompute: true,
 	
+	nTime: 0,
+	iTime: 0,
+	
 	
 	fWeight: 1,
 	
@@ -26,6 +29,7 @@ O2.createClass('O876.Easing', {
 	
 	__construct : function() {
 		this.nTime = 0;
+		this.iTime = 0;
 	},
 	
 	/**
@@ -37,13 +41,20 @@ O2.createClass('O876.Easing', {
 	 * @param int t temps qu'il faut au mouvement pour s'effectuer
 	 */
 	setMove: function(x, y, dx, dy, t) {
+		if (t === undefined && dy === undefined) {
+			t = dx;
+			dy = 0;
+			dx = y;
+			y = 0;
+		}
 		this.xStart = this.x = x;
 		this.yStart = this.y = y;
 		this.xEnd = dx;
 		this.yEnd = dy;
 		this.bXCompute = x != dx;
-		this.bXCompute = y != dy;
+		this.bYCompute = y != dy;
 		this.nTime = t;
+		this.iTime = 0;
 	},
 	
 	/**
@@ -71,6 +82,9 @@ O2.createClass('O876.Easing', {
 	 * @param int t temps
 	 */
 	move: function(t) {
+		if (t === undefined) {
+			t = this.iTime++;
+		}
 		var v = this[this.sFunction](t / this.nTime);
 		if (this.bXCompute) {
 			this.x = this.xEnd * v + (this.xStart * (1 - v));
@@ -78,6 +92,7 @@ O2.createClass('O876.Easing', {
 		if (this.bYCompute) {
 			this.y = this.yEnd * v + (this.yStart * (1 - v));
 		}
+		return t >= this.nTime;
 	},
 
 	linear: function(v) {

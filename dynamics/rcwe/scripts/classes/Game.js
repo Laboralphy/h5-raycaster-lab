@@ -3,11 +3,27 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
+	
+	onError: null,
+	onStart: null,
+	onStop: null,
 		
 	__construct: function(oData) {
 		this._oLevelData = oData;
 		__inherited();
 	},
+	
+	_halt: function(sMessage, oError) {
+		__inherited();
+		if (this.onError && sMessage) {
+			this.onError(sMessage);
+		}
+		if (this.onStop) {
+			this.onStop();
+		}
+	},
+	
+	
 	
 	////// RAYCASTER EVENTS ////// RAYCASTER EVENTS ////// RAYCASTER EVENTS //////
 	////// RAYCASTER EVENTS ////// RAYCASTER EVENTS ////// RAYCASTER EVENTS //////
@@ -43,8 +59,12 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 	},
 	
 	
-	
-	// onLoading: null,
+	onLoading: function(sText, n, nMax) {
+		var oProgress = document.getElementById('raycaster_progress');
+		oProgress.max = nMax;
+		oProgress.value = n;
+		oProgress.innerHTML = sText;
+	},
 	
 	/**
 	 * Evènement appelé lorsqu'un niveau a été chargé
@@ -102,6 +122,9 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 					);
 				});
 			});
+		}
+		if (this.onStart) {
+			this.onStart();
 		}
 	},
 

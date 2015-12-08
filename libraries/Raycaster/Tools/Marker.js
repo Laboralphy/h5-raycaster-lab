@@ -1,8 +1,10 @@
 O2.createObject('Marker', {
-	
 	iterate: function(o, f) {
 		o.forEach(function(aRow, x) {
 			if (aRow) {
+				if (!aRow.forEach) {
+					throw new Error('not a marker !');
+				}
 				aRow.forEach(function(v, y) {
 					if (v) {
 						f(x, y, v);
@@ -10,6 +12,28 @@ O2.createObject('Marker', {
 				});
 			}
 		});
+	},
+	
+	/**
+	 * Serialize the registry
+	 * each cell outputs a structure like : {x:...,  y:...,  v:...}
+	 */
+	serialize: function(o) {
+		var a = [];
+		Marker.iterate(o, function(x, y, v) {
+			a.push({x: x, y: y, v: v});
+		});
+		return a;
+	},
+	
+	unserialize: function(d) {
+		var o = Marker.create();
+		d.forEach(function(dx) {
+			if (dx) {
+				Marker.markXY(o, dx.x, dx.y, dx.v);
+			}
+		});
+		return o;
 	},
 	
 	create: function() {

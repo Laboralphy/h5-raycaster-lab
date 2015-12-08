@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ "$BASH" = "/bin/bash" ]
+then
+	source o876runserv.inc
+	o876runservMain $1
+else
+	echo " "
+	echo "/!\\ Executing this script requires /bin/bash"
+	echo "try 'bash $0'"
+	echo " "
+fi
