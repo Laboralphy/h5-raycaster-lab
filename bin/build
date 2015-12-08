@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# a module builder tool
+# this tool converts "sources" to "modules"
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+listAvailableSourceProjects() {
+	echo "Here are the available source projects : "
+	ls "$sScriptDir/../sources"
+}
+
+buildModuleFromSource() {
+	if [ -z "$1" ]
+	then
+		listAvailableSourceProjects
+		return
+	fi
+	local sProject="$1"
+	local sSourceDir="$sScriptDir/../sources"
+	local sPackerDir="$sScriptDir/../dynamics/packer"
+	local myPwd=`pwd`
+
+	if [ ! -d "$sSourceDir/$sProject" ]
+	then
+		echo "There is no source project named : $sProject"
+		listAvailableSourceProjects
+	else
+		cd "$sPackerDir"
+		php -f build.php -- "$sProject"
+	fi
+	cd "$myPwd"
+}
+
+buildModuleFromSource $1
