@@ -1091,14 +1091,15 @@ O2.createClass('RCWE.Application', {
 
 	saveLevelFile: function(sName) {
 		try {
-			var oXchange = { cancel: false };
+			this.exportLevelTemplate(sName);
+			/*var oXchange = { cancel: false };
 			this.sendPluginSignal('saveLevel', this, sName, oXchange);
 			if (!oXchange.cancel) {
 				var fs = this.oFileSystem;
 				var oSave = this.serialize();
 				var sSS = this.oWorldViewer.sScreenShot;
 				fs.save(sName, oSave, sSS);
-			}
+			}*/
 		} catch (e) {
 			this.error('could not write file "' + sName + '" : ' + e.message);
 		}

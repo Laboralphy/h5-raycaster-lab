@@ -86,7 +86,7 @@ O2.createClass('EventLog', {
 					f: 'ru_log_*remote_addr',
 					d: oDigest
 			};
-			oGame.oXHR.storeString('../../dynamics/crawlerfs/l.php', oPostData);
+			//XHR.post(CONFIG.crawlerfs.l, oPostData);
 		}
 	}
 });

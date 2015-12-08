@@ -541,7 +541,7 @@ O2.extendClass('CutsceneIntro', 'Cutscene', {
 	render: function() {
 		__inherited();
 		if (!this.bRender) {
-			G._callGameEvent('onLoading', ['shd', ++this.nShadedTileCount, this.oRaycaster.oHorde.nTileCount]);
+			G._callGameEvent('onLoading', 'shd', ++this.nShadedTileCount, this.oRaycaster.oHorde.nTileCount);
 		}
 	}
 });

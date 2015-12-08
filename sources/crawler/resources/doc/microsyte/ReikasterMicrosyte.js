@@ -37,6 +37,7 @@ var ReikasterMicrosyte = {
 	},
 	
 	sendComments: function(oEvent) {
+		return; // discontinued
 		var oTextArea = document.getElementById('memo_comments');
 		var sMsg = oTextArea.value;
 		var oData = {m: sMsg};
@@ -46,7 +47,7 @@ var ReikasterMicrosyte = {
 			oData.s = WORLD_DATA.dungeons[oData.d][oData.f].seed;
 		}
 		try {
-			XHR.post('../../dynamics/crawlerfs/l.php', {f: 'ru_comments_*remote_addr', d: oData});
+			//XHR.post(CONFIG.crawlerfs.l, {f: 'ru_comments_*remote_addr', d: oData});
 			ReikasterMicrosyte.close();
 			alert(STRINGS._('~mspage_p1_thanx'));
 		} catch (e) {
@@ -97,7 +98,7 @@ var ReikasterMicrosyte = {
 					lf: G.oDungeon.getPlayerLocationFloor()
 				}
 		};
-		oXHR.post('../../dynamics/crawlerfs/l.php', oPostData);
+		//XHR.post(CONFIG.crawlerfs.l, oPostData);
 		ReikasterMicrosyte.close();
 	}
 };

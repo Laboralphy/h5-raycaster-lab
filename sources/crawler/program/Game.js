@@ -406,7 +406,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		if (this.nIntfMode != UI.INTFMODE_MAINMENU) {
 			this.nIntfMode = UI.INTFMODE_MAINMENU;
 			this.oContext.clearRect(0, 0, this.oCanvas.width, this.oCanvas.height);
-			this.ui_open('Mainmenu', {options: STRINGS._(['~mmenu_newgame', '~mmenu_continue', '~mmenu_htp', '~mmenu_hiscores', '~mmenu_credits'])});
+			//this.ui_open('Mainmenu', {options: STRINGS._(['~mmenu_newgame', '~mmenu_continue', '~mmenu_htp', '~mmenu_hiscores', '~mmenu_credits'])});
+			this.ui_open('Mainmenu', {options: STRINGS._(['~mmenu_newgame', '~mmenu_htp', '~mmenu_credits'])});
 		}
 		var nMenuAction = this.menuInputProcess();
 		this.ui_render();
@@ -419,7 +420,9 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 				this.sys_cutscene('intro', 'stateStartAdventure');
 				return false;
 				
-			case 2: // Continue
+			/*case 2: // Continue
+				alert('This feature is discontinued');
+				/*
 				if (this.sys_checkSaveGame()) {
 					this.ui_close();
 					this.oMenuSystem.finalize();
@@ -433,26 +436,26 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 					alert(STRINGS._('~m_nosave'));
 					this.resume();
 				}
-				break;
+				break;*/
 				
-			case 3: // how to play
+			case 2: // how to play
 				location.href = 'resources/doc/menu/htp.html';
 				break;
-				
+				/*
 			case 4: // high scores
-				ReikasterMicrosyte.openHiscoreTable();
-				//location.href = '../../../labo/apps/rei/?action=score';
-				break;
+				alert('This feature is discontinued');
+				//ReikasterMicrosyte.openHiscoreTable();
+				break;*/
 				
-			case 5: // credits
+			case 3: // credits
 				location.href = 'resources/doc/menu/credits.html';
 				break;
 		}
 		return false;
 	},
 	
-	onLoading : function(aWhat) {
-		this.oUI.cmdLoading('set', {caption: aWhat[0], n: aWhat[1], max: aWhat[2]});
+	onLoading : function(sWhat, nLoaded, nTotal) {
+		this.oUI.cmdLoading('set', {caption: sWhat, n: nLoaded, max: nTotal});
 		this.ui_render();
 	},
 
@@ -865,6 +868,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	focus: function() {
 		this.nLastTimeStamp = Date.now();
 		this.oSoundSystem.unmute();
+		this.resume();
 	},
 	
 	processPopups: function() {
@@ -2371,9 +2375,9 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 				f: sKey,
 				d: xData
 			};
-			XHR.post('../../dynamics/crawlerfs/c.php', JSON.stringify(oPostData));
+			//XHR.post(CONFIG.crawlerfs.c, JSON.stringify(oPostData));
 		} else {
-			this.oBackupSystem.storeData(sKey, xData);
+			//this.oBackupSystem.storeData(sKey, xData);
 		}
 	},
 
@@ -2386,7 +2390,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 			bRemote = false;
 		}
 		if (bRemote) {
-			return XHR.getSync('../../dynamics/crawlerfs/r.php?f=' + sKey);
+			return XHR.getSync(CONFIG.crawlerfs.r + '?f=' + sKey);
 		} else {
 			return this.oBackupSystem.loadData(sKey);
 		}
@@ -2662,7 +2666,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	 * Envoie le score sur le serveurr pour l'enregistrer
 	 */
 	sys_sendScore: function() {
-		ReikasterMicrosyte.openHiscoreForm();
+		//ReikasterMicrosyte.openHiscoreForm();
 	}
 
 });
