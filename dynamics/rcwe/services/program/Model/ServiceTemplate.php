@@ -5,10 +5,23 @@ class ServiceTemplate {
 	
 	const BASE_PATH = '../templates.storage/';
 	
+	protected function _checkWritingPermissions() {
+		if (!is_writable(self::BASE_PATH)) {
+			throw new Exception('writing permission denied');
+		}
+	}
+	
+	protected function _checkReadingPermissions() {
+		if (!is_readable(self::BASE_PATH)) {
+			throw new Exception('reading permission denied');
+		}
+	}
+	
 	/**
 	 * Store the given template on the file system
 	 */
 	public function storeTemplate($sType, $oData) {
+		$this->_checkWritingPermissions();
 		$sName = $oData->name;
 		$sThumbnail = $oData->thumbnail;
 		unset($oData->name);
@@ -27,6 +40,7 @@ class ServiceTemplate {
 	}
 	
 	public function deleteTemplate($sType, $sName) {
+		$this->_checkWritingPermissions();
 		$sFilePath = self::BASE_PATH . $sType . 's/' . $sName;
 		unlink($sFilePath . '/template.json');
 		unlink($sFilePath . '/thumbnail.png');
@@ -34,6 +48,7 @@ class ServiceTemplate {
 	}
 
 	public function listTemplates($sType) {
+		$this->_checkReadingPermissions();
 		$a = array();
 		if (preg_match('/^[a-z]+$/', $sType)) {
 			$sFilePath = self::BASE_PATH . $sType . 's/';

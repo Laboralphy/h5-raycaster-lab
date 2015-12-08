@@ -26,8 +26,6 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 		this.addCommand('<b>↵</b>', 'Close the file open dialog and return to the editor', this.cmd_close.bind(this));
 		this.addCommand(' Open', 'Load the selected file', this.cmd_open.bind(this));
 		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Delete the selected file', this.cmd_delete.bind(this));
-		this.addCommandSeparator();
-		this.getToolBar().append('<span>Storage : <progress id="fileopendialog_progress" min="0" max="1" value="0"></progress></span>');
 	},
 
 	/**
@@ -64,18 +62,6 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 
 	show: function() {
 		__inherited();
-		var fs = this.oFileSystem;
-		var u = fs.getStorageUsage();
-		$('#fileopendialog_progress')
-			.attr('min', 0)
-			.attr('max', u.capacity)
-			.attr('value', u.usage);
-		var aFiles = fs.list();
-		aFiles.forEach(function(f) {
-			var oData = fs.getData(f);
-			this.makeFileThumbnail({name: f, img: oData.thumb, date: oData.date});
-		}, this);
-		this.oScrollZone.append('<hr style="clear:both" />');
 		$.getJSON('services/?action=level.list', (function(data) {
 			data.forEach(function(f) {
 				$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/template.json', (function(temp) {
@@ -83,7 +69,10 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 					$d.addClass('remote');
 				}).bind(this));
 			}, this);
-		}).bind(this));
+		}).bind(this))
+		.fail(function(data) {
+			W.error(data.responseText);
+		});
 	},
 
 	hide: function() {

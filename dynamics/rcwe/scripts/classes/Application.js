@@ -12,7 +12,6 @@ O2.createClass('RCWE.Application', {
 	oThingEditor: null,
 	oPopupWindow: null,
 	oFileOpenDialog: null,
-	oFileSystem: null,
 	oThingGrid: null,
 	oHintBox: null,
 	oAdvancedPad: null,
@@ -58,8 +57,6 @@ O2.createClass('RCWE.Application', {
 			d11: $('td.c11 > div', $structure),
 			d20: $('td.c20 > div', $structure)
 		};
-		
-		this.oFileSystem = new RCWE.FileSystem();
 		
 		var pAction = this.cmd_action.bind(this);
 		
@@ -115,7 +112,6 @@ O2.createClass('RCWE.Application', {
 		oFileOpenDialog.build();
 		oFileOpenDialog.setSize('100%', '100%');
 		oFileOpenDialog.onAction = pAction;
-		oFileOpenDialog.oFileSystem = this.oFileSystem;
 		oFileOpenDialog.hide();
 		this.linkWidget('d10', oFileOpenDialog);
 		
@@ -1092,41 +1088,24 @@ O2.createClass('RCWE.Application', {
 	saveLevelFile: function(sName) {
 		try {
 			this.exportLevelTemplate(sName);
-			/*var oXchange = { cancel: false };
-			this.sendPluginSignal('saveLevel', this, sName, oXchange);
-			if (!oXchange.cancel) {
-				var fs = this.oFileSystem;
-				var oSave = this.serialize();
-				var sSS = this.oWorldViewer.sScreenShot;
-				fs.save(sName, oSave, sSS);
-			}*/
 		} catch (e) {
 			this.error('could not write file "' + sName + '" : ' + e.message);
 		}
 	},
 	
 	loadLevelFile: function(sName, bRemote) {
-		if (bRemote) {
-			var pDataReceived = (function(data) {
-				this.unserialize(data.level);
-				this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
-				this.showPanel('blockBrowser');
-				this.hidePopup();
-			}).bind(this);
-			
-			var pLoad = function() {
-				$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived)
-			};
-			
-			this.popup('Message', 'Loading online level, please wait...', '', pLoad);
-		} else {
-			var fs = new RCWE.FileSystem();
-			var oData = fs.load(sName);
-			var sScreenShot = fs.getData(sName).thumb;
-			this.unserialize(oData);
-			this.oWorldViewer.sScreenShot = sScreenShot;
+		var pDataReceived = (function(data) {
+			this.unserialize(data.level);
+			this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
 			this.showPanel('blockBrowser');
-		}
+			this.hidePopup();
+		}).bind(this);
+			
+		var pLoad = function() {
+			$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived)
+		};
+		
+		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
 	},
 	
 	serialize: function() {
@@ -1163,6 +1142,8 @@ O2.createClass('RCWE.Application', {
 		};
 		var sData = JSON.stringify(oExport);
 		$.post('services/?action=block.post', sData, (function(data) {
+		}).bind(this)).fail((function(data) {
+			this.error(data.responseText);
 		}).bind(this));
 	},
 	
@@ -1177,6 +1158,8 @@ O2.createClass('RCWE.Application', {
 		var sData = JSON.stringify(oExport);
 		$.post('services/?action=thing.post', sData, (function(data) {
 			this.popup('Message', 'Export "' + sName + '" complete.');
+		}).bind(this)).fail((function(data) {
+			this.error(data.responseText);
 		}).bind(this));
 	},
 	
@@ -1193,6 +1176,9 @@ O2.createClass('RCWE.Application', {
 		var sData = JSON.stringify(oExport);
 		$.post('services/?action=level.post', sData, (function(data) {
 			this.popup('Message', 'Export "' + sName + '" complete.');
+		}).bind(this))
+		.fail((function(data) {
+			this.error(data.responseText);
 		}).bind(this));
 	},
 	
