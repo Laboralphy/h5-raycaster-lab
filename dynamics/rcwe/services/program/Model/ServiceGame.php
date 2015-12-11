@@ -23,7 +23,7 @@ class ServiceGame {
 			// find the new game name
 			// $sName = md5($sScript);
 			$sName = $oOptions['gamename'];
-			$sPath = '../games/work.storage/' . $sName;
+			$sPath = '../server.storage/exports/work/' . $sName;
 			
 			// prepare the folder
 			if (file_exists($sPath)) {
@@ -80,7 +80,7 @@ class ServiceGame {
 			file_put_contents($sPath . '/libraries/libraycaster.js', $s);
 
 			// pack everything into a zip file
-			$sZipFile = '../games/z.storage/' . $sName . '.zip';
+			$sZipFile = '../server.storage/exports/z/' . $sName . '.zip';
 			$oFS->zip($sPath, $sZipFile);
 			chmod($sZipFile, 0777);
 			

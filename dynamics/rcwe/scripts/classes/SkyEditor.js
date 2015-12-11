@@ -26,7 +26,7 @@ O2.extendClass('RCWE.SkyEditor', RCWE.Window, {
 		});
 		$form.append($('<div></div>').append($bResetFiltr));
 		
-		$td = $('tr.section.sky td', $structure);
+		var $td = $('tr.section.sky td', $structure);
 		$td.eq(0).append('<hr/>');
 		$td.eq(0).append('<div><b>Sky image</b></div>');
 		$td.eq(0).imageLoader({

@@ -18,5 +18,5 @@ O2.createObject('RCWE.CONST', {
 		CURTAIN: 5
 	},
 	
-	PATH_TEMPLATES: 'templates.storage'
+	PATH_TEMPLATES: 'server.storage/templates'
 });

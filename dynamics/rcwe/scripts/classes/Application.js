@@ -1027,6 +1027,9 @@ O2.createClass('RCWE.Application', {
 		}).bind(this));
 	},
 	
+	cmd_advancedpad_importlevel: function() {
+		prompt('filename');
+	},
 	
 	// startingpointlocator
 	
@@ -1102,7 +1105,7 @@ O2.createClass('RCWE.Application', {
 		}).bind(this);
 			
 		var pLoad = function() {
-			$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived)
+			$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived);
 		};
 		
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
@@ -1236,5 +1239,20 @@ O2.createClass('RCWE.Application', {
 		}).fail((function() {
 			this.error('Could not load ' + sType + ' template : "' + sName + '"');
 		}).bind(this));
-	}
+	},
+	
+	testImportLevel: function(sMap) {
+		var pDataReceived = (function(data) {
+			this.unserialize(data);
+			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
+			this.showPanel('blockBrowser');
+			this.hidePopup();
+		}).bind(this);
+			
+		var pLoad = function() {
+			$.getJSON('services/?action=import.import&l=' + sMap, pDataReceived);
+		};
+		
+		this.popup('Message', 'Importing level, please wait...', '', pLoad);
+	},
 });

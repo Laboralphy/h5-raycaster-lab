@@ -3,7 +3,7 @@ use O876\MVC as M;
 
 class ServiceTemplate {
 	
-	const BASE_PATH = '../templates.storage/';
+	const BASE_PATH = '../server.storage/templates/';
 	
 	protected function _checkWritingPermissions() {
 		if (!is_writable(self::BASE_PATH)) {

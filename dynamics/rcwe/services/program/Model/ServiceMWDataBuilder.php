@@ -7,7 +7,7 @@ class ServiceMWDataBuilder {
 		$oFS = $oMF->getModel('ServiceFs');
 		$oSG = $oMF->getModel('ServiceGame');
 		$oData = json_decode($sScript);
-		$sPath = '../games/mw.storage/' . $sName;
+		$sPath = '../server.storage/exports/mw/' . $sName;
 		// prepare the folder
 		if (file_exists($sPath)) {
 			$oFS->rmrf($sPath);

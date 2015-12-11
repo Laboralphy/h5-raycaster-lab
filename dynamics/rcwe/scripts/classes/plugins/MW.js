@@ -15,14 +15,14 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 	},
 	
 	build: function() {
-		$toolbar = $('.o876window.AdvancedPad tr.toolbar > td > div');
-		$body = $('.o876window.AdvancedPad tr.body > td > div.body');
-		// ⚀⚁⚂⚃⚄⚅
-		$button = $('<button type="button" title="Export a MW-Level">MW</button>');
-		$toolbar.append($button);
-		$button.on('click', this.cmd_buildrdg.bind(this));
+		var $toolbar = $('.o876window.AdvancedPad tr.toolbar > td > div');
+		var $body = $('.o876window.AdvancedPad tr.body > td > div.body');
 		this.oAdvPadBody = $body;
 		this.oAdvPadToolbar = $toolbar;
+		// ⚀⚁⚂⚃⚄⚅
+		var $button = $('<button type="button" title="Exports a MW-Level">MW</button>');
+		$toolbar.append($button);
+		$button.on('click', this.cmd_buildrdg.bind(this));
 	},
 	
 	// change of texture
@@ -44,7 +44,7 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		var $desc = $('<div class="rdgpad"><p><b>Blight Magic Export</b></p><p>Click on the export button to export the current level to the blight magic network project.</p></div>');
 		var $form = $('<form class="rdgpad"></form>');
 		$form.append('<hr/>');
-		$button = $('<button type="button">⚓ Export</button>');
+		var $button = $('<button type="button">⚓ Export</button>');
 		$button.on('click', this.cmd_export.bind(this));
 		$form.append($button);		
 		this.oForm = $form;
