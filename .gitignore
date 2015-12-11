@@ -11,5 +11,5 @@ modules/*
 servers/mw/www/mw/
 servers/mw/mwplugins/*
 
-
-
+# all storage directories
+*.storage/
