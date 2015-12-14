@@ -652,7 +652,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		var nId = 0, sId;
 		while ((i + nTileWidth) <= oImage.width) {
 			$canvas = $('<canvas></canvas>');
-			if (aIds !== undefined) {
+			if (aIds !== undefined && aIds.length > 0) {
 				sId = aIds.shift();
 			} else {
 				while(this._getTileById(sType + '_' + nId)) {
@@ -660,6 +660,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				}
 				sId = sType + '_' + nId;
 			}
+			console.log('id = ', sId);
 			$canvas.attr('id', sId);
 			$canvas.addClass('tile');
 			if (sType) {
