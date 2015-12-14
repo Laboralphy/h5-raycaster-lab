@@ -1,0 +1,52 @@
+.fileimportdialog div.thumbnail {
+	margin: 2px;
+	float: left;
+	border: solid thin #666;
+	background-color: #CCC;
+	cursor: pointer;
+}
+
+.fileimportdialog div.thumbnail div.title {
+	height: 18px;
+	margin: 2px;
+	padding: 4px;
+	background-color: #444;
+	color: #CCC;
+	font-family: monospace;
+	border: solid thin #000;
+}
+
+.fileimportdialog div.thumbnail.selected div.title {
+	background-color: #AAA;
+	color: #FFF;
+	border: solid thin #555;
+}
+
+.fileimportdialog div.thumbnail.selected img {
+	opacity: 0.75;
+}
+
+.fileimportdialog div.thumbnail div.title span{
+	margin: auto;
+}
+
+.fileimportdialog div.thumbnail img {
+	margin: 2px;
+}
+
+
+
+.fileimportdialog ul.import > li.source {
+	margin-top: 16px;
+}
+
+.fileimportdialog ul.import > li.source > span {
+	font-size: 130%;
+	font-weight: bold;
+}
+
+.fileimportdialog ul.import li.notfound {
+	font-style: italic;
+	font-weight: bold;
+	color: #800;
+}

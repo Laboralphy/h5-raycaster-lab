@@ -17,6 +17,7 @@ O2.createClass('RCWE.Application', {
 	oAdvancedPad: null,
 	oTemplateLoader: null,
 	oStartPointLocator: null,
+	oFileImportDialog: null,
 	
 	oMediator: null,
 	
@@ -115,6 +116,13 @@ O2.createClass('RCWE.Application', {
 		oFileOpenDialog.hide();
 		this.linkWidget('d10', oFileOpenDialog);
 		
+		var oFileImportDialog = new RCWE.FileImportDialog();
+		oFileImportDialog.build();
+		oFileImportDialog.setSize('100%', '100%');
+		oFileImportDialog.onAction = pAction;
+		oFileImportDialog.hide();
+		this.linkWidget('d10', oFileImportDialog);
+		
 		var oTemplateLoader = new RCWE.TemplateLoader();
 		oTemplateLoader.build();
 		oTemplateLoader.setSize(nD11Width, '100%');
@@ -152,6 +160,7 @@ O2.createClass('RCWE.Application', {
 		this.oThingBrowser = oThingBrowser;
 		this.oThingEditor = oThingEditor;
 		this.oFileOpenDialog = oFileOpenDialog;
+		this.oFileImportDialog = oFileImportDialog;
 		this.oAdvancedPad = oAdvancedPad;
 		this.oTemplateLoader = oTemplateLoader;
 		this.oStartPointLocator = oStartPointLocator;
@@ -327,6 +336,31 @@ O2.createClass('RCWE.Application', {
 				this.oMapGrid.setSelectFlag(false);
 				this.oStartPointLocator.show();
 				this.oCurrentWindow = this.oStartPointLocator;
+			break;
+		}
+	},
+	
+	showMainScreen: function(s) {
+		switch (s) {
+			case 'map':
+				this.oFileImportDialog.hide();
+				this.oFileOpenDialog.hide();
+				//---
+				this.oMapGrid.show();
+			break;
+
+			case 'fileopen':
+				this.oMapGrid.hide();
+				this.oFileImportDialog.hide();
+				//---
+				this.oFileOpenDialog.show();
+			break;
+				
+			case 'fileimport':
+				this.oMapGrid.hide();
+				this.oFileOpenDialog.hide();
+				//---
+				this.oFileImportDialog.show();
 			break;
 		}
 	},
@@ -650,8 +684,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_labygrid_load: function() {
-		this.oMapGrid.hide();
-		this.oFileOpenDialog.show();
+		this.showMainScreen('fileopen');
 	},
 	
 	cmd_labygrid_save: function() {
@@ -764,19 +797,16 @@ O2.createClass('RCWE.Application', {
 	// FILE OPEN DIALOG
 	// FILE OPEN DIALOG
 	cmd_fileopendialog_close: function() {
-		this.oFileOpenDialog.hide();
-		this.oMapGrid.show();
+		this.showMainScreen('map');
 	},
 
 	cmd_fileopendialog_load: function(sFile) {
-		this.oFileOpenDialog.hide();
-		this.oMapGrid.show();
+		this.showMainScreen('map');
 		this.loadLevelFile(sFile);
 	},
 	
 	cmd_fileopendialog_loadremote: function(sFile) {
-		this.oFileOpenDialog.hide();
-		this.oMapGrid.show();
+		this.showMainScreen('map');
 		this.loadLevelFile(sFile, true);
 	},
 	
@@ -784,6 +814,20 @@ O2.createClass('RCWE.Application', {
 		this.error('You can\'t delete this file : it\'s a public file hosted on the server. It is not stored on your browser local storage.');
 	},
 	
+	
+	// FILE IMPORT DIALOG
+	// FILE IMPORT DIALOG
+	// FILE IMPORT DIALOG
+	cmd_fileimportdialog_load: function(sFile) {
+		this.showMainScreen('map');
+		this.showPanel('blockbrowser');		
+		this.importLevel(sFile);
+	},
+
+	cmd_fileimportdialog_close: function() {
+		this.showMainScreen('map');
+		this.showPanel('blockbrowser');		
+	},
 	
 	
 	// THING BROWSER
@@ -1028,7 +1072,8 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_advancedpad_importlevel: function() {
-		prompt('filename');
+		//prompt('filename');
+		this.showMainScreen('fileimport');
 	},
 	
 	// startingpointlocator
@@ -1241,7 +1286,7 @@ O2.createClass('RCWE.Application', {
 		}).bind(this));
 	},
 	
-	testImportLevel: function(sMap) {
+	importLevel: function(sMap) {
 		var pDataReceived = (function(data) {
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';

@@ -43,6 +43,9 @@ class ServiceImport {
 				if (preg_match('/^resources.*[0-9a-f]{32}\.png$/i', $v)) {
 					$sImageData = 'data:image/png;base64,' . base64_encode(file_get_contents(self::BASE_PATH . '/' . $sBasePath . '/' . $v));
 					$o->$k = $sImageData;
+				} elseif (preg_match('/^resources.*\.png$/i', $v)) {
+					$sImageData = 'data:image/png;base64,' . base64_encode(file_get_contents(self::BASE_PATH . '/' . $sBasePath . '/' . $v));
+					$o->$k = $sImageData;
 				}
 			} elseif (is_object($v)) {
 				$o->$k = $this->loadResources($sBasePath, $v);
