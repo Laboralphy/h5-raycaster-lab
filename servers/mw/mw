@@ -236,7 +236,7 @@ goMapImport() {
 	local sTilePath="www/maptiles"
 	local sDataPath="data/maps"
 	local sExportPath="maps_exports"
-	local sMWStorPath="../../dynamics/rcwe/games/mw.storage"
+	local sMWStorPath="../../dynamics/rcwe/server.storage/exports/mw"
 	local sSrcPath="$sMWStorPath/$sMap"
 	local i
 	local a

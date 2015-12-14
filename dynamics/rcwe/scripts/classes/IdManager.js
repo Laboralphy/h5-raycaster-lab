@@ -5,6 +5,8 @@
  */
 O2.createClass('RCWE.IdManager', {
 	_aAvailable: null,
+	_nMin: null,
+	_nMax: null,
 	
 	__construct: function() {
 		this.reset();
@@ -12,9 +14,14 @@ O2.createClass('RCWE.IdManager', {
 	
 	reset: function() {
 		this._aAvailable = [];
+		if (this._nMin !== null && this._nMax !== null) {
+			this.fill(this._nMin, this._nMax);
+		}
 	},
 	
 	fill: function(nMin, nMax) {
+		this._nMin = nMin;
+		this._nMax = nMax;
 		for (var i = nMin; i <= nMax; ++i) {
 			this._aAvailable.push(i);
 		}

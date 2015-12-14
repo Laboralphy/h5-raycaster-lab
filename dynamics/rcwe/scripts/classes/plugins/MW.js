@@ -20,7 +20,7 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		this.oAdvPadBody = $body;
 		this.oAdvPadToolbar = $toolbar;
 		// ⚀⚁⚂⚃⚄⚅
-		var $button = $('<button type="button" title="Exports a MW-Level">MW</button>');
+		var $button = $('<button type="button" title="Exports or imports a MW-Level">MW</button>');
 		$toolbar.append($button);
 		$button.on('click', this.cmd_buildrdg.bind(this));
 	},
@@ -44,9 +44,15 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		var $desc = $('<div class="rdgpad"><p><b>Blight Magic Export</b></p><p>Click on the export button to export the current level to the blight magic network project.</p></div>');
 		var $form = $('<form class="rdgpad"></form>');
 		$form.append('<hr/>');
+
 		var $button = $('<button type="button">⚓ Export</button>');
 		$button.on('click', this.cmd_export.bind(this));
 		$form.append($button);		
+
+		var $importButton = $('<button type="button"> Import</button>');
+		$importButton.on('click', this.cmd_import.bind(this));
+		$form.append($importButton);
+
 		this.oForm = $form;
 		this.oAdvPadBody.empty();
 		this.oAdvPadBody.append($desc).append($form);
@@ -69,6 +75,22 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 			oApplication.error(err);
 		}).done(function(d) {
 			oApplication.popup('Message', 'Export done.');
+		});
+	},
+	
+	cmd_import: function() {
+		var sLevel = prompt('what is the level name ?');
+		if (sLevel === null || sLevel === '') {
+			return;
+		}
+		var oApplication = W;
+		$.get('services/?action=mw.import&l=' + sLevel)
+		.fail(function(err) {
+			oApplication.error(err);
+		}).success(function(d) {
+			console.log(d);
+			oApplication.unserialize(JSON.parse(d));
+			oApplication.showPanel('blockBrowser');
 		});
 	}
 });
