@@ -1,3 +1,5 @@
+/* globals RCWE, W */
+
 O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	_id: 'advancedpad',
 	
@@ -27,7 +29,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		var $plist = $('<p>Available plugins : </p>');
 		$plist.append(this.buildPluginList());
 		var $buttonLoadPlugin = $('<button>Reload RCWE</button> <i style="color: #666">Don\'t forget to save your work</i>');
-		$buttonLoadPlugin.on('click', function(oEvent) {
+		$buttonLoadPlugin.on('click', function() {
 			var aPluginList = [];
 			$('.AdvancedPad dl.pluginCheckList input[type="checkbox"]').each(function() {
 				var $input = $(this);
@@ -35,8 +37,8 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 					aPluginList.push($input.attr('name'));
 				}
 			});
-			location.href = '?plugins=' + aPluginList.join('+');
-		})
+			window.location.href = '?plugins=' + aPluginList.join('+');
+		});
 		this.getBody().append($plist).append($buttonLoadPlugin);
 	},
 	
@@ -77,12 +79,12 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	 * Load preference for the advanced tab forms
 	 */
 	loadPref: function(aPrefs) {
-		var oPref = JSON.parse(localStorage.getItem('pref/advancedpad'));
+		var oPref = JSON.parse(window.localStorage.getItem('pref/advancedpad'));
 		if (oPref) {
 			var xValue;
 			aPrefs.forEach(function(sPref) {
 				xValue = oPref[sPref];
-				$item = $('#' + sPref);
+				var $item = $('#' + sPref);
 				switch (typeof xValue) {
 					case 'boolean':
 						$item.prop('checked', xValue);
@@ -97,12 +99,12 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	},
 	
 	savePref: function(aPrefs) {
-		var oPref = JSON.parse(localStorage.getItem('pref/advancedpad'));
+		var oPref = JSON.parse(window.localStorage.getItem('pref/advancedpad'));
 		if (!oPref) {
 			oPref = {};
 		}
 		aPrefs.forEach(function(sPref) {
-			$item = $('#' + sPref);
+			var $item = $('#' + sPref);
 			switch ($item.attr('type')) {
 				case 'checkbox':
 					oPref[sPref] = $item.prop('checked');
@@ -113,7 +115,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 				break;
 			}
 		});
-		localStorage.setItem('pref/advancedpad', JSON.stringify(oPref));
+		window.localStorage.setItem('pref/advancedpad', JSON.stringify(oPref));
 	},
 	
 	
@@ -123,11 +125,11 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		
 		var $shift = $('<div class="shiftpad"><p><b>Shift map</b></p><p>This tool can shift the entire map by 1 or 10 cells position in any direction. This is useful to insert space between the edge and an edge touching room.</p></div>');
 		
-		var $table = $('<table class="shifter"><tbody>' 
-			+ '<tr><td></td><td class="up"></td><td></td></tr>'
-			+ '<tr><td class="left"></td><td></td><td class="right"></td></tr>'
-			+ '<tr><td></td><td class="down"></td><td></td></tr>'
-			+'</tbody></table>');
+		var $table = $('<table class="shifter"><tbody>' +
+			'<tr><td></td><td class="up"></td><td></td></tr>' +
+			'<tr><td class="left"></td><td></td><td class="right"></td></tr>' +
+			'<tr><td></td><td class="down"></td><td></td></tr>' +
+			'</tbody></table>');
 
 		$('td.up', $table).append('<button type="button" data-dir="up" data-n="10">⇈</button><br/><button type="button" data-dir="up" data-n="1">↑</button>');
 		$('td.down', $table).append('<button type="button" data-dir="down" data-n="1">↓</button><br/><button type="button" data-dir="down" data-n="10">⇊</button>');
@@ -153,21 +155,21 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		var $desc = $('<div class="buildpad"><p><b>Build a game</b></p><p>This tool can build a game with the current level. It will produce a Zip archive file ready to be downloaded.</p></div>');
 		var $form = $('<form class="buildparams"></form>');
 		$form.append('<div><label class="w96" title="Give a name to your game, it will be displayed on the title bar" for="adv_gname">Game name </label><input type="text" id="adv_gname"/></div>');
-		$form.append('<div><label class="w96" title="Options to customize game behavior">Options </label>'
-			+ '<input id="adv_gofps" type="checkbox"/> <label for="adv_gofps" title="In FPS mode, you use your mouse to rotate the camera, and the keyboard (keys W, A, S, D) to move on the floor.">FPS control mode</span>'
-			+ '</div>');
-		$form.append('<div><label class="w96">&nbsp;</label>'
-			+ '<input id="adv_gofull" type="checkbox"/> <label for="adv_gofull" title="If checked, the game will be fullscreen">Fullscreen mode</span>'
-			+ '</div>');
-		$form.append('<div><label class="w96">&nbsp;</label>'
-			+ '<input id="adv_gosmooth" type="checkbox"/> <label for="adv_gosmooth" title="If checked, the wall textures rendering will be smooth. If not checked, it wil be pixelate">Smooth wall textures</span>'
-			+ '</div>');
+		$form.append('<div><label class="w96" title="Options to customize game behavior">Options </label>' +
+			'<input id="adv_gofps" type="checkbox"/> <label for="adv_gofps" title="In FPS mode, you use your mouse to rotate the camera, and the keyboard (keys W, A, S, D) to move on the floor.">FPS control mode</span>' +
+			'</div>');
+		$form.append('<div><label class="w96">&nbsp;</label>' +
+			'<input id="adv_gofull" type="checkbox"/> <label for="adv_gofull" title="If checked, the game will be fullscreen">Fullscreen mode</span>' +
+			'</div>');
+		$form.append('<div><label class="w96">&nbsp;</label>' +
+			'<input id="adv_gosmooth" type="checkbox"/> <label for="adv_gosmooth" title="If checked, the wall textures rendering will be smooth. If not checked, it wil be pixelate">Smooth wall textures</span>' +
+			'</div>');
 		var $startDiv;
-		$form.append($startDiv = $('<div class="spaced"><label>&nbsp;</label>'
-			+ '</div>'));
+		$form.append($startDiv = $('<div class="spaced"><label>&nbsp;</label>' +
+			'</div>'));
 		var $startButton = $('<button type="button">⚒ Build</button>');
 		$startDiv.append($startButton);
-		$startButton.on('click', (function(oEvent) {
+		$startButton.on('click', (function() {
 			this.savePref(aPrefs);
 			this.doAction('buildgame');
 		}).bind(this));
@@ -178,7 +180,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		var $importButton = $('<button type="button"> Import</button>');
 		$desc.append($importButton);
 		this.getBody().append('<hr/>').append($desc);
-		$importButton.on('click', (function(oEvent) {
+		$importButton.on('click', (function() {
 			this.doAction('importlevel');
 		}).bind(this));
 		this.doAction('requestname');

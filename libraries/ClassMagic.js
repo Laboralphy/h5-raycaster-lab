@@ -21,7 +21,7 @@ ClassMagic.castEventHandler = function(ProtoClass) {
 	ProtoClass.prototype.on = function(sEvent, pCallback) {
 		if (this[WEHName] === null) {
 			this[WEHName] = {};
-		};
+		}
 		var weh = this[WEHName];
 		if (!(sEvent in weh)) {
 			weh[sEvent] = [];
@@ -31,7 +31,7 @@ ClassMagic.castEventHandler = function(ProtoClass) {
 	ProtoClass.prototype.off = function(sEvent, pCallback) {
 		if (this[WEHName] === null) {
 			throw new Error('no event "' + sEvent + '" defined');
-		};
+		}
 		if (sEvent === undefined) {
 			this[WEHName] = {};
 		} else if (!(sEvent in this[WEHName])) {
@@ -54,7 +54,7 @@ ClassMagic.castEventHandler = function(ProtoClass) {
 	ProtoClass.prototype.trigger = function(sEvent) {
 		if (this[WEHName] === null) {
 			return;
-		};
+		}
 		var weh = this[WEHName];
 		if (!(sEvent in weh)) {
 			return;
@@ -63,7 +63,7 @@ ClassMagic.castEventHandler = function(ProtoClass) {
 		weh[sEvent].forEach(function(pCallback) {
 			pCallback.apply(this, aArgs);
 		}, this);
-	}
+	};
 	return ProtoClass;
 };
 

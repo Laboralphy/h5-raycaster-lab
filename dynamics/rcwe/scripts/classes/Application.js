@@ -1,3 +1,5 @@
+/* globals RCWE */
+
 O2.createClass('RCWE.Application', {
 
 	oStructure: null,
@@ -122,7 +124,7 @@ O2.createClass('RCWE.Application', {
 		oFileImportDialog.onAction = pAction;
 		oFileImportDialog.hide();
 		this.linkWidget('d10', oFileImportDialog);
-		
+
 		var oTemplateLoader = new RCWE.TemplateLoader();
 		oTemplateLoader.build();
 		oTemplateLoader.setSize(nD11Width, '100%');
@@ -696,7 +698,7 @@ O2.createClass('RCWE.Application', {
 				return;
 			}
 		} 
-		sFile = prompt('Enter file name.');
+		sFile = window.prompt('Enter file name.');
 		if (sFile !== undefined && sFile !== null && sFile !== '' ) {
 			this.oFileOpenDialog.sLastOpened = sFile;
 			this.saveLevelFile(sFile);
@@ -1072,7 +1074,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_advancedpad_importlevel: function() {
-		//prompt('filename');
+		//window.prompt('filename');
 		this.showMainScreen('fileimport');
 	},
 	
@@ -1181,7 +1183,7 @@ O2.createClass('RCWE.Application', {
 	
 	exportBlockTemplate: function() {
 		var PNGSIGN = 'data:image/png;base64,';
-		var sName = prompt('enter template name');
+		var sName = window.prompt('enter template name');
 		var oExport = {
 			name: sName,
 			tiles: this.oBlockEditor.serialize(),
@@ -1197,7 +1199,7 @@ O2.createClass('RCWE.Application', {
 	
 	exportThingTemplate: function() {
 		var PNGSIGN = 'data:image/png;base64,';
-		var sName = prompt('enter template name');
+		var sName = window.prompt('enter template name');
 		var oExport = {
 			name: sName,
 			things: this.oThingBrowser.serialize(),
@@ -1214,7 +1216,7 @@ O2.createClass('RCWE.Application', {
 	exportLevelTemplate: function(sName) {
 		var PNGSIGN = 'data:image/png;base64,';
 		if (!sName) {
-			sName = prompt('enter template name');
+			sName = window.prompt('enter template name');
 		}
 		var oExport = {
 			name: sName,

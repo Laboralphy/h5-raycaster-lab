@@ -142,7 +142,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		$oCanvas.bind('mouseup', this.cmd_mouseUp.bind(this));
 		//$oCanvas.bind('mouseout', this.cmd_mouseOut.bind(this));
 		
-		setInterval(this.cmd_interval.bind(this), 250);
+		window.setInterval(this.cmd_interval.bind(this), 250);
 	},
 	
 	cmd_interval: function() {

@@ -348,7 +348,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			s.bVisible = false;
 			s.nAlpha = 3;
 			var fDist = this.fTeleportDist;
-			var fAngle = t.getAngle() + this.fTeleportAngle
+			var fAngle = t.getAngle() + this.fTeleportAngle;
 			var ps = this.oGame.oRaycaster.nPlaneSpacing;
 			// calculer les coordonnée finales
 			var x = t.x + fDist * Math.cos(fAngle);

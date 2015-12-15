@@ -80,28 +80,9 @@ O2.createClass('RCWE.RCDataBuilder', {
 		
 		if (nFrames <= 1) {
 			return [nLeft, nRight];
+		} else {
+			return [[nLeft, nRight], nFrames, nDelay, bYoyo ? 2 : 1];
 		}
-		var a = [];
-		var i, iTime;
-		for (i = 0; i < nFrames; ++i) {
-			iTime = 0;
-			while (iTime < nDelay) {
-				a.push(i + nLeft);
-				a.push(i + nRight);
-				iTime += TIME_INTERVAL;
-			}
-		}
-		if (bYoyo) {
-			for (i = i - 2; i > 0; --i) {
-				iTime = 0;
-				while (iTime < nDelay) {
-					a.push(i + nLeft);
-					a.push(i + nRight);
-					iTime += TIME_INTERVAL;
-				}
-			}
-		}
-		return a;
 	},
 	
 	buildFlats: function(oData) {

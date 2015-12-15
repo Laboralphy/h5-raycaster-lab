@@ -2325,4 +2325,4 @@ var WORLD_DATA = {
     "y": 96,
     "angle": 0
   }
-}
+};

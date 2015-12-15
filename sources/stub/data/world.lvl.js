@@ -26,7 +26,7 @@ O2.createObject('WORLD_DATA', {
 			src : 'resources/gfx/textures/walls.png',
 			codes : [
 			    [0, 0],
-			    [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4],
+			    [[1, 1], 4, 120, 1],
 			    [6, 6],
 			    [0, 5],
 			    [5, 0],

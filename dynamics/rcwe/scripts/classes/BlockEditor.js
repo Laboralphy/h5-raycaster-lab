@@ -440,7 +440,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				ctx_right: $('td.dropzone.right canvas', this._oStructure).get(0).getContext('2d'),
 				ctx_left: $('td.dropzone.left canvas', this._oStructure).get(0).getContext('2d')
 			}
-			this._oAnimationData.timer = setInterval(this._animationProc.bind(this), this._oAnimationData.delay);
+			this._oAnimationData.timer = window.setInterval(this._animationProc.bind(this), this._oAnimationData.delay);
 		}
 	},
 	
@@ -451,7 +451,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	cmd_stopAnimation: function() {
 		var a = this._oAnimationData;
 		if (a && a.timer) {
-			clearInterval(a.timer);
+			window.clearInterval(a.timer);
 			a.timer = null;
 			var oLeft = null, oRight = null;
 			if (a.left !== null) {
