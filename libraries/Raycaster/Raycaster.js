@@ -952,7 +952,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					} else {
 						nTOfs = 0;
 					}
-					if (nPhys == 0xB || nPhys == 0) {
+					if (nPhys === 0xB || nPhys === 0) {
 						if (bStillVisible) {
 							Marker_markXY(aVisibles, xi, yi);
 						}

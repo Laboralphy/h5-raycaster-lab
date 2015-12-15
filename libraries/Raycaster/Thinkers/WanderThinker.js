@@ -30,7 +30,7 @@ O2.extendClass('O876_Raycaster.WanderThinker', O876_Raycaster.Thinker, {
     } else {
       --this.nTime;
       this.oMobile.moveForward();
-      if (this.oMobile.oWallCollision.x != 0 || this.oMobile.oWallCollision.y != 0) {
+      if (this.oMobile.oWallCollision.x !== 0 || this.oMobile.oWallCollision.y !== 0) {
         this.nTime = 0;
       }
     }

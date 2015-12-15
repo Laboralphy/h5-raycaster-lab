@@ -662,22 +662,22 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	cmd_viewBlock: function(oEvent) {
-		this.cmd_selectViewButton(oEvent.target)
+		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewblock');
 	},
 
 	cmd_viewThing: function(oEvent) {
-		this.cmd_selectViewButton(oEvent.target)
+		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewthing');
 	},
 	
 	cmd_viewStartPoint: function(oEvent) {
-		this.cmd_selectViewButton(oEvent.target)
+		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewstartpoint');
 	},
 
 	cmd_viewSky: function(oEvent) {
-		this.cmd_selectViewButton(oEvent.target)
+		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewsky');
 	},
 
@@ -686,7 +686,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	},
 	
 	cmd_viewAdvanced: function(oEvent) {
-		this.cmd_selectViewButton(oEvent.target)
+		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewadvanced');
 	},
 
@@ -714,7 +714,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 				x: null,
 				y: null,
 				angle: 0
-			}
+			};
 		} 
 		var sp = this.oStartingPoint;		
 		sp.x = x1;

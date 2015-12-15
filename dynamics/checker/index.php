@@ -61,26 +61,15 @@ function main() {
 			$.get(f, function(data) {
 				JSHINT(data, {
 					curly: true,
-					undef: true,
-					unused: true,
-					esversion: 5
+					//undef: true,
+					//unused: true
 				}, {
-					__inherited: false,
-					H5UI: false,
-					jQuery: false,
-					'$': false,
-					O2: false,
-					O876: false,
-					O876_Raycaster: false,
-					PI: true,
-					GfxTools: false,
-					Marker: false,
-					ArrayTools: false,
-					MathTools: false,
 					Uint32Array: false,
 					window: false,
 					console: false,
-					CONFIG: false
+					document: false,
+					'$': false,
+					jQuery: false
 				});
 				var sReport = '<table class="report"><tr class="file"><th colspan="3">' + f + '</th></tr><tr class="header"><th>code</th><th>line</th><th>char</th><th>reason</th></tr>' + JSHINT.errors.map(function(r2) {
 					if (r2) {
@@ -148,8 +137,7 @@ function checkDirectory($aDir) {
 
 
 function main() {
-	//checkDirectory(array('libraries', 'sources'));
-	checkDirectory(array('dynamics'));
+	checkDirectory(array('libraries', 'sources', 'dynamics'));
 }
 
 main();

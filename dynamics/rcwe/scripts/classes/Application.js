@@ -692,7 +692,7 @@ O2.createClass('RCWE.Application', {
 	cmd_labygrid_save: function() {
 		var sFile;
 		if (this.oFileOpenDialog.sLastOpened != '') {
-			sFile = this.oFileOpenDialog.sLastOpened
+			sFile = this.oFileOpenDialog.sLastOpened;
 			if (confirm('Save file "' + sFile + '" ?')) {
 				this.saveLevelFile(sFile);
 				return;

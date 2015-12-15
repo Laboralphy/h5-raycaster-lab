@@ -1,3 +1,4 @@
+/* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,

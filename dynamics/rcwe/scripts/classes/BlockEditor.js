@@ -439,7 +439,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				timer: null,
 				ctx_right: $('td.dropzone.right canvas', this._oStructure).get(0).getContext('2d'),
 				ctx_left: $('td.dropzone.left canvas', this._oStructure).get(0).getContext('2d')
-			}
+			};
 			this._oAnimationData.timer = window.setInterval(this._animationProc.bind(this), this._oAnimationData.delay);
 		}
 	},
@@ -799,7 +799,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		if (aIds.length == 0) {
 			throw new Error('no id submitted');
 		}
-		var sType = aIds[0].split('_')[0]
+		var sType = aIds[0].split('_')[0];
 		var nMaxId = this.getHighestTileId(sType);
 		var oMatch = {};
 		aIds.forEach(function(id) {

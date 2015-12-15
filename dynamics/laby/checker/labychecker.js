@@ -1,4 +1,5 @@
 // laby checker
+/* globals O2, Astar, LABY, LabyLand, MAP, XHR */
 O2.extendClass('LabyLand', Astar.Land, {
 	// la classe permet de gerer les passage secret et les clés
 	
@@ -75,8 +76,8 @@ O2.extendClass('LabyLand', Astar.Land, {
 	},
 	
 	searchUniqueBlock: function(n, xStart, yStart) {
-		xEnd = this.aBlocks[n][0];
-		yEnd = this.aBlocks[n][1];
+		var xEnd = this.aBlocks[n][0];
+		var yEnd = this.aBlocks[n][1];
 		return this.searchBlockXY(xStart, yStart, xEnd, yEnd);
 	},
 	
@@ -281,11 +282,11 @@ function autoCheck() {
 	var oBody = document.getElementsByTagName('body')[0];
 	XHR.get('laby.php?s=' + oAutoCheck.index +'&g=' + oAutoCheck.generator + '&o=' + oAutoCheck.options, function(data) {
 		MAP = JSON.parse(data);
-		l = new LabyLand();
+		var l = new LabyLand();
 		l.bOutput = false;
 		l.init(MAP);
 		l.labyAnalysis();
-		if ((oAutoCheck.index % 100) == 0) {
+		if ((oAutoCheck.index % 100) === 0) {
 			oBody.innerHTML += oAutoCheck.index.toString();
 		} 
 		if (l.processWalk()) {
@@ -295,7 +296,7 @@ function autoCheck() {
 		}
 		if (oAutoCheck.index < oAutoCheck.stop) {
 			++oAutoCheck.index;
-			setTimeout(autoCheck, 16);
+			window.setTimeout(autoCheck, 16);
 		}
 	});
 }

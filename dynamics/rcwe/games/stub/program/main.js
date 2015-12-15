@@ -1,3 +1,4 @@
+/* globals Stub, CONFIG, O876_Raycaster, G */
 function main() {
 	screenResize();
 	window.addEventListener('resize', screenResize);
@@ -41,8 +42,8 @@ function lockPointer(oElement) {
 
 function screenResize(oEvent) {
 	var nPadding = 24;
-	var h = innerHeight;
-	var w = innerWidth;
+	var h = window.innerHeight;
+	var w = window.innerWidth;
 	var r = (h - nPadding) / w;
 	var oCanvas = document.getElementById('screen');
 	var rBase = oCanvas.height / oCanvas.width; 
