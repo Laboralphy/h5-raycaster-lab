@@ -660,7 +660,6 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				}
 				sId = sType + '_' + nId;
 			}
-			console.log('id = ', sId);
 			$canvas.attr('id', sId);
 			$canvas.addClass('tile');
 			if (sType) {

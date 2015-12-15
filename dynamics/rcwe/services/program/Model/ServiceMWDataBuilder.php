@@ -5,8 +5,7 @@ require_once('RaycasterConverter.php');
 
 class ServiceMWDataBuilder {	
 	
-	const MAPEXP_PATH = '../../../servers/mw/maps_exports';
-	const WWW_PATH = '../../../servers/mw/www';
+	const MAPEXP_PATH = '../server.storage/exports/mw';
 	
 	
 	public function exportLevel($sScript, $sName) {
@@ -14,6 +13,9 @@ class ServiceMWDataBuilder {
 		$oFS = $oMF->getModel('ServiceFs');
 		$oSG = $oMF->getModel('ServiceGame');
 		$oData = json_decode($sScript);
+		if (!is_writable(self::MAPEXP_PATH)) {
+			throw new Exception('cannot write output file (permission denied)');
+		}
 		$sPath = self::MAPEXP_PATH . '/' . $sName;
 		// prepare the folder
 		if (file_exists($sPath)) {

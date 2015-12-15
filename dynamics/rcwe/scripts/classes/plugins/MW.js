@@ -72,8 +72,8 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		var d2 = oAdapter.buildLevelData(data);
 		$.post('services/?action=mw.post&n=' + sLevel, JSON.stringify(d2))
 		.fail(function(err) {
-			oApplication.error(err);
-		}).done(function(d) {
+			oApplication.error(err.responseText);
+		}).success(function(d) {
 			oApplication.popup('Message', 'Export done.');
 		});
 	},
@@ -88,7 +88,6 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		.fail(function(err) {
 			oApplication.error(err);
 		}).success(function(d) {
-			console.log(d);
 			oApplication.unserialize(JSON.parse(d));
 			oApplication.showPanel('blockBrowser');
 		});
