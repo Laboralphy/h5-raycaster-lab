@@ -2,7 +2,7 @@
 function main() {
 	screenResize();
 	window.addEventListener('resize', screenResize);
-	window.G = new Stub.Game();
+	window.G = new STUB.Game();
 
 	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
 	if (CONFIG.game.fpscontrol && O876_Raycaster.PointerLock.init()) {

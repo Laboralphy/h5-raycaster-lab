@@ -1,4 +1,12 @@
-O2.createClass('SoundSystem',  {
+/**
+ * Class of multiple channels audio management
+ * deals with sound effects and background music
+ * deals with crossfading background musics
+ */
+ 
+/* globals O2 */
+
+O2.createClass('SoundSystem', {
 	CHAN_MUSIC : 99,
 
 	HAVE_NOTHING: 0,		// on n'a aucune information sur l'état du fichier audio ; mieux vaut ne pas lancer la lecture.

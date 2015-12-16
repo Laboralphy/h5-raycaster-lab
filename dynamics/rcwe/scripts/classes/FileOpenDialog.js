@@ -104,14 +104,10 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 	},
 	
 	cmd_delete: function() {
-		var fs = this.oFileSystem;
 		var $removed = $('div.thumbnail.selected', this.oScrollZone);
-		if ($removed.hasClass('remote')) {
-			this.doAction('cantdelete');
-		} else {
-			fs.remove(this.getSelected());
-			$removed.fadeOut(function() { $removed.remove(); });
-		}
+		var sFile = this.getSelected();
+		this.doAction('delete', sFile);
+		$removed.fadeOut(function() { $removed.remove(); });
 	},
 	
 	cmd_close: function() {

@@ -16,4 +16,13 @@ class LevelController extends M\Controller\Action {
 		$aList = $oTemp->listTemplates('level');
 		$this->setViewData('list', $aList);
 	}
+
+	public function deleteAction() {
+		$oData = json_decode($this->getRequest()->getPostData());
+		$sName = $oData->name;
+		$oMF = M\Model\Factory::getInstance();
+		$oTemp = $oMF->getModel('ServiceTemplate');
+		$oTemp->deleteTemplate('level', $sName);
+		$this->setViewData('name', $sName);
+	}
 }

@@ -1,55 +1,12 @@
-/* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
+/* globals O2, ClassMagic, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
-	_oEvents: null,
 	_xTagProcessing: 0,
 	_yTagProcessing: 0,
 	_oClassLoader: null,
-
-	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
-	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
-	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
-
-	on: function(sEvent, pFunction) {
-		if (!this._oEvents) {
-			this._oEvents = {};
-		}
-		if (!(sEvent in this._oEvents)) {
-			this._oEvents[sEvent] = [];
-		}
-		if (this._oEvents[sEvent].indexOf(pFunction) < 0) {
-			this._oEvents[sEvent].push(pFunction);
-		}
-	},
-	
-	off: function(sEvent, pFunction) {
-		if (this._oEvents && (sEvent in this._oEvents)) {
-			if (pFunction === undefined) {
-				delete this._oEvents[sEvent];
-			} else {
-				var n = this._oEvents[sEvent].indexOf(pFunction);
-				if (n >= 0) {
-					this._oEvents[sEvent].splice(n, 1);
-				}
-			}			
-		}
-	},
-	
-	
-	/**
-	 * Récupération de la notification issue du serveur
-	 * Cette notification est dispatchée sur l'une des fonction scn_
-	 */
-	trigger: function(sEvent, data) {
-		if (this._oEvents && (sEvent in this._oEvents)) {
-			this._oEvents[sEvent].forEach(function(p) {
-				p(data);
-			});
-		}		
-	},
 
 	/** 
 	 * Evènement apellé lors de l'initialisation du jeu
@@ -58,9 +15,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	onInitialize: function() {
 		this._oClassLoader = new O876.ClassLoader();
 		this.on('tag', this.onTagTriggered.bind(this));
-		if (this.init) {
-			this.init();
-		}
+		this.trigger('init');
 	},
 	
 	/**
@@ -168,7 +123,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		var tf = this.TIME_FACTOR;
 		while (y < nSize) {
 			while (x < nSize) {
-				this.triggerTag(x, y, this.getBlockTag(x, y), true);
+				this.triggerTag(x, y, this.getBlockTag(x, y));
 				++x;
 				nStep = (nStep + 1) % nStepMax;
 				if (nStep === 0 && (Date.now() - nStart) >= tf) {
@@ -303,7 +258,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
 		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag);
+			this.triggerTag(x, y, sTag, 'move');
 			this._sTag = sTag;
 		}
 	},
@@ -312,14 +267,15 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	 * TriggerTag
 	 * Active volontaire le tag s'il existe à la position spécifiée
 	 */
-	triggerTag: function(x, y, sTag, bInit) {
+	triggerTag: function(x, y, sTag) {
 		if (sTag) {
 			var aTags = sTag.split(';');
 			var sNewTag = aTags.filter(function(s) {
 				var aTag = s.replace(/^ +/, '').replace(/ +$/, '').split(' ');
 				var sCmd = aTag.shift();
-				var oData = {x: x, y: y, tag: aTag.join(' '), remove: false};
-				this.trigger((bInit ? 'i' : '') + 'tag' + sCmd, oData);
+				var oData = {x: x, y: y, data: aTag.join(' '), remove: false};
+				var aEvent = ['tag', sCmd];
+				this.trigger(aEvent.join('.'), oData);
 				return !oData.remove;
 			}, this).join(';');
 			this.setBlockTag(x, y, sNewTag);
@@ -371,5 +327,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		} else {
 			return null;
 		}		
-	},
+	}
 });
+
+ClassMagic.castEventHandler(O876_Raycaster.RCEngine);

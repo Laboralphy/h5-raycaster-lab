@@ -1,3 +1,5 @@
+/* globals O2, H5UI */
+
 O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	_sClass : 'Box',
 	_sColor : '#FFFFFF',

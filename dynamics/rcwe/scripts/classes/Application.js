@@ -813,7 +813,11 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_fileopendialog_cantdelete: function() {
-		this.error('You can\'t delete this file : it\'s a public file hosted on the server. It is not stored on your browser local storage.');
+		//this.error('You can\'t delete this file : it\'s a public file hosted on the server. It is not stored on your browser local storage.');
+	},
+
+	cmd_fileopendialog_delete: function(sFile) {
+		this.deleteLevelFile(sFile);
 	},
 	
 	
@@ -1156,6 +1160,12 @@ O2.createClass('RCWE.Application', {
 		};
 		
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
+	},
+	
+	deleteLevelFile: function(sName) {
+		$.post('services/?action=level.delete', JSON.stringify({name: sName})).fail((function(err) {
+			this.error('could not delete file ' + sName + ' : ' + err.responseText);
+		}).bind(this));
 	},
 	
 	serialize: function() {
