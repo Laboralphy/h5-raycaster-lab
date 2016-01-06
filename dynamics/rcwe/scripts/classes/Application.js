@@ -1281,6 +1281,12 @@ O2.createClass('RCWE.Application', {
 				if (b.left in oNewWallIds) {
 					b.left = oNewWallIds[b.left];
 				}
+				if (b.right2 in oNewWallIds) {
+					b.right2 = oNewWallIds[b.right2];
+				}
+				if (b.left2 in oNewWallIds) {
+					b.left2 = oNewWallIds[b.left2];
+				}
 			});
 			this.oBlockEditor.unserialize(data.tiles, (function() {
 				this.oBlockBrowser.unserialize(data.blocks, true);

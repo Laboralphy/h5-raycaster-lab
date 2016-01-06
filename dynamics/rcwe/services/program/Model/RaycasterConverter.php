@@ -164,6 +164,8 @@ class RaycasterConverter {
 				$aFlat = $oJSON->flats->codes[$nText];
 				$sLeft = '';
 				$sRight = '';
+				$sLeft2 = '';
+				$sRight2 = '';
 				$sCeil = '';
 				$sFloor = '';
 				$nFrameCount = 1;
@@ -184,6 +186,14 @@ class RaycasterConverter {
 					}
 					if ($aWallFace[0] >= 0) {
 						$sRight = 'wall_' . strval($aWallFace[0] + 1);
+						$aWallIds[] = $sRight;
+					}
+					if ($aWallFace[3] >= 0) {
+						$sLeft2 = 'wall_' . strval($aWallFace[2] + 1);
+						$aWallIds[] = $sLeft2;
+					}
+					if ($aWallFace[2] >= 0) {
+						$sRight2 = 'wall_' . strval($aWallFace[3] + 1);
 						$aWallIds[] = $sRight;
 					}
 					if ($aAnim) {
@@ -208,6 +218,8 @@ class RaycasterConverter {
 					'doortype' => $nDoorType,
 					'left' => $sLeft,
 					'right' => $sRight,
+					'left2' => $sLeft2,
+					'right2' => $sRight2,
 					'floor' => $sFloor,
 					'ceil' => $sCeil,
 					'frames' => $nFrameCount,
