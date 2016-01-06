@@ -12,8 +12,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 		this.on('level', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
 		
-		this.on('tag.light', this.tagEventLight.bind(this));
-		this.on('tag.shadow', this.tagEventShadow.bind(this));
+		this.on('itag.light', this.tagEventLight.bind(this));
+		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('tag.msg', this.tagEventMessage.bind(this));
 		this.on('tag.script', this.tagEventScript.bind(this));
 		

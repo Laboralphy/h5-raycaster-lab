@@ -148,7 +148,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	},
 	
 	cmd_buildgame: function(oEvent) {
-		this.cmd_selectOneCommand(oEvent);//
+		this.cmd_selectOneCommand(oEvent);
 		this.getBody().empty();
 		var aPrefs = ('adv_gofps adv_gofull adv_gosmooth').split(' ');
 		
@@ -175,14 +175,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		}).bind(this));
 		$desc.append($form);
 		this.getBody().append($desc);
-		// -----------------
-		$desc = $('<div class="importpad"><p><b>Import a level</b></p><p>This tool can import levels from previously built games stored in the "sources" directory.</p></div>');
-		var $importButton = $('<button type="button"> Import</button>');
-		$desc.append($importButton);
-		this.getBody().append('<hr/>').append($desc);
-		$importButton.on('click', (function() {
-			this.doAction('importlevel');
-		}).bind(this));
+
 		this.doAction('requestname');
 		this.loadPref(aPrefs);
 	},

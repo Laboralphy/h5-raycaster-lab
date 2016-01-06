@@ -35,7 +35,7 @@
 }
 
 
-
+/*
 .fileimportdialog ul.import > li.source {
 	margin-top: 16px;
 }
@@ -49,4 +49,13 @@
 	font-style: italic;
 	font-weight: bold;
 	color: #800;
+}
+
+.fileimportdialog ul.import select {
+	min-width: 256px;
+}
+*/
+
+.fileimportdialog .levelSelector select.twinSelect {
+	width: 128px;
 }

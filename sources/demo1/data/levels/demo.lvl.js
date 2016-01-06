@@ -1,4 +1,4 @@
-var WORLD_DATA = {
+O2.createObject('WORLD_DATA.demo', {
   "walls": {
     "codes": [
       null,
@@ -2325,4 +2325,4 @@ var WORLD_DATA = {
     "y": 96,
     "angle": 0
   }
-};
+});

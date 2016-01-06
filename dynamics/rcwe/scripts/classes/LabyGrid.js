@@ -129,6 +129,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommand('☀', 'Sky and background view', this.cmd_viewSky.bind(this)).addClass('view');
 		this.addCommand('▶', '3D view', this.cmd_view3D.bind(this)).addClass('view');
 		this.addCommandSeparator();
+		this.addCommand('⇄', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
 		this.addCommand('⚠', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
 		// ⚙ options
 		// ⚒ build
@@ -685,6 +686,11 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.doAction('view3d');
 	},
 	
+	cmd_viewImpexp: function(oEvent) {
+		this.cmd_selectViewButton(oEvent.target);
+		this.doAction('viewimpexp');
+	},
+
 	cmd_viewAdvanced: function(oEvent) {
 		this.cmd_selectViewButton(oEvent.target);
 		this.doAction('viewadvanced');
@@ -696,7 +702,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			W.error('Could not set region tag : no region selected');
 			return;
 		}
-		var sTag = prompt('Enter tag new value for the selected region (empty string = erase tag).');
+		var sTag = prompt('Enter tag new value for the selected region (empty string = erase tag).', Marker.getMarkXY(this.aTags, s.x1, s.y1));
 		if (sTag === null) {
 			return;
 		}
@@ -737,6 +743,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.doAction('setstart', sp.x, sp.y, sp.angle);
 		this.redraw();
 	},
+	
 
 
 	////// DRAW FUNCTIONS ////// DRAW FUNCTIONS ////// DRAW FUNCTIONS //////

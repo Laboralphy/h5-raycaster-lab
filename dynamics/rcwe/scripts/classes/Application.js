@@ -123,7 +123,7 @@ O2.createClass('RCWE.Application', {
 		oFileImportDialog.setSize('100%', '100%');
 		oFileImportDialog.onAction = pAction;
 		oFileImportDialog.hide();
-		this.linkWidget('d10', oFileImportDialog);
+		this.linkWidget('d11', oFileImportDialog);
 
 		var oTemplateLoader = new RCWE.TemplateLoader();
 		oTemplateLoader.build();
@@ -339,13 +339,18 @@ O2.createClass('RCWE.Application', {
 				this.oStartPointLocator.show();
 				this.oCurrentWindow = this.oStartPointLocator;
 			break;
+			
+			case 'fileimport':
+				this.oMapGrid.setSelectFlag(false);
+				this.oFileImportDialog.show();
+				this.oCurrentWindow = this.oFileImportDialog;
+			break;
 		}
 	},
 	
 	showMainScreen: function(s) {
 		switch (s) {
 			case 'map':
-				this.oFileImportDialog.hide();
 				this.oFileOpenDialog.hide();
 				//---
 				this.oMapGrid.show();
@@ -353,16 +358,8 @@ O2.createClass('RCWE.Application', {
 
 			case 'fileopen':
 				this.oMapGrid.hide();
-				this.oFileImportDialog.hide();
 				//---
 				this.oFileOpenDialog.show();
-			break;
-				
-			case 'fileimport':
-				this.oMapGrid.hide();
-				this.oFileOpenDialog.hide();
-				//---
-				this.oFileImportDialog.show();
 			break;
 		}
 	},
@@ -772,6 +769,10 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 	
+	cmd_labygrid_viewimpexp: function() {
+		this.showPanel('fileimport');
+	},
+
 	cmd_labygrid_viewadvanced: function() {
 		this.showPanel('advancedpad');
 	},
@@ -824,10 +825,20 @@ O2.createClass('RCWE.Application', {
 	// FILE IMPORT DIALOG
 	// FILE IMPORT DIALOG
 	// FILE IMPORT DIALOG
-	cmd_fileimportdialog_load: function(sFile) {
+	cmd_fileimportdialog_load: function(sProj, sFile) {
 		this.showMainScreen('map');
 		this.showPanel('blockbrowser');		
-		this.importLevel(sFile);
+		this.importLevel(sProj, sFile);
+	},
+
+	cmd_fileimportdialog_save: function(sProj, sFile) {
+		if (sFile === undefined) {
+			sFile = prompt('Enter new file name.');
+		}
+		if (sFile === null) {
+			return;
+		}
+		this.exportLevel(sProj, sFile);
 	},
 
 	cmd_fileimportdialog_close: function() {
@@ -1079,7 +1090,8 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_advancedpad_importlevel: function() {
 		//window.prompt('filename');
-		this.showMainScreen('fileimport');
+		//this.showMainScreen('fileimport');
+		
 	},
 	
 	// startingpointlocator
@@ -1298,7 +1310,7 @@ O2.createClass('RCWE.Application', {
 		}).bind(this));
 	},
 	
-	importLevel: function(sMap) {
+	importLevel: function(sProject, sMap) {
 		var pDataReceived = (function(data) {
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
@@ -1307,9 +1319,25 @@ O2.createClass('RCWE.Application', {
 		}).bind(this);
 			
 		var pLoad = function() {
-			$.getJSON('services/?action=import.import&l=' + sMap, pDataReceived);
+			$.getJSON('services/?action=import.import&p=' + sProject + '&l=' + sMap, pDataReceived);
 		};
 		
 		this.popup('Message', 'Importing level, please wait...', '', pLoad);
+	},
+
+	exportLevel: function(sProject, sMap) {
+		var oApplication = W;
+		var data = oApplication.serialize();
+		var oAdapter = new RCWE.RCDataBuilder();
+		var d2 = oAdapter.buildLevelData(data);
+		$.post('services/?action=import.export', JSON.stringify({
+			project: sProject,
+			name: sMap,
+			data: d2
+		})).fail(function(err) {
+			oApplication.error(err.responseText);
+		}).success(function(d) {
+			oApplication.popup('Message', 'Export done.');
+		});
 	},
 });

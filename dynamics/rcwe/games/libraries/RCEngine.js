@@ -15,7 +15,9 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	onInitialize: function() {
 		this._oClassLoader = new O876.ClassLoader();
 		this.on('tag', this.onTagTriggered.bind(this));
-		this.trigger('init');
+		if ('init' in this) {
+			this.init();
+		}
 	},
 	
 	/**
@@ -123,7 +125,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		var tf = this.TIME_FACTOR;
 		while (y < nSize) {
 			while (x < nSize) {
-				this.triggerTag(x, y, this.getBlockTag(x, y));
+				this.triggerTag(x, y, this.getBlockTag(x, y), true);
 				++x;
 				nStep = (nStep + 1) % nStepMax;
 				if (nStep === 0 && (Date.now() - nStart) >= tf) {
@@ -267,14 +269,14 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	 * TriggerTag
 	 * Active volontaire le tag s'il existe à la position spécifiée
 	 */
-	triggerTag: function(x, y, sTag) {
+	triggerTag: function(x, y, sTag, bInit) {
 		if (sTag) {
 			var aTags = sTag.split(';');
 			var sNewTag = aTags.filter(function(s) {
 				var aTag = s.replace(/^ +/, '').replace(/ +$/, '').split(' ');
 				var sCmd = aTag.shift();
 				var oData = {x: x, y: y, data: aTag.join(' '), remove: false};
-				var aEvent = ['tag', sCmd];
+				var aEvent = [(bInit ? 'i' : '') + 'tag', sCmd];
 				this.trigger(aEvent.join('.'), oData);
 				return !oData.remove;
 			}, this).join(';');
