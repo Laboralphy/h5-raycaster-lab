@@ -28,7 +28,9 @@ class ServiceTemplate {
 		unset($oData->thumbnail);
 		$sFileContent = json_encode($oData);
 		$sFilePath = self::BASE_PATH . $sType . 's/' . $sName;
-		mkdir($sFilePath, 0777, true);
+		if (!file_exists($sFilePath)) {
+			mkdir($sFilePath, 0777, true);
+		}
 		file_put_contents($sFilePath . '/template.json', $sFileContent);
 		file_put_contents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
 		if (!file_exists($sFilePath . '/template.json')) {

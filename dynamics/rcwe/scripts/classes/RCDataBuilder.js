@@ -67,7 +67,6 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var nType = oBlock.type;
 			var id = oBlock.id;
 			if (nType == BT.SOLID || nType == BT.TRANSPARENT || nType == BT.DOOR || nType == BT.SECRET || nType == BT.ALCOVE) {
-				console.log(w.ids.indexOf(oBlock.right2));
 				oRes.codes[id] = this.buildAnimatedWall(oBlock.frames, [
 					w.ids.indexOf(oBlock.left), 
 					w.ids.indexOf(oBlock.right), 
@@ -83,11 +82,9 @@ O2.createClass('RCWE.RCDataBuilder', {
 	
 	buildAnimatedWall: function(nFrames, aWallIds, nDelay, bYoyo) {
 		var TIME_INTERVAL = 40;
-		if (aWallIds[2] == -1) {
-			aWallIds[2] = aWallIds[0];
-		}
-		if (aWallIds[3] == -1) {
-			aWallIds[3] = aWallIds[1];
+		if (aWallIds[2] == -1 && aWallIds[3] == -1) {
+			aWallIds.pop();
+			aWallIds.pop();
 		}
 		if (nFrames <= 1) {
 			return aWallIds;

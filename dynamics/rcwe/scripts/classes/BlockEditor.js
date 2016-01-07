@@ -265,6 +265,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 					if ($tile.length) {
 						this.cmd_dd_drop($('td.dropzone.' + sData, this._oStructure).get(0), $tile.get(0));
 					}
+				} else {
+					// clear the canvas
+					var $canvas = $('td.dropzone.' + sData + ' canvas', this._oStructure)
+					var oCanvas = $canvas.get(0);
+					var oContext = oCanvas.getContext('2d');
+					oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
 				}
 				break;
 				

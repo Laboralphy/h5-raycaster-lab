@@ -27,8 +27,7 @@ code-bloc-prop
   PHYS_TRANSPARENT_BLOCK:      0x0A,  // correspond à un bloc semi transparent : sa texture comporte des trous, des zones transparentes
   PHYS_INVISIBLE_BLOCK:        0x0B,  // correspond à un bloc invisible mais bloquant la progression
   PHYS_OFFSET_BLOCK:           0x0C,  // correspond à un bloc solide muni d'un offset
-  
-  PHYS_WALL_4                  0x0D,  // correspond à un block solide ayant 4 texture différentes
+
 
 
 
