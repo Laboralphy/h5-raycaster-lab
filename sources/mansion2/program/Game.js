@@ -11,11 +11,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('level', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
-		this.on('itaglight', this.tagEventLightSource.bind(this));
-		this.on('itagshadow', this.tagEventShadow.bind(this));
 		
-		this.on('tagmsg', this.tagEventMessage.bind(this));
-		this.on('tagscript', this.tagEventScript.bind(this));
+		this.on('itag.light', this.tagEventLight.bind(this));
+		this.on('itag.shadow', this.tagEventShadow.bind(this));
+		this.on('tag.msg', this.tagEventMessage.bind(this));
+		this.on('tag.script', this.tagEventScript.bind(this));
 		
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
@@ -202,10 +202,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 	 * lightsource c|f|w pour indiquer une lumière venant du plafon (c) ou du
 	 * sol (f) ou des murs (w)
 	 */
-	tagEventLightSource: function(oEvent) {
+	tagEventLight: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
-		var sType = oEvent.tag;
+		var sType = oEvent.param;
 		var rc = this.oRaycaster;
 		var nPhys;
 		var aDir = [[1, 0],	[0, -1], [-1, 0], [0, 1]];		
@@ -271,7 +271,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 	
 	
 	tagEventMessage: function(oEvent) {
-		var sTag = oEvent.tag;
+		var sTag = oEvent.data;
 		this.popupMessage(MESSAGES_DATA[this.getLevel()]['m_' + sTag]);
 		oEvent.remove = true;
 	},
@@ -281,14 +281,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 	 */
 	tagEventZone: function(oEvent) {
 		// changement d'ambiance sonore
-		this.playAmbience(SOUNDS_DATA.ambience[oEvent.tag]);
+		this.playAmbience(SOUNDS_DATA.ambience[oEvent.data]);
 	},
 	
 	/**
 	 * Exécute un script
 	 */
 	tagEventScript: function(oEvent) {
-		var sTag = oEvent.tag;
+		var sTag = oEvent.data;
 		var aTag = sTag.split(' ');
 		var sScript = aTag.shift();
 		var sAction = aTag.shift();

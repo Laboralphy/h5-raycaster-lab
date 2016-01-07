@@ -1,4 +1,12 @@
-O2.createClass('SoundSystem',  {
+/**
+ * Class of multiple channels audio management
+ * deals with sound effects and background music
+ * deals with crossfading background musics
+ */
+ 
+/* globals O2 */
+
+O2.createClass('SoundSystem', {
 	CHAN_MUSIC : 99,
 
 	HAVE_NOTHING: 0,		// on n'a aucune information sur l'état du fichier audio ; mieux vaut ne pas lancer la lecture.
@@ -216,13 +224,13 @@ O2.createClass('SoundSystem',  {
 		var nVolumeDelta = -10;
 		this.bCrossFading = true;
 		var oInterval = null;
-		oInterval = setInterval((function() {
+		oInterval = window.setInterval((function() {
 			iVolume += nVolumeDelta;
 			this.oMusicChan.volume = iVolume / 100;
 			if (iVolume <= 0) {
 				this.playMusic(sFile);
 				this.oMusicChan.volume = 1;
-				clearInterval(oInterval);
+				window.clearInterval(oInterval);
 				this.bCrossFading = false;
 				if (this.sCrossFadeTo) {
 					this.crossFadeMusic(this.sCrossFadeTo);

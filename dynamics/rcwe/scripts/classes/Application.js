@@ -1,3 +1,5 @@
+/* globals RCWE */
+
 O2.createClass('RCWE.Application', {
 
 	oStructure: null,
@@ -121,8 +123,8 @@ O2.createClass('RCWE.Application', {
 		oFileImportDialog.setSize('100%', '100%');
 		oFileImportDialog.onAction = pAction;
 		oFileImportDialog.hide();
-		this.linkWidget('d10', oFileImportDialog);
-		
+		this.linkWidget('d11', oFileImportDialog);
+
 		var oTemplateLoader = new RCWE.TemplateLoader();
 		oTemplateLoader.build();
 		oTemplateLoader.setSize(nD11Width, '100%');
@@ -337,13 +339,18 @@ O2.createClass('RCWE.Application', {
 				this.oStartPointLocator.show();
 				this.oCurrentWindow = this.oStartPointLocator;
 			break;
+			
+			case 'fileimport':
+				this.oMapGrid.setSelectFlag(false);
+				this.oFileImportDialog.show();
+				this.oCurrentWindow = this.oFileImportDialog;
+			break;
 		}
 	},
 	
 	showMainScreen: function(s) {
 		switch (s) {
 			case 'map':
-				this.oFileImportDialog.hide();
 				this.oFileOpenDialog.hide();
 				//---
 				this.oMapGrid.show();
@@ -351,16 +358,8 @@ O2.createClass('RCWE.Application', {
 
 			case 'fileopen':
 				this.oMapGrid.hide();
-				this.oFileImportDialog.hide();
 				//---
 				this.oFileOpenDialog.show();
-			break;
-				
-			case 'fileimport':
-				this.oMapGrid.hide();
-				this.oFileOpenDialog.hide();
-				//---
-				this.oFileImportDialog.show();
 			break;
 		}
 	},
@@ -690,13 +689,13 @@ O2.createClass('RCWE.Application', {
 	cmd_labygrid_save: function() {
 		var sFile;
 		if (this.oFileOpenDialog.sLastOpened != '') {
-			sFile = this.oFileOpenDialog.sLastOpened
+			sFile = this.oFileOpenDialog.sLastOpened;
 			if (confirm('Save file "' + sFile + '" ?')) {
 				this.saveLevelFile(sFile);
 				return;
 			}
 		} 
-		sFile = prompt('Enter file name.');
+		sFile = window.prompt('Enter file name.');
 		if (sFile !== undefined && sFile !== null && sFile !== '' ) {
 			this.oFileOpenDialog.sLastOpened = sFile;
 			this.saveLevelFile(sFile);
@@ -770,6 +769,10 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 	
+	cmd_labygrid_viewimpexp: function() {
+		this.showPanel('fileimport');
+	},
+
 	cmd_labygrid_viewadvanced: function() {
 		this.showPanel('advancedpad');
 	},
@@ -811,17 +814,31 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_fileopendialog_cantdelete: function() {
-		this.error('You can\'t delete this file : it\'s a public file hosted on the server. It is not stored on your browser local storage.');
+		//this.error('You can\'t delete this file : it\'s a public file hosted on the server. It is not stored on your browser local storage.');
+	},
+
+	cmd_fileopendialog_delete: function(sFile) {
+		this.deleteLevelFile(sFile);
 	},
 	
 	
 	// FILE IMPORT DIALOG
 	// FILE IMPORT DIALOG
 	// FILE IMPORT DIALOG
-	cmd_fileimportdialog_load: function(sFile) {
+	cmd_fileimportdialog_load: function(sProj, sFile) {
 		this.showMainScreen('map');
 		this.showPanel('blockbrowser');		
-		this.importLevel(sFile);
+		this.importLevel(sProj, sFile);
+	},
+
+	cmd_fileimportdialog_save: function(sProj, sFile) {
+		if (sFile === undefined) {
+			sFile = prompt('Enter new file name.');
+		}
+		if (sFile === null) {
+			return;
+		}
+		this.exportLevel(sProj, sFile);
 	},
 
 	cmd_fileimportdialog_close: function() {
@@ -1072,8 +1089,9 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_advancedpad_importlevel: function() {
-		//prompt('filename');
-		this.showMainScreen('fileimport');
+		//window.prompt('filename');
+		//this.showMainScreen('fileimport');
+		
 	},
 	
 	// startingpointlocator
@@ -1156,6 +1174,12 @@ O2.createClass('RCWE.Application', {
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
 	},
 	
+	deleteLevelFile: function(sName) {
+		$.post('services/?action=level.delete', JSON.stringify({name: sName})).fail((function(err) {
+			this.error('could not delete file ' + sName + ' : ' + err.responseText);
+		}).bind(this));
+	},
+	
 	serialize: function() {
 		return {
 			tiles: this.oBlockEditor.serialize(),
@@ -1181,7 +1205,7 @@ O2.createClass('RCWE.Application', {
 	
 	exportBlockTemplate: function() {
 		var PNGSIGN = 'data:image/png;base64,';
-		var sName = prompt('enter template name');
+		var sName = window.prompt('enter template name');
 		var oExport = {
 			name: sName,
 			tiles: this.oBlockEditor.serialize(),
@@ -1197,7 +1221,7 @@ O2.createClass('RCWE.Application', {
 	
 	exportThingTemplate: function() {
 		var PNGSIGN = 'data:image/png;base64,';
-		var sName = prompt('enter template name');
+		var sName = window.prompt('enter template name');
 		var oExport = {
 			name: sName,
 			things: this.oThingBrowser.serialize(),
@@ -1214,7 +1238,7 @@ O2.createClass('RCWE.Application', {
 	exportLevelTemplate: function(sName) {
 		var PNGSIGN = 'data:image/png;base64,';
 		if (!sName) {
-			sName = prompt('enter template name');
+			sName = window.prompt('enter template name');
 		}
 		var oExport = {
 			name: sName,
@@ -1257,6 +1281,12 @@ O2.createClass('RCWE.Application', {
 				if (b.left in oNewWallIds) {
 					b.left = oNewWallIds[b.left];
 				}
+				if (b.right2 in oNewWallIds) {
+					b.right2 = oNewWallIds[b.right2];
+				}
+				if (b.left2 in oNewWallIds) {
+					b.left2 = oNewWallIds[b.left2];
+				}
 			});
 			this.oBlockEditor.unserialize(data.tiles, (function() {
 				this.oBlockBrowser.unserialize(data.blocks, true);
@@ -1286,7 +1316,7 @@ O2.createClass('RCWE.Application', {
 		}).bind(this));
 	},
 	
-	importLevel: function(sMap) {
+	importLevel: function(sProject, sMap) {
 		var pDataReceived = (function(data) {
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
@@ -1295,9 +1325,25 @@ O2.createClass('RCWE.Application', {
 		}).bind(this);
 			
 		var pLoad = function() {
-			$.getJSON('services/?action=import.import&l=' + sMap, pDataReceived);
+			$.getJSON('services/?action=import.import&p=' + sProject + '&l=' + sMap, pDataReceived);
 		};
 		
 		this.popup('Message', 'Importing level, please wait...', '', pLoad);
+	},
+
+	exportLevel: function(sProject, sMap) {
+		var oApplication = W;
+		var data = oApplication.serialize();
+		var oAdapter = new RCWE.RCDataBuilder();
+		var d2 = oAdapter.buildLevelData(data);
+		$.post('services/?action=import.export', JSON.stringify({
+			project: sProject,
+			name: sMap,
+			data: d2
+		})).fail(function(err) {
+			oApplication.error(err.responseText);
+		}).success(function(d) {
+			oApplication.popup('Message', 'Export done.');
+		});
 	},
 });

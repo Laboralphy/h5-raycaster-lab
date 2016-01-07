@@ -145,37 +145,11 @@ class RaycasterConverter {
 		$aFlatIds = array();
 		
 		function getBlockAnimationParameters($aWall) {
-			if (count($aWall) > 2) {
-				$nTotal = count($aWall);
-				$nSides = 2;
-				$aParams = array(
-					'total' => $nTotal
-				);
-				// les valeurs des indices pairs devraient former
-				// une suite U genre U[n+1] = U[n] + 1
-				$i = 0;
-				$nSame = 0;
-				for ($i = 0; $i < $nTotal; $i += $nSides) {
-					if ($aWall[0] == $aWall[$i]) {
-						++$nSame;
-					} else {
-						break;
-					}
-				}
-				$aParams['duration'] = $nSame;
-				
-				$aReg = array();
-				for ($i = 0; $i < $nTotal; $i += $nSides) {
-					$aReg[$aWall[$i]] = true;
-				}
-				$nFrameCount = count($aReg);
-				$nRetro = $nFrameCount * $nSides * $nSame;
-				$aParams['framecount'] = $nFrameCount;
-				$aParams['yoyo'] = $nRetro < $nTotal;
-				return $aParams;
-			} else {
-				return false;
-			}
+			return array(
+				'duration' => $aWall[2],
+				'framecount' => $aWall[1],
+				'yoyo' => $aWall[3]
+			);
 		}
 		
 		
@@ -190,24 +164,41 @@ class RaycasterConverter {
 				$aFlat = $oJSON->flats->codes[$nText];
 				$sLeft = '';
 				$sRight = '';
+				$sLeft2 = '';
+				$sRight2 = '';
 				$sCeil = '';
 				$sFloor = '';
 				$nFrameCount = 1;
 				$nFrameDuration = 80;
 				$bYoyo = false;
 				if (is_array($aWall)) {
-					if ($aWall[1] >= 0) {
-						$sLeft = 'wall_' . strval($aWall[1] + 1);
+					if (is_array($aWall[0])) {
+						// animated block
+						$aWallFace = $aWall[0];
+						$aAnim = getBlockAnimationParameters($aWall);
+					} else {
+						$aWallFace = $aWall;
+						$aAnim = null;
+					}
+					if ($aWallFace[1] >= 0) {
+						$sLeft = 'wall_' . strval($aWallFace[1] + 1);
 						$aWallIds[] = $sLeft;
 					}
-					if ($aWall[0] >= 0) {
-						$sRight = 'wall_' . strval($aWall[0] + 1);
+					if ($aWallFace[0] >= 0) {
+						$sRight = 'wall_' . strval($aWallFace[0] + 1);
 						$aWallIds[] = $sRight;
 					}
-					$aAnim = getBlockAnimationParameters($aWall);
+					if ($aWallFace[3] >= 0) {
+						$sLeft2 = 'wall_' . strval($aWallFace[2] + 1);
+						$aWallIds[] = $sLeft2;
+					}
+					if ($aWallFace[2] >= 0) {
+						$sRight2 = 'wall_' . strval($aWallFace[3] + 1);
+						$aWallIds[] = $sRight;
+					}
 					if ($aAnim) {
 						$nFrameCount = $aAnim['framecount'];
-						$nFrameDuration = $aAnim['duration'] * 40;
+						$nFrameDuration = $aAnim['duration'];
 						$bYoyo = $aAnim['yoyo'];
 					}
 				}
@@ -227,6 +218,8 @@ class RaycasterConverter {
 					'doortype' => $nDoorType,
 					'left' => $sLeft,
 					'right' => $sRight,
+					'left2' => $sLeft2,
+					'right2' => $sRight2,
 					'floor' => $sFloor,
 					'ceil' => $sCeil,
 					'frames' => $nFrameCount,

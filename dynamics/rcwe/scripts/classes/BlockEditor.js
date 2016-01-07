@@ -73,12 +73,14 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		var oTileDropZone = $('<table class="tiledropzones">' + 
 			'<tbody>' + 
 				'<tr>' + 
-					'<td class="dropzone wall left" rowspan="2"><div>X wall<button class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
+					'<td class="dropzone wall left"><div>X wall<button class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
 					'<td class="dropzone flat ceil"><div>ceil<button type="button" class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_FLAT + '"></canvas></td>' + 
-					'<td class="dropzone wall right" rowspan="2"><div>Y wall<button type="button" class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
+					'<td class="dropzone wall right"><div>Y wall<button type="button" class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
 				'</tr>' +
 				'<tr>' + 
+					'<td class="dropzone wall left2"><div>X wall<button class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
 					'<td class="dropzone flat floor"><div>floor<button type="button" class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_FLAT + '"></canvas></td>' +
+					'<td class="dropzone wall right2"><div>Y wall<button type="button" class="clearTile">✖</button></div><canvas width="' + this.TILE_WIDTH + '" height="' + this.TILE_HEIGHT_WALL + '"></canvas></td>' + 
 				'</tr>' + 
 			'</tbody>' + 
 		'</table>');
@@ -220,10 +222,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			case 'flats':
 				return this._exportFlatTiles();
 
-			case 'left':
 			case 'ceil':
 			case 'floor':
+			case 'left':
 			case 'right':
+			case 'left2':
+			case 'right2':
 				return $('td.dropzone.' + sData, this._oStructure).data('tile');
 				
 			case 'type':
@@ -250,10 +254,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				this._importFlatTiles(value);
 				break;
 
-			case 'left':
 			case 'ceil':
 			case 'floor':
+			case 'left':
 			case 'right':
+			case 'left2':
+			case 'right2':
 				if (value) {
 					var $tile = this._getTileById(value);
 					if ($tile.length) {
@@ -332,6 +338,8 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		var nFrames = a.frames;
 		var nStartLeft = a.left;
 		var nStartRight = a.right;
+		var nStartLeft2 = a.left2;
+		var nStartRight2 = a.right2;
 		var iAnimation = a.i;
 		var iDir = a.iDir;
 		var bYoyo = a.yoyo;
@@ -340,6 +348,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		}
 		if (a.right !== null) {
 			a.ctx_right.drawImage(this._getWallTile(nStartRight + iAnimation), 0, 0);
+		}
+		if (a.left2 !== null) {
+			a.ctx_left2.drawImage(this._getWallTile(nStartLeft2 + iAnimation), 0, 0);
+		}
+		if (a.right2 !== null) {
+			a.ctx_right2.drawImage(this._getWallTile(nStartRight2 + iAnimation), 0, 0);
 		}
 		if (bYoyo) {
 			if (iDir > 0 && iAnimation + iDir >= nFrames) {
@@ -422,25 +436,37 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		if (this._getBlockData('frames') > 1) {
 			var nLeft = this._getBlockData('left');
 			var nRight = this._getBlockData('right');
+			var nLeft2 = this._getBlockData('left2');
+			var nRight2 = this._getBlockData('right2');
 			if (!!nLeft) {
 				nLeft = this._getTileById(nLeft).index();
 			}
 			if (!!nRight) {
 				nRight = this._getTileById(nRight).index();
 			}
+			if (!!nLeft2) {
+				nLeft2 = this._getTileById(nLeft2).index();
+			}
+			if (!!nRight2) {
+				nRight2 = this._getTileById(nRight2).index();
+			}
 			this._oAnimationData = {
 				frames: this._getBlockData('frames'),
 				left: nLeft,
 				right: nRight,
+				left2: nLeft2,
+				right2: nRight2,
 				delay: this._getBlockData('delay'),
 				yoyo: this._getBlockData('yoyo'),
 				i: 0,
 				iDir: 1,
 				timer: null,
 				ctx_right: $('td.dropzone.right canvas', this._oStructure).get(0).getContext('2d'),
-				ctx_left: $('td.dropzone.left canvas', this._oStructure).get(0).getContext('2d')
-			}
-			this._oAnimationData.timer = setInterval(this._animationProc.bind(this), this._oAnimationData.delay);
+				ctx_left: $('td.dropzone.left canvas', this._oStructure).get(0).getContext('2d'),
+				ctx_right2: $('td.dropzone.right2 canvas', this._oStructure).get(0).getContext('2d'),
+				ctx_left2: $('td.dropzone.left2 canvas', this._oStructure).get(0).getContext('2d')
+			};
+			this._oAnimationData.timer = window.setInterval(this._animationProc.bind(this), this._oAnimationData.delay);
 		}
 	},
 	
@@ -451,9 +477,9 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	cmd_stopAnimation: function() {
 		var a = this._oAnimationData;
 		if (a && a.timer) {
-			clearInterval(a.timer);
+			window.clearInterval(a.timer);
 			a.timer = null;
-			var oLeft = null, oRight = null;
+			var oLeft = null, oRight = null, oLeft2 = null, oRight2 = null;
 			if (a.left !== null) {
 				oLeft = this._getWallTile(a.left);
 				a.ctx_left.drawImage(oLeft, 0, 0);
@@ -461,6 +487,14 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			if (a.right !== null) {
 				oRight = this._getWallTile(a.right);
 				a.ctx_right.drawImage(oRight, 0, 0);
+			}
+			if (a.left2 !== null) {
+				oLeft2 = this._getWallTile(a.left2);
+				a.ctx_left2.drawImage(oLeft2, 0, 0);
+			}
+			if (a.right2 !== null) {
+				oRight2 = this._getWallTile(a.right2);
+				a.ctx_right2.drawImage(oRight2, 0, 0);
 			}
 			a.i = 0;
 		}
@@ -473,7 +507,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		$tr.eq(0).show();
 		switch (oEvent.target.value | 0) {
 			case 0: // walkable
-				$('td.dropzone.left, td.dropzone.right', this._oStructure).addClass('disabled');
+				$('td.dropzone.left, td.dropzone.right, td.dropzone.left2, td.dropzone.right2', this._oStructure).addClass('disabled');
 				break;
 
 			case 3: // door
@@ -502,7 +536,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				break;
 
 			case 6:
-				$('td.dropzone.left, td.dropzone.right', this._oStructure).addClass('disabled');
+				$('td.dropzone.left, td.dropzone.right, td.dropzone.left2, td.dropzone.right2', this._oStructure).addClass('disabled');
 				break;
 		}
 		this._oInfo.html(this._aDescriptions[oEvent.target.value]);
@@ -757,6 +791,8 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		'type',
 		'left',
 		'right',
+		'left2',
+		'right2',
 		'floor',
 		'ceil',
 		'doortype',
@@ -799,7 +835,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		if (aIds.length == 0) {
 			throw new Error('no id submitted');
 		}
-		var sType = aIds[0].split('_')[0]
+		var sType = aIds[0].split('_')[0];
 		var nMaxId = this.getHighestTileId(sType);
 		var oMatch = {};
 		aIds.forEach(function(id) {
@@ -813,7 +849,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	deleteTile: function(id) {
 		var $item = this._getTileById(id);
 		$item.remove();
-		('right left floor ceil').split(' ').forEach(function(sData) {
+		('right left right2 left2 floor ceil').split(' ').forEach(function(sData) {
 			if (this._getBlockData(sData) == id) {
 				this._setBlockData(sData, '');
 			}

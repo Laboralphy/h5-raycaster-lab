@@ -1,3 +1,7 @@
+/**
+ * This class deals with thinkers
+ * it can produce instance of thinker by giving a thinker name
+ */
 O2.createClass('O876_Raycaster.ThinkerManager', {
 	oGameInstance : null,
 	oLoader : null,
@@ -18,8 +22,7 @@ O2.createClass('O876_Raycaster.ThinkerManager', {
 			oThinker.oGame = this.oGameInstance;
 			return oThinker;
 		} else {
-			throw new Error('ThinkerManager : ' + sThinker
-					+ ' class not found.');
+			throw new Error('ThinkerManager : ' + sThinker + ' class not found.');
 		}
 	}
 });

@@ -1,7 +1,8 @@
+/* globals Stub, CONFIG, O876_Raycaster, G */
 function main() {
 	screenResize();
 	window.addEventListener('resize', screenResize);
-	window.G = new Stub.Game();
+	window.G = new STUB.Game();
 
 	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
 	if (CONFIG.game.fpscontrol && O876_Raycaster.PointerLock.init()) {
@@ -41,8 +42,8 @@ function lockPointer(oElement) {
 
 function screenResize(oEvent) {
 	var nPadding = 24;
-	var h = innerHeight;
-	var w = innerWidth;
+	var h = window.innerHeight;
+	var w = window.innerWidth;
 	var r = (h - nPadding) / w;
 	var oCanvas = document.getElementById('screen');
 	var rBase = oCanvas.height / oCanvas.width; 

@@ -242,7 +242,7 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 			var $b = $(this);
 			aBlocks.push($b.data('block').serialize());
 		});
-		return aBlocks
+		return aBlocks;
 	},
 
 	/**

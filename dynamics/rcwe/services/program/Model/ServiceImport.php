@@ -21,7 +21,7 @@ class ServiceImport {
 	}
 	
 	public function getSourceLevels($sSource) {
-		return $this->getDirectoryLevels($sSource . '/data');
+		return $this->getDirectoryLevels($sSource . '/data/levels');
 	}
 	
 	public function getDirectoryLevels($sDataPath) {
@@ -32,7 +32,7 @@ class ServiceImport {
 				if (is_dir(self::BASE_PATH . '/' . $sEntry)) {
 					$a = array_merge($a, $this->getDirectoryLevels($sEntry));
 				} elseif (substr($sFile, -7) == '.lvl.js') {
-					$a[] = $sEntry;
+					$a[] = basename($sEntry, '.lvl.js');
 				}
 			}
 		}
@@ -56,20 +56,31 @@ class ServiceImport {
 		return $o;
 	}
 	
-	public function import($sFile) {
-		$aSrc = explode('/', $sFile);
-		$sSource = array_shift($aSrc);
-		$s = trim(file_get_contents(self::BASE_PATH . '/' . $sFile));
+	public function import($sProject, $sFile) {
+		$s = trim(file_get_contents(self::BASE_PATH . "/$sProject/data/levels/$sFile.lvl.js"));
 		$sData = trim($s, ');');
 		$n = strpos($sData, '{');
 		if ($n !== false) {
 			$sData = substr($sData, $n);
 		}
-		$oLevel = $this->loadResources($sSource, json_decode($sData));
+		$oLevel = $this->loadResources($sProject, json_decode($sData));
 		return $this->convert($oLevel);
 	}
 	
-	
+	public function export($sProject, $sFile, $sData) {
+		try {
+			$s = self::BASE_PATH . "/$sProject/data/levels/$sFile.lvl.js";
+			if (!is_writable(dirname($s)) || (file_exists($s) && !is_writable($s))) {
+				throw new Exception('Permission to write file ' . $s . ' is denied');
+			}
+			file_put_contents($s, "O2.createObject('WORLD_DATA.$sFile', $sData);");
+			chmod($s, 0777);
+		} catch (Exception $e) {
+			throw new Exception('Could not export level ' . $sFile . ' in project ' . $sProject . ' : ' . $e->getMessage());
+		}
+	}
+
+
 	public function convert($oJSON) {
 		return RaycasterConverter::convert($oJSON);
 	}

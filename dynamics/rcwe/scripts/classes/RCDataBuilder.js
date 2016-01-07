@@ -28,7 +28,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 			tags: this.buildTags(oData),
 			background: this.buildBackground(oData),
 			decals: this.buildDecals(oData)
-		}
+		};
 	},
 	
 	buildVisuals: function(oData) {
@@ -67,7 +67,13 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var nType = oBlock.type;
 			var id = oBlock.id;
 			if (nType == BT.SOLID || nType == BT.TRANSPARENT || nType == BT.DOOR || nType == BT.SECRET || nType == BT.ALCOVE) {
-				oRes.codes[id] = this.buildAnimatedWall(oBlock.frames, w.ids.indexOf(oBlock.left), w.ids.indexOf(oBlock.right), oBlock.delay, oBlock.yoyo);
+				console.log(w.ids.indexOf(oBlock.right2));
+				oRes.codes[id] = this.buildAnimatedWall(oBlock.frames, [
+					w.ids.indexOf(oBlock.left), 
+					w.ids.indexOf(oBlock.right), 
+					w.ids.indexOf(oBlock.left2), 
+					w.ids.indexOf(oBlock.right2)
+				], oBlock.delay, oBlock.yoyo);
 			} else {
 				oRes.codes[id] = null;
 			}
@@ -75,33 +81,19 @@ O2.createClass('RCWE.RCDataBuilder', {
 		return oRes;
 	},
 	
-	buildAnimatedWall: function(nFrames, nRight, nLeft, nDelay, bYoyo) {
+	buildAnimatedWall: function(nFrames, aWallIds, nDelay, bYoyo) {
 		var TIME_INTERVAL = 40;
-		
+		if (aWallIds[2] == -1) {
+			aWallIds[2] = aWallIds[0];
+		}
+		if (aWallIds[3] == -1) {
+			aWallIds[3] = aWallIds[1];
+		}
 		if (nFrames <= 1) {
-			return [nLeft, nRight];
+			return aWallIds;
+		} else {
+			return [aWallIds, nFrames, nDelay, bYoyo ? 2 : 1];
 		}
-		var a = [];
-		var i, iTime;
-		for (i = 0; i < nFrames; ++i) {
-			iTime = 0;
-			while (iTime < nDelay) {
-				a.push(i + nLeft);
-				a.push(i + nRight);
-				iTime += TIME_INTERVAL;
-			}
-		}
-		if (bYoyo) {
-			for (i = i - 2; i > 0; --i) {
-				iTime = 0;
-				while (iTime < nDelay) {
-					a.push(i + nLeft);
-					a.push(i + nRight);
-					iTime += TIME_INTERVAL;
-				}
-			}
-		}
-		return a;
 	},
 	
 	buildFlats: function(oData) {

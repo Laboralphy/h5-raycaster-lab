@@ -53,7 +53,7 @@ O2.createClass('RCWE.ThingGrid', {
 		var xTh, yTh, v;
 		for (yTh = 0; yTh < 3; ++yTh) {
 			for (xTh = 0; xTh < 3; ++xTh) {
-				v = Marker.getMarkXY(aThings, xCell3 + xTh, yCell3 + yTh)
+				v = Marker.getMarkXY(aThings, xCell3 + xTh, yCell3 + yTh);
 				if (v) {
 					if (v == sIdHL) {
 						ctx.strokeStyle = 'rgb(0, 0, 140)';
@@ -113,7 +113,7 @@ O2.createClass('RCWE.ThingGrid', {
 			left: {x: -1, y: 0},
 			right: {x: 1, y: 0}
 		};
-		var a = this.serialize()
+		var a = this.serialize();
 		a.forEach(function (t) {
 			t.x += aPos[sDir].x * n * 3;
 			t.y += aPos[sDir].y * n * 3;
@@ -133,4 +133,4 @@ O2.createClass('RCWE.ThingGrid', {
 	unserialize: function(d) {
 		this._aThings = Marker.unserialize(d);
 	}
-})
+});

@@ -495,7 +495,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	shadeCloneWall : function(oCanvas, x, y, nSide) {
-		return this.oXMap.get(x, y, nSide).oCanvas = this.shadeImage(oCanvas, false);
+		var a = this.shadeImage(oCanvas, false);
+		this.oXMap.get(x, y, nSide).oCanvas = a;
+		return a;
 	},
 	
 	cloneFlat: function(x, y, nSide, pDrawingFunction) {
@@ -600,21 +602,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		};
 		if ('flats' in oData) {
 			this.bFloor = true;
-			var pEmpty = function(item, index, array) {
-				if (item) {
-					return item[1] === -1;
-				} else {
-					return true;
-				}
-			};
-			var bEmptyCeil = oData.flats.codes.every(function(item, index, array) {
+			var bEmptyCeil = oData.flats.codes.every(function(item) {
 				if (item) {
 					return item[1] === -1;
 				} else {
 					return true;
 				}
 			});
-			var bEmptyFloor = oData.flats.codes.every(function(item, index, array) {
+			var bEmptyFloor = oData.flats.codes.every(function(item) {
 				if (item) {
 					return item[0] === -1;
 				} else {
@@ -902,7 +897,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nTOfs = 0;
 					}
 					// 0xB00 : INVISIBLE_BLOCK ou vide 0x00
-					if (nPhys == 0xB || nPhys == 0) {
+					if (nPhys === 0xB || nPhys === 0) {
 						if (bStillVisible) {
 							Marker_markXY(aVisibles, xi, yi);
 						}
@@ -957,7 +952,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					} else {
 						nTOfs = 0;
 					}
-					if (nPhys == 0xB || nPhys == 0) {
+					if (nPhys === 0xB || nPhys === 0) {
 						if (bStillVisible) {
 							Marker_markXY(aVisibles, xi, yi);
 						}
@@ -1044,7 +1039,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nTextureBase = 0;
 					} else {
 						oWall = oData.oWall.image;
-						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.bSideWall ? 1 : 0] * this.xTexture;
+						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.nSideWall] * this.xTexture;
 					}
 					this.drawLine(xScreen, oData.fDist, nTextureBase,
 							oData.nWallPos | 0, oData.bSideWall, oWall,
@@ -1184,8 +1179,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	setMapXYTag : function(x, y, nTag) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0x00FFFFFF)
-				| (nOffset << 24);
+		this.aMap[y][x] = (this.aMap[y][x] & 0x00FFFFFF) | (nTag << 24);
 	},
 
 	getMapXYTag : function(x, y) {
@@ -1551,6 +1545,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var oXBlock, oXBlockImage;
 		var oXBlockCeil;
 		var nXDrawn = 0; // 0: pas de texture perso ; 1 = texture perso sol; 2=texture perso plafond
+		var fBx, fBy;
 		
 		for (y = 1; y < h; ++y) {
 			fBx = wx1;
@@ -1693,7 +1688,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var fy64, fx64;
 		var oXMap = this.oXMap;
 		var oXBlock, oXBlockCeil, oXBlockImage;
-		var nXDrawn;
+		var fBx, fBy, yOfsCeil;
 		
 		
 		for (y = 1; y < h; ++y) {
@@ -1991,11 +1986,16 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 */
 	textureAnimation: function() {
 		// Animation des textures
-		var aCode, w = this.oWall, wc = w.codes, wa = w.animated;
+		var oAnim, w = this.oWall, wc = w.codes, wcn, wa = w.animated;
+		var i, l, x;
 		for (var iAnim in wa) {
-			aCode = wc[iAnim];
-			aCode.push(aCode.shift());
-			aCode.push(aCode.shift());
+			wcn = wc[iAnim | 0];
+			oAnim = wa[iAnim];
+			oAnim.animate(this.TIME_FACTOR);
+			for (i = 0, l = oAnim.__start.length; i < l; ++i) {
+				x = oAnim.__start[i];
+				wcn[i] = x + oAnim.nFrame;
+			}
 		}
 	},
 	
@@ -2005,14 +2005,29 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (!('animated' in w)) {
 			w.animated = {};
 		}
-		var wc = w.codes, wa = w.animated;
+		var wc = w.codes, wcc, wa = w.animated;
+		var oAnim;
+		var wcStart, wcDur, wcCount, wcLoop;
 		for (var nCode = 0; nCode < wc.length; ++nCode) {
-			if (wc[nCode] && wc[nCode].length > 3) { // Une animation de texture ?
-				// Enregistrer l'animation de texture dans la propriété "animated"
-				wa[nCode] = {
-					nIndex: 0,
-					nCount: wc[nCode].length >> 1
-				};
+			wcc = wc[nCode];
+			if (wcc) {
+				if (Array.isArray(wcc[0])) { // Une animation de texture ?
+					wcStart = wcc[0];
+					wcCount = wcc[1];
+					wcDur = wcc[2];
+					wcLoop = wcc[3];
+					// Enregistrer l'animation de texture dans la propriété "animated"
+					oAnim = new O876_Raycaster.Animation();
+					oAnim.nCount = wcCount;
+					oAnim.nDuration = wcDur;
+					oAnim.nLoop = wcLoop;
+					oAnim.__start = wcStart;
+					wa[nCode] = oAnim;
+				} else if (wcc.length === 2) { // mur 2 ou 4
+					// répéter les code 0 et 1 en 2 et 3
+					wcc.push(wcc[0]);
+					wcc.push(wcc[1]);
+				}
 			}
 		}
 	}

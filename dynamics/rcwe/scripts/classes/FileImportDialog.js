@@ -10,7 +10,7 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 	oFileSystem: null,
 	
 	build: function() {
-		__inherited('Import File');
+		__inherited('Import/Export Levels');
 		var c = this.getContainer();
 		c.addClass('fileimportdialog');
 
@@ -23,118 +23,66 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 		});
 		this.oScrollZone = $oScrollZone;
 		this.getBody().append($oScrollZone);
-		this.addCommand('<b>↵</b>', 'Close the file open dialog and return to the editor', this.cmd_close.bind(this));
-		this.addCommand(' Import', 'Load the selected file', this.cmd_open.bind(this));
-	},
-
-	/**
-	 * Make a file thumbnail with the specified data structure
-	 * - name : the file name
-	 * - img : the image thumbnail
-	 */
-	makeFileThumbnail: function(aFileDef) {
-		var $oDiv = $('<div></div>');
-		$oDiv.addClass('thumbnail');
-		$oDiv.append('<div class="title">' + aFileDef.name + '</div>');
-		if (aFileDef.img) {
-			$oDiv.append('<img src="' + aFileDef.img + '"/>');		
-		}
-		$oDiv.bind('click', this.thumbnailClick.bind(this));
-		this.oScrollZone.append($oDiv);
-		return $oDiv;
+		this.addCommand(' Import', 'Imports the selected level into the editor (overwrites the editor current content)', this.cmd_import.bind(this));
+		this.addCommand('⚓✎ Overwrite', 'Exports the editor current level into the selected project, replacing the selected level entry', this.cmd_export.bind(this));
+		this.addCommand('⚓✚ Export new...', 'Exports the editor current level into the selected project. Will prompt for a new level name', this.cmd_exportnew.bind(this));
 	},
 	
-	thumbnailClick: function(oEvent) {
-		var $oDiv = $(oEvent.currentTarget);
-		if (!this.bMultiple) {
-			$oDiv.siblings().removeClass('selected');
+	cmd_import: function() {
+		var $selectGame = $('select.twinSelect.main', this.getContainer());
+		var $selectLevel = $('select.twinSelect.sub', this.getContainer());
+		var sGame = $selectGame.val();
+		var sLevel = $selectLevel.val();
+		if (sGame && sLevel) {
+			this.doAction('load', sGame, sLevel);
+		} else {
+			W.error('You must select a game and a level to perform this operation');
 		}
-		$oDiv.toggleClass('selected');
 	},
 
-	makeFileThumbnails: function(aList) {
-		if (typeof alist === 'string') {
-			aList = JSON.parse(aList);
+	cmd_export: function() {
+		var $selectGame = $('select.twinSelect.main', this.getContainer());
+		var $selectLevel = $('select.twinSelect.sub', this.getContainer());
+		var sGame = $selectGame.val();
+		var sLevel = $selectLevel.val();
+		if (sGame && sLevel) {
+			this.doAction('save', sGame, sLevel);
 		}
-		aList.forEach(this.makeFileThumbnail.bind(this));
 	},
-
+	
+	cmd_exportnew: function() {
+		var $selectGame = $('select.twinSelect.main', this.getContainer());
+		var sGame = $selectGame.val();
+		if (sGame) {
+			this.doAction('save', sGame);
+		} else {
+			W.error('You must select a game and a level to perform this operation');
+		}
+	},
+	
 	show: function() {
 		__inherited();
 		$.getJSON('services/?action=import.list', (function(data) {
-			var $ul = $('<ul class="import"></ul>');
-			var $li, $ulsrc;
-			for (var sGame in data) {
-				$li = $('<li class="source"><span>' + sGame + '</span></li>');
-				$ulsrc = $('<ul class="source"></ul>');
-				data[sGame].forEach(function(f) {
-					var a = f.split('/');
-					var s = a.pop().replace(/\.lvl.js$/, '');
-					a.push(s);
-					var sUrl = a.join('.');
-					var $lilevel = $('<li class="level"></li>'); 
-					$ulsrc.append($lilevel);
-					var $button = $('<button type="button">' + s + '</button>');
-					$button.data('file', sUrl);
-					$button.on('click', (function(oEvent) {
-						var sFile = $(oEvent.target).data('file');
-						this.doAction('load', sFile);
-					}).bind(this));
-					$lilevel.append($button);
-				}, this);
-				if ($('li', $ulsrc).length === 0) {
-					$ulsrc.append('<li class="notfound">no .lvl.js file</li>');
-				}
-				$li.append($ulsrc);
-				$ul.append($li);
-			}
-			this.oScrollZone.empty().append($ul);
-		}).bind(this))
-		.fail(function(data) {
-			W.error(data.responseText);
-		});
+			var $opt;
+			var $form = $('<form class="levelSelector"></form>');
+			$form.twinSelect({data: data});
+			var $both = $('select.twinSelect', $form);
+			$both.attr('size', 8);
+			$both.detach();
+			var $table = $('<table><tr><th>game</th><th>level</th><th></th></tr><tr><td></td><td></td><td></td></tr></table>');
+			var $tds = $('td', $table);
+			$tds.eq(0).append($both.get(0));
+			$tds.eq(1).append($both.get(1));
+			
+			$form.append($table);
+			$p = $('<p><b>Import/Export a level</b></p><p>This is the import/export tool. It can be used to transfer levels from editor and game projects which are located under the <i>sources</i> directory.</p>');
+			this.oScrollZone.empty().append($p, $form);
+		}).bind(this));
 	},
+
 
 	hide: function() {
 		__inherited();
 		this.oScrollZone.empty();
-	},
-	
-	getSelected: function() {
-		var aFiles = [];
-		$('div.thumbnail.selected div.title', this.oScrollZone).each(function() {
-			aFiles.push($(this).html());
-		});
-		if (this.bMultiple) {
-			return aFiles;
-		} else {
-			return aFiles[0];
-		}
-	},
-
-	cmd_open: function() {
-		var sFile = this.getSelected();
-		this.sLastOpened = sFile;
-		var $load = $('div.thumbnail.selected', this.oScrollZone);
-		if ($load.hasClass('remote')) {
-			this.doAction('loadremote', sFile);
-		} else {
-			this.doAction('load', sFile);
-		}
-	},
-	
-	cmd_delete: function() {
-		var fs = this.oFileSystem;
-		var $removed = $('div.thumbnail.selected', this.oScrollZone);
-		if ($removed.hasClass('remote')) {
-			this.doAction('cantdelete');
-		} else {
-			fs.remove(this.getSelected());
-			$removed.fadeOut(function() { $removed.remove(); });
-		}
-	},
-	
-	cmd_close: function() {
-		this.doAction('close');
-	},
+	}
 });

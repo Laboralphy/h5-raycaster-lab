@@ -16,6 +16,8 @@ O2.createClass('RCWE.Block', {
 				'ceil': '',
 				'left': '',
 				'right': '',
+				'left2': '',
+				'right2': '',
 				'doortype': 0,
 				'offset': 0,
 				'frames': 1,

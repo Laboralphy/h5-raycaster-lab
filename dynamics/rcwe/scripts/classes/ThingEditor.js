@@ -91,7 +91,7 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 	show: function() {
 		__inherited();
 		this.stopAnimation();
-		this.oInterval = setInterval(this._animationProc.bind(this), 40);
+		this.oInterval = window.setInterval(this._animationProc.bind(this), 40);
 	},
 	
 	hide: function() {
@@ -141,12 +141,12 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 		
 		this._oAnimCanvas = $('td.preview canvas').get(0);
 		this._oAnimContext = this._oAnimCanvas.getContext('2d');
-		this.oInterval = setInterval(this._animationProc.bind(this), 40);
+		this.oInterval = window.setInterval(this._animationProc.bind(this), 40);
 	},
 	
 	stopAnimation: function() {
 		if (this.oInterval) {
-			clearInterval(this.oInterval);
+			window.clearInterval(this.oInterval);
 		}
 		this.oInterval = null;
 	},

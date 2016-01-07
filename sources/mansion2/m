@@ -7,12 +7,12 @@
 # exemple : importLevel gamename courtyard
 importRCWELevel() {
 	local sLevelName=$1
-	local sLevelPath="../../dynamics/rcwe/games/work.storage/$sLevelName"
+	local sLevelPath="../../dynamics/rcwe/server.storage/exports/work/$sLevelName"
 	if [ -d $sLevelPath ]
 	then
 		echo "(i) importing level $sLevelName"
 		local sLevelName="`cat $sLevelPath/gamename`"
-		sed -e s/WORLD_DATA.level/WORLD_DATA.$sLevelName/ $sLevelPath/data/world.js > data/world/$sLevelName.js
+		sed -e s/WORLD_DATA.level/WORLD_DATA.$sLevelName/ $sLevelPath/data/world.js > data/levels/$sLevelName.lvl.js
 		cp $sLevelPath/resources/gfx/* resources/gfx
 	else
 		echo "/!\\ no level $sLevelName"
@@ -29,7 +29,7 @@ clearIfExists() {
 
 # supprime tous les niveaux précédemment importés
 clearImportedLevels() {
-	clearIfExists data/world
+	clearIfExists data/levels
 	clearIfExists resources/gfx
 }
 
@@ -46,7 +46,7 @@ goMaps() {
 			echo "(i) list of maps"
 			cat $sLevelFile
 		;;
-		
+
 		"add")
 			# ajoute un niveau à la liste d'importation automatique
 			cp $sLevelFile $sLevelFile-2
@@ -56,7 +56,7 @@ goMaps() {
 			rm $sLevelFile-2
 			goMaps list
 		;;
-		
+
 		"rem")
 			# supprime un niveau de la liste d'importation automatique
 			local sExpr=$1
@@ -64,7 +64,7 @@ goMaps() {
 			sed -i "$sExpr" $sLevelFile
 			goMaps list
 		;;
-		
+
 		"import")
 			# effectue l'importation
 			# importe tous les niveau spécifié dans la liste d'importation
@@ -74,7 +74,7 @@ goMaps() {
 				importRCWELevel $i $i
 			done
 		;;
-	
+
 		*)
 			echo "!! no maps command specified."
 			echo " * $0 maps list : lists all imported levels"

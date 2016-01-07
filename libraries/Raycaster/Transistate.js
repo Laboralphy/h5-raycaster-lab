@@ -27,7 +27,7 @@ O2.createClass('O876_Raycaster.Transistate', {
 	initDoomloop : function() {
 		this.pDoomloop();
 		this.pause();
-		this.oInterval = setInterval(this.doomloop.bind(this), this.nInterval);
+		this.oInterval = window.setInterval(this.doomloop.bind(this), this.nInterval);
 		this.bBound = true;
 	},
 
@@ -43,7 +43,7 @@ O2.createClass('O876_Raycaster.Transistate', {
 	pause : function() {
 		this.bPause = true;
 		if (this.oInterval) {
-			clearInterval(this.oInterval);
+			window.clearInterval(this.oInterval);
 			this.oInterval = null;
 		}
 	},
