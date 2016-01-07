@@ -480,6 +480,7 @@ O2.createClass('RCWE.Application', {
 			bb.importBlock(oBlock);
 		}
 		this.redrawMap();
+		be.resetBlock();
 		this.showPanel('blockBrowser');
 	},
 
@@ -489,6 +490,7 @@ O2.createClass('RCWE.Application', {
 		if (oBlock && oBlock.isEmpty()) {
 			this.oBlockBrowser.destroyBlockImage(bb.getSelectedBlockImage());
 		}
+		this.oBlockEditor.resetBlock();
 		this.showPanel('blockBrowser');
 	},
 	
