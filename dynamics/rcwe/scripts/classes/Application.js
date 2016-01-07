@@ -394,8 +394,8 @@ O2.createClass('RCWE.Application', {
 	 */
 	labyGridDrawCell: function(nCode, oContext, x, y, wCell, hCell) {
 		var fAlphaFloor = 0.5;
-		var nLowerCode = nCode & 0xFF;
-		var nUpperCode = (nCode >> 8) & 0xFF;
+		var nLowerCode = nCode & 0xFF; // code12: nCode & 0xFFF  (ce sont des texture, pas des code phys)
+		var nUpperCode = (nCode >> 8) & 0xFF; // code12: (nCode >> 12) & 0xFFF
 		var oBlock, oCanvas;
 		var nFloor = this.oMapGrid.getSelectedFloor();
 		oContext.clearRect(x, y, wCell, hCell);
@@ -544,13 +544,13 @@ O2.createClass('RCWE.Application', {
 	cmd_blockbrowser_deleteblock: function(oBlock) {
 		var nBlockCode = oBlock.getData('id') | 0;
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF;
-			var nUpper = (nCode & 0xFF00) >> 8;
+			var nLower = nCode & 0xFF; // code12: nCode & 0xFFF
+			var nUpper = (nCode & 0xFF00) >> 8; // code12: (nCode >> 12) & 0xFFF
 			if (nLower == nBlockCode) {
-				nCode = nCode & 0xFF00;
+				nCode = nCode & 0xFF00; // code12: nCode & 0xFFF000
 			}
 			if (nUpper == nBlockCode) {
-				nCode = nCode & 0xFF;
+				nCode = nCode & 0xFF; // code12: nCode & 0xFFF
 			}
 			return nCode;
 		});
@@ -1040,8 +1040,8 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_advancedpad_blockreplace: function(nFrom, aTo) {
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF;
-			var nUpper = (nCode >> 8) & 0xFF;
+			var nLower = nCode & 0xFF;  // code12: nCode & 0xFFF
+			var nUpper = (nCode >> 8) & 0xFF;  // code12: (nCode >> 12) & 0xFFF
 			
 			if (nLower == nFrom) {
 				nLower = MathTools.rndChoose(aTo);
@@ -1049,7 +1049,7 @@ O2.createClass('RCWE.Application', {
 			if (nUpper == nFrom) {
 				nUpper = MathTools.rndChoose(aTo);
 			}
-			return (nUpper << 8) | nLower;
+			return (nUpper << 8) | nLower; // code12: (nUpper << 12) | nLower
 		});
 	},
 

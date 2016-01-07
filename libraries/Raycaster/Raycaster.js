@@ -862,7 +862,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				xi += dxi;
 				if (xi >= 0 && xi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF;
+					nPhys = (nText >> 8) & 0xFF; // code12: (nText >> 12) & 0xF
 					
 					if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -918,7 +918,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				yi += dyi;
 				if (yi >= 0 && yi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF;
+					nPhys = (nText >> 8) & 0xFF; // code12: (nText >> 12) & 0xF
 
 					if (nText !== 0 && Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -1038,8 +1038,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						oWall = oXBlock.oCanvas;
 						nTextureBase = 0;
 					} else {
-						oWall = oData.oWall.image;
-						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.nSideWall] * this.xTexture;
+						oWall = oData.oWall.image;						
+						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.nSideWall] * this.xTexture; // code12: oData.oWall.codes[oData.nWallPanel & 0xFFF][oData.nSideWall] * this.xTexture
 					}
 					this.drawLine(xScreen, oData.fDist, nTextureBase,
 							oData.nWallPos | 0, oData.bSideWall, oWall,
@@ -1154,19 +1154,19 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	setMapXYTexture : function(x, y, nTexture) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture;
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture; // code12: (this.aMap[y][x] & 0xFFFFF000) | nTexture
 	},
 
 	getMapXYTexture : function(x, y) {
-		return this.aMap[y][x] & 0xFF;
+		return this.aMap[y][x] & 0xFF; // code12: this.aMap[y][x] & 0xFFF
 	},
 
 	setMapXYPhysical : function(x, y, nPhys) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8);
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8); // code12: (this.aMap[y][x] & 0xFFFF0FFF) | (nPhys << 12)
 	},
 
 	getMapXYPhysical : function(x, y) {
-		return (this.aMap[y][x] >> 8) & 0xFF;
+		return (this.aMap[y][x] >> 8) & 0xFF;  // code12: (this.aMap[y][x] >> 12) & 0xF
 	},
 
 	setMapXYOffset : function(x, y, nOffset) {
@@ -1457,7 +1457,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var dz, sx, sy, sw, sh, dx, dy, dw, dh, a = null;
 		if (z === 0) {
 			z = 0.1;
-		} //  [nPanel & 0xFF][bDim ? 1 : 0]
+		}
 		dz = (this.yTexture / (z / this.yScrSize));
 		var dzfv = (dz * this.fViewHeight);
 		var dzy = this.yScrSize - dzfv;
@@ -1585,7 +1585,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nXDrawn += 2;
 					}
 					if (nXDrawn != 3) {
-						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
+						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF; // code12: aMap[fy / ps | 0][fx / ps | 0] & 0xFFF
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							if (nXDrawn != 1) {
@@ -1726,7 +1726,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
 						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF;
+						nBlock = aMap[fy64][fx64] & 0xFF; // code12: aMap[fy64][fx64] & 0xFFF
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[0];
@@ -1746,7 +1746,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fyCeil  % ps) + yOfs * ps | 0) * ps + (((fxCeil % ps) | 0)));
 						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF;
+						nBlock = aMap[fy64][fx64] & 0xFF; // code12: aMap[fy64][fx64] & 0xFFF
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[1];
@@ -1771,7 +1771,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel) {
 		if (z === 0) {
 			z = 0.1;
-		} //  [nPanel & 0xFF][bDim ? 1 : 0]
+		}
 		//var dz = (this.yTexture / (z / this.yScrSize) + 0.5) | 0;
 		var ytex = this.yTexture;
 		var xtex = this.xTexture;
@@ -1780,7 +1780,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
 		var dzy = yscr - (dz * fvh);
-		var nPhys = (nPanel >> 8) & 0x7F;
+		var nPhys = (nPanel >> 8) & 0x7F;  // code12: (nPanel >> 12) & 0xF
 		var nOffset = (nPanel >> 16) & 0xFF;
 		var nOpacity = z / this.nShadingFactor | 0;
 		if (bDim) {

@@ -131,7 +131,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 		} else {
 			nPhys = aCorr[nType];
 		}
-		return (nOffset << 16) | (nPhys << 8) | id;
+		return (nOffset << 16) | (nPhys << 8) | id; // code12: (nPhys << 12)
 	},
 
 	buildMap: function(oData, bUpper) {
@@ -144,7 +144,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 		}, this);
 		return oData.grid.map.map(function(row, y) {
 			return row.map(function(cell, x) {
-				var n = bUpper ? (cell & 0xFF00) >> 8 : cell & 0xFF;
+				var n = bUpper ? (cell & 0xFF00) >> 8 : cell & 0xFF; // code12: (cell & 0xFFF00) >> 12 : cell & 0xFFF
 				if (aCodes[n] === undefined) {
 					throw new Error('undefined cell code : ' + n + ' at x:' + x + ' y:' + y);
 				}
