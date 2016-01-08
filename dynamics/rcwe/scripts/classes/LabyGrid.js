@@ -399,9 +399,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	hasUpperFloor: function() {
 		var x, y, g = this.aGrid;
+		var guc = RCWE.Tools.getUpperCode;
 		for (y = 0; y < g.length; ++y) {
 			for (x = 0; x < g[y].length; ++x) {
-				if ((g[y][x] & 0xFF00) > 0) { // code12: (g[y][x] & 0xFFF000) > 0
+				if (guc(g[y][x]) > 0) { 
 					return true;
 				}
 			}
@@ -422,7 +423,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		for (y = 0; y < g.length; ++y) {
 			aRow = [];
 			for (x = 0; x < g[y].length; ++x) {
-				nCode = bUpper ? (g[y][x] >> 8) & 0xFF: g[y][x] & 0xFF; // code12: (g[y][x] >> 12) & 0xFFF: g[y][x] & 0xFFF
+				nCode = bUpper ? RCWE.Tools.getUpperCode(g[y][x]) : RCWE.Tools.getLowerCode(g[y][x]);
 				if (nCode in mc) {
 					aRow.push(mc[nCode]);
 				} else {
@@ -807,7 +808,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	clearFullBox: function() {
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF00; }); // code12: return n & 0xFFF000
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyLowerCode(n, 0); }).bind(this));
 	},
 	
 	/**
@@ -818,7 +819,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	clearUpperFullBox: function() {
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF; }); // code12: return n & 0xFFF
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyUpperCode(n, 0); }).bind(this));
 	},
 	
 	/**
@@ -828,9 +829,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @param nCode new value for selected cells
 	 */
 	drawFullBox: function(nCode) {
-		nCode = nCode | 0;
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF00 | nCode; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyLowerCode(n, nCode); }).bind(this));
 	},
 	
 	/**
@@ -840,9 +840,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @param nCode new value for selected cells
 	 */
 	drawUpperFullBox: function(nCode) {
-		nCode = (nCode | 0) << 8;  // code12: (nCode | 0) << 12
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF | nCode; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyUpperCode(n, nCode); }).bind(this));
 	},
 	
 	

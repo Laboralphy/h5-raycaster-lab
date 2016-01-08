@@ -36,7 +36,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 		switch (this.nPhase) {
 			case 0: // init
 				Marker.markXY(r.oDoors, this.x, this.y, this);
-				this.nCode = r.getMapXYPhysical(this.x, this.y);
+				this.nCode = r.getMapPhys(this.x, this.y);
 				switch (this.nCode) {
 					case r.PHYS_DOOR_SLIDING_DOUBLE:
 						this.fSpeed = r.TIME_FACTOR * 60 / 1000;
@@ -60,7 +60,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.fOffset += this.fSpeed;
 				if (this.fOffset >= this.nLimit) {
 					this.fOffset = this.nLimit - 1;
-					r.setMapXYPhysical(this.x, this.y, 0);
+					r.setMapPhys(this.x, this.y, 0);
 					this.nPhase++;
 				}
 				break;
@@ -72,7 +72,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 					if (r.oMobileSectors.get(this.x, this.y).length) {
 						this.nTime = this.nMaxTime >> 1;
 					} else {
-						r.setMapXYPhysical(this.x, this.y, this.nCode);
+						r.setMapPhys(this.x, this.y, this.nCode);
 						this.nPhase++;
 					}
 				}
@@ -85,7 +85,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				}
 				break;
 		}
-		r.setMapXYOffset(this.x, this.y, this.fOffset | 0);
+		r.setMapOffs(this.x, this.y, this.fOffset | 0);
 	},
 
 	/** Fermeture de la porte
@@ -117,7 +117,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 		this.fOffset = 0;
 		Marker.clearXY(this.oRaycaster.oDoors, this.x, this.y);
 		this.nPhase = 4;
-		this.oRaycaster.setMapXYOffset(this.x, this.y, 0);
-		this.oRaycaster.setMapXYPhysical(this.x, this.y, this.nCode);
+		this.oRaycaster.setMapOffs(this.x, this.y, 0);
+		this.oRaycaster.setMapPhys(this.x, this.y, this.nCode);
 	}
 });

@@ -232,7 +232,7 @@ O2.createClass('Dungeon', {
 	/**
 	 * renvoie un bloc de la zone actuellement visitée.
 	 * c'est une des constante LABY.BLOCK_* qui est renvoyée
-	 * contrairement à la fonction de l'engin getMapXYPhysical qui renvoie un
+	 * contrairement à la fonction de l'engin getMapPhys qui renvoie un
 	 * code de mécanisme (1 pour mur, 8 pour porte de type double battants etc...)
 	 * @param absice coordonnée du bloc
 	 * @param ordonnée du bloc

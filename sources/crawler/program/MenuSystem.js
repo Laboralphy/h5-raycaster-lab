@@ -214,16 +214,16 @@ O2.extendClass('MenuSystem', 'Cutscene', {
 		for (y = 0; y < this.oRaycaster.aMap.length; y++) {
 			for (x = 0; x < this.oRaycaster.aMap[y].length; x++) {
 				if (this.oRaycaster.aMap[y][x] == 0x12B) { // 0x12B : picture wall
-					if (this.oRaycaster.insideMap(x - 1) && this.oRaycaster.getMapXYPhysical(x - 1, y) === 0) {
+					if (this.oRaycaster.insideMap(x - 1) && this.oRaycaster.getMapPhys(x - 1, y) === 0) {
 						this.oRaycaster.cloneWall(x, y, 0, df);
 					}
-					if (this.oRaycaster.insideMap(y + 1) && this.oRaycaster.getMapXYPhysical(x, y + 1) === 0) {
+					if (this.oRaycaster.insideMap(y + 1) && this.oRaycaster.getMapPhys(x, y + 1) === 0) {
 						this.oRaycaster.cloneWall(x, y, 1, df);
 					}
-					if (this.oRaycaster.insideMap(x + 1) && this.oRaycaster.getMapXYPhysical(x + 1, y) === 0) {
+					if (this.oRaycaster.insideMap(x + 1) && this.oRaycaster.getMapPhys(x + 1, y) === 0) {
 						this.oRaycaster.cloneWall(x, y, 2, df);
 					}
-					if (this.oRaycaster.insideMap(y - 1) && this.oRaycaster.getMapXYPhysical(x, y - 1) === 0) {
+					if (this.oRaycaster.insideMap(y - 1) && this.oRaycaster.getMapPhys(x, y - 1) === 0) {
 						this.oRaycaster.cloneWall(x, y, 3, df);
 					}
 				}

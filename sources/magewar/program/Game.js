@@ -477,7 +477,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		var ps = rc.nPlaneSpacing;
 		var ps2 = ps >> 1;
 		var nSound = 0;
-		switch (rc.getMapXYPhysical(x, y)) {
+		switch (rc.getMapPhys(x, y)) {
 		case rc.PHYS_CURT_SLIDING_UP:
 		case rc.PHYS_CURT_SLIDING_DOWN:
 			nSound = 1;
@@ -507,8 +507,8 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	scDC : function(xData) {
 		if (!this.closeDoor(xData.x, xData.y)) {
 			// surement un passage secret
-			this.oRaycaster.setMapXYPhysical(xData.x, xData.y, this.oRaycaster.PHYS_SECRET_BLOCK);
-			this.oRaycaster.setMapXYOffset(xData.x, xData.y, 0);
+			this.oRaycaster.setMapPhys(xData.x, xData.y, this.oRaycaster.PHYS_SECRET_BLOCK);
+			this.oRaycaster.setMapOffs(xData.x, xData.y, 0);
 		}
 	},
 

@@ -114,7 +114,7 @@ O2.createClass('O876_Raycaster.Minimap',  {
 					nColor = this.getMobileColor(rc.oMobileSectors.get(x, y));  // mobile
 				} else if (Marker.getMarkXY(rc.aScanSectors, x, y)) {
 					nColor = 4;  // champ de vision joueur
-				} else if (rc.getMapXYPhysical(x, y)) {
+				} else if (rc.getMapPhys(x, y)) {
 					nColor = 0;  // mur
 				} else {
 					nColor = 7;  // vide

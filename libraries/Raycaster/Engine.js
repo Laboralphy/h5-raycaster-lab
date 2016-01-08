@@ -149,7 +149,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * 
 	 */
 	openDoor : function(x, y, bStayOpen) {
-		var nPhys = this.oRaycaster.getMapXYPhysical(x, y);
+		var nPhys = this.oRaycaster.getMapPhys(x, y);
 		var o = null;
 		switch (nPhys) {
 			case 2: // Raycaster::PHYS_FIRST_DOOR

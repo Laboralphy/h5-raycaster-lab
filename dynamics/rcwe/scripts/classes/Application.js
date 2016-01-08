@@ -394,8 +394,8 @@ O2.createClass('RCWE.Application', {
 	 */
 	labyGridDrawCell: function(nCode, oContext, x, y, wCell, hCell) {
 		var fAlphaFloor = 0.5;
-		var nLowerCode = nCode & 0xFF; // code12: nCode & 0xFFF  (ce sont des texture, pas des code phys)
-		var nUpperCode = (nCode >> 8) & 0xFF; // code12: (nCode >> 12) & 0xFFF
+		var nLowerCode = RCWE.Tools.getLowerCode(nCode);
+		var nUpperCode = RCWE.Tools.getUpperCode(nCode);
 		var oBlock, oCanvas;
 		var nFloor = this.oMapGrid.getSelectedFloor();
 		oContext.clearRect(x, y, wCell, hCell);
@@ -544,13 +544,13 @@ O2.createClass('RCWE.Application', {
 	cmd_blockbrowser_deleteblock: function(oBlock) {
 		var nBlockCode = oBlock.getData('id') | 0;
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF; // code12: nCode & 0xFFF
-			var nUpper = (nCode & 0xFF00) >> 8; // code12: (nCode >> 12) & 0xFFF
+			var nLower = RCWE.Tools.getLowerCode(nCode);
+			var nUpper = RCWE.Tools.getUpperCode(nCode);
 			if (nLower == nBlockCode) {
-				nCode = nCode & 0xFF00; // code12: nCode & 0xFFF000
+				nCode = RCWE.Tools.modifyLowerCode(nCode, 0);
 			}
 			if (nUpper == nBlockCode) {
-				nCode = nCode & 0xFF; // code12: nCode & 0xFFF
+				nCode = RCWE.Tools.modifyUpperCode(nCode, 0);
 			}
 			return nCode;
 		});

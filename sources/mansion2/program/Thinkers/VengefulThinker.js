@@ -80,7 +80,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 
 	testSolid: function(x, y) {
 		var rc = this.oGame.oRaycaster;
-		return rc.getMapXYPhysical(x, y) !== rc.PHYS_NONE;
+		return rc.getMapPhys(x, y) !== rc.PHYS_NONE;
 	},
 			
 			
