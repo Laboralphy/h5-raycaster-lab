@@ -412,10 +412,11 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			nFrames++;
 		}
 		if (nFrames) {
+			var fc = this.oFrameCounter;
 			this.oRaycaster.frameRender();
 			this._callGameEvent('onFrameRendered');
-			if (this.oFrameCounter.check(nNowTimeStamp)) {
-				this._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
+			if (fc.check(nNowTimeStamp)) {
+				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
 			}
 		}
 	},

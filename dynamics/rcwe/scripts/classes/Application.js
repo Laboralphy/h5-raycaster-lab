@@ -1049,7 +1049,10 @@ O2.createClass('RCWE.Application', {
 			if (nUpper == nFrom) {
 				nUpper = MathTools.rndChoose(aTo);
 			}
-			return (nUpper << 8) | nLower; // code12: (nUpper << 12) | nLower
+			return RCWE.Tools.modifyUpperCode(
+				RCWE.Tools.modifyLowerCode(0, nLower),
+				nUpper
+			);
 		});
 	},
 
