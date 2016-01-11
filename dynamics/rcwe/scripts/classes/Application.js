@@ -1040,8 +1040,8 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_advancedpad_blockreplace: function(nFrom, aTo) {
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF;  // code12: nCode & 0xFFF
-			var nUpper = (nCode >> 8) & 0xFF;  // code12: (nCode >> 12) & 0xFFF
+			var nLower = RCWE.Tools.getLowerCode(nCode);  // code12: nCode & 0xFFF
+			var nUpper = RCWE.Tools.getUpperCode(nCode);  // code12: (nCode >> 12) & 0xFFF
 			
 			if (nLower == nFrom) {
 				nLower = MathTools.rndChoose(aTo);

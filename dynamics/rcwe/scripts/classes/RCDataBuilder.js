@@ -255,7 +255,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var x3 = t.x % 3;
 			var y3 = t.y % 3;
 			// checking if the object is on a visible cell or inside a solid wall
-			var nCode = RCWE.getLowerCode(oData.grid.map[yCell][xCell]);
+			var nCode = RCWE.Tools.getLowerCode(oData.grid.map[yCell][xCell]);
 			var oBlock = aBlockData[nCode];
 
 			var BT = RCWE.CONST.BLOCK_TYPE;

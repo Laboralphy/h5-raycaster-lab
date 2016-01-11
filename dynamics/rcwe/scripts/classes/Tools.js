@@ -19,7 +19,7 @@ O2.createObject('RCWE.Tools', {
 	modifyUpperCode: function(c, n) {
 		c |= 0;
 		n &= 0xFF; // code12: n &= 0xFFF
-		return (c & 0x00FF) | n << 8); // code12: (c & 0x000FFF) | ((n & 0xFFF) << 12)
+		return (c & 0x00FF) | n << 8; // code12: (c & 0x000FFF) | ((n & 0xFFF) << 12)
 	},
 
 	/**
