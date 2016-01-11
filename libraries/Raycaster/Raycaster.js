@@ -856,13 +856,16 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var xint = 0, yint = 0;
 		
 		var sameOffsetWall = this.sameOffsetWall;
+		var BF = O876_Raycaster.BF;
+		var BF_getPhys = BF.getPhys;
+		var BF_getOffs = BF.getOffs;
 		
 		while (done === 0) {
 			if (xt < yt) {
 				xi += dxi;
 				if (xi >= 0 && xi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF; // code12: O876_Raycaster.BF.getPhys(nText);
+					nPhys = (nText >> 8) & 0xFF; // code12: BF_getPhys(nText);
 					
 					if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -873,7 +876,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF; // Code12: O876_Raycaster.BF.getOffs(nText)
+						nOfs = (nText >> 16) & 0xFF; // Code12: BF_getOffs(nText)
 					} else {
 						nOfs = 0;
 					}
@@ -918,7 +921,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				yi += dyi;
 				if (yi >= 0 && yi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF; // Code12: O876_Raycaster.BF.getPhys(nText)
+					nPhys = (nText >> 8) & 0xFF; // Code12: BF_getPhys(nText)
 
 					if (nText !== 0 && Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -929,7 +932,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF; // Code12: O876_Raycaster.BF.getOffs(nText)
+						nOfs = (nText >> 16) & 0xFF; // Code12: BF_getOffs(nText)
 					} else {
 						nOfs = 0;
 					}
@@ -992,8 +995,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 			oData.xWall = xi;
 			oData.yWall = yi;
-			//oData.xPix = xint | 0;
-			//oData.yPix = yint | 0;
 			oData.fDist = t * nScale;
 			oData.bExterior = false;
 			if (this.isWallTransparent(oData.xWall, oData.yWall)) {
@@ -1154,7 +1155,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	setMapCode : function(x, y, nTexture) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture; // code12: this.aMap[y][x] = O876_Raycaster.modifyCode(this.aMap[y][x], nTexture)
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture; // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyCode(this.aMap[y][x], nTexture)
 	},
 
 	getMapCode : function(x, y) {
@@ -1162,20 +1163,20 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	setMapPhys : function(x, y, nPhys) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8); // code12: this.aMap[y][x] = O876_Raycaster.modifyPhys(this.aMap[y][x], nPhys)
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8); // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyPhys(this.aMap[y][x], nPhys)
 	},
 
 	getMapPhys : function(x, y) {
-		return (this.aMap[y][x] >> 8) & 0xFF;  // code12: return O876_Raycaster.getPhys(this.aMap[y][x]);
+		return (this.aMap[y][x] >> 8) & 0xFF;  // code12: return O876_Raycaster.BF.getPhys(this.aMap[y][x]);
 	},
 
 	setMapOffs : function(x, y, nOffset) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF) // code12: this.aMap[y][x] = O876_Raycaster.setOffs(this.aMap[y][x], nOffset);
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF) // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyOffs(this.aMap[y][x], nOffset);
 				| (nOffset << 16);
 	},
 
 	getMapOffs : function(x, y) {
-		return (this.aMap[y][x] >> 16) & 0xFF; // code12: return O876_Raycaster.getOffs(this.aMap[y][x]);
+		return (this.aMap[y][x] >> 16) & 0xFF; // code12: return O876_Raycaster.BF.getOffs(this.aMap[y][x]);
 	},
 
 	drawScreen : function() {
@@ -1576,7 +1577,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nXDrawn += 2;
 					}
 					if (nXDrawn != 3) {
-						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF; // code12: aMap[fy / ps | 0][fx / ps | 0] & 0xFFF
+						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF; // code12: nBlock = O876_Raycaster.BF.getCode(aMap[fy / ps | 0][fx / ps | 0])
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							if (nXDrawn != 1) {
@@ -1717,7 +1718,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
 						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF; // code12: aMap[fy64][fx64] & 0xFFF
+						nBlock = aMap[fy64][fx64] & 0xFF; // code12: O876_Raycaster.BF.getCode(aMap[fy64][fx64])
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[0];
@@ -1737,7 +1738,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fyCeil  % ps) + yOfs * ps | 0) * ps + (((fxCeil % ps) | 0)));
 						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF; // code12: aMap[fy64][fx64] & 0xFFF
+						nBlock = aMap[fy64][fx64] & 0xFF; // code12: O876_Raycaster.BF.getCode(aMap[fy64][fx64])
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[1];
@@ -1771,8 +1772,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
 		var dzy = yscr - (dz * fvh);
-		var nPhys = (nPanel >> 8) & 0x7F;  // code12: (nPanel >> 12) & 0xF
-		var nOffset = (nPanel >> 16) & 0xFF;
+		var nPhys = (nPanel >> 8) & 0x7F;  // code12: O876_Raycaster.BF.getPhys(nPanel)
+		var nOffset = (nPanel >> 16) & 0xFF; // code12: O876_Raycaster.BF.getOffs(nPanel)
 		var nOpacity = z / this.nShadingFactor | 0;
 		if (bDim) {
 			nOpacity += this.nDimmedWall;
@@ -1982,10 +1983,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		for (var iAnim in wa) {
 			wcn = wc[iAnim | 0];
 			oAnim = wa[iAnim];
-			oAnim.animate(this.TIME_FACTOR);
-			for (i = 0, l = oAnim.__start.length; i < l; ++i) {
-				x = oAnim.__start[i];
-				wcn[i] = x + oAnim.nFrame;
+			if ('animate' in oAnim) {
+				oAnim.animate(this.TIME_FACTOR);
+				for (i = 0, l = oAnim.__start.length; i < l; ++i) {
+					x = oAnim.__start[i];
+					wcn[i] = x + oAnim.nFrame;
+				}
 			}
 		}
 	},
