@@ -132,8 +132,15 @@ O2.createClass('RCWE.Block', {
 				break;
 				
 			case bt.SOLID:
-				this.renderTile(oCanvas, 'left', 0.5, 1, 0, 0);
-				this.renderTile(oCanvas, 'right', 0.5, 1, 0.5, 0);
+				if (this.getData('left2')) {
+					this.renderTile(oCanvas, 'left2', 0.5, 0.5, 0, 0);
+					this.renderTile(oCanvas, 'right2', 0.5, 0.5, 0.5, 0);
+					this.renderTile(oCanvas, 'left', 0.5, 0.5, 0, 0.5);
+					this.renderTile(oCanvas, 'right', 0.5, 0.5, 0.5, 0.5);
+				} else {
+					this.renderTile(oCanvas, 'left', 0.5, 1, 0, 0);
+					this.renderTile(oCanvas, 'right', 0.5, 1, 0.5, 0);
+				}
 				break;
 			
 			case bt.TRANSPARENT:
