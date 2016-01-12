@@ -10,10 +10,10 @@ var GFX_DATA = {
       image: 'resources/gfx/textures_white.png',
       codes: [
         [0, 0],     // 0 mur normal
-        [0, 2],     // 1 mur / embrasure
+        [2, 0],     // 1 mur / embrasure
         [1, 1],     // 2 porte
         [3, 3],     // 3 tableau
-        [2, 0],     // 4 embrasure / mur
+        [0, 2],     // 4 embrasure / mur
         [4, 4],     // 5 grille
         [8, 8],     // 6 window
         [6, 6],     // 7 chest
@@ -27,17 +27,17 @@ var GFX_DATA = {
         // prison
         [4, 4],     // 14 bars
         [14, 14],   // 15 prison door
-        [15, 0],    // 16 Mur prison 
+        [0, 15],    // 16 Mur prison 
 
         // living
         [16, 16],    // 17 Fireplace 
         [17, 17],    // 18 Curtain
-        [19, 18],    // 19 Painting
-        [18, 19],    // 20 Portrait
+        [18, 19],    // 19 Painting
+        [19, 18],    // 20 Portrait
 
         // labo
-        [22, 23],    // 21 Closet X
-        [23, 22],    // 22 Closet Y
+        [23, 22],    // 21 Closet X
+        [22, 23],    // 22 Closet Y
         [20, 20]     // 23 Alchemy
         
       ],

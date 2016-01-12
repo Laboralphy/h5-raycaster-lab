@@ -489,7 +489,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
-		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][(1 - nSide & 1)], x, y, nSide);
+		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
 		pDrawingFunction(this, c, x, y, nSide);
 		this.shadeCloneWall(c, x, y, nSide);
 	},
@@ -1447,7 +1447,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 	drawExteriorLine : function(x, z) {
 		var dz, sx, sy, sw, sh, dx, dy, dw, dh, a = null;
-		if (z === 0) {
+		if (z < 0.1) {
 			z = 0.1;
 		}
 		dz = (this.yTexture / (z / this.yScrSize));
@@ -1761,7 +1761,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel) {
-		if (z === 0) {
+		if (z < 0.1) {
 			z = 0.1;
 		}
 		//var dz = (this.yTexture / (z / this.yScrSize) + 0.5) | 0;
@@ -2006,6 +2006,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			wcc = wc[nCode];
 			if (wcc) {
 				if (Array.isArray(wcc[0])) { // Une animation de texture ?
+					if (wcc[0].length === 2) {
+						// convertir en mure à 4 coté
+						wcc[0].push(wcc[0][0]);
+						wcc[0].push(wcc[0][1]);
+					}
 					wcStart = wcc[0];
 					wcCount = wcc[1];
 					wcDur = wcc[2];

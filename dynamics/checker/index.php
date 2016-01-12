@@ -84,6 +84,8 @@ function main() {
 		} else {
 			$current.html('');
 			$('div.checkpad div.report').html(aReports.join(''));
+			$('div.checkpad div.title').html('Analysis done.');
+			$progress.css('visibility', 'hidden');
 		}
 		$progress.attr('value', i++);
 	}

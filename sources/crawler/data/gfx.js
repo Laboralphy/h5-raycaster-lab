@@ -281,8 +281,8 @@ var LABY = {
 					/* 08 */[ 26, 26 ], // Door locked 3 green
 					/* 09 */[ 25, 25 ], // Door locked 4 yellow
 
-					/* 0A */[ 0, 35 ], // Doorway Brick X
-					/* 0B */[ 35, 0 ], // Doorway Brick Y
+					/* 0A */[ 35, 0 ], // Doorway Brick X
+					/* 0B */[ 0, 35 ], // Doorway Brick Y
 
 					/* 11 */[ [44, 44], 3, 120, 2], // Close chest
 					/* 0D */[ 47, 47 ], // Open chest
@@ -292,10 +292,10 @@ var LABY = {
 
 					/* 10 */[ 17, 17 ], // Window 1
 
-					/* 11 */[ 65, 0 ], // Elevator X side end
-					/* 12 */[ 0, 65 ], // Elevator Y side end
-					/* 13 */[ 64, 0 ], // Elevator X side start
-					/* 14 */[ 0, 64 ], // Elevator Y side start
+					/* 11 */[ 0, 65 ], // Elevator X side end
+					/* 12 */[ 65, 0 ], // Elevator Y side end
+					/* 13 */[ 0, 64 ], // Elevator X side start
+					/* 14 */[ 64, 0 ], // Elevator Y side start
 					/* 15 */[ 63, 63 ], // Elevator wall
 					/* 16 */[ 48, 48 ], // Elevator switch 
 
@@ -316,14 +316,14 @@ var LABY = {
 
 					// WATCH
 					/* 21 */[ 37, 37 ], // wood panel
-					/* 22 */[ 40, 37 ], // watch library X
-					/* 23 */[ 41, 37 ], // watch library X odd
 					/* 24 */[ 37, 40 ], // watch library Y
 					/* 25 */[ 37, 41 ], // watch library Y odd
+					/* 22 */[ 40, 37 ], // watch library X
+					/* 23 */[ 41, 37 ], // watch library X odd
 
 					// JAIL
-					/* 26 */[ 43, 0 ], // wall shackles X
 					/* 27 */[ 0, 43 ], // wall shackles Y
+					/* 26 */[ 43, 0 ], // wall shackles X
 					/* 28 */[ 39, 39 ], // jail bars
 					/* 29 */[ 29, 29 ], // jail door
 
@@ -334,8 +334,8 @@ var LABY = {
 					/* 2D */[ [49, 49], 4, 120, 1 ], // fireplace 1
 
 					// SHOP
-					/* 2E */[ 79, 37 ], // ******************** unused shop X
 					/* 2F */[ 37, 79 ], // ******************** unused shop Y
+					/* 2E */[ 79, 37 ], // ******************** unused shop X
 
 					// TAPESTRY
 					/* 30 */[ 53, 53 ], // tapestry red 
@@ -345,14 +345,14 @@ var LABY = {
 
 					// LAB
 					/* 34 */[ 57, 57 ], // lab wall
-					/* 35 */[ 58, 57 ], // closet X 1
 					/* 36 */[ 57, 58 ], // closet Y 1
-					/* 37 */[ 59, 57 ], // closet X 1 open
+					/* 35 */[ 58, 57 ], // closet X 1
 					/* 38 */[ 57, 59 ], // closet Y 1 open
+					/* 37 */[ 59, 57 ], // closet X 1 open
 					/* 39 */[ 62, 62 ], // alchemy full
-					/* 3A */[ 57, 59 ], // ************************ unused
-					/* 3B */[ 57, 60 ], // ************************ unused
-					/* 3C */[ 57, 61 ], // ************************ unused
+					/* 3A */[ 59, 57 ], // ************************ unused
+					/* 3B */[ 60, 57 ], // ************************ unused
+					/* 3C */[ 61, 57 ], // ************************ unused
 					/* 3D */[ 62, 62 ], // ************************ unused
 					/* 3E */[ 62, 62 ], // alchemy purple red **************** usused
 					/* 3F */[ 62, 62 ], // alchemy blue red   **************** usused
@@ -360,8 +360,8 @@ var LABY = {
 
 					// MISC
 					/* 41 */[ 34, 34 ], // Curtain
-					/* 42 */[ 37, 36 ], // Watch doorway x
 					/* 43 */[ 36, 37 ], // Watch doorway y
+					/* 42 */[ 37, 36 ], // Watch doorway x
 					/* 44 */[ 30, 30 ], // door locked gray
 					/* 45 */[ 31, 31 ], // door unlocked
 					/* 46 */[ 48, 48 ], // Exit archway
@@ -486,8 +486,8 @@ var LABY = {
 			codes: [
 					/* 00 */[ 0, 0 ], // Brick
 
-					/* 01 */[ 0, 13 ], // Doorway Brick X
 					/* 02 */[ 13, 0 ], // Doorway Brick Y
+					/* 01 */[ 0, 13 ], // Doorway Brick X
 
 					/* 03 */[ [23, 23], 3, 120, 2], // Close chest
 					/* 04 */[ 26, 26 ], // Open chest
@@ -496,10 +496,10 @@ var LABY = {
 
 					/* 06 */[ 18, 18 ], // Window 1
 
-					/* 07 */[ 16, 0 ], // Elevator X side end
 					/* 08 */[ 0, 16 ], // Elevator Y side end
-					/* 09 */[ 15, 0 ], // Elevator X side start
+					/* 07 */[ 16, 0 ], // Elevator X side end
 					/* 0A */[ 0, 15 ], // Elevator Y side start
+					/* 09 */[ 15, 0 ], // Elevator X side start
 					/* 0B */[ 14, 14 ], // Elevator wall
 					/* 0C */[ 13, 13 ], // Elevator switch 
 
