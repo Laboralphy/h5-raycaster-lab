@@ -15,4 +15,11 @@ class MwController extends M\Controller\Action {
 		$a = $oMW->importLevel($l);
 		$this->setViewData('data', $a);
 	}
+
+	public function listAction() {
+		$oMF = M\Model\Factory::getInstance();
+		$oMW = $oMF->getModel('ServiceMWDataBuilder');
+		$a = $oMW->getList();
+		$this->setViewData('data', $a);
+	}
 }

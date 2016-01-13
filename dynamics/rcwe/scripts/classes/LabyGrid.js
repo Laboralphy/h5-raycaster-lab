@@ -123,7 +123,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('◫', 'Block view', this.cmd_viewBlock.bind(this)).addClass('view selected');
+		this.addCommand('◫', 'Block view', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
 		this.addCommand('♜', 'Thing view', this.cmd_viewThing.bind(this)).addClass('view');
 		this.addCommand('✜', 'Starting point view', this.cmd_viewStartPoint.bind(this)).addClass('view');
 		this.addCommand('☀', 'Sky and background view', this.cmd_viewSky.bind(this)).addClass('view');

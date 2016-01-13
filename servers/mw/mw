@@ -91,7 +91,7 @@ installPlugin() {
 
 listPlugins() {
 	local plugin_path=mwplugins
-	local avail_plugin_path=mwplugins_projects
+	local avail_plugin_path=mwplugins_sources
 	local i
 	for i in `ls "$avail_plugin_path/"`
 	do
@@ -167,10 +167,10 @@ goPlugin() {
 			if [ -n "$1" -a -h "mwplugins/$1" ]
 			then
 				echo "(!) plugin $1 is already active"
-			elif [ -n "$1" -a -e "mwplugins_projects/$1" ]
+			elif [ -n "$1" -a -e "mwplugins_sources/$1" ]
 			then
 				mkdir -p mwplugins
-				ln -s "../mwplugins_projects/$1" "mwplugins/$1"
+				ln -s "../mwplugins_sources/$1" "mwplugins/$1"
 				echo "(i) added plugin $1"
 			else
 				echo "(!) cannot find plugin $1"
@@ -230,63 +230,11 @@ goUpload() {
 	curl -T $1 ftp://$sFtpuser:$sPassword@$sHost$sPath
 }
 
-# intègre une map dans le système
-goMapImport() {
-	local sCommand="$1"
-	shift
-	local sTilePath="www/maptiles"
-	local sMap="$1"
-	local sDataPath="data/maps"
-	local sExportPath="maps_exports"
-	local sMWStorPath="../../dynamics/rcwe/server.storage/exports/mw"
-	local sSrcPath="$sMWStorPath/$sMap"
-	local i
-	local a
-
-	case "$sCommand" in
-		"add")
-			if [ -n "$sMap" ]
-			then
-				rm -r $sExportPath/$sMap
-				cp -r $sSrcPath $sExportPath
-			fi
-		;;
-
-		"remove")
-			if [ -n "$sMap" ]
-			then
-				rm -r $sExportPath/$sMap
-			fi
-		;;
-
-		"list")
-			echo "(i) imported maps"
-			ls $sExportPath
-			echo " "
-			echo "(i) maps available in editor but not imported yet"
-			for i in `diff <(cd $sMWStorPath && find . -maxdepth 1 | sort) <(cd $sExportPath && find . -maxdepth 1 | sort) | grep "^<"`
-			do
-				a=`expr substr $i 3 1000`
-				if [ -n "$a" ]
-				then
-					echo $a
-				fi
-			done
-		;;
-
-		*)
-			echo "!! no command specified"
-			echo " * map add <file> : imports a map from RCWE to the game"
-			echo " * map remove <file> remove a map from the game, the map will still be available in rcwe"
-			echo " * map list : lists all rcwe maps that have not benn imported yet to the game"
-		;;
-	esac
-}
-
+# Copy all maps into data/maps (json) & www/maptiles (resources)
 installMaps() {
 	local sTilePath="www/maptiles"
 	local sDataPath="data/maps"
-	local sExportPath="maps_exports"
+	local sExportPath="maps_sources"
 	local i
 	rm -r $sDataPath
 	rm -r $sTilePath
@@ -342,11 +290,6 @@ then
 			goPlugin $*
 		;;
 
-		"map")
-			shift
-			goMapImport $*
-		;;
-
 		"test")
 			cd node_modules/mwgame/tests
 			node testmwgame.js
@@ -363,7 +306,6 @@ then
 			echo " * build : project compilation and packing"
 			echo " * deploy <env> : project building and deployment using specified environement"
 			echo " * plugin <cmd> <name> : plugin management"
-			echo " * map <map> : imports map from MWEditor (if no <map> specified, lists all available maps)"
 			echo " * test : project testing"
 			echo " * peekversion : check project version number"
 		;;
@@ -374,5 +316,3 @@ else
 	echo "try 'bash $0'"
 	echo " "
 fi
-
-

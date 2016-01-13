@@ -24,5 +24,10 @@ body {
 }
 
 .footer {
-
+	text-align: center;
+	font-size: 50%;
+	color: #666;
+	padding: 8px;
+	margin-top: 32px;
+	border-top: solid thin #444;
 }

@@ -469,6 +469,10 @@ O2.createClass('RCWE.Application', {
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
+	
+	cmd_clickOnBlockBrowser: function() {
+		$('button.view.blockbrowser', this.oMapGrid.getToolBar()).trigger('click');
+	},
 
 	// BLOCK EDITOR
 	cmd_blockeditor_done: function() {
@@ -481,7 +485,7 @@ O2.createClass('RCWE.Application', {
 		}
 		this.redrawMap();
 		be.resetBlock();
-		this.showPanel('blockBrowser');
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 
 	cmd_blockeditor_cancel: function() {
@@ -491,7 +495,7 @@ O2.createClass('RCWE.Application', {
 			this.oBlockBrowser.destroyBlockImage(bb.getSelectedBlockImage());
 		}
 		this.oBlockEditor.resetBlock();
-		this.showPanel('blockBrowser');
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 	
 	cmd_blockeditor_deletetile: function(id) {
@@ -829,7 +833,7 @@ O2.createClass('RCWE.Application', {
 	// FILE IMPORT DIALOG
 	cmd_fileimportdialog_load: function(sProj, sFile) {
 		this.showMainScreen('map');
-		this.showPanel('blockbrowser');		
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 		this.importLevel(sProj, sFile);
 	},
 
@@ -845,7 +849,7 @@ O2.createClass('RCWE.Application', {
 
 	cmd_fileimportdialog_close: function() {
 		this.showMainScreen('map');
-		this.showPanel('blockbrowser');		
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 	
 	
@@ -995,7 +999,7 @@ O2.createClass('RCWE.Application', {
 	cmd_templateloader_close: function() {
 		switch (this.sMode) {
 			case 'blocktemplateloader':
-				this.showPanel('blockbrowser');
+				this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			break;
 			
 			case 'thingtemplateloader':
@@ -1011,7 +1015,7 @@ O2.createClass('RCWE.Application', {
 		this.importTemplate(sTemp, sType);
 		switch (sType) {
 			case 'block':
-				this.showPanel('blockbrowser');
+				this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			break;
 			
 			case 'thing':
@@ -1168,7 +1172,7 @@ O2.createClass('RCWE.Application', {
 		var pDataReceived = (function(data) {
 			this.unserialize(data.level);
 			this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
-			this.showPanel('blockBrowser');
+			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			this.hidePopup();
 		}).bind(this);
 			
@@ -1325,7 +1329,7 @@ O2.createClass('RCWE.Application', {
 		var pDataReceived = (function(data) {
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
-			this.showPanel('blockBrowser');
+			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			this.hidePopup();
 		}).bind(this);
 			

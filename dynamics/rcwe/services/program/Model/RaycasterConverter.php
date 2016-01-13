@@ -181,18 +181,18 @@ class RaycasterConverter {
 						$aAnim = null;
 					}
 					if ($aWallFace[1] >= 0) {
-						$sLeft = 'wall_' . strval($aWallFace[1] + 1);
+						$sLeft = 'wall_' . strval($aWallFace[0] + 1);
 						$aWallIds[] = $sLeft;
 					}
 					if ($aWallFace[0] >= 0) {
-						$sRight = 'wall_' . strval($aWallFace[0] + 1);
+						$sRight = 'wall_' . strval($aWallFace[1] + 1);
 						$aWallIds[] = $sRight;
 					}
-					if ($aWallFace[3] >= 0) {
+					if (count($aWallFace) > 2 && $aWallFace[2] >= 0) {
 						$sLeft2 = 'wall_' . strval($aWallFace[2] + 1);
 						$aWallIds[] = $sLeft2;
 					}
-					if ($aWallFace[2] >= 0) {
+					if (count($aWallFace) > 3 && $aWallFace[3] >= 0) {
 						$sRight2 = 'wall_' . strval($aWallFace[3] + 1);
 						$aWallIds[] = $sRight;
 					}
