@@ -1,7 +1,7 @@
 module.exports = {
 	games: {
 		main: {
-			map: 'golden-temple',
+			map: 'crimson-keep',
 			maplist: ['crimson-keep'],
 			duration: 10
 		}
