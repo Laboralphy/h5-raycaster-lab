@@ -865,7 +865,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				xi += dxi;
 				if (xi >= 0 && xi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF; // code12: BF_getPhys(nText);
+					nPhys = (nText >> 12) & 0xF; // **code12** phys
 					
 					if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -876,7 +876,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF; // Code12: BF_getOffs(nText)
+						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
 						nOfs = 0;
 					}
@@ -921,7 +921,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				yi += dyi;
 				if (yi >= 0 && yi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF; // Code12: BF_getPhys(nText)
+					nPhys = (nText >> 12) & 0xF; // **Code12** phys
 
 					if (nText !== 0 && Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -932,7 +932,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF; // Code12: BF_getOffs(nText)
+						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
 						nOfs = 0;
 					}
@@ -1040,7 +1040,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nTextureBase = 0;
 					} else {
 						oWall = oData.oWall.image;						
-						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.nSideWall] * this.xTexture; // code12: oData.oWall.codes[O876_Raycaster.BF.getCode(oData.nWallPanel)][oData.nSideWall] * this.xTexture
+						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFFF][oData.nSideWall] * this.xTexture; // **code12** code
 					}
 					this.drawLine(xScreen, oData.fDist, nTextureBase,
 							oData.nWallPos | 0, oData.bSideWall, oWall,
@@ -1155,28 +1155,28 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	setMapCode : function(x, y, nTexture) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture; // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyCode(this.aMap[y][x], nTexture)
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFF000) | nTexture; // **code12** code
 	},
 
 	getMapCode : function(x, y) {
-		return this.aMap[y][x] & 0xFF; // code12: return O876_Raycaster.getCode(this.aMap[y][x])
+		return this.aMap[y][x] & 0xFFF; // **code12** code
 	},
 
 	setMapPhys : function(x, y, nPhys) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8); // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyPhys(this.aMap[y][x], nPhys)
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF0FFF) | (nPhys << 12); // **code12** phys
 	},
 
 	getMapPhys : function(x, y) {
-		return (this.aMap[y][x] >> 8) & 0xFF;  // code12: return O876_Raycaster.BF.getPhys(this.aMap[y][x]);
+		return (this.aMap[y][x] >> 12) & 0xF;  // **code12** phys
 	},
 
 	setMapOffs : function(x, y, nOffset) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF) // code12: this.aMap[y][x] = O876_Raycaster.BF.modifyOffs(this.aMap[y][x], nOffset);
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF) // **code12** offs
 				| (nOffset << 16);
 	},
 
 	getMapOffs : function(x, y) {
-		return (this.aMap[y][x] >> 16) & 0xFF; // code12: return O876_Raycaster.BF.getOffs(this.aMap[y][x]);
+		return (this.aMap[y][x] >> 16) & 0xFF; // **code12** offs
 	},
 
 	drawScreen : function() {
@@ -1577,7 +1577,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nXDrawn += 2;
 					}
 					if (nXDrawn != 3) {
-						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF; // code12: nBlock = O876_Raycaster.BF.getCode(aMap[fy / ps | 0][fx / ps | 0])
+						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							if (nXDrawn != 1) {
@@ -1718,7 +1718,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
 						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF; // code12: O876_Raycaster.BF.getCode(aMap[fy64][fx64])
+						nBlock = aMap[fy64][fx64] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[0];
@@ -1738,7 +1738,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fyCeil  % ps) + yOfs * ps | 0) * ps + (((fxCeil % ps) | 0)));
 						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF; // code12: O876_Raycaster.BF.getCode(aMap[fy64][fx64])
+						nBlock = aMap[fy64][fx64] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[1];
@@ -1772,8 +1772,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
 		var dzy = yscr - (dz * fvh);
-		var nPhys = (nPanel >> 8) & 0x7F;  // code12: O876_Raycaster.BF.getPhys(nPanel)
-		var nOffset = (nPanel >> 16) & 0xFF; // code12: O876_Raycaster.BF.getOffs(nPanel)
+		var nPhys = (nPanel >> 12) & 0xF;  // **code12** phys
+		var nOffset = (nPanel >> 16) & 0xFF; // **code12** offs
 		var nOpacity = z / this.nShadingFactor | 0;
 		if (bDim) {
 			nOpacity += this.nDimmedWall;

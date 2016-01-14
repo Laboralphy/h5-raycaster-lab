@@ -339,7 +339,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		this.oPathFinder = new Astar.Land();
 		this.oPathFinder.isCellWalkable = function(x, y) {		
 			try {
-				return (this.getCell(x, y) & 0xFF00) === 0; // code12: return (O876_Raycaster.BF.getPhys(this.getCell(x, y)) === 0;
+				return (this.getCell(x, y) & 0xF000) === 0; // **code12** phys
 			} catch (e) {
 				return false;
 			}
@@ -1410,8 +1410,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 						}
 						break;
 				}
-				if (oData.walls.codes[nCode & 0xFF] === undefined) {  // code12: oData.walls.codes[O876_Raycaster.BF.getCode(nCode)]
-					throw new Error('code: 0x' + (nCode & 0xFF).toString(16) + ' is not defined');// code12: 'code: 0x' + O876_Raycaster.BF.getCode(nCode).toString(16) + ' is not defined'
+				if (oData.walls.codes[nCode & 0xFFF] === undefined) {  // **code12** code
+					throw new Error('code: 0x' + (nCode & 0xFFF).toString(16) + ' is not defined'); // **code12** code
 				}
 				aRow.push(nCode);
 			}

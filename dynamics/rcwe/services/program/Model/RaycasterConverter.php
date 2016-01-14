@@ -3,8 +3,8 @@
 class RaycasterConverter {
 	public static function convert($oJSON) {
 		function convertCode($n) {
-			$nText = $n & 0xFF; // code12: $n & 0xFFF
-			$nPhys = ($n >> 8) & 0xFF; // code12: ($n >> 12) & 0xF
+			$nText = $n & 0xFFF; // **code12** code
+			$nPhys = ($n >> 12) & 0xF; // **code12** phys
 			$nOffs = ($n >> 16) & 0xFF;
 			return array($nText, $nPhys, $nOffs);
 		}
@@ -240,7 +240,7 @@ class RaycasterConverter {
 			$oRow = array();
 			foreach ($row as $x => $nLower) {
 				$nUpper = $oJSON->uppermap[$y][$x];
-				$oMap[$y][$x] = $createBlock($nLower) | ($createBlock($nUpper) << 8); // code12: $createBlock($nLower) | ($createBlock($nUpper) << 12)
+				$oMap[$y][$x] = $createBlock($nLower) | ($createBlock($nUpper) << 12); // **code12** storey
 			}
 		}
 

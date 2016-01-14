@@ -131,7 +131,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 		} else {
 			nPhys = aCorr[nType];
 		}
-		return (nOffset << 16) | (nPhys << 8) | id; // code12: (nPhys << 12)
+		return (nOffset << 16) | (nPhys << 12) | id; // **code12** all
 	},
 
 	buildMap: function(oData, bUpper) {
