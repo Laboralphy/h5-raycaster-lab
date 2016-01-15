@@ -134,7 +134,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bouton gauche de la souris
 	 */
 	gameEventCommand0: function() {
-		this.spawnMissile('p_ecto', this.getPlayer());
+		//this.spawnMissile('p_ecto', this.getPlayer());
 	},
 	
 
@@ -293,6 +293,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var sScript = aTag.shift();
 		var sAction = aTag.shift();
 		var oInstance = this.getScript(sScript);
+		console.log('tag script');
 		if (sAction in oInstance) {
 			oEvent.game = this;
 			oInstance[sAction].apply(oInstance, [oEvent]);
