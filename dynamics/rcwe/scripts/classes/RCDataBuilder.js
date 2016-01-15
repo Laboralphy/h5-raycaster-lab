@@ -131,7 +131,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 		} else {
 			nPhys = aCorr[nType];
 		}
-		return (nOffset << 16) | (nPhys << 8) | id;
+		return (nOffset << 16) | (nPhys << 12) | id; // **code12** all
 	},
 
 	buildMap: function(oData, bUpper) {
@@ -144,7 +144,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 		}, this);
 		return oData.grid.map.map(function(row, y) {
 			return row.map(function(cell, x) {
-				var n = bUpper ? (cell & 0xFF00) >> 8 : cell & 0xFF;
+				var n = bUpper ? RCWE.Tools.getUpperCode(cell) : RCWE.Tools.getLowerCode(cell);
 				if (aCodes[n] === undefined) {
 					throw new Error('undefined cell code : ' + n + ' at x:' + x + ' y:' + y);
 				}
@@ -156,7 +156,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 	buildUpperMap: function(oData) {
 		var bUpper = oData.grid.map.some(function(row, y) {
 			return row.some(function(cell, x) {
-				return cell & 0xFF00 != 0;
+				return RCWE.Tools.getUpperCode(cell) != 0;
 			});
 		});
 		if (bUpper) {
@@ -255,7 +255,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var x3 = t.x % 3;
 			var y3 = t.y % 3;
 			// checking if the object is on a visible cell or inside a solid wall
-			var nCode = oData.grid.map[yCell][xCell] & 0xFF;
+			var nCode = RCWE.Tools.getLowerCode(oData.grid.map[yCell][xCell]);
 			var oBlock = aBlockData[nCode];
 
 			var BT = RCWE.CONST.BLOCK_TYPE;
@@ -335,7 +335,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var x3 = t.x % 3;
 			var y3 = t.y % 3;
 			// checking if the object is on a visible cell or inside a solid wall
-			var nCode = oData.grid.map[yCell][xCell] & 0xFF;
+			var nCode = RCWE.Tools.getLowerCode(oData.grid.map[yCell][xCell]);
 			var oBlock = aBlockData[nCode];
 			var BT = RCWE.CONST.BLOCK_TYPE;
 			switch (oBlock.type) {

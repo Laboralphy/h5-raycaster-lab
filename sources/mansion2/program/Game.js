@@ -239,7 +239,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
 		
 		aDir.forEach(function(a, ia) {
 			var xd = x + a[0], yd = y + a[1];
-			nPhys = rc.getMapXYPhysical(xd, yd);
+			nPhys = rc.getMapPhys(xd, yd);
 			if (nPhys != rc.PHYS_NONE && nPhys != rc.PHYS_INVISIBLE) {
 				rc.cloneWall(xd, yd, ia, pDrawFunc);
 			}

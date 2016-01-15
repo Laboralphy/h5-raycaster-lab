@@ -123,7 +123,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('◫', 'Block view', this.cmd_viewBlock.bind(this)).addClass('view selected');
+		this.addCommand('◫', 'Block view', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
 		this.addCommand('♜', 'Thing view', this.cmd_viewThing.bind(this)).addClass('view');
 		this.addCommand('✜', 'Starting point view', this.cmd_viewStartPoint.bind(this)).addClass('view');
 		this.addCommand('☀', 'Sky and background view', this.cmd_viewSky.bind(this)).addClass('view');
@@ -399,9 +399,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	hasUpperFloor: function() {
 		var x, y, g = this.aGrid;
+		var guc = RCWE.Tools.getUpperCode;
 		for (y = 0; y < g.length; ++y) {
 			for (x = 0; x < g[y].length; ++x) {
-				if ((g[y][x] & 0xFF00) > 0) {
+				if (guc(g[y][x]) > 0) { 
 					return true;
 				}
 			}
@@ -422,7 +423,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		for (y = 0; y < g.length; ++y) {
 			aRow = [];
 			for (x = 0; x < g[y].length; ++x) {
-				nCode = bUpper ? (g[y][x] >> 8) & 0xFF: g[y][x] & 0xFF;
+				nCode = bUpper ? RCWE.Tools.getUpperCode(g[y][x]) : RCWE.Tools.getLowerCode(g[y][x]);
 				if (nCode in mc) {
 					aRow.push(mc[nCode]);
 				} else {
@@ -807,7 +808,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	clearFullBox: function() {
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF00; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyLowerCode(n, 0); }).bind(this));
 	},
 	
 	/**
@@ -818,7 +819,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	clearUpperFullBox: function() {
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyUpperCode(n, 0); }).bind(this));
 	},
 	
 	/**
@@ -828,9 +829,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @param nCode new value for selected cells
 	 */
 	drawFullBox: function(nCode) {
-		nCode = nCode | 0;
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF00 | nCode; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyLowerCode(n, nCode); }).bind(this));
 	},
 	
 	/**
@@ -840,9 +840,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @param nCode new value for selected cells
 	 */
 	drawUpperFullBox: function(nCode) {
-		nCode = (nCode | 0) << 8;
 		this.undoPush();
-		this.iterateSelectedRegion(function(x, y, n) { return n & 0xFF | nCode; });
+		this.iterateSelectedRegion((function(x, y, n) { return RCWE.Tools.modifyUpperCode(n, nCode); }).bind(this));
 	},
 	
 	

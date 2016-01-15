@@ -129,18 +129,14 @@ var LABY = {
 					/* 02 */[ 2, 2 ], // trees
 					/* 03 */[ 3, 3 ], // trees
 					/* 04 */[ 4, 4 ], // trees
-					/* 05 */[ 5, 5, 6, 6, 7, 7, 8, 8 ], // torch
+					/* 05 */[ [5, 5], 4, 120, 1 ], // torch
 					/* 06 */[ 9, 9 ], // hole
 					/* 07 */[ 10, 10 ], // grate
 					/* 08 */[ 12, 12 ], // door
-					/* 09 */[ 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-							13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 14,
-							14, 14, 14 ], // close chest
+					/* 09 */[ [13, 13], 3, 120, 2 ], // close chest
 					/* 0A */[ 16, 16 ], // open chest
-					/* 0B */[ 20, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22, 22,
-							21, 21, 21, 21 ],
-					/* 0C */[ 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25,
-							24, 24, 24, 24 ],
+					/* 0B */[ [20, 20], 3, 120, 2 ],
+					/* 0C */[ [23, 23], 3, 120, 2 ],
 					/* 0D */[ 19, 0 ], // Elevator X side start
 					/* 0E */[ 0, 19 ], // Elevator Y side start
 					/* 0F */[ 17, 17 ], // Elevator wall
@@ -148,16 +144,16 @@ var LABY = {
 			],
 			metacodes : {
 				/* LABY.BLOCK_VOID */0 : 0,
-				/* LABY.BLOCK_WALL */1 : [ 0x100, 0x101, 0x102, 0x103, 0x104 ],
-				/* LABY.BLOCK_TREASURE */6 : 0x200A09,
-				/* LABY.BLOCK_WALL_TORCH */0xA : 0x105,
-				/* LABY.BLOCK_WALL_ALCOVE */0xB : 0x106,
-				/* LABY.BLOCK_WALL_GRATE */0xC : 0x107,
-				/* LABY.BLOCK_RELIC_CHEST */0xD : 0x200A0B,
-				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x200A0A,
-				/* LABY.BLOCK_EMPTY_RELIC_CHEST */0x16 : 0x200A0C,
+				/* LABY.BLOCK_WALL */1 : [ 0x1000, 0x1001, 0x1002, 0x1003, 0x1004 ],
+				/* LABY.BLOCK_TREASURE */6 : 0x20A009,
+				/* LABY.BLOCK_WALL_TORCH */0xA : 0x1005,
+				/* LABY.BLOCK_WALL_ALCOVE */0xB : 0x1006,
+				/* LABY.BLOCK_WALL_GRATE */0xC : 0x1007,
+				/* LABY.BLOCK_RELIC_CHEST */0xD : 0x20A00B,
+				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x20A00A,
+				/* LABY.BLOCK_EMPTY_RELIC_CHEST */0x16 : 0x20A00C,
 
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x110,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x1010,
 				/* LABY.BLOCK_ELEVATOR_ENTRANCE */0x85 : 0
 			}
 		},
@@ -180,13 +176,10 @@ var LABY = {
 					/* 0E */[ 14, 14 ], // window
 					/* 0F */[ 15, 15 ], // shadow window
 					/* 10 */[ 16, 16 ], // shadow wall
-					/* 11 */[ 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-							17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 18,
-							18, 18, 18 ], // Close chest
+					/* 11 */[ [17, 17], 3, 120, 2], // Close chest
 					/* 12 */[ 20, 20 ], // open chest
 					/* 13 */[ 21, 21 ], // stone passage
-					/* 14 */[ 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24,
-							25, 25, 25, 25 ], // torch
+					/* 14 */[ [22, 22], 4, 120, 1], // torch
 					/* 15 */[ 26, 26 ], // fence
 					/* 16 */[ 27, 27 ], // bush
 					/* 17 */[ 28, 28 ], // panel 1
@@ -194,27 +187,27 @@ var LABY = {
 			],
 			metacodes : {
 				/* LABY.BLOCK_VOID */0 : 0,
-				/* LABY.BLOCK_WALL */1 : 0x100,
-				/* LABY.BLOCK_WINDOW */5 : 0x100A0E,
-				/* LABY.BLOCK_TREASURE */6 : 0x200A11,
-				/* LABY.BLOCK_WALL_TORCH */0xA : 0x114,
-				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x200A12,
+				/* LABY.BLOCK_WALL */1 : 0x1000,
+				/* LABY.BLOCK_WINDOW */5 : 0x10A00E,
+				/* LABY.BLOCK_TREASURE */6 : 0x20A011,
+				/* LABY.BLOCK_WALL_TORCH */0xA : 0x1014,
+				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x20A012,
 
-				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x109,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x109,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x14B,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x1009,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x1009,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x104B,
 				/* LABY.BLOCK_ELEVATOR_EXIT */0x84 : 0,
 				/* LABY.BLOCK_ELEVATOR_ENTRANCE */0x85 : 0,
 				/* LABY.BLOCK_ELEVATOR_PORTAL */0x8B : 0,
 
-				/* BLOCK_FOREST_TREE */0xA0 : [ 0x101, 0x102, 0x103, 0x104,
-						0x105, 0x106, 0x107, 0x108 ],
-				/* BLOCK_FOREST_WALL */0xA1 : 0x100,
-				/* BLOCK_FOREST_BUSH */0xA2 : 0x200A16,
-				/* BLOCK_FOREST_FENCE */0xA3 : 0x200A15,
-				/* BLOCK_FOREST_SHADOW_WALL */0xA4 : 0x110,
-				/* BLOCK_FOREST_SHADOW_WINDOW */0xA5 : 0x10F,
-				/* BLOCK_FOREST_WALL_IVY */0xA6 : [ 0x10A, 0x10B, 0x10C, 0x10D ]
+				/* BLOCK_FOREST_TREE */0xA0 : [ 0x1001, 0x1002, 0x1003, 0x1004,
+						0x1005, 0x1006, 0x1007, 0x1008 ],
+				/* BLOCK_FOREST_WALL */0xA1 : 0x1000,
+				/* BLOCK_FOREST_BUSH */0xA2 : 0x20A016,
+				/* BLOCK_FOREST_FENCE */0xA3 : 0x20A015,
+				/* BLOCK_FOREST_SHADOW_WALL */0xA4 : 0x1010,
+				/* BLOCK_FOREST_SHADOW_WINDOW */0xA5 : 0x100F,
+				/* BLOCK_FOREST_WALL_IVY */0xA6 : [ 0x100A, 0x100B, 0x100C, 0x100D ]
 			}
 
 		},
@@ -237,13 +230,10 @@ var LABY = {
 					/* 0E */[ 14, 14 ], // window
 					/* 0F */[ 15, 15 ], // shadow window
 					/* 10 */[ 16, 16 ], // shadow wall
-					/* 11 */[ 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-							17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 18,
-							18, 18, 18 ], // Close chest
+					/* 11 */[ [17, 17], 3, 120, 2], // Close chest
 					/* 12 */[ 20, 20 ], // open chest
 					/* 13 */[ 21, 21 ], // stone passage
-					/* 14 */[ 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24,
-							25, 25, 25, 25 ], // torch
+					/* 14 */[ [22, 22], 4, 120, 1 ], // torch
 					/* 15 */[ 26, 26 ], // fence
 					/* 16 */[ 27, 27 ], // bush
 					/* 17 */[ 28, 28 ], // panel 1
@@ -251,27 +241,27 @@ var LABY = {
 			],
 			metacodes : {
 				/* LABY.BLOCK_VOID */0 : 0,
-				/* LABY.BLOCK_WALL */1 : 0x100,
-				/* LABY.BLOCK_WINDOW */5 : 0x100A0E,
-				/* LABY.BLOCK_TREASURE */6 : 0x200A11,
-				/* LABY.BLOCK_WALL_TORCH */0xA : 0x114,
-				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x200A12,
+				/* LABY.BLOCK_WALL */1 : 0x1000,
+				/* LABY.BLOCK_WINDOW */5 : 0x10A00E,
+				/* LABY.BLOCK_TREASURE */6 : 0x20A011,
+				/* LABY.BLOCK_WALL_TORCH */0xA : 0x1014,
+				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x20A012,
 
-				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x113,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x109,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x14B,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x1013,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x1009,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x104B,
 				/* LABY.BLOCK_ELEVATOR_EXIT */0x84 : 0,
 				/* LABY.BLOCK_ELEVATOR_ENTRANCE */0x85 : 0,
 				/* LABY.BLOCK_ELEVATOR_PORTAL */0x8B : 0,
 
-				/* BLOCK_FOREST_TREE */0xA0 : [ 0x101, 0x102, 0x103, 0x104,
-						0x105, 0x106, 0x107, 0x108 ],
-				/* BLOCK_FOREST_WALL */0xA1 : 0x100,
-				/* BLOCK_FOREST_BUSH */0xA2 : 0x200A16,
-				/* BLOCK_FOREST_FENCE */0xA3 : 0x200A15,
-				/* BLOCK_FOREST_SHADOW_WALL */0xA4 : 0x110,
-				/* BLOCK_FOREST_SHADOW_WINDOW */0xA5 : 0x10F,
-				/* BLOCK_FOREST_WALL_IVY */0xA6 : [ 0x10A, 0x10B, 0x10C, 0x10D ]
+				/* BLOCK_FOREST_TREE */0xA0 : [ 0x1001, 0x1002, 0x1003, 0x1004,
+						0x1005, 0x1006, 0x1007, 0x1008 ],
+				/* BLOCK_FOREST_WALL */0xA1 : 0x1000,
+				/* BLOCK_FOREST_BUSH */0xA2 : 0x20A016,
+				/* BLOCK_FOREST_FENCE */0xA3 : 0x20A015,
+				/* BLOCK_FOREST_SHADOW_WALL */0xA4 : 0x1010,
+				/* BLOCK_FOREST_SHADOW_WINDOW */0xA5 : 0x100F,
+				/* BLOCK_FOREST_WALL_IVY */0xA6 : [ 0x100A, 0x100B, 0x100C, 0x100D ]
 			}
 
 		},
@@ -279,7 +269,7 @@ var LABY = {
 			// pour les textures qui respectent le format T_ (t_gray, t_blue etc...)
 			codes : [
 					/* 0 */[ 0, 0 ], // Brick
-					/* 01 */[ 8, 8, 8, 8, 60, 60, 60, 60, 61, 61, 61, 61, 78, 78, 78, 78 ], // Torch wall
+					/* 01 */[ 8, 8 ], // Torch wall
 					/* 02 */[ 9, 9 ], // Alcove wall
 					/* 03 */[ 10, 10 ], // Small grate wall
 
@@ -291,10 +281,10 @@ var LABY = {
 					/* 08 */[ 26, 26 ], // Door locked 3 green
 					/* 09 */[ 25, 25 ], // Door locked 4 yellow
 
-					/* 0A */[ 0, 35 ], // Doorway Brick X
-					/* 0B */[ 35, 0 ], // Doorway Brick Y
+					/* 0A */[ 35, 0 ], // Doorway Brick X
+					/* 0B */[ 0, 35 ], // Doorway Brick Y
 
-					/* 0C */[ 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45, 45, 45, 45, 46, 46, 46, 46, 45, 45, 45, 45 ], // Close chest
+					/* 11 */[ [44, 44], 3, 120, 2], // Close chest
 					/* 0D */[ 47, 47 ], // Open chest
 
 					/* 0E */[ 18, 18 ], // Secret passage
@@ -302,10 +292,10 @@ var LABY = {
 
 					/* 10 */[ 17, 17 ], // Window 1
 
-					/* 11 */[ 65, 0 ], // Elevator X side end
-					/* 12 */[ 0, 65 ], // Elevator Y side end
-					/* 13 */[ 64, 0 ], // Elevator X side start
-					/* 14 */[ 0, 64 ], // Elevator Y side start
+					/* 11 */[ 0, 65 ], // Elevator X side end
+					/* 12 */[ 65, 0 ], // Elevator Y side end
+					/* 13 */[ 0, 64 ], // Elevator X side start
+					/* 14 */[ 64, 0 ], // Elevator Y side start
 					/* 15 */[ 63, 63 ], // Elevator wall
 					/* 16 */[ 48, 48 ], // Elevator switch 
 
@@ -326,14 +316,14 @@ var LABY = {
 
 					// WATCH
 					/* 21 */[ 37, 37 ], // wood panel
-					/* 22 */[ 40, 37 ], // watch library X
-					/* 23 */[ 41, 37 ], // watch library X odd
 					/* 24 */[ 37, 40 ], // watch library Y
 					/* 25 */[ 37, 41 ], // watch library Y odd
+					/* 22 */[ 40, 37 ], // watch library X
+					/* 23 */[ 41, 37 ], // watch library X odd
 
 					// JAIL
-					/* 26 */[ 43, 0 ], // wall shackles X
 					/* 27 */[ 0, 43 ], // wall shackles Y
+					/* 26 */[ 43, 0 ], // wall shackles X
 					/* 28 */[ 39, 39 ], // jail bars
 					/* 29 */[ 29, 29 ], // jail door
 
@@ -341,11 +331,11 @@ var LABY = {
 					/* 2A */[ 57, 57 ], // living wall
 					/* 2B */[ 11, 11 ], // painting
 					/* 2C */[ 49, 49 ], // fireplace off ************************ unused
-					/* 2D */[ 49, 49, 50, 50, 51, 51, 52, 52 ], // fireplace 1
+					/* 2D */[ [49, 49], 4, 120, 1 ], // fireplace 1
 
 					// SHOP
-					/* 2E */[ 79, 37 ], // ******************** unused shop X
 					/* 2F */[ 37, 79 ], // ******************** unused shop Y
+					/* 2E */[ 79, 37 ], // ******************** unused shop X
 
 					// TAPESTRY
 					/* 30 */[ 53, 53 ], // tapestry red 
@@ -355,14 +345,14 @@ var LABY = {
 
 					// LAB
 					/* 34 */[ 57, 57 ], // lab wall
-					/* 35 */[ 58, 57 ], // closet X 1
 					/* 36 */[ 57, 58 ], // closet Y 1
-					/* 37 */[ 59, 57 ], // closet X 1 open
+					/* 35 */[ 58, 57 ], // closet X 1
 					/* 38 */[ 57, 59 ], // closet Y 1 open
+					/* 37 */[ 59, 57 ], // closet X 1 open
 					/* 39 */[ 62, 62 ], // alchemy full
-					/* 3A */[ 57, 59 ], // ************************ unused
-					/* 3B */[ 57, 60 ], // ************************ unused
-					/* 3C */[ 57, 61 ], // ************************ unused
+					/* 3A */[ 59, 57 ], // ************************ unused
+					/* 3B */[ 60, 57 ], // ************************ unused
+					/* 3C */[ 61, 57 ], // ************************ unused
 					/* 3D */[ 62, 62 ], // ************************ unused
 					/* 3E */[ 62, 62 ], // alchemy purple red **************** usused
 					/* 3F */[ 62, 62 ], // alchemy blue red   **************** usused
@@ -370,8 +360,8 @@ var LABY = {
 
 					// MISC
 					/* 41 */[ 34, 34 ], // Curtain
-					/* 42 */[ 37, 36 ], // Watch doorway x
 					/* 43 */[ 36, 37 ], // Watch doorway y
+					/* 42 */[ 37, 36 ], // Watch doorway x
 					/* 44 */[ 30, 30 ], // door locked gray
 					/* 45 */[ 31, 31 ], // door unlocked
 					/* 46 */[ 48, 48 ], // Exit archway
@@ -379,8 +369,7 @@ var LABY = {
 					/* 48 */[ 31, 31 ], // unlocked door
 					/* 49 */[ 32, 32 ], // door next floor unsealed
 					/* 4A */[ 33, 33 ], // door next floor sealed
-					/* 4B */[ 19, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21,
-							22, 22, 22, 22, 21, 21, 21, 21, 20, 20, 20, 20 ], // portal
+					/* 4B */[ [19, 19], 4, 120, 2 ], // portal
 
 					// MISC
 					/* 4C */[ 1, 1 ], // alternate wall 1
@@ -412,82 +401,82 @@ var LABY = {
 			],
 			metacodes : {
 				/* LABY.BLOCK_VOID */0 : 0,
-				/* LABY.BLOCK_WALL */1 : [ 0x100, 0x14C, 0x14D, 0x14E, 0x14F,
-						0x150, 0x151, 0x152 ],
-				/* LABY.BLOCK_DOOR */2 : 0x804,
-				/* LABY.BLOCK_DOORWAY_X */3 : 0x10A,
-				/* LABY.BLOCK_DOORWAY_Y */4 : 0x10B,
-				/* LABY.BLOCK_WINDOW */5 : 0x100A10,
-				/* LABY.BLOCK_TREASURE */6 : 0x200A0C,
-				/* LABY.BLOCK_SECRET */7 : 0x918,
-				/* LABY.BLOCK_SECRET_WALL */8 : 0x118,
-				/* LABY.BLOCK_CURTAIN */9 : 0x341,
-				/* LABY.BLOCK_WALL_TORCH */0xA : 0x101,
-				/* LABY.BLOCK_WALL_ALCOVE */0xB : 0x103,
-				/* LABY.BLOCK_WALL_GRATE */0xC : 0x102,
-				/* LABY.BLOCK_SHOP */0xE : 0x117,
-				/* LABY.BLOCK_KEY_0 */0x10 : 0x119,
-				/* LABY.BLOCK_KEY_1 */0x11 : 0x11A,
-				/* LABY.BLOCK_KEY_2 */0x12 : 0x11B,
-				/* LABY.BLOCK_KEY_3 */0x13 : 0x11C,
-				/* LABY.BLOCK_EMPTY_KEY */0x14 : 0x11D,
-				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x200A0D,
-				/* LABY.BLOCK_LOCKEDDOOR_0 */0x18 : 0x806,
-				/* LABY.BLOCK_LOCKEDDOOR_1 */0x19 : 0x807,
-				/* LABY.BLOCK_LOCKEDDOOR_2 */0x1A : 0x808,
-				/* LABY.BLOCK_LOCKEDDOOR_3 */0x1B : 0x809,
-				/* LABY.BLOCK_UNLOCKEDDOOR */0x1C : 0x845,
+				/* LABY.BLOCK_WALL */1 : [ 0x1000, 0x104C, 0x104D, 0x104E, 0x104F,
+						0x1050, 0x1051, 0x1052 ],
+				/* LABY.BLOCK_DOOR */2 : 0x8004,
+				/* LABY.BLOCK_DOORWAY_X */3 : 0x100A,
+				/* LABY.BLOCK_DOORWAY_Y */4 : 0x100B,
+				/* LABY.BLOCK_WINDOW */5 : 0x10A010,
+				/* LABY.BLOCK_TREASURE */6 : 0x20A00C,
+				/* LABY.BLOCK_SECRET */7 : 0x9018,
+				/* LABY.BLOCK_SECRET_WALL */8 : 0x1018,
+				/* LABY.BLOCK_CURTAIN */9 : 0x3041,
+				/* LABY.BLOCK_WALL_TORCH */0xA : 0x1001,
+				/* LABY.BLOCK_WALL_ALCOVE */0xB : 0x1003,
+				/* LABY.BLOCK_WALL_GRATE */0xC : 0x1002,
+				/* LABY.BLOCK_SHOP */0xE : 0x1017,
+				/* LABY.BLOCK_KEY_0 */0x10 : 0x1019,
+				/* LABY.BLOCK_KEY_1 */0x11 : 0x101A,
+				/* LABY.BLOCK_KEY_2 */0x12 : 0x101B,
+				/* LABY.BLOCK_KEY_3 */0x13 : 0x101C,
+				/* LABY.BLOCK_EMPTY_KEY */0x14 : 0x101D,
+				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x20A00D,
+				/* LABY.BLOCK_LOCKEDDOOR_0 */0x18 : 0x8006,
+				/* LABY.BLOCK_LOCKEDDOOR_1 */0x19 : 0x8007,
+				/* LABY.BLOCK_LOCKEDDOOR_2 */0x1A : 0x8008,
+				/* LABY.BLOCK_LOCKEDDOOR_3 */0x1B : 0x8009,
+				/* LABY.BLOCK_UNLOCKEDDOOR */0x1C : 0x8045,
 
-				/* LABY.BLOCK_LIBRARY_BOOK */0x20 : [ 0x11E, 0x11F, 0x120 ],
-				/* LABY.BLOCK_CHURCH_STAINED_GLASS */0x2A : [ 0x15B, 0x15C ],
-				/* LABY.BLOCK_CHURCH_DEATH_IDOL */0x2B : 0x10095D,
-				/* LABY.BLOCK_CHURCH_RUNES */0x2C : 0x08095E,
+				/* LABY.BLOCK_LIBRARY_BOOK */0x20 : [ 0x101E, 0x101F, 0x1020 ],
+				/* LABY.BLOCK_CHURCH_STAINED_GLASS */0x2A : [ 0x105B, 0x105C ],
+				/* LABY.BLOCK_CHURCH_DEATH_IDOL */0x2B : 0x10905D,
+				/* LABY.BLOCK_CHURCH_RUNES */0x2C : 0x08905E,
 
-				/* LABY.BLOCK_JAIL_WALL_SHACKLES_X */0x30 : 0x126,
-				/* LABY.BLOCK_JAIL_WALL_SHACKLES_Y */0x31 : 0x127,
-				/* LABY.BLOCK_JAIL_BARS */0x32 : 0x200A28,
-				/* LABY.BLOCK_JAIL_DOOR */0x33 : 0x229,
+				/* LABY.BLOCK_JAIL_WALL_SHACKLES_X */0x30 : 0x1026,
+				/* LABY.BLOCK_JAIL_WALL_SHACKLES_Y */0x31 : 0x1027,
+				/* LABY.BLOCK_JAIL_BARS */0x32 : 0x20A028,
+				/* LABY.BLOCK_JAIL_DOOR */0x33 : 0x2029,
 
-				/* LABY.BLOCK_WATCH_WALL */0x40 : 0x121,
-				/* LABY.BLOCK_WATCH_DOORWAY_X */0x41 : 0x142,
-				/* LABY.BLOCK_WATCH_DOORWAY_Y */0x42 : 0x143,
-				/* LABY.BLOCK_WATCH_WALL_2_X */0x43 : 0x122,
-				/* LABY.BLOCK_WATCH_WALL_2_Y */0x44 : 0x124,
-				/* LABY.BLOCK_WATCH_DOOR_LOCKED */0x45 : 0x844,
-				/* LABY.BLOCK_WATCH_WINDOW */0x46 : 0x100A47,
-				/* LABY.BLOCK_WATCH_TREASURE */0x47 : 0x200A0C,
-				/* LABY.BLOCK_WATCH_WALL_2_X_USED */0x48 : 0x122,
-				/* LABY.BLOCK_WATCH_WALL_2_Y_USED */0x49 : 0x124,
-				/* LABY.BLOCK_LABO_WALL */0x50 : 0x134,
-				/* LABY.BLOCK_LABO_CLOSET_X */0x51 : 0x135,
-				/* LABY.BLOCK_LABO_CLOSET_Y */0x52 : 0x136,
-				/* LABY.BLOCK_LABO_BOOK */0x53 : 0x11E,
-				/* LABY.BLOCK_LABO_ALCHEMY */0x54 : 0x200A39,
-				/* LABY.BLOCK_FORGE_ANVIL */0x55 : 0x200A53,
-				/* LABY.BLOCK_FORGE_TOOLS */0x56 : [ 0x154, 0x155, 0x156 ],
-				/* LABY.BLOCK_KITCHEN_TABLE */0x5A : 0x200A57,
-				/* LABY.BLOCK_KITCHEN_FOOD */0x5B : [ 0x158, 0x159, 0x15A ],
-				/* LABY.BLOCK_LABO_CLOSET_X_OPEN */0x5C : 0x137,
-				/* LABY.BLOCK_LABO_CLOSET_Y_OPEN */0x5D : 0x138,
+				/* LABY.BLOCK_WATCH_WALL */0x40 : 0x1021,
+				/* LABY.BLOCK_WATCH_DOORWAY_X */0x41 : 0x1042,
+				/* LABY.BLOCK_WATCH_DOORWAY_Y */0x42 : 0x1043,
+				/* LABY.BLOCK_WATCH_WALL_2_X */0x43 : 0x1022,
+				/* LABY.BLOCK_WATCH_WALL_2_Y */0x44 : 0x1024,
+				/* LABY.BLOCK_WATCH_DOOR_LOCKED */0x45 : 0x8044,
+				/* LABY.BLOCK_WATCH_WINDOW */0x46 : 0x10A047,
+				/* LABY.BLOCK_WATCH_TREASURE */0x47 : 0x20A00C,
+				/* LABY.BLOCK_WATCH_WALL_2_X_USED */0x48 : 0x1022,
+				/* LABY.BLOCK_WATCH_WALL_2_Y_USED */0x49 : 0x1024,
+				/* LABY.BLOCK_LABO_WALL */0x50 : 0x1034,
+				/* LABY.BLOCK_LABO_CLOSET_X */0x51 : 0x1035,
+				/* LABY.BLOCK_LABO_CLOSET_Y */0x52 : 0x1036,
+				/* LABY.BLOCK_LABO_BOOK */0x53 : 0x101E,
+				/* LABY.BLOCK_LABO_ALCHEMY */0x54 : 0x20A039,
+				/* LABY.BLOCK_FORGE_ANVIL */0x55 : 0x20A053,
+				/* LABY.BLOCK_FORGE_TOOLS */0x56 : [ 0x1054, 0x1055, 0x1056 ],
+				/* LABY.BLOCK_KITCHEN_TABLE */0x5A : 0x20A057,
+				/* LABY.BLOCK_KITCHEN_FOOD */0x5B : [ 0x1058, 0x1059, 0x105A ],
+				/* LABY.BLOCK_LABO_CLOSET_X_OPEN */0x5C : 0x1037,
+				/* LABY.BLOCK_LABO_CLOSET_Y_OPEN */0x5D : 0x1038,
 
-				/* LABY.BLOCK_LIVING_WALL */0x60 : 0x12A,
-				/* LABY.BLOCK_LIVING_FIREPLACE */0x61 : 0x12D,
-				/* LABY.BLOCK_LIVING_PICTURE */0x62 : 0x12B,
-				/* LABY.BLOCK_LIVING_BOOK */0x63 : [ 0x11E, 0x11F, 0x120 ],
-				/* LABY.BLOCK_LIVING_TAPESTRY */0x64 : [ 0x130, 0x131, 0x132,
-						0x133 ],
+				/* LABY.BLOCK_LIVING_WALL */0x60 : 0x102A,
+				/* LABY.BLOCK_LIVING_FIREPLACE */0x61 : 0x102D,
+				/* LABY.BLOCK_LIVING_PICTURE */0x62 : 0x102B,
+				/* LABY.BLOCK_LIVING_BOOK */0x63 : [ 0x101E, 0x101F, 0x1020 ],
+				/* LABY.BLOCK_LIVING_TAPESTRY */0x64 : [ 0x1030, 0x1031, 0x1032,
+						0x1033 ],
 
-				/* LABY.BLOCK_ELEVATOR_WALL */0x80 : 0x115,
-				/* LABY.BLOCK_ELEVATOR_DOOR_PREV */0x81 : 0x205,
-				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_SEALED */0x82 : 0x200A4A,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x116,
+				/* LABY.BLOCK_ELEVATOR_WALL */0x80 : 0x1015,
+				/* LABY.BLOCK_ELEVATOR_DOOR_PREV */0x81 : 0x2005,
+				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_SEALED */0x82 : 0x20A04A,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x1016,
 				/* LABY.BLOCK_ELEVATOR_EXIT */0x84 : 0,
 				/* LABY.BLOCK_ELEVATOR_ENTRANCE */0x85 : 0,
-				/* LABY.BLOCK_ELEVATOR_DOORWAY_X */0x86 : 0x111,
-				/* LABY.BLOCK_ELEVATOR_DOORWAY_Y */0x87 : 0x112,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x116,
-				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_UNSEALED */0x89 : 0x249,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x14B,
+				/* LABY.BLOCK_ELEVATOR_DOORWAY_X */0x86 : 0x1011,
+				/* LABY.BLOCK_ELEVATOR_DOORWAY_Y */0x87 : 0x1012,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x1016,
+				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_UNSEALED */0x89 : 0x2049,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x104B,
 				/* LABY.BLOCK_ELEVATOR_PORTAL */0x8B : 0
 				
 			}
@@ -497,20 +486,20 @@ var LABY = {
 			codes: [
 					/* 00 */[ 0, 0 ], // Brick
 
-					/* 01 */[ 0, 13 ], // Doorway Brick X
 					/* 02 */[ 13, 0 ], // Doorway Brick Y
+					/* 01 */[ 0, 13 ], // Doorway Brick X
 
-					/* 03 */[ 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 24, 24, 24, 24 ], // Close chest
+					/* 03 */[ [23, 23], 3, 120, 2], // Close chest
 					/* 04 */[ 26, 26 ], // Open chest
 
 					/* 05 */[ 19, 19 ], // Secret passage
 
 					/* 06 */[ 18, 18 ], // Window 1
 
-					/* 07 */[ 16, 0 ], // Elevator X side end
 					/* 08 */[ 0, 16 ], // Elevator Y side end
-					/* 09 */[ 15, 0 ], // Elevator X side start
+					/* 07 */[ 16, 0 ], // Elevator X side end
 					/* 0A */[ 0, 15 ], // Elevator Y side start
+					/* 09 */[ 15, 0 ], // Elevator X side start
 					/* 0B */[ 14, 14 ], // Elevator wall
 					/* 0C */[ 13, 13 ], // Elevator switch 
 
@@ -521,8 +510,7 @@ var LABY = {
 					/* 0F */[ 9, 9 ], // door next floor unsealed
 					/* 10 */[ 10, 10 ], // door next floor sealed
 					/* 11 */[ 8, 8 ],   // door prev floor
-					/* 12 */[ 19, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21,
-							22, 22, 22, 22, 21, 21, 21, 21, 20, 20, 20, 20 ], // portal
+					/* 12 */[ [19, 19], 4, 120, 2], // portal
 
 					// MISC
 					/* 13 */[ 1, 1 ], // alternate wall 1
@@ -535,28 +523,28 @@ var LABY = {
 			],
 			metacodes: {
 				/* LABY.BLOCK_VOID */0 : 0,
-				/* LABY.BLOCK_WALL */1 : [ 0x100, 0x113, 0x114, 0x115,
-						0x116, 0x117, 0x118, 0x119 ],
-				/* LABY.BLOCK_DOORWAY_X */3 : 0x101,
-				/* LABY.BLOCK_DOORWAY_Y */4 : 0x102,
-				/* LABY.BLOCK_WINDOW */5 : 0x100A06,
-				/* LABY.BLOCK_TREASURE */6 : 0x200A03,
-				/* LABY.BLOCK_SECRET */7 : 0x90D,
-				/* LABY.BLOCK_SECRET_WALL */8 : 0x10D,
-				/* LABY.BLOCK_CURTAIN */9 : 0x30E,
-				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x200A04,
+				/* LABY.BLOCK_WALL */1 : [ 0x1000, 0x1013, 0x1014, 0x1015,
+						0x1016, 0x1017, 0x1018, 0x1019 ],
+				/* LABY.BLOCK_DOORWAY_X */3 : 0x1001,
+				/* LABY.BLOCK_DOORWAY_Y */4 : 0x1002,
+				/* LABY.BLOCK_WINDOW */5 : 0x10A006,
+				/* LABY.BLOCK_TREASURE */6 : 0x20A003,
+				/* LABY.BLOCK_SECRET */7 : 0x900D,
+				/* LABY.BLOCK_SECRET_WALL */8 : 0x100D,
+				/* LABY.BLOCK_CURTAIN */9 : 0x300E,
+				/* LABY.BLOCK_EMPTY_CHEST */0x15 : 0x20A004,
 
-				/* LABY.BLOCK_ELEVATOR_WALL */0x80 : 0x10B,
-				/* LABY.BLOCK_ELEVATOR_DOOR_PREV */0x81 : 0x211,
-				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_SEALED */0x82 : 0x200A10,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x10C,
+				/* LABY.BLOCK_ELEVATOR_WALL */0x80 : 0x100B,
+				/* LABY.BLOCK_ELEVATOR_DOOR_PREV */0x81 : 0x2011,
+				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_SEALED */0x82 : 0x20A010,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_NEXT */0x83 : 0x100C,
 				/* LABY.BLOCK_ELEVATOR_EXIT */0x84 : 0,
 				/* LABY.BLOCK_ELEVATOR_ENTRANCE */0x85 : 0,
-				/* LABY.BLOCK_ELEVATOR_DOORWAY_X */0x86 : 0x107,
-				/* LABY.BLOCK_ELEVATOR_DOORWAY_Y */0x87 : 0x108,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x10C,
-				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_UNSEALED */0x89 : 0x20F,
-				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x116,
+				/* LABY.BLOCK_ELEVATOR_DOORWAY_X */0x86 : 0x1007,
+				/* LABY.BLOCK_ELEVATOR_DOORWAY_Y */0x87 : 0x1008,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PREV */0x88 : 0x100C,
+				/* LABY.BLOCK_ELEVATOR_DOOR_NEXT_UNSEALED */0x89 : 0x200F,
+				/* LABY.BLOCK_ELEVATOR_SWITCH_PORTAL */0x8A : 0x1016,
 				/* LABY.BLOCK_ELEVATOR_PORTAL */0x8B : 0
 				
 			}
@@ -592,7 +580,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 7,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 7, 100, 0 ] ]
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 7, 120, 0 ] ]
 		},
 		o_teleport : {
 			src : 'resources/gfx/sprites/o_teleport.png',
@@ -600,14 +588,14 @@ var GFX_DATA = {
 			height : 96,
 			frames : 8,
 			noshading : true,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 100, 0 ] ]
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 120, 0 ] ]
 		},
 		o_tome : {
 			src : 'resources/gfx/sprites/o_tome.png',
 			width : 32,
 			height : 64,
 			frames : 8,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 100, 1 ] ]
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 120, 1 ] ]
 		},
 		o_chicken : {
 			src : 'resources/gfx/sprites/o_chicken.png',
@@ -624,7 +612,7 @@ var GFX_DATA = {
 			width : 40,
 			height : 96,
 			frames : 4,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 4, 100, 1 ] ]
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 4, 120, 1 ] ]
 		},
 		o_tree1: {
 			src : 'resources/gfx/sprites/o_tree1.png',
@@ -720,7 +708,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 11,
-			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 3, 100, 0 ],
+			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 3, 120, 0 ],
 					[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 1, 0 ] ]
 		},
 		p_fireball : {
@@ -728,23 +716,23 @@ var GFX_DATA = {
 			width : 50,
 			height : 64,
 			frames : 20,
-			animations : [ [ [ 16, 16, 16, 16, 16, 16, 16, 16 ], 4, 100, 0 ],
-					[ [ 8, 10, 12, 14, 0, 2, 4, 6 ], 2, 100, 1 ] ]
+			animations : [ [ [ 16, 16, 16, 16, 16, 16, 16, 16 ], 4, 120, 0 ],
+					[ [ 8, 10, 12, 14, 0, 2, 4, 6 ], 2, 120, 1 ] ]
 		},
 		p_toxicbolt : {
 			src : 'resources/gfx/sprites/p_toxicbolt.png',
 			width : 50,
 			height : 64,
 			frames : 20,
-			animations : [ [ [ 16, 16, 16, 16, 16, 16, 16, 16 ], 4, 100, 0 ],
-					[ [ 8, 10, 12, 14, 0, 2, 4, 6 ], 2, 100, 1 ] ]
+			animations : [ [ [ 16, 16, 16, 16, 16, 16, 16, 16 ], 4, 120, 0 ],
+					[ [ 8, 10, 12, 14, 0, 2, 4, 6 ], 2, 120, 1 ] ]
 		},
 		p_toxicspit : {
 			src : 'resources/gfx/sprites/p_toxicspit.png',
 			width : 64,
 			height : 56,
 			frames : 7,
-			animations : [ [ [ 2, 2, 2, 2, 2, 2, 2, 2 ], 3, 100, 0 ],
+			animations : [ [ [ 2, 2, 2, 2, 2, 2, 2, 2 ], 3, 120, 0 ],
 					[ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 2, 200, 1 ] ]
 		},
 		p_thunbolt : {
@@ -752,7 +740,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 15,
-			animations : [ [ [ 10, 10, 10, 10, 10, 10, 10, 10 ], 5, 100, 0 ],
+			animations : [ [ [ 10, 10, 10, 10, 10, 10, 10, 10 ], 5, 120, 0 ],
 					[ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 50, 1 ] ]
 		},
 		p_magbolt : {
@@ -760,7 +748,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 14,
-			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 100, 0 ],
+			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 120, 0 ],
 					[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 		},
 		p_shadbolt : {
@@ -768,7 +756,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 14,
-			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 100, 0 ],
+			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 120, 0 ],
 					[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 		},
 		p_healbolt : {
@@ -776,7 +764,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 14,
-			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 100, 0 ],
+			animations : [ [ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 6, 120, 0 ],
 					[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 50, 0 ] ]
 		},
 		p_icebolt : {
@@ -784,7 +772,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 30,
-			animations : [ [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], 6, 100, 0 ],
+			animations : [ [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], 6, 120, 0 ],
 					[ [ 12, 15, 18, 21, 0, 3, 6, 9 ], 3, 150, 1 ] ]
 		},
 		p_medbolt : {
@@ -792,7 +780,7 @@ var GFX_DATA = {
 			width : 48,
 			height : 64,
 			frames : 30,
-			animations : [ [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], 6, 100, 0 ],
+			animations : [ [ [ 24, 24, 24, 24, 24, 24, 24, 24 ], 6, 120, 0 ],
 					[ [ 12, 15, 18, 21, 0, 3, 6, 9 ], 3, 150, 1 ] ]
 		},
 		p_lightbolt : {
@@ -800,7 +788,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 6,
-			animations : [ [ [ 4, 4, 4, 4, 4, 4, 4, 4 ], 3, 100, 0 ],
+			animations : [ [ [ 4, 4, 4, 4, 4, 4, 4, 4 ], 3, 120, 0 ],
 					[ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 3, 50, 1 ] ]
 		},
 		p_iceball : {
@@ -808,7 +796,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 80,
 			frames : 5,
-			animations : [ [ [ 1, 1, 1, 1, 1, 1, 1, 1 ], 4, 100, 0 ],
+			animations : [ [ [ 1, 1, 1, 1, 1, 1, 1, 1 ], 4, 120, 0 ],
 					[ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 1, 1, 0 ] ]
 		},
 		p_slash : {
@@ -816,7 +804,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 64,
 			frames : 4,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 4, 100, 0 ],
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 4, 120, 0 ],
 					[ [ 3, 3, 3, 3, 3, 3, 3, 3 ], 1, 0, 0 ] ]
 		},
 		p_expfire : {
@@ -824,7 +812,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 9,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 100, 0 ],
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 120, 0 ],
 					[ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 1, 0, 0 ] ]
 		},
 		p_exptoxic : {
@@ -832,7 +820,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 9,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 100, 0 ],
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 8, 120, 0 ],
 					[ [ 8, 8, 8, 8, 8, 8, 8, 8 ], 1, 0, 0 ] ]
 		},
 		
@@ -841,7 +829,7 @@ var GFX_DATA = {
 			width : 64,
 			height : 96,
 			frames : 10,
-			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 9, 100, 0 ],
+			animations : [ [ [ 0, 0, 0, 0, 0, 0, 0, 0 ], 9, 120, 0 ],
 					[ [ 9, 9, 9, 9, 9, 9, 9, 9 ], 1, 1, 0 ] ]
 		},
 
@@ -979,7 +967,7 @@ var GFX_DATA = {
 					/* 01 */[ 1, 1 ],
 					/* 02 */[ 6, 6 ],
 					/* 03 */[ 7, 7 ],
-					/* 04 */[ 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5 ],
+					/* 04 */[ [2, 2], 4, 120, 1],
 					/* 05 */[ 8, 8 ],
 
 					/* 06 */[ 9, 9 ],
@@ -992,8 +980,7 @@ var GFX_DATA = {
 					/* 0D */[ 16, 16 ],
 					/* 0E */[ 21, 21 ],
 					/* 0F */[ 22, 22 ],
-					/* 10 */[ 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19,
-							20, 20, 20, 20 ],
+					/* 10 */[ [17, 17], 4, 120, 1 ],
 					/* 11 */[ 23, 23 ],
 
 					/* 12 */[ 24, 24 ],
@@ -1006,8 +993,7 @@ var GFX_DATA = {
 					/* 19 */[ 31, 31 ],
 					/* 1A */[ 36, 36 ],
 					/* 1B */[ 37, 37 ],
-					/* 1C */[ 32, 32, 32, 32, 33, 33, 33, 33, 34, 34, 34, 34,
-							35, 35, 35, 35 ],
+					/* 1C */[ [32, 32], 4, 120, 1 ],
 					/* 1D */[ 38, 38 ],
 
 					/* 1E */[ 39, 39 ],
@@ -1023,23 +1009,23 @@ var GFX_DATA = {
 			metacodes : {
 				' ' : 0,
 
-				'A' : [ 0x100, 0x101 ], // 0 mur
-				'B' : [ 0x100902, 0x100903 ], // 1 élément mural
-				'C' : 0x200A05, // 2 fenetre
-				'D' : 0x104, // torche
+				'A' : [ 0x1000, 0x1001 ], // 0 mur
+				'B' : [ 0x109002, 0x109003 ], // 1 élément mural
+				'C' : 0x20A005, // 2 fenetre
+				'D' : 0x1004, // torche
 
-				'E' : [ 0x106, 0x107, 0x108, 0x109, 0x10A, 0x10B, 0x10C, 0x10D ],
-				'F' : [ 0x10090E, 0x10090F ],
-				'G' : 0x200A11,
-				'H' : 0x110,
+				'E' : [ 0x1006, 0x1007, 0x1008, 0x1009, 0x100A, 0x100B, 0x100C, 0x100D ],
+				'F' : [ 0x10900E, 0x10900F ],
+				'G' : 0x20A011,
+				'H' : 0x1010,
 
-				'I' : [ 0x112, 0x113, 0x114, 0x115, 0x116, 0x117, 0x118, 0x119 ],
-				'J' : [ 0x10091A, 0x10091B ],
-				'K' : 0x200A1D,
-				'L' : 0x11C,
+				'I' : [ 0x1012, 0x1013, 0x1014, 0x1015, 0x1016, 0x1017, 0x1018, 0x1019 ],
+				'J' : [ 0x10901A, 0x10901B ],
+				'K' : 0x20A01D,
+				'L' : 0x101C,
 
-				'M' : [ 0x11E, 0x11F, 0x120, 0x121, 0x122, 0x123, 0x124, 0x125 ],
-				'N' : [ 0x200A26, 0x200A27 ]
+				'M' : [ 0x101E, 0x101F, 0x1020, 0x1021, 0x1022, 0x1023, 0x1024, 0x1025 ],
+				'N' : [ 0x20A026, 0x20A027 ]
 			}
 		}
 

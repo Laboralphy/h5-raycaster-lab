@@ -27,8 +27,8 @@ O2.createObject('WORLD_DATA.level1', {
 			[0, 0],
 			[[1, 1], 4, 120, 1],
 			[6, 6],
-			[0, 5],
 			[5, 0],
+			[0, 5],
 			[0, 0]
 		],
 		metacodes : {

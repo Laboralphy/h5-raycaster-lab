@@ -1,0 +1,33 @@
+@keyframes diag_se_anim {
+	from {
+		background-position: 0px 0px;
+	}
+	to {
+		background-position: 128px 128px;
+	}
+}
+
+body {
+	background-image: url("images/bg-dam.png");
+	background-position: 10px 10px;
+    animation-name: diag_se_anim;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;	
+}
+
+
+#t1 {
+	width: 800px;
+	margin: auto;
+	left: 400px;
+}
+
+.footer {
+	text-align: center;
+	font-size: 50%;
+	color: #666;
+	padding: 8px;
+	margin-top: 32px;
+	border-top: solid thin #444;
+}

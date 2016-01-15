@@ -339,7 +339,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		this.oPathFinder = new Astar.Land();
 		this.oPathFinder.isCellWalkable = function(x, y) {		
 			try {
-				return (this.getCell(x, y) & 0xFF00) === 0;
+				return (this.getCell(x, y) & 0xF000) === 0; // **code12** phys
 			} catch (e) {
 				return false;
 			}
@@ -503,16 +503,16 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		for (y = 0; y < this.oRaycaster.aMap.length; y++) {
 			for (x = 0; x < this.oRaycaster.aMap[y].length; x++) {
 				if (this.oRaycaster.aMap[y][x] == 0x12B) { // 0x12B : picture wall
-					if (this.oRaycaster.insideMap(x - 1) && this.oRaycaster.getMapXYPhysical(x - 1, y) === 0) {
+					if (this.oRaycaster.insideMap(x - 1) && this.oRaycaster.getMapPhys(x - 1, y) === 0) {
 						this.oRaycaster.cloneWall(x, y, 0, df);
 					}
-					if (this.oRaycaster.insideMap(y + 1) && this.oRaycaster.getMapXYPhysical(x, y + 1) === 0) {
+					if (this.oRaycaster.insideMap(y + 1) && this.oRaycaster.getMapPhys(x, y + 1) === 0) {
 						this.oRaycaster.cloneWall(x, y, 1, df);
 					}
-					if (this.oRaycaster.insideMap(x + 1) && this.oRaycaster.getMapXYPhysical(x + 1, y) === 0) {
+					if (this.oRaycaster.insideMap(x + 1) && this.oRaycaster.getMapPhys(x + 1, y) === 0) {
 						this.oRaycaster.cloneWall(x, y, 2, df);
 					}
-					if (this.oRaycaster.insideMap(y - 1) && this.oRaycaster.getMapXYPhysical(x, y - 1) === 0) {
+					if (this.oRaycaster.insideMap(y - 1) && this.oRaycaster.getMapPhys(x, y - 1) === 0) {
 						this.oRaycaster.cloneWall(x, y, 3, df);
 					}
 				}
@@ -1410,8 +1410,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 						}
 						break;
 				}
-				if (oData.walls.codes[nCode & 0xFF] === undefined) {
-					throw new Error('code: 0x' + (nCode & 0xFF).toString(16) + ' is not defined');
+				if (oData.walls.codes[nCode & 0xFFF] === undefined) {  // **code12** code
+					throw new Error('code: 0x' + (nCode & 0xFFF).toString(16) + ' is not defined'); // **code12** code
 				}
 				aRow.push(nCode);
 			}

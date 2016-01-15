@@ -3,8 +3,8 @@
 class RaycasterConverter {
 	public static function convert($oJSON) {
 		function convertCode($n) {
-			$nText = $n & 0xFF;
-			$nPhys = ($n >> 8) & 0xFF;
+			$nText = $n & 0xFFF; // **code12** code
+			$nPhys = ($n >> 12) & 0xF; // **code12** phys
 			$nOffs = ($n >> 16) & 0xFF;
 			return array($nText, $nPhys, $nOffs);
 		}
@@ -181,18 +181,18 @@ class RaycasterConverter {
 						$aAnim = null;
 					}
 					if ($aWallFace[1] >= 0) {
-						$sLeft = 'wall_' . strval($aWallFace[1] + 1);
+						$sLeft = 'wall_' . strval($aWallFace[0] + 1);
 						$aWallIds[] = $sLeft;
 					}
 					if ($aWallFace[0] >= 0) {
-						$sRight = 'wall_' . strval($aWallFace[0] + 1);
+						$sRight = 'wall_' . strval($aWallFace[1] + 1);
 						$aWallIds[] = $sRight;
 					}
-					if ($aWallFace[3] >= 0) {
+					if (count($aWallFace) > 2 && $aWallFace[2] >= 0) {
 						$sLeft2 = 'wall_' . strval($aWallFace[2] + 1);
 						$aWallIds[] = $sLeft2;
 					}
-					if ($aWallFace[2] >= 0) {
+					if (count($aWallFace) > 3 && $aWallFace[3] >= 0) {
 						$sRight2 = 'wall_' . strval($aWallFace[3] + 1);
 						$aWallIds[] = $sRight;
 					}
@@ -240,7 +240,7 @@ class RaycasterConverter {
 			$oRow = array();
 			foreach ($row as $x => $nLower) {
 				$nUpper = $oJSON->uppermap[$y][$x];
-				$oMap[$y][$x] = $createBlock($nLower) | ($createBlock($nUpper) << 8);
+				$oMap[$y][$x] = $createBlock($nLower) | ($createBlock($nUpper) << 12); // **code12** storey
 			}
 		}
 

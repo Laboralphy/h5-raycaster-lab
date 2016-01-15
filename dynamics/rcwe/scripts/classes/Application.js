@@ -394,8 +394,8 @@ O2.createClass('RCWE.Application', {
 	 */
 	labyGridDrawCell: function(nCode, oContext, x, y, wCell, hCell) {
 		var fAlphaFloor = 0.5;
-		var nLowerCode = nCode & 0xFF;
-		var nUpperCode = (nCode >> 8) & 0xFF;
+		var nLowerCode = RCWE.Tools.getLowerCode(nCode);
+		var nUpperCode = RCWE.Tools.getUpperCode(nCode);
 		var oBlock, oCanvas;
 		var nFloor = this.oMapGrid.getSelectedFloor();
 		oContext.clearRect(x, y, wCell, hCell);
@@ -469,6 +469,10 @@ O2.createClass('RCWE.Application', {
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
 	////// CONTROLLERS SECTION ////// CONTROLLERS SECTION ////// CONTROLLERS SECTION //////
+	
+	cmd_clickOnBlockBrowser: function() {
+		$('button.view.blockbrowser', this.oMapGrid.getToolBar()).trigger('click');
+	},
 
 	// BLOCK EDITOR
 	cmd_blockeditor_done: function() {
@@ -480,7 +484,8 @@ O2.createClass('RCWE.Application', {
 			bb.importBlock(oBlock);
 		}
 		this.redrawMap();
-		this.showPanel('blockBrowser');
+		be.resetBlock();
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 
 	cmd_blockeditor_cancel: function() {
@@ -489,7 +494,8 @@ O2.createClass('RCWE.Application', {
 		if (oBlock && oBlock.isEmpty()) {
 			this.oBlockBrowser.destroyBlockImage(bb.getSelectedBlockImage());
 		}
-		this.showPanel('blockBrowser');
+		this.oBlockEditor.resetBlock();
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 	
 	cmd_blockeditor_deletetile: function(id) {
@@ -542,13 +548,13 @@ O2.createClass('RCWE.Application', {
 	cmd_blockbrowser_deleteblock: function(oBlock) {
 		var nBlockCode = oBlock.getData('id') | 0;
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF;
-			var nUpper = (nCode & 0xFF00) >> 8;
+			var nLower = RCWE.Tools.getLowerCode(nCode);
+			var nUpper = RCWE.Tools.getUpperCode(nCode);
 			if (nLower == nBlockCode) {
-				nCode = nCode & 0xFF00;
+				nCode = RCWE.Tools.modifyLowerCode(nCode, 0);
 			}
 			if (nUpper == nBlockCode) {
-				nCode = nCode & 0xFF;
+				nCode = RCWE.Tools.modifyUpperCode(nCode, 0);
 			}
 			return nCode;
 		});
@@ -827,7 +833,7 @@ O2.createClass('RCWE.Application', {
 	// FILE IMPORT DIALOG
 	cmd_fileimportdialog_load: function(sProj, sFile) {
 		this.showMainScreen('map');
-		this.showPanel('blockbrowser');		
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 		this.importLevel(sProj, sFile);
 	},
 
@@ -843,7 +849,7 @@ O2.createClass('RCWE.Application', {
 
 	cmd_fileimportdialog_close: function() {
 		this.showMainScreen('map');
-		this.showPanel('blockbrowser');		
+		this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 	},
 	
 	
@@ -993,7 +999,7 @@ O2.createClass('RCWE.Application', {
 	cmd_templateloader_close: function() {
 		switch (this.sMode) {
 			case 'blocktemplateloader':
-				this.showPanel('blockbrowser');
+				this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			break;
 			
 			case 'thingtemplateloader':
@@ -1009,7 +1015,7 @@ O2.createClass('RCWE.Application', {
 		this.importTemplate(sTemp, sType);
 		switch (sType) {
 			case 'block':
-				this.showPanel('blockbrowser');
+				this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			break;
 			
 			case 'thing':
@@ -1038,8 +1044,8 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_advancedpad_blockreplace: function(nFrom, aTo) {
 		this.oMapGrid.iterateGrid(function(x, y, nCode) {
-			var nLower = nCode & 0xFF;
-			var nUpper = (nCode >> 8) & 0xFF;
+			var nLower = RCWE.Tools.getLowerCode(nCode);
+			var nUpper = RCWE.Tools.getUpperCode(nCode);
 			
 			if (nLower == nFrom) {
 				nLower = MathTools.rndChoose(aTo);
@@ -1047,7 +1053,10 @@ O2.createClass('RCWE.Application', {
 			if (nUpper == nFrom) {
 				nUpper = MathTools.rndChoose(aTo);
 			}
-			return (nUpper << 8) | nLower;
+			return RCWE.Tools.modifyUpperCode(
+				RCWE.Tools.modifyLowerCode(0, nLower),
+				nUpper
+			);
 		});
 	},
 
@@ -1163,7 +1172,7 @@ O2.createClass('RCWE.Application', {
 		var pDataReceived = (function(data) {
 			this.unserialize(data.level);
 			this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
-			this.showPanel('blockBrowser');
+			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			this.hidePopup();
 		}).bind(this);
 			
@@ -1320,7 +1329,7 @@ O2.createClass('RCWE.Application', {
 		var pDataReceived = (function(data) {
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
-			this.showPanel('blockBrowser');
+			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			this.hidePopup();
 		}).bind(this);
 			

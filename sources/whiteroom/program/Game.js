@@ -266,7 +266,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     var x = (oMobile.x + Math.cos(oMobile.fTheta) * (rc.nPlaneSpacing * 0.75)) / rc.nPlaneSpacing | 0;
     var y = (oMobile.y + Math.sin(oMobile.fTheta) * (rc.nPlaneSpacing * 0.75)) / rc.nPlaneSpacing | 0;
 
-    var nPhys = this.aTagMap[y][x]; // rc.getMapXYPhysical(x, y);
+    var nPhys = this.aTagMap[y][x]; // rc.getMapPhys(x, y);
     var o;
     switch (nPhys) {
       case LABY.BLOCK_DOOR: 
@@ -283,7 +283,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
       break;
 
       case LABY.BLOCK_TREASURE:
-        rc.setMapXYTexture(x, y, 12);
+        rc.setMapCode(x, y, 12);
         this.aTagMap[y][x] = 0;
         this.increaseScore(oMobile, 2);
         o = new O876_Raycaster.GXFlash(rc);

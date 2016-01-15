@@ -489,7 +489,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
-		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapXYTexture(x, y)][(1 - nSide & 1)], x, y, nSide);
+		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
 		pDrawingFunction(this, c, x, y, nSide);
 		this.shadeCloneWall(c, x, y, nSide);
 	},
@@ -501,7 +501,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 	
 	cloneFlat: function(x, y, nSide, pDrawingFunction) {
-		var iTexture = this.aWorld.flats.codes[this.getMapXYTexture(x, y)][nSide];
+		var iTexture = this.aWorld.flats.codes[this.getMapCode(x, y)][nSide];
 		if (iTexture < 0) {
 			return;
 		}
@@ -856,13 +856,16 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var xint = 0, yint = 0;
 		
 		var sameOffsetWall = this.sameOffsetWall;
+		var BF = O876_Raycaster.BF;
+		var BF_getPhys = BF.getPhys;
+		var BF_getOffs = BF.getOffs;
 		
 		while (done === 0) {
 			if (xt < yt) {
 				xi += dxi;
 				if (xi >= 0 && xi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF;
+					nPhys = (nText >> 12) & 0xF; // **code12** phys
 					
 					if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -873,7 +876,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF;
+						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
 						nOfs = 0;
 					}
@@ -918,7 +921,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				yi += dyi;
 				if (yi >= 0 && yi < nMapSize) {
 					nText = map[yi][xi];
-					nPhys = (nText >> 8) & 0xFF;
+					nPhys = (nText >> 12) & 0xF; // **Code12** phys
 
 					if (nText !== 0 && Marker_getMarkXY(aExcludes, xi, yi)) {
 						nPhys = nText = 0;
@@ -929,7 +932,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nOfs = nScale >> 1;
 					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
-						nOfs = (nText >> 16) & 0xFF;
+						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
 						nOfs = 0;
 					}
@@ -992,8 +995,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 			oData.xWall = xi;
 			oData.yWall = yi;
-			//oData.xPix = xint | 0;
-			//oData.yPix = yint | 0;
 			oData.fDist = t * nScale;
 			oData.bExterior = false;
 			if (this.isWallTransparent(oData.xWall, oData.yWall)) {
@@ -1038,8 +1039,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						oWall = oXBlock.oCanvas;
 						nTextureBase = 0;
 					} else {
-						oWall = oData.oWall.image;
-						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFF][oData.nSideWall] * this.xTexture;
+						oWall = oData.oWall.image;						
+						nTextureBase = oData.oWall.codes[oData.nWallPanel & 0xFFF][oData.nSideWall] * this.xTexture; // **code12** code
 					}
 					this.drawLine(xScreen, oData.fDist, nTextureBase,
 							oData.nWallPos | 0, oData.bSideWall, oWall,
@@ -1112,17 +1113,17 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 	// renvoie true si le code correspond à une porte (une vrai porte, pas un passage secret)
 	isDoor : function(xw, yw) {
-		var nPhys = this.getMapXYPhysical(xw, yw);
+		var nPhys = this.getMapPhys(xw, yw);
 		return (nPhys >= this.PHYS_FIRST_DOOR && nPhys <= this.PHYS_LAST_DOOR);
 	},
 
 	// Renvoie true si on peut voir a travers le murs, et qu'on doit relancer le seekWall pour ce Ray
 	isWallTransparent : function(xWall, yWall) {
-		var nPhys = this.getMapXYPhysical(xWall, yWall);
+		var nPhys = this.getMapPhys(xWall, yWall);
 		if (nPhys === 0) {
 			return false;
 		}
-		var nOffset = this.getMapXYOffset(xWall, yWall);
+		var nOffset = this.getMapOffs(xWall, yWall);
 		// code physique transparent
 		if ((nPhys >= this.PHYS_FIRST_DOOR &&
 				nPhys <= this.PHYS_LAST_DOOR && nOffset !== 0) ||
@@ -1135,12 +1136,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	
 	// Renvoie la distance d'un éventuel renfoncement
 	getWallDepth : function(xw, yw) {
-		var nPhys = this.getMapXYPhysical(xw, yw);
+		var nPhys = this.getMapPhys(xw, yw);
 		if (this.isDoor(xw, yw)) {
 			return this.nPlaneSpacing >> 1;
 		}
 		if (nPhys == this.PHYS_SECRET_BLOCK || nPhys == this.PHYS_TRANSPARENT_BLOCK || nPhys == this.PHYS_OFFSET_BLOCK) {
-			return this.getMapXYOffset(xw, yw);
+			return this.getMapOffs(xw, yw);
 		}
 		return 0;
 	},
@@ -1153,39 +1154,30 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		return this.aMap[y][x];
 	},
 
-	setMapXYTexture : function(x, y, nTexture) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFFF00) | nTexture;
+	setMapCode : function(x, y, nTexture) {
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFFF000) | nTexture; // **code12** code
 	},
 
-	getMapXYTexture : function(x, y) {
-		return this.aMap[y][x] & 0xFF;
+	getMapCode : function(x, y) {
+		return this.aMap[y][x] & 0xFFF; // **code12** code
 	},
 
-	setMapXYPhysical : function(x, y, nPhys) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF00FF) | (nPhys << 8);
+	setMapPhys : function(x, y, nPhys) {
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFFFF0FFF) | (nPhys << 12); // **code12** phys
 	},
 
-	getMapXYPhysical : function(x, y) {
-		return (this.aMap[y][x] >> 8) & 0xFF;
+	getMapPhys : function(x, y) {
+		return (this.aMap[y][x] >> 12) & 0xF;  // **code12** phys
 	},
 
-	setMapXYOffset : function(x, y, nOffset) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF)
+	setMapOffs : function(x, y, nOffset) {
+		this.aMap[y][x] = (this.aMap[y][x] & 0xFF00FFFF) // **code12** offs
 				| (nOffset << 16);
 	},
 
-	getMapXYOffset : function(x, y) {
-		return (this.aMap[y][x] >> 16) & 0xFF;
+	getMapOffs : function(x, y) {
+		return (this.aMap[y][x] >> 16) & 0xFF; // **code12** offs
 	},
-
-	setMapXYTag : function(x, y, nTag) {
-		this.aMap[y][x] = (this.aMap[y][x] & 0x00FFFFFF) | (nTag << 24);
-	},
-
-	getMapXYTag : function(x, y) {
-		return (this.aMap[y][x] >> 24) & 0xFF;
-	},
-
 
 	drawScreen : function() {
 		// phase 1 raycasting
@@ -1455,9 +1447,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 	drawExteriorLine : function(x, z) {
 		var dz, sx, sy, sw, sh, dx, dy, dw, dh, a = null;
-		if (z === 0) {
+		if (z < 0.1) {
 			z = 0.1;
-		} //  [nPanel & 0xFF][bDim ? 1 : 0]
+		}
 		dz = (this.yTexture / (z / this.yScrSize));
 		var dzfv = (dz * this.fViewHeight);
 		var dzy = this.yScrSize - dzfv;
@@ -1585,7 +1577,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						nXDrawn += 2;
 					}
 					if (nXDrawn != 3) {
-						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFF;
+						nBlock = aMap[fy / ps | 0][fx / ps | 0] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							if (nXDrawn != 1) {
@@ -1726,7 +1718,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fy  % ps) + yOfs * ps | 0) * ps + (((fx % ps) | 0)));
 						aRenderSurf[ofsDst] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF;
+						nBlock = aMap[fy64][fx64] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[0];
@@ -1746,7 +1738,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						ofsSrc = (((fyCeil  % ps) + yOfs * ps | 0) * ps + (((fxCeil % ps) | 0)));
 						aRenderSurf[ofsDstCeil] = oXBlockImage[ofsSrc];
 					} else {
-						nBlock = aMap[fy64][fx64] & 0xFF;
+						nBlock = aMap[fy64][fx64] & 0xFFF; // **code12** code
 						aFBlock = F[nBlock];
 						if (aFBlock !== null) {
 							xOfs = aFBlock[1];
@@ -1769,9 +1761,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel) {
-		if (z === 0) {
+		if (z < 0.1) {
 			z = 0.1;
-		} //  [nPanel & 0xFF][bDim ? 1 : 0]
+		}
 		//var dz = (this.yTexture / (z / this.yScrSize) + 0.5) | 0;
 		var ytex = this.yTexture;
 		var xtex = this.xTexture;
@@ -1780,8 +1772,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
 		var dzy = yscr - (dz * fvh);
-		var nPhys = (nPanel >> 8) & 0x7F;
-		var nOffset = (nPanel >> 16) & 0xFF;
+		var nPhys = (nPanel >> 12) & 0xF;  // **code12** phys
+		var nOffset = (nPanel >> 16) & 0xFF; // **code12** offs
 		var nOpacity = z / this.nShadingFactor | 0;
 		if (bDim) {
 			nOpacity += this.nDimmedWall;
@@ -1967,11 +1959,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var ym = y / ps | 0;
 		switch (n) {
 			case 0:
-				return this.getMapXYTexture(xm, ym);
+				return this.getMapCode(xm, ym);
 			case 1:
-				return this.getMapXYPhysical(xm, ym);
+				return this.getMapPhys(xm, ym);
 			case 2:
-				return this.getMapXYOffset(xm, ym);
+				return this.getMapOffs(xm, ym);
 			case 3:
 				return this.getMapXYTag(xm, ym);
 			default:
@@ -1991,10 +1983,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		for (var iAnim in wa) {
 			wcn = wc[iAnim | 0];
 			oAnim = wa[iAnim];
-			oAnim.animate(this.TIME_FACTOR);
-			for (i = 0, l = oAnim.__start.length; i < l; ++i) {
-				x = oAnim.__start[i];
-				wcn[i] = x + oAnim.nFrame;
+			if ('animate' in oAnim) {
+				oAnim.animate(this.TIME_FACTOR);
+				for (i = 0, l = oAnim.__start.length; i < l; ++i) {
+					x = oAnim.__start[i];
+					wcn[i] = x + oAnim.nFrame;
+				}
 			}
 		}
 	},
@@ -2012,6 +2006,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			wcc = wc[nCode];
 			if (wcc) {
 				if (Array.isArray(wcc[0])) { // Une animation de texture ?
+					if (wcc[0].length === 2) {
+						// convertir en mure à 4 coté
+						wcc[0].push(wcc[0][0]);
+						wcc[0].push(wcc[0][1]);
+					}
 					wcStart = wcc[0];
 					wcCount = wcc[1];
 					wcDur = wcc[2];

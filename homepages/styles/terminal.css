@@ -1,0 +1,109 @@
+@font-face {
+	font-family: "PrStart";
+	src: url("fonts/PrStart.ttf");
+}
+
+.terminal {
+	background-color: #000;
+	color: #999;
+	
+	font-family: PrStart;
+	font-size: 16px;
+}
+
+/* global styles */
+.terminal .title {
+	color: #AAA;
+	background-color: #444;
+	border: solid 2px #AAA;
+	padding: 8px;
+	margin-bottom: 32px;
+	text-transform: uppercase;
+}
+
+.terminal .description {
+	color: #666;
+	margin-left: 64px;
+}
+
+.terminal .container {
+	padding: 8px;
+}
+
+.terminal .suboptions {
+}
+
+.terminal .realtext {
+	font-family: monospace;
+}
+
+
+
+/* links */
+.terminal a {
+	color: #999;
+}			
+			
+.terminal a:hover {
+	color: #DDD;
+}
+
+
+
+
+
+
+/* main menu */
+.terminal ul.mainmenu {
+	list-style-type: none;
+}
+
+.terminal ul.mainmenu li {
+	margin-top: 16px;
+}
+
+.terminal ul.mainmenu li::before {
+	content: "> ";
+}
+
+.terminal ul.mainmenu a {
+	text-transform: uppercase;
+}
+
+
+
+
+/* captions */
+.terminal div.modulelist {
+	margin: auto;
+	
+}
+
+.terminal a.module {
+	display: block;
+	float: left;
+	width: 320px;
+	margin: 8px;
+}
+
+.terminal a.module figure {
+	width: 100%;
+}
+
+.terminal a.module {
+	text-decoration: none;
+}
+
+.terminal a.module figure figcaption.bottom {
+	text-align: left;
+	font-family: monospace;
+}
+
+.terminal a:hover.module figure img {
+	filter: brightness(150%);
+}
+
+.terminal a.module figure img {
+	width: 100%;
+}
+

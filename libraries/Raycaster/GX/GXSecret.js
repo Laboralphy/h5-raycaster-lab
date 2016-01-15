@@ -32,9 +32,9 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 	},
 
 	seekBlockSecret : function(dx, dy) {
-		if (this.oRaycaster.getMapXYPhysical(this.x + dx,
+		if (this.oRaycaster.getMapPhys(this.x + dx,
 				this.y + dy) == this.oRaycaster.PHYS_SECRET_BLOCK) {
-			this.oRaycaster.setMapXYPhysical(this.x, this.y, 0);
+			this.oRaycaster.setMapPhys(this.x, this.y, 0);
 			Marker.clearXY(this.oRaycaster.oDoors, this.x,
 					this.y);
 			this.x += dx;
@@ -85,7 +85,7 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 				this.fOffset += this.fSpeed;
 				if (this.fOffset >= this.nLimit) {
 					this.fOffset = this.nLimit - 1;
-					this.oRaycaster.setMapXYPhysical(this.x,
+					this.oRaycaster.setMapPhys(this.x,
 							this.y, 0);
 					Marker.clearXY(this.oRaycaster.oDoors, this.x,
 							this.y);
@@ -94,7 +94,7 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 				}
 				break;
 		}
-		this.oRaycaster.setMapXYOffset(this.x, this.y,
+		this.oRaycaster.setMapOffs(this.x, this.y,
 				this.fOffset | 0);
 	},
 
@@ -111,7 +111,7 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 		case 2:
 			this.fOffset = 0;
 			Marker.clearXY(this.oRaycaster.oDoors, this.x, this.y);
-			this.oRaycaster.setMapXYPhysical(this.x, this.y, 0);
+			this.oRaycaster.setMapPhys(this.x, this.y, 0);
 			break;
 		}
 	}

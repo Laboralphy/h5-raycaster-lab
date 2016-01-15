@@ -166,6 +166,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		this.cmd_startAnimation();
 	},
 	
+	hide: function() {
+		__inherited();
+		this.cmd_stopAnimation();
+		this._oAnimationData = null;
+	},
+	
 	/**
 	 * Display the window : New block mode
 	 */ 
@@ -213,6 +219,15 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		return null;
 	},
 
+	/**
+	 * Erase wall and flat data from block
+	 */
+	resetBlock: function(oBlock) {
+		this._serializeKeys.forEach((function(k) {
+			this._setBlockData(k, '');
+		}).bind(this));
+	},
+	
 
 	_getBlockData: function(sData) {
 		switch(sData) {
@@ -260,17 +275,15 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			case 'right':
 			case 'left2':
 			case 'right2':
+				var $tile;
 				if (value) {
-					var $tile = this._getTileById(value);
-					if ($tile.length) {
-						this.cmd_dd_drop($('td.dropzone.' + sData, this._oStructure).get(0), $tile.get(0));
-					}
+					$tile = this._getTileById(value);
+				}
+				if ($tile && $tile.length) {
+					this.cmd_dd_drop($('td.dropzone.' + sData, this._oStructure).get(0), $tile.get(0));
 				} else {
-					// clear the canvas
-					var $canvas = $('td.dropzone.' + sData + ' canvas', this._oStructure)
-					var oCanvas = $canvas.get(0);
-					var oContext = oCanvas.getContext('2d');
-					oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
+					var $canvas = $('td.dropzone.' + sData + ' canvas', this._oStructure);
+					$canvas.get(0).getContext('2d').clearRect(0, 0, $canvas.prop('width'), $canvas.prop('height')); 
 				}
 				break;
 				
@@ -349,16 +362,16 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		var iAnimation = a.i;
 		var iDir = a.iDir;
 		var bYoyo = a.yoyo;
-		if (a.left !== null) {
+		if (a.left !== null && a.left !== undefined) {
 			a.ctx_left.drawImage(this._getWallTile(nStartLeft + iAnimation), 0, 0);
 		}
-		if (a.right !== null) {
+		if (a.right !== null && a.right !== undefined) {
 			a.ctx_right.drawImage(this._getWallTile(nStartRight + iAnimation), 0, 0);
 		}
-		if (a.left2 !== null) {
+		if (a.left2 !== null && a.left2 !== undefined) {
 			a.ctx_left2.drawImage(this._getWallTile(nStartLeft2 + iAnimation), 0, 0);
 		}
-		if (a.right2 !== null) {
+		if (a.right2 !== null && a.right2 !== undefined) {
 			a.ctx_right2.drawImage(this._getWallTile(nStartRight2 + iAnimation), 0, 0);
 		}
 		if (bYoyo) {
@@ -486,19 +499,20 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			window.clearInterval(a.timer);
 			a.timer = null;
 			var oLeft = null, oRight = null, oLeft2 = null, oRight2 = null;
-			if (a.left !== null) {
+			if (a.left !== null && a.left !== undefined) {
 				oLeft = this._getWallTile(a.left);
 				a.ctx_left.drawImage(oLeft, 0, 0);
 			}
-			if (a.right !== null) {
+			if (a.right !== null && a.right !== undefined) {
 				oRight = this._getWallTile(a.right);
 				a.ctx_right.drawImage(oRight, 0, 0);
 			}
-			if (a.left2 !== null) {
+			if (a.left2 !== null && a.left2 !== undefined) {
+				console.log(a.left2);
 				oLeft2 = this._getWallTile(a.left2);
 				a.ctx_left2.drawImage(oLeft2, 0, 0);
 			}
-			if (a.right2 !== null) {
+			if (a.right2 !== null && a.right2 !== undefined) {
 				oRight2 = this._getWallTile(a.right2);
 				a.ctx_right2.drawImage(oRight2, 0, 0);
 			}
@@ -876,6 +890,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	 */
 	importBlock: function(oBlock) {
 		$('#block_id').html('id #' + oBlock.getData('id'));
+		// clear the canvases
+		var $canvas = $('td.dropzone canvas', this._oStructure);
+		$canvas.each(function() {
+			this.getContext('2d').clearRect(0, 0, this.width, this.height);
+		});		
+		this._oAnimationData = null;
 		this._serializeKeys.forEach(function(sKey) {
 			this._setBlockData(sKey, oBlock.getData(sKey));
 		}, this);

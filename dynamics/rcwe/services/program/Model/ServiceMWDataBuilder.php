@@ -5,7 +5,7 @@ require_once('RaycasterConverter.php');
 
 class ServiceMWDataBuilder {	
 	
-	const MAPEXP_PATH = '../server.storage/exports/mw';
+	const MAPEXP_PATH = '../../../servers/mw/maps_sources';
 	
 	
 	public function exportLevel($sScript, $sName) {
@@ -52,6 +52,19 @@ class ServiceMWDataBuilder {
 			}
 		}
 		return $o;
+	}
+	
+	/**
+	 * Renvoie laliste des niveau de MW 
+	 */
+	public function getList() {
+		$a = array();
+		foreach (scandir(self::MAPEXP_PATH) as $sDir) {
+			if (substr($sDir, 0, 1) != '.') {
+				$a[] = basename($sDir);
+			}
+		}
+		return $a;
 	}
 	
 	public function importLevel($sFile) {
