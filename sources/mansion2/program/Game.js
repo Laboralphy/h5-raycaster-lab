@@ -1,4 +1,4 @@
-O2.extendClass('MANSION.Game', O876_Raycaster.RCEngine, {
+O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
 	_sAmbience: '',
 	_oScripts: null,

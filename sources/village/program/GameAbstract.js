@@ -1,4 +1,4 @@
-O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
+O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,

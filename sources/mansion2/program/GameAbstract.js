@@ -1,5 +1,5 @@
 /* globals O2, ClassMagic, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
-O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
+O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
@@ -332,4 +332,4 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	}
 });
 
-ClassMagic.castEventHandler(O876_Raycaster.RCEngine);
+ClassMagic.castEventHandler(O876_Raycaster.GameAbstract);

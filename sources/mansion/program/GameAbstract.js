@@ -1,21 +1,38 @@
-/* globals O2, ClassMagic, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
-O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
+O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
-	_xTagProcessing: 0,
-	_yTagProcessing: 0,
-	_oClassLoader: null,
+	_oEvents: null,
+
+	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
+	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
+	///////////// EVENEMENTS ///////////// EVENEMENTS /////////////
+
+	on: function(sEvent, pFunction) {
+		this._oEvents[sEvent] = pFunction;
+	},
+	
+	/**
+	 * Récupération de la notification issue du serveur
+	 * Cette notification est dispatchée sur l'une des fonction scn_
+	 */
+	trigger: function(sEvent, data) {
+		if (sEvent in this._oEvents) {
+			return this._oEvents[sEvent](data);
+		} else {
+			return true;
+		}		
+	},
 
 	/** 
 	 * Evènement apellé lors de l'initialisation du jeu
 	 * Appelé une seule fois.
 	 */
 	onInitialize: function() {
-		this._oClassLoader = new O876.ClassLoader();
+		this._oEvents = {};
 		this.on('tag', this.onTagTriggered.bind(this));
-		if ('init' in this) {
+		if (this.init) {
 			this.init();
 		}
 	},
@@ -25,9 +42,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	 * @return bool
 	 */
 	onMenuLoop: function() {
-		var data = { exit: true };
-		this.trigger('menuloop', data);
-		return data.exit;
+		return this.trigger('menuloop');
 		// Doit retourner TRUE pour indiquer la validation du menu et passer à l'étape suivante
 		// ici il n'y a pas de menu donc "true" pour passer directement à l'étape suivante
 	},
@@ -49,8 +64,8 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	 * Evènement appelé quand une ressource et chargée
 	 * sert à faire des barres de progressions
 	 */
-	onLoading: function(sPhase, nProgress, nMax) {
-		this.trigger('load', { phase: sPhase, progress: nProgress, max: nMax });
+	onLoading: function(sProgress, nValue, nMax) {
+		this.trigger('load', { phase: sProgress, progress: nValue, max: nMax });
 	},
 	
 	/**
@@ -61,15 +76,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		this.oRaycaster.nPlaneSpacing = 64;
-		var oCT;
-		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
-			var ControlThinkerClass = this._oClassLoader.loadClass(CONFIG.game.controlthinker);
-			oCT = new ControlThinkerClass();
-		} else if (CONFIG.game.fpscontrol) {
-			oCT = new O876_Raycaster.CameraMouseKeyboardThinker();
-		} else {
-			oCT = new O876_Raycaster.CameraKeyboardThinker();
-		}
+		var oCT = new O876_Raycaster.CameraMouseKeyboardThinker();
 		oCT.oMouse = this._getMouseDevice(this.oRaycaster.oCanvas);
 		oCT.oKeyboard = this._getKeyboardDevice();
 		oCT.oGame = this;
@@ -112,36 +119,8 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 			});
 		}
 		this.oRaycaster.oCamera.fSpeed = 6;
-		this.setDoomloop('stateTagProcessing');
-	},
-
-	stateTagProcessing: function() {
-		var nSize = this.oRaycaster.nMapSize;
-		var x = this._xTagProcessing;
-		var y = this._yTagProcessing;
-		var nStart = Date.now();
-		var nStepMax = 10;
-		var nStep = 0;
-		var tf = this.TIME_FACTOR;
-		while (y < nSize) {
-			while (x < nSize) {
-				this.triggerTag(x, y, this.getBlockTag(x, y), true);
-				++x;
-				nStep = (nStep + 1) % nStepMax;
-				if (nStep === 0 && (Date.now() - nStart) >= tf) {
-					this._xTagProcessing = x;
-					this._yTagProcessing = y;
-					this.onLoading('tag', y * nSize + x, nSize * nSize);
-					return;
-				}
-			}
-			++y;
-			x = 0;
-		}
-		this.setDoomloop('stateRunning');
 		this.trigger('level');
 	},
-
 
 	/**
 	 * Evènement appelé par le processeur
@@ -193,10 +172,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	},
 
 	processKeys: function() {
-		var nKey = this._getKeyboardDevice().inputKey();
-		if (nKey) {
-			this.trigger('key', {k: nKey});
-		}
+		this.trigger('key', this._getKeyboardDevice().inputKey());
 	},
 	
 	/**
@@ -256,34 +232,14 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 	detectTag: function() {
 		var rc = this.oRaycaster;
 		var rcc = rc.oCamera;
-		var x = rcc.xSector;
-		var y = rcc.ySector;
+		x = rcc.xSector;
+		y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
-		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag, 'move');
+		if (sTag != this._sTag) {
+			this.trigger('tag', {x: x, y: y, tag: sTag});
 			this._sTag = sTag;
 		}
 	},
-	
-	/**
-	 * TriggerTag
-	 * Active volontaire le tag s'il existe à la position spécifiée
-	 */
-	triggerTag: function(x, y, sTag, bInit) {
-		if (sTag) {
-			var aTags = sTag.split(';');
-			var sNewTag = aTags.filter(function(s) {
-				var aTag = s.replace(/^ +/, '').replace(/ +$/, '').split(' ');
-				var sCmd = aTag.shift();
-				var oData = {x: x, y: y, data: aTag.join(' '), remove: false};
-				var aEvent = [(bInit ? 'i' : '') + 'tag', sCmd];
-				this.trigger(aEvent.join('.'), oData);
-				return !oData.remove;
-			}, this).join(';');
-			this.setBlockTag(x, y, sNewTag);
-		}
-	},
-
 
 	/**
 	 * Répond à l'évènement : le player à activé un block mural (celui en face de lui) 
@@ -294,7 +250,10 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		var oBlock = m.getFrontCellXY();
 		var x = oBlock.x;
 		var y = oBlock.y;
-		this.triggerTag(x, y, this.getBlockTag(x, y));
+		var sTag = this.getBlockTag(x, y);
+		if (sTag) {
+			this.trigger('tag', {x: x, y: y, tag: sTag});
+		}
 		var oEffect = this.openDoor(x, y);
 		if (oEffect) {
 			this.trigger('door', {x: x, y: y, door: oEffect});
@@ -314,7 +273,7 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 			return null;
 		}
 	},
-
+	
 	/**
 	 * Ajoute un tag de block
 	 * si le tag est null on le vire
@@ -329,7 +288,12 @@ O2.extendClass('O876_Raycaster.RCEngine', O876_Raycaster.Engine, {
 		} else {
 			return null;
 		}		
+	},
+	
+	clearBlockTag: function(x, y) {
+		var s = this.oRaycaster.nMapSize;
+		if (x >= 0 && y >= 0 && x < s && y < s) {
+			Marker.clearXY(this._oTagData, x, y);
+		}
 	}
 });
-
-ClassMagic.castEventHandler(O876_Raycaster.RCEngine);
