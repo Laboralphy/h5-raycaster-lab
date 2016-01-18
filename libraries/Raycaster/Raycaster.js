@@ -261,6 +261,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 	
 	/**
+	 * Retreive a tile
+	 */
+	getTile: function(sTile) {
+		return this.oHorde.oTiles[sTile];
+	},
+	
+	/**
 	 * An emergency fonction which decrease the level of detail
 	 * because the computer is too slow
 	 */

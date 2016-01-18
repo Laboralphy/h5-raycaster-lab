@@ -22,5 +22,9 @@ O2.createObject('O876.CanvasFactory', {
 		oContext.webkitImageSmoothingEnabled = b;
 		oContext.mozImageSmoothingEnabled = b;
 		oContext.imageSmoothingEnabled = b;
+	},
+	
+	getImageSmoothing: function(oContext) {
+		return oContext.imageSmoothingEnabled;
 	}
 });

@@ -3,6 +3,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbience: '',
 	_oScripts: null,
 	_oDarkHaze: null,
+	_oPhone: null,
 
 	init: function() {
 		this.initAudio();
@@ -101,6 +102,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.trigger('command0');
 		}).bind(this);
 		//this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
+		this._oPhone = this.oRaycaster.addGXEffect(MANSION.GX.PhonePort);
 	},
 	
 	/**
@@ -185,7 +187,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F10: 
 			case KEYS.F11: 
 			case KEYS.F12: 
-				oGhost.getThinker().TODO = oEvent.k - KEYS.F1 + 1;
+//				oGhost.getThinker().TODO = oEvent.k - KEYS.F1 + 1;
 			break;
 		}
 	},
@@ -293,7 +295,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var sScript = aTag.shift();
 		var sAction = aTag.shift();
 		var oInstance = this.getScript(sScript);
-		console.log('tag script');
 		if (sAction in oInstance) {
 			oEvent.game = this;
 			oInstance[sAction].apply(oInstance, [oEvent]);
@@ -302,6 +303,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	
 	////// GAME LIFE //////
+	
+	
+	/**
+	 * Controle du smartphone
+	 */
+	controlPhone: function(n) {
+	},
 	
 	/**
 	 * Le mobile spécifié tire un missile

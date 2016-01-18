@@ -58,7 +58,9 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	},
 	
 	thinkInit: function() {
-		var s = this.oMobile.oSprite;
+		var m = this.oMobile;
+		m.fTheta = 0;
+		var s = m.oSprite;
 		s.bTranslucent = true;
 		s.nAlpha = 3;
 		this._oTarget = this.oGame.getPlayer();
@@ -70,12 +72,8 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 		--s.nAlpha;
 		if (s.nAlpha <= 0) {
 			s.bTranslucent = false;
-			this.setThink('Living');
+			this.setThink('Idle');
 		}
-	},
-
-	thinkLiving: function() {
-		this.process();
 	},
 	
 	thinkVanishing: function() {
@@ -86,14 +84,15 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 			s.nAlpha = 3;
 			this.oMobile.bActive = false;
 			this.oMobile.gotoLimbo();
-			this.setThink('Done');
+			this.setThink('Idle');
 		}
 	},
+
 	
-	thinkDone: function() {
+	thinkIdle: function() {
+		this.process();
 	},
-
-
+	
 	
 	
 	////// PHASES ////// PHASES ////// PHASES ////// PHASES //////		

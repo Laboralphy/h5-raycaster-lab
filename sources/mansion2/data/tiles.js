@@ -69,4 +69,32 @@ O2.createObject('TILES_DATA', {
 			[[21, 12, 15, 18, 0, 3, 6, 9], 3, 120, 1],
 		]
 	},
+	
+	
+	//////////// SMARTPHONE LAYOUT //////////
+	
+	l_smart0: {
+		src: 'resources/ui/phone/layer0.png',
+		frames: 1,
+		width: 250,
+		height: 126,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
+	},
+	
+	l_smart1: {
+		src: 'resources/ui/phone/layer1.png',
+		frames: 1,
+		width: 126,
+		height: 256,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
+	}
+
 });

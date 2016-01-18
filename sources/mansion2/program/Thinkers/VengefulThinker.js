@@ -94,7 +94,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	distanceTo: function(oTarget) {
 		if (oTarget) {
 			var oMobile = this.oMobile;
-			return MathTools.distance(oMobile.x, oMobile.y, oTarget.x, oTarget.y);
+			return MathTools.distance(oMobile.x - oTarget.x, oMobile.y - oTarget.y);
 		} else {
 			return -1;
 		}
@@ -128,8 +128,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * Téléportation à proximité de la cible
 	 * a une position aléatoire
 	 */
-	teleportRandom: function() {
-		this.setThink('Teleport', 64 + Math.random() * 128, Math.random() * 2 * Math.PI - Math.PI);
+	teleportRandom: function(nDistMin, nDistMax) {
+		this.setThink('Teleport', nDistMin + Math.random() * nDistMax, Math.random() * 2 * Math.PI - Math.PI);
 	},
 
 	stop: function() {
@@ -143,8 +143,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 	
 	move: function(n) {
-		this.oMobile.oSprite.playAnimationType(1);
 		var m = this.oMobile;
+		m.oSprite.playAnimationType(1);
 		switch (n) {
 			case 'f':
 				m.moveForward();
@@ -166,16 +166,9 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	
+	
 	damage: function(oAggressor) {
-	},
-
-
-
-
-	thinkLiving: function() {
-		this._oTarget = this.oGame.getPlayer();
-		this.process();
-		this.setThink('Idle');
 	},
 	
 	
@@ -272,7 +265,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	thinkEvade: function() {
 		if (this.isTimeMultiple(20)) {
 			this.walkToTarget(this._fSpeed);
-		}		
+		}
 		var m = this.oMobile;
 		if (m.oWallCollision.x || m.oWallCollision.y) {
 			this._nEvadeDir = 1 - this._nEvadeDir;
@@ -357,7 +350,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			var xs = (x / ps | 0);
 			var ys = (y / ps | 0);
 			// vérifier que le secteur final est walkable
-			if (!this.testSolid(xs, ys)) {
+			var rc = this.oGame.oRaycaster;
+			if (rc.insideMap(xs) && rc.insideMap(ys) && !this.testSolid(xs, ys)) {
 				// calculer les coordonnées centrales du secteur
 				var x1 = (x / ps | 0) * ps + (ps >> 1);
 				var y1 = (y / ps | 0) * ps + (ps >> 1);
@@ -410,45 +404,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * il indique que l'action précédente est terminé et que le thinker
 	 * n'a plus rien à faire
 	 */
-	 
-	TODO: 0,
-	 
-	thinkIdle: function() {
-		this.process();
-		var nWhatToDo = Math.random() * 6 | 0;
-		switch (this.TODO) {
-			case 1:
-				this.setThink('Chase', 200);
-			break;
-
-			case 2:
-				this.teleportFront();
-			break;
-			
-			case 3:
-				this.setThink('EvadeShoot', 200);
-			break;
-			
-			case 4:
-				this.setThink('Evade', 200);
-			break;
-			
-			case 5:
-				this.setThink('ZigZagChase', 200);
-			break;
-			
-			case 6:
-				this.setThink('Rush', 200);
-			break;
-			
-			case 7:
-				this.setThink('Wait', 30);
-			break;
-
-			case 8:
-				this.setThink('Shoot');
-				this.TODO = 7;
-			break;
-		}
-	}
+		/** choisir une action parmis
+		 * this.setThink('Chase', time);
+		 * this.teleportFront();
+		 * this.setThink('EvadeShoot', time);
+		 * this.setThink('Evade', time);
+		 * this.setThink('ZigZagChase', this._TODO_TIME);
+		 * this.setThink('Rush', this._TODO_TIME);
+		 * this.setThink('Wait', this._TODO_TIME);
+		 * this.setThink('Shoot');
+		 */
+		
 });

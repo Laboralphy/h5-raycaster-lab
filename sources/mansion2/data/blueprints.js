@@ -20,7 +20,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		tile: 'g_head2',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.Vengeful',
+		thinker: 'MANSION.G_Chaser',
 		fx: 3,
 		data: {
 			speed: 2,
