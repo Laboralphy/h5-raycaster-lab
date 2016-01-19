@@ -370,6 +370,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.xScrSize = this.oCanvas.width;
 		this.yScrSize = this.oCanvas.height >> 1;
 	},
+	
+	getRenderContext: function() {
+		return this.oRenderContext;
+	},
+
+	getRenderCanvas: function() {
+		return this.oRenderCanvas;
+	},
 
 	/** Modification du détail 
 	 * @param nDetail 0: interdit ; 1: haute qualité ; 2: bonne qualité ; 4 basse qualité

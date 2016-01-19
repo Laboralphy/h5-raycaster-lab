@@ -294,7 +294,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 		case 'raf':
 			if (this.initRequestAnimationFrame()) {
-				this.stateRunning = this.stateRunningRAF;
+				this.stateRunning = this.stateRunningRAF.bind(this);
 			} else {
 				this.stateRunning = this.stateRunningInt;
 			}
@@ -425,23 +425,22 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Déroulement du jeu
 	 */
 	stateRunningRAF : function(nTime) {
-		var E = window.__transistateMachine;
-		requestAnimationFrame(E.stateRunning);
 		var nNowTimeStamp = Date.now();
 		var nFrames = 0;
-		while (E.nLastTimeStamp < nNowTimeStamp) {
-			E.oRaycaster.frameProcess();
-			E._callGameEvent('onDoomLoop');
-			E.nLastTimeStamp += E.nInterval;
+		while (this.nLastTimeStamp < nNowTimeStamp) {
+			this.oRaycaster.frameProcess();
+			this._callGameEvent('onDoomLoop');
+			this.nLastTimeStamp += this.nInterval;
 			nFrames++;
 		}
 		if (nFrames) {
-			E.oRaycaster.frameRender();
-			E._callGameEvent('onFrameRendered');
-			if (E.oFrameCounter.check(nNowTimeStamp)) {
-				E._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
+			this.oRaycaster.frameRender();
+			this._callGameEvent('onFrameRendered');
+			if (this.oFrameCounter.check(nNowTimeStamp)) {
+				this._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
 			}
 		}
+		requestAnimationFrame(this.stateRunning);
 	},
 
 	/**

@@ -76,8 +76,8 @@ O2.createObject('TILES_DATA', {
 	l_smart0: {
 		src: 'resources/ui/phone/layer0.png',
 		frames: 1,
-		width: 250,
-		height: 126,
+		width: 421,
+		height: 212,
 		scale: 1,
 		noshading: true,
 		animations: [

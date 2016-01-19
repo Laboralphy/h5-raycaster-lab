@@ -12,6 +12,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('level', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
+		this.on('frame', this.gameEventFrame.bind(this));
 		
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
@@ -102,7 +103,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.trigger('command0');
 		}).bind(this);
 		//this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
-		this._oPhone = this.oRaycaster.addGXEffect(MANSION.GX.PhonePort);
+		this._oPhone = {
+			port: this.oRaycaster.addGXEffect(MANSION.GX.PhonePort),
+			land: this.oRaycaster.addGXEffect(MANSION.GX.PhoneLand)
+		};
 	},
 	
 	/**
@@ -136,9 +140,27 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bouton gauche de la souris
 	 */
 	gameEventCommand0: function() {
+/*		
 		//this.spawnMissile('p_ecto', this.getPlayer());
+		console.log('command 0', Math.random());
+		if (!this.isPhoneVisible('land')) {
+			this.showPhone('land');
+		} else {
+			this.getPhoneApplication('Camera').flash();
+		}*/
 	},
-	
+
+
+	/**
+	 * Triggered each time a frame is rendered
+	 */
+	gameEventFrame: function(oEvent) {
+		var fc = this.oFrameCounter;
+		var fAvg = fc.getAvgLoad();
+		var ctx = this.oRaycaster.oContext;
+		ctx.fillStyle = '#FFF';
+		ctx.fillText('cpu: ' + (100 * fAvg / this.TIME_FACTOR | 0).toString() + '%', 10, 10);
+	},
 
 
 	/**
@@ -303,12 +325,69 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	
 	////// GAME LIFE //////
-	
+
+
+	/**
+	 * Return the phone instance (either PhoneLand or PhonePort)
+	 * @param sOrient phone orientation (land|port)
+	 * @return PhoneAbstract
+	 */
+	getPhone: function(sOrient) {
+		var p = this._oPhone;
+		return p[sOrient];
+	},
 	
 	/**
-	 * Controle du smartphone
+	 * Launches a phone application, bringing up the smartphone interface
+	 * with the correspondient orientation
+	 * Return the Application instance
+	 * @param sApplication application name (Camera, ...)
+	 * @return Application
 	 */
-	controlPhone: function(n) {
+	getPhoneApplication: function(sApplication) {
+		switch (sApplication) {
+			case 'Camera':
+				return this.getPhone('land').openApplication('Camera');
+
+			default:
+				throw new Error('unknown application : ' + sApplication);
+		}
+	},
+
+	/**
+	 * Returns true if the phone is currently visible
+	 * @param sOrient phone orientation (land|port)
+	 * @return boolean
+	 */
+	isPhoneVisible: function(sOrient) {
+		return this.getPhone(sOrient).isVisible();
+	},
+
+	/**
+	 * Show Smartphone controller
+	 * @param sOrient phone orientation (land|port)
+	 */
+	showPhone: function(sOrient) {
+		var p = this._oPhone;
+		switch (sOrient) {
+			case 'port': // raise portrait
+				p.land.hide(true);
+				p.port.show();
+			break;
+			
+			case 'land': // raise landscape
+				p.port.hide(true);
+				p.land.show();
+			break;
+		}
+	},
+	
+	/**
+	 * Hide Smartphone controller
+	 */
+	hidePhone: function() {
+		p.port.hide();
+		p.land.hide();
 	},
 	
 	/**
@@ -330,6 +409,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	
 	////// UTILITIES //////
+	
+	
+	
 	/**
 	 * Renvoie l'instance du joueur
 	 * @return Player

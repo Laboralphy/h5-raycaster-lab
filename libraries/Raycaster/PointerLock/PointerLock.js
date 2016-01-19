@@ -12,7 +12,7 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	bEnabled: true,
 	
 	hasPointerLockFeature: function() {
-		return 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+		return 'pointerLockElement' in document || 'mozPointerLockElement' in document;
 	},
 	
 	init: function() {
@@ -24,10 +24,8 @@ O2.createObject('O876_Raycaster.PointerLock', {
 		}
 		document.addEventListener('pointerlockchange', O876_Raycaster.PointerLock.eventChange, false);
 		document.addEventListener('mozpointerlockchange', O876_Raycaster.PointerLock.eventChange, false);
-		document.addEventListener('webkitpointerlockchange', O876_Raycaster.PointerLock.eventChange, false);
 		document.addEventListener('pointerlockerror', O876_Raycaster.PointerLock.eventError, false);
 		document.addEventListener('mozpointerlockerror', O876_Raycaster.PointerLock.eventError, false);
-		document.addEventListener('webkitpointerlockerror', O876_Raycaster.PointerLock.eventError, false);
 		O876_Raycaster.PointerLock.bInitialized = true;
 		return true;
 	},
@@ -56,7 +54,7 @@ O2.createObject('O876_Raycaster.PointerLock', {
 			return;
 		}
 		O876_Raycaster.PointerLock.oElement = oElement;
-		oElement.requestPointerLock = oElement.requestPointerLock || oElement.mozRequestPointerLockWithKeys || oElement.mozRequestPointerLock || oElement.webkitRequestPointerLock;
+		oElement.requestPointerLock = oElement.requestPointerLock || oElement.mozRequestPointerLockWithKeys || oElement.mozRequestPointerLock;
 		oElement.requestPointerLock();
 	},
 	
@@ -64,12 +62,12 @@ O2.createObject('O876_Raycaster.PointerLock', {
 		if (!O876_Raycaster.PointerLock.locked()) {
 			return;
 		}
-		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock || document.webkitExitPointerLock;
+		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 		document.exitPointerLock();
 	},
 
 	eventChange: function(e) {
-		var oPointerLockElement = document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement;
+		var oPointerLockElement = document.pointerLockElement || document.mozPointerLockElement;
 		if (oPointerLockElement) {
 			document.addEventListener('mousemove', O876_Raycaster.PointerLock.eventMouseMove, false);
 			O876_Raycaster.PointerLock.bLocked = true;
@@ -85,8 +83,8 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	},
 	
 	eventMouseMove: function(e) {
-		var xMove = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
-		var yMove = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+		var xMove = e.movementX || e.mozMovementX || 0;
+		var yMove = e.movementY || e.mozMovementY || 0;
 		var p = O876_Raycaster.PointerLock;
 		if (p.oHookFunction) {
 			p.oHookFunction.apply(p.oHookInstance, [xMove, yMove]);
