@@ -789,7 +789,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		if (this.oCutscene.hasEnded()) {
 			this.oCutscene.finalize();
 			this.oCutscene = null;
-			this.nLastTimeStamp = Date.now();
+			this.setTime(Date.now());
 			this.setDoomloop(this.sCutsceneNextState);
 		}
 	},
@@ -804,8 +804,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	stateStoryBook: function() {
 		this.ui_render();
 		if (this.nIntfMode === UI.INTFMODE_NONE) {
-			this.nLastTimeStamp = Date.now();
-			this.setDoomloop('stateRunning');
+			this.setTime(Date.now());
+			this.setDoomloop('stateRunning', CONFIG.game.doomloop);
 			this.sys_flash(0, 100, 10);
 		}
 	},
@@ -866,7 +866,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	},
 	
 	focus: function() {
-		this.nLastTimeStamp = Date.now();
+		this.setTime(Date.now());
 		this.oSoundSystem.unmute();
 		this.resume();
 	},
@@ -902,8 +902,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 				case KEYS._INT_PAUSE:
 				// restauration d'un timestamp après pause
 				// pour eviter de recalculer toutes les frame perdues pendant la pause
-				this.nLastTimeStamp = Date.now();
-				this.setDoomloop('stateRunning');
+				this.setTime(Date.now());
+				this.setDoomloop('stateRunning', CONFIG.game.doomloop);
 				break;
 				
 				case KEYS.ALPHANUM.X:

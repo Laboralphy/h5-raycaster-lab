@@ -10,14 +10,27 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	
 	oFrameCounter: null,
 
-	nLastTimeStamp : 0,
+	nTimeStamp : 0,
 	nShadedTiles : 0,
 	nShadedTileCount : 0,
 	
 	__construct : function() {
+		if (!this.browserIsHTML5()) {
+			throw new Error('browser is not full html 5');
+		}
 		__inherited('stateInitialize');
 		this.resume();
 	},
+
+	browserIsHTML5: function() {
+		var oHTML5 = O876.Browser.isHTML5();
+		if (!oHTML5.all) {
+			document.body.innerHTML = '<div style="color: #AAA; font-family: monospace; background-color: black; border: solid 4px #666; padding: 8px"><h1>O876 Raycaster Engine</h1><p>The game won\'t run because some HTML 5 features are not supported by this browser. You should install the latest version of <b>Firefox</b>, <b>Chrome</b> or <b>Chromium</b>.</p>' + oHTML5.html + '</div>'; 
+			return false;
+		}
+		return oHTML5.all;
+	},
+
 
 	initRequestAnimationFrame : function() {
 		if ('requestAnimationFrame' in window) {
@@ -41,7 +54,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	
 	initDoomLoop: function() {
 		__inherited();
-		this.nLastTimeStamp = Date.now();
+		this.nTimeStamp = null;
 	},
 
 	/**
@@ -114,7 +127,16 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * @return int
 	 */
 	getTime: function() {
-		return this.nLastTimeStamp;
+		return this.nTimeStamp;
+	},
+
+	/**
+	 * Define time
+	 * May be usefull whn using pause, to update the last time stamp
+	 * and avoid a large amount of compensating calc.
+	 */
+	setTime: function(n) {
+		this.nTimeStamp = n;
 	},
 
 	// ////////// METHODES PUBLIQUES API ////////////////
@@ -288,17 +310,18 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this.TIME_FACTOR = this.nInterval = CONFIG.game.interval;
 
 		switch (CONFIG.game.doomloop) {
-		case 'interval':
-			this.stateRunning = this.stateRunningInt;
-			break;
-
-		case 'raf':
-			if (this.initRequestAnimationFrame()) {
-				this.stateRunning = this.stateRunningRAF.bind(this);
-			} else {
+			case 'interval':
 				this.stateRunning = this.stateRunningInt;
-			}
-			break;
+				break;
+
+			case 'raf':
+				if (this.initRequestAnimationFrame()) {
+					this.stateRunning = this.stateRunningRAF;
+				} else {
+					CONFIG.game.doomloop = 'interval';
+					this.stateRunning = this.stateRunningInt;
+				}
+				break;
 		}
 		this.setDoomloop('stateMenuLoop');
 		this.resume();
@@ -386,10 +409,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			return;
 		}
 		// this._callGameEvent('onLoading', 'shd', 1, 1);
-		this.nLastTimeStamp = Date.now();
 		this.oFrameCounter = new O876_Raycaster.FrameCounter();
-		this.oFrameCounter.start(this.nLastTimeStamp);
-		this.setDoomloop('stateRunning');
+		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
 		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
 	},
@@ -403,12 +424,12 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Déroulement du jeu
 	 */
 	stateRunningInt : function() {
-		var nNowTimeStamp = Date.now();
+		var nNowTimeStamp = performance.now();
 		var nFrames = 0;
-		while (this.nLastTimeStamp < nNowTimeStamp) {
+		while (this.nTimeStamp < nNowTimeStamp) {
 			this.oRaycaster.frameProcess();
 			this._callGameEvent('onDoomLoop');
-			this.nLastTimeStamp += this.nInterval;
+			this.nTimeStamp += this.nInterval;
 			nFrames++;
 		}
 		if (nFrames) {
@@ -425,22 +446,26 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Déroulement du jeu
 	 */
 	stateRunningRAF : function(nTime) {
-		var nNowTimeStamp = Date.now();
 		var nFrames = 0;
-		while (this.nLastTimeStamp < nNowTimeStamp) {
-			this.oRaycaster.frameProcess();
+		var rc = this.oRaycaster;
+		if (this.nTimeStamp === null) {
+			this.nTimeStamp = nTime;
+		}
+		while (this.nTimeStamp < nTime) {
+			rc.frameProcess();
 			this._callGameEvent('onDoomLoop');
-			this.nLastTimeStamp += this.nInterval;
+			this.nTimeStamp += this.nInterval;
 			nFrames++;
 		}
 		if (nFrames) {
-			this.oRaycaster.frameRender();
+			rc.frameRender();
 			this._callGameEvent('onFrameRendered');
-			if (this.oFrameCounter.check(nNowTimeStamp)) {
-				this._callGameEvent('onFrameCount', this.oFrameCounter.nFPS, this.oFrameCounter.getAvgFPS(), this.oFrameCounter.nSeconds);
+			var fc = this.oFrameCounter;
+			if (fc.check(nTime | 0)) {
+				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
 			}
 		}
-		requestAnimationFrame(this.stateRunning);
+		this.oRafInterval = window.requestAnimationFrame(this.pDoomloop);
 	},
 
 	/**

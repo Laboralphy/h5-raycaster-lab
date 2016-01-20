@@ -138,7 +138,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			++y;
 			x = 0;
 		}
-		this.setDoomloop('stateRunning');
+		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
 		this.trigger('level');
 	},
 

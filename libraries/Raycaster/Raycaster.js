@@ -122,13 +122,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	yWall : 0,
 	aZBuffer : null,
 	oContinueRay: null,
-
+	
 	// sprites
 	oHorde : null,
 	aScanSectors : null,
 	aWallSectors : null,
 	oMobileSectors : null,
 	oThinkerManager : null,
+	aVisibleMobiles: null,
 	
 	// weapon Layer
 	oWeaponLayer: null,
@@ -1446,6 +1447,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 	drawHorde : function() {
 		var x = '', y = '', aMobiles, oMobile, nMobileCount, i;
+		this.aVisibleMobiles = [];
 		for (x in this.aScanSectors) {
 			for (y in this.aScanSectors[x]) {
 				aMobiles = this.oMobileSectors.get(x, y);
@@ -1453,6 +1455,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				for (i = 0; i < nMobileCount; i++) {
 					oMobile = aMobiles[i];
 					if (oMobile.bActive && oMobile.oSprite) {
+						this.aVisibleMobiles.push(oMobile);
 						this.drawSprite(oMobile);
 					}
 				}

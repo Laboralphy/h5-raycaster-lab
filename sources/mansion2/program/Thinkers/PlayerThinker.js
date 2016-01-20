@@ -28,6 +28,27 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinke
 	},
 	
 	/**
+	 * Check all present ghosts, For each ghost, compute angle
+	 * 
+	 */
+	getAllGhostAngles: function() {
+		// get present ghosts
+		var x, y;
+		var m = this.oMobile;
+		var xMe = m.x, yMe = m.y;
+		var aGhosts = [];
+		var vm = this.oGame.oRaycaster.aVisibleMobiles;
+		for (var i = 0, l = vm.length; i < l; ++i) {
+			m = vm[i];
+			if (m && m.getData('ghost')) {
+				m.setData('frameAngle', this.getGhostAngle(xMe, yMe, m.x, m.y));
+				aGhosts.push(m);
+			}
+		}
+		return aGhosts;
+	},
+	
+	/**
 	 * Un fantome menace.
 	 * Tourner l'angle de vue vers le fantome
 	 */

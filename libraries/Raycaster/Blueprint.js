@@ -33,7 +33,7 @@ O2.createClass('O876_Raycaster.Blueprint', {
   },
 
   getData: function(sData) {
-    if (sData in this.oXData) {
+    if (this.oXData && (sData in this.oXData)) {
       return this.oXData[sData];
     } else {
       return null;

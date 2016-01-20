@@ -4,6 +4,8 @@ body {
 	padding: 0px;
 	margin: 0px;
 	background-color: #000;
+	color: #AAA;
+	font-family: monospace;
 }
 
 canvas, img {

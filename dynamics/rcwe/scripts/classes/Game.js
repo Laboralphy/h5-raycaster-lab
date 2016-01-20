@@ -161,11 +161,6 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 	 */
 	onFrameRendered: function() {
 		this.detectTag();
-		var fc = this.oFrameCounter;
-		var fAvg = fc.getAvgLoad();
-		var ctx = this.oRaycaster.oContext;
-		ctx.fillStyle = '#FFF';
-		ctx.fillText('cpu: ' + (100 * fAvg / this.TIME_FACTOR | 0).toString() + '%', 10, 10);
 	},
 	
 	////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////

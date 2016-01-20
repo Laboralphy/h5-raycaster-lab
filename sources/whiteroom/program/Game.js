@@ -77,7 +77,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
 
   stateShading: function() {
     if (this.oRaycaster.shadeProcess()) {
-    	this.setDoomloop('stateRunning');
+    	this.setDoomloop('stateRunning', CONFIG.game.doomloop);
     }
   },
 

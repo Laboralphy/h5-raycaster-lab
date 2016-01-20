@@ -48,7 +48,11 @@ O2.createClass('O876_Raycaster.Mobile', {
 			if (sXData === undefined) {
 				return this.oSprite.oBlueprint;
 			} else {
-				return this.oSprite.oBlueprint.getData(sXData);
+				if (this.oSprite.oBlueprint) {
+					return this.oSprite.oBlueprint.getData(sXData);
+				} else {
+					return null;
+				}
 			}
 		} else {
 			return null;

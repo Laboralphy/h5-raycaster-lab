@@ -23,8 +23,7 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	nState: 0, // 0: normal, 10, start raising, 11: raising, 20: start falling, 21, falling
 	
 	oApplication: null,
-	aApplications: null,
-	sActiveApp: '',
+	onHidden: null,
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
@@ -46,43 +45,75 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		this.oBlurCvs.height = this.nBlurHeight;
 		O876.CanvasFactory.setImageSmoothing(this.oBlurCvs.getContext('2d'), true);
 	},
+
 	
-	openApplication: function(sApplication) {
-		if (this.sActiveApp === sApplication) {
-			return this.oApplication;
-		}
-		if (sApplication in this.aApplications) {
-			return this.oApplication = this.aApplications[sApplication];
-		} else if (sApplication in MANSION.PhoneApp) {
-			var A = MANSION.PhoneApp[sApplication];
-			return this.oApplication = this.aApplications[sApplication] = new A();
-		} else {
-			return null;
-		}
+	setApplication: function(a) {
+		this.oApplication = a;
 	},
 	
-	runApplication: function() {
+	renderApplication: function() {
 		if (this.oApplication) {
 			this.oApplication.render(this);
 		}
+	},
+	
+	getCurrentApplication: function() {
+		return this.oApplication;
 	},
 	
 	/**
 	 * Hides the camera
 	 * No effect if the phone is already hidden
 	 * @param bInstantly boolean, if true : hides the camera immediatly, else hides the camera with animation
+	 * @return boolean : true if hiding operation is successful, false otherwise
 	 */
-	hide: function(bInstantly) {
-		if (this.nRaise === 0) {
-			return;
-		}
-		if (bInstantly) {
-			this.nState = 0;
-			this.nRaise = 0;
-		} else if (this.nState === 0) {
-			this.nState = 20;
+	hide: function(onHidden) {
+		switch (this.getStatus()) {
+			case 'visible':
+				this.onHidden = onHidden;
+				this.nState = 20;
+				return true;
+			
+			case 'hiding':
+				this.onHidden = onHidden;
+				return true;
+			
+			case 'hidden':
+				if (onHidden) {
+					onHidden();
+				}
+				return true;
+			
+			default:
+				return false;
 		}
 	},
+
+	/**
+	 * Returns the phone status
+	 * regarding its visibility
+	 */
+	getStatus: function() {
+		switch (this.nState) {
+			case 10:
+			case 11:
+				return 'showing';
+				
+			case 20:
+			case 21:
+				return 'hiding';
+				
+			case 0:
+				if (this.nRaise === 0) {
+					return 'hidden';
+				} else if (this.nRaise === 1) {
+					return 'visible';
+				}
+			break;
+		}
+		return 'unknown';
+	},
+
 	
 	/**
 	 * Shows the camera with animation
@@ -103,14 +134,26 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 				this.nTimeIndex = 0;
 				this.nState = 11;
 			break;
-			
+
 			case 11: // raising
-			case 21: // falling
 				this.oEasing.move(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
 					this.nState = 0;
 				}
 				this.nRaise = this.oEasing.x;
+			break;
+
+			case 21: // falling
+				this.oEasing.move(++this.nTimeIndex);
+				if (this.nTimeIndex >= this.nMaxTimeIndex) {
+					this.setApplication(null);
+					this.nState = 0;
+				}
+				this.nRaise = this.oEasing.x;
+				if (this.nState === 0 && this.onHidden) {
+					this.onHidden();
+					this.onHidden = null;
+				}
 			break;
 
 			case 20: // start failling
@@ -160,12 +203,6 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		rccc.drawImage(blur, 0, 0, bw, bh, 0, 0, bw3, bh3);
 		rccc.globalAlpha = f;
 		O876.CanvasFactory.setImageSmoothing(rccc, bSmooth);
-	},
-	
-	control: function() {
-		if (this.oApplication) {
-			this.oApplication.control.apply(this.oApplication, arguments);
-		}
 	},
 	
 	drawPhone: null

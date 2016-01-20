@@ -33,7 +33,7 @@ O2.extendClass('MANSION.GX.PhoneLand', MANSION.GX.PhoneAbstract, {
 		}
 		var rcc = this.oCanvas;
 		var rccc = this.oContext;
-		this.runApplication();
+		this.renderApplication();
 		this.blur();
 		
 		var p = this.oPhone.oImage;

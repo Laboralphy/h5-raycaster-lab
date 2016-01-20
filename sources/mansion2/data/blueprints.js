@@ -7,6 +7,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.Vengeful',
 		fx: 3,
 		data: {
+			ghost: true,
 			speed: 2,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
@@ -23,6 +24,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.G_Chaser',
 		fx: 3,
 		data: {
+			ghost: true,
 			speed: 2,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
@@ -39,6 +41,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.Vengeful',
 		fx: 3,
 		data: {
+			ghost: true,
 			speed: 2,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
@@ -55,6 +58,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.Vengeful',
 		fx: 3,
 		data: {
+			ghost: true,
 			speed: 2,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque

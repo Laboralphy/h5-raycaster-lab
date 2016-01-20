@@ -56,4 +56,5 @@ function screenResize(oEvent) {
 	}
 }
 
+
 window.addEventListener('load', main);

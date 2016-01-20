@@ -3,7 +3,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbience: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_oPhone: null,
+	
+	oPhone: null,
 
 	init: function() {
 		this.initAudio();
@@ -12,7 +13,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('level', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
-		this.on('frame', this.gameEventFrame.bind(this));
 		
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
@@ -20,6 +20,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('tag.script', this.tagEventScript.bind(this));
 		
 		this.on('command0', this.gameEventCommand0.bind(this));
+		this.on('command2', this.gameEventCommand2.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
@@ -102,11 +103,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oPlayer.getThinker().button0Down = (function() { 
 			this.trigger('command0');
 		}).bind(this);
+		oPlayer.getThinker().button2Down = (function() { 
+			this.trigger('command2');
+		}).bind(this);
 		//this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
-		this._oPhone = {
-			port: this.oRaycaster.addGXEffect(MANSION.GX.PhonePort),
-			land: this.oRaycaster.addGXEffect(MANSION.GX.PhoneLand)
-		};
+		this.oPhone = new MANSION.Phone(this.oRaycaster);
 	},
 	
 	/**
@@ -140,28 +141,42 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bouton gauche de la souris
 	 */
 	gameEventCommand0: function() {
-/*		
 		//this.spawnMissile('p_ecto', this.getPlayer());
-		console.log('command 0', Math.random());
-		if (!this.isPhoneVisible('land')) {
-			this.showPhone('land');
-		} else {
-			this.getPhoneApplication('Camera').flash();
-		}*/
+		if (!O876_Raycaster.PointerLock.locked()) {
+			return;
+		}
+		if (this.oPhone.isActive('Camera')) {
+			this.oPhone.getCurrentApplication().flash();
+		}
+		//if (this.isPhoneVisible('land')) {
+		//	this.getPhoneApplication('Camera').flash();
+		//}
 	},
-
 
 	/**
-	 * Triggered each time a frame is rendered
+	 * Evènement déclenché par la commande 2 
+	 * Bouton droit de la souris
+	 * Bring the camera up and down
 	 */
-	gameEventFrame: function(oEvent) {
-		var fc = this.oFrameCounter;
-		var fAvg = fc.getAvgLoad();
-		var ctx = this.oRaycaster.oContext;
-		ctx.fillStyle = '#FFF';
-		ctx.fillText('cpu: ' + (100 * fAvg / this.TIME_FACTOR | 0).toString() + '%', 10, 10);
+	gameEventCommand2: function() {
+		if (!O876_Raycaster.PointerLock.locked()) {
+			return;
+		}
+		var oApp = this.oPhone.getCurrentApplication();
+		if (oApp && oApp.name === 'Camera') {
+			this.oPhone.hide();
+		} else {
+			this.oPhone.activate('Camera');
+		}
+		//this.oPhone.activate('Camera');
+		/*
+		if (this.isPhoneVisible('land')) {
+			this.hidePhone();
+		} else {
+			this.showPhone('land');
+			this.getPhoneApplication('Camera');
+		}*/
 	},
-
 
 	/**
 	 * Evènement déclenché quand une entité est touchée par un missile
@@ -197,6 +212,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
+			case KEYS.ALPHANUM.E:
+				
+			break;
 			case KEYS.F1: 
 			case KEYS.F2: 
 			case KEYS.F3: 
@@ -353,6 +371,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				throw new Error('unknown application : ' + sApplication);
 		}
 	},
+	
+	isPhoneApplicationOpen: function(sApplication) {
+		switch (sApplication) {
+			case 'Camera':
+				return this.isPhoneVisible('land') && this.getPhone('land').openApplication('Camera');
+
+			default:
+				throw new Error('unknown application : ' + sApplication);
+		}
+	},
 
 	/**
 	 * Returns true if the phone is currently visible
@@ -386,6 +414,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Hide Smartphone controller
 	 */
 	hidePhone: function() {
+		var p = this._oPhone;
 		p.port.hide();
 		p.land.hide();
 	},
