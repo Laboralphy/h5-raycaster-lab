@@ -22,6 +22,7 @@ O2.createClass('O876_Raycaster.Sprite',  {
 	nOverlayFrame: null,
 	bTranslucent: false, // active alpha
 	nAlpha: 2, // 1=75% 2=50% 3=25%
+	aLastRender: null, // mémorise les dernier paramètres de rendu
 
 
 	/**

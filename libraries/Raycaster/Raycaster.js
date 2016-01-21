@@ -1399,12 +1399,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					oTile.nHeight * nOpacity, // sy  2
 					oTile.nWidth, // sw  3
 					oTile.nHeight, // sh  4
-					x - iZoom, // dx  5
-					dzy, // dy  6   :: this.yScrSize - dz + (dz >> 1)
+					x - iZoom | 0, // dx  5
+					dzy | 0, // dy  6   :: this.yScrSize - dz + (dz >> 1)
 					iZoom << 1, // dw  7
 					dz << 1, // dh  8
 					z, 
 					nSFx]; 
+			oSprite.aLastRender = aData;
 			this.aZBuffer.push(aData);
 			// Traitement overlay
 			var oOL = oSprite.oOverlay;

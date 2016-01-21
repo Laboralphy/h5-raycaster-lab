@@ -23,38 +23,62 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinke
 		this.oEasingAngle = e;
 	},
 	
-	getGhostAngle: function(xMe, yMe, xTarget, yTarget) {
-		return Math.atan2(yTarget - yMe, xTarget - xMe);
+	/**
+	 * Compute the angle between The Mobile Heading and another Mobile
+	 */
+	computeAngleToMobile: function(t) {
+		var oMe = this.oMobile;
+		return Math.atan2(t.y - oMe.y, t.x - oMe.x);
+	},
+	
+	sortMobilesByDistance: function(A, B) {
+		return A[2] - B[2];
 	},
 	
 	/**
-	 * Check all present ghosts, For each ghost, compute angle
-	 * 
+	 * Check all visible mobiles (TYPE_MOB and TYPE_MISSILES)
+	 * For each object, compute angle and distance
 	 */
-	getAllGhostAngles: function() {
+	getVisibleMobiles: function() {
 		// get present ghosts
+		var vm = this.oGame.oRaycaster.aVisibleMobiles;
+		if (vm === null) {
+			return null;
+		}
 		var x, y;
 		var m = this.oMobile;
 		var xMe = m.x, yMe = m.y;
-		var aGhosts = [];
-		var vm = this.oGame.oRaycaster.aVisibleMobiles;
+		var aMobiles = [], fAngle, fDist, fMyAngle = m.getAngle();
+		var sLogType, nType;
+		var pi2 = 2 * PI;
 		for (var i = 0, l = vm.length; i < l; ++i) {
 			m = vm[i];
-			if (m && m.getData('ghost')) {
-				m.setData('frameAngle', this.getGhostAngle(xMe, yMe, m.x, m.y));
-				aGhosts.push(m);
+			nType = m.getType();
+			if (nType === RC.OBJECT_TYPE_MOB || nType === RC.OBJECT_TYPE_MISSILE) {
+				fAngle = this.computeAngleToMobile(m) - fMyAngle;
+				if (fAngle < -PI) {
+					fAngle += 2 * PI;
+				}
+				if (fAngle > PI) {
+					fAngle -= 2 * PI;
+				}
+				fDist = MathTools.distance(xMe - m.x, yMe - m.y);
+				aMobiles.push([m, Math.abs(fAngle), fDist]);
 			}
 		}
-		return aGhosts;
+		if (aMobiles.length > 1) {
+			aMobiles.sort(this.sortMobilesByDistance);
+		}
+		return aMobiles;
 	},
-	
+
 	/**
 	 * Un fantome menace.
 	 * Tourner l'angle de vue vers le fantome
 	 */
 	ghostThreat: function(oGhost) {
 		var oMe = this.oMobile;
-		var fAngle = this.getGhostAngle(oMe.x, oMe.y, oGhost.x, oGhost.y);
+		var fAngle = this.computeAngleToMobile(oGhost);
 		this.forceAngle(fAngle);
 	},
 	
@@ -66,10 +90,19 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinke
 		}
 	},
 	
+	processGameLogic: function() {
+		var gl = this.oGame.oLogic;
+		if (this.oGame.oPhone.isActive('Camera')) {
+			var aMobs = this.getVisibleMobiles();
+			gl.setVisibleMobiles(aMobs);
+		}
+	},
+	
 	think: function() {
 		if (this.oEasingAngle) {
 			this.processAngle();
 		}
+		this.processGameLogic();
 		__inherited();
 	},
 	
@@ -77,5 +110,5 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinke
 		if (this.oEasingAngle === null) {
 			__inherited(x, y);
 		}
-	},	
+	},
 });

@@ -399,20 +399,4 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
-	/**
-	 * Ce thinker sert a déterminer la prochaine action
-	 * il indique que l'action précédente est terminé et que le thinker
-	 * n'a plus rien à faire
-	 */
-		/** choisir une action parmis
-		 * this.setThink('Chase', time);
-		 * this.teleportFront();
-		 * this.setThink('EvadeShoot', time);
-		 * this.setThink('Evade', time);
-		 * this.setThink('ZigZagChase', this._TODO_TIME);
-		 * this.setThink('Rush', this._TODO_TIME);
-		 * this.setThink('Wait', this._TODO_TIME);
-		 * this.setThink('Shoot');
-		 */
-		
 });

@@ -54,11 +54,19 @@ O2.createClass('MANSION.Phone', {
 				oNewPhone.show();
 			});
 		}
+		return oApp;
 	},
 	
 	isActive: function(sApplication) {
-		var oApp = this.getCurrentApplication();
-		return oApp && oApp.name === sApplication;
+		if (this.sCurrentPhone) {
+			if (this._oPhone[this.sCurrentPhone].getStatus() !== 'visible') {
+				return false;
+			}
+			var oApp = this.getCurrentApplication();
+			return !!(oApp && oApp.name === sApplication && oApp.getOrientation());
+		} else {
+			return false;
+		}
 	},
 	
 	getCurrentApplication: function() {

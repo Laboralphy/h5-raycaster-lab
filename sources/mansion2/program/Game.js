@@ -4,15 +4,20 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oScripts: null,
 	_oDarkHaze: null,
 	
+	aDebugLines: null,
 	oPhone: null,
+	oLogic: null,
 
 	init: function() {
+		this.initLogic();
 		this.initAudio();
 		this.initPopup();
 		this.on('build', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('level', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
+		this.on('frame', this.gameEventFrame.bind(this));
+		this.on('doomloop', this.gameEventDoomloop.bind(this));
 		
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
@@ -25,6 +30,29 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('attack', this.gameEventAttack.bind(this));
 		
 		this.on('key', this.gameEventKey.bind(this));
+	},
+	
+	/**
+	 * Logic initialization
+	 * Done once per game.
+	 */
+	initLogic: function() {
+		this.oLogic = new MANSION.Logic();
+		this.oLogic.setCameraCaptureRank(1);
+	},
+	
+	
+	
+	/**
+	 * Displays a debug line
+	 * @param n line number
+	 * @param s string displayed text 
+	 */
+	displayDebugLine: function(n, s) {
+		if (this.aDebugLines === null) {
+			this.aDebugLines = [];
+		}
+		this.aDebugLines[n] = s;
 	},
 
 	initAudio: function() {
@@ -108,6 +136,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}).bind(this);
 		//this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
+		this._oGhostScreamer = this.oRaycaster.addGXEffect(MANSION.GX.GhostScreamer);
 	},
 	
 	/**
@@ -146,11 +175,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return;
 		}
 		if (this.oPhone.isActive('Camera')) {
-			this.oPhone.getCurrentApplication().flash();
+			this.cameraTakePicture();
 		}
-		//if (this.isPhoneVisible('land')) {
-		//	this.getPhoneApplication('Camera').flash();
-		//}
 	},
 
 	/**
@@ -162,20 +188,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (!O876_Raycaster.PointerLock.locked()) {
 			return;
 		}
-		var oApp = this.oPhone.getCurrentApplication();
-		if (oApp && oApp.name === 'Camera') {
-			this.oPhone.hide();
-		} else {
-			this.oPhone.activate('Camera');
-		}
-		//this.oPhone.activate('Camera');
-		/*
-		if (this.isPhoneVisible('land')) {
-			this.hidePhone();
-		} else {
-			this.showPhone('land');
-			this.getPhoneApplication('Camera');
-		}*/
+		this.toggleCamera();
 	},
 
 	/**
@@ -229,6 +242,28 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F12: 
 //				oGhost.getThinker().TODO = oEvent.k - KEYS.F1 + 1;
 			break;
+		}
+	},
+	
+	gameEventDoomloop: function(oEvent) {
+		// update camera
+		var gl = this.oLogic;
+		if (this.oPhone.isActive('Camera')) {
+			var oCameraApp = this.oPhone.getCurrentApplication();
+			oCameraApp.setEnergyGauges(gl.getCameraEnergy(), gl.getCameraMaxEnergy());
+		}
+	},
+	
+	gameEventFrame: function(oEvent) {
+		var aLog = this.aDebugLines;
+		if (aLog !== null) {
+			var c = this.oRaycaster.oContext;
+			c.fillStyle = '#FFF';
+			for (var i = 0, l = aLog.length; i < l; ++i) {
+				if (aLog[i] !== undefined) {
+					c.fillText(aLog[i], 0, i * 12 + 12);
+				}
+			}
 		}
 	},
 
@@ -344,79 +379,21 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	////// GAME LIFE //////
 
-
 	/**
-	 * Return the phone instance (either PhoneLand or PhonePort)
-	 * @param sOrient phone orientation (land|port)
-	 * @return PhoneAbstract
+	 * puts the camera obscura on and off
 	 */
-	getPhone: function(sOrient) {
-		var p = this._oPhone;
-		return p[sOrient];
-	},
-	
-	/**
-	 * Launches a phone application, bringing up the smartphone interface
-	 * with the correspondient orientation
-	 * Return the Application instance
-	 * @param sApplication application name (Camera, ...)
-	 * @return Application
-	 */
-	getPhoneApplication: function(sApplication) {
-		switch (sApplication) {
-			case 'Camera':
-				return this.getPhone('land').openApplication('Camera');
-
-			default:
-				throw new Error('unknown application : ' + sApplication);
+	toggleCamera: function() {
+		var oApp = this.oPhone.getCurrentApplication();
+		if (oApp && oApp.name === 'Camera') {
+			this.oPhone.hide();
+			this.oLogic.cameraOff();
+			this.getPlayer().fSpeed = 3;
+		} else {
+			var oAppCamera = this.oPhone.activate('Camera');
+			oAppCamera.setEnergyGauges(0, this.oLogic.getCameraMaxEnergy());
+			oAppCamera.nCircleSize = this.oLogic.getCameraCircleSize();
+			this.getPlayer().fSpeed = 2;
 		}
-	},
-	
-	isPhoneApplicationOpen: function(sApplication) {
-		switch (sApplication) {
-			case 'Camera':
-				return this.isPhoneVisible('land') && this.getPhone('land').openApplication('Camera');
-
-			default:
-				throw new Error('unknown application : ' + sApplication);
-		}
-	},
-
-	/**
-	 * Returns true if the phone is currently visible
-	 * @param sOrient phone orientation (land|port)
-	 * @return boolean
-	 */
-	isPhoneVisible: function(sOrient) {
-		return this.getPhone(sOrient).isVisible();
-	},
-
-	/**
-	 * Show Smartphone controller
-	 * @param sOrient phone orientation (land|port)
-	 */
-	showPhone: function(sOrient) {
-		var p = this._oPhone;
-		switch (sOrient) {
-			case 'port': // raise portrait
-				p.land.hide(true);
-				p.port.show();
-			break;
-			
-			case 'land': // raise landscape
-				p.port.hide(true);
-				p.land.show();
-			break;
-		}
-	},
-	
-	/**
-	 * Hide Smartphone controller
-	 */
-	hidePhone: function() {
-		var p = this._oPhone;
-		p.port.hide();
-		p.land.hide();
 	},
 	
 	/**
@@ -433,6 +410,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oMissile.fSpeed = oMissile.getData('speed');
 		oMissile.getThinker().fire(oShooter);
 		return oMissile;
+	},
+
+
+	/**
+	 * Take a picture from the camera obscura
+	 */
+	cameraTakePicture: function() {
+		if (this.oLogic.cameraShoot()) {
+			// draw the flash effect
+			this.oPhone.getCurrentApplication().flash();
+			// draw the ghost screaming effects
+			this.oLogic.getCapturedGhosts().forEach((function(g) {
+				var fDistance = g[2];
+				var fAngle = g[1];
+				var oSprite = g[0];
+				this._oGhostScreamer.addGhost(g[0]);
+			}).bind(this));
+		}
 	},
 	
 	

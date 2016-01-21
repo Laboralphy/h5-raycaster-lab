@@ -163,7 +163,6 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 				this.nState = 21;
 			break;
 		}
-		this.drawPhone();
 	},
 	
 	render: function() {
