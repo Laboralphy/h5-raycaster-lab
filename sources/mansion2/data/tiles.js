@@ -95,6 +95,20 @@ O2.createObject('TILES_DATA', {
 		animations: [
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
 		]
+	},
+	
+	//////////////// PARTICLE /////////////////
+	
+	l_particle: {
+		src: 'resources/ui/phone/particle.png',
+		frames: 1,
+		width: 16,
+		height: 16,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
 	}
 
 });

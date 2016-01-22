@@ -150,6 +150,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				m.moveForward();
 			break;
 			
+			case 'b':
+				m.moveBackward();
+			break;
+			
 			case 'l':
 				m.strafeLeft();
 			break;
@@ -168,13 +172,32 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	
 	
-	damage: function(oAggressor) {
+	damage: function(nAmount, bCritical) {
+		if (bCritical) {
+			this.setThink('Wounded', 30);
+		} else {
+			this.setThink('Wounded', 5);
+		}
 	},
 	
 	
 	
-
-
+	/**
+	 * ghost is being hurt and move backward slightly
+	 */
+	thinkWounded_enter: function(n) {
+		this.setExpireTime(n);
+		this.oMobile.fSpeed = this._fSpeed / 2;
+	},
+	
+	
+	thinkWounded: function() {
+		this.process();
+		this.move('b');
+		if (this.isActionExpired()) {
+			this.setThink('Idle');
+		}
+	},
 
 
 	/**

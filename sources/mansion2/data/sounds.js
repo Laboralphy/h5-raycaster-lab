@@ -1,6 +1,6 @@
 O2.createObject('SOUNDS_DATA', {
-	ambience: {
-		mansion_level1: 'amb-inside.ogg',
+	bgm: {
+		'tc-l1': 'amb-forest.ogg',
 		woods: 'amb-forest.ogg',
 		atrium: 'amb-atrium.ogg',
 		mansion: 'amb-inside.ogg',
@@ -11,6 +11,7 @@ O2.createObject('SOUNDS_DATA', {
 		dooropen: 'a-dooropen.ogg',
 		doorclose: 'a-doorclose.ogg',
 		secret: 'a-pushston.ogg',
+		camera: 'a-camera.ogg'
 	},
 	ghosts: {
 		// supernatural events

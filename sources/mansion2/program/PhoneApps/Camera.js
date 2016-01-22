@@ -3,6 +3,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	sOrientation: 'land',
 	name: 'Camera',
 	
+	nFlashDuration: 25,
 	oEasing: null,
 	bFlash: false,
 	nFlash: 0,
@@ -71,7 +72,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		this.nFlash = 0;
 		this.bFlash = true;
 		this.oEasing.setFunction('cubeDeccel');
-		this.oEasing.setMove(1, 0, 0, 0, 25);
+		this.oEasing.setMove(1, 0, 0, 0, this.nFlashDuration);
 	},	
 	
 	setEnergyGauges: function(nVal, nMax) {

@@ -11,10 +11,24 @@ O2.createClass('MANSION.Logic', {
 	_nCameraCaptureDistance: 640,
 	_nCameraEnergy: 0,
 	_nCameraMaxEnergy: 1000,
-	_nCameraEnergyDepletion: 2,
-	_fFullEnergyBonus: 1.5, // damage bonus granted when camera is fully loaded
+	_nCameraEnergyDep: 2,
+	_nCameraEnergyAcc: 10,
+	_fCameraFullEnergyBonus: 1.5, // damage bonus granted when camera is fully loaded
+	
+	_nTime: 0, 
+	_nCameraIntervalTime: 1000, // minimum time between two camera shots
+	_nCameraNextShotTime: 1000, // last time the camera took a photo
 	
 	_aCapturedGhosts: null,
+	
+
+	/**
+	 * Game time transmission
+	 * for timed event
+	 */
+	setTime: function(t) {
+		this._nTime = t;
+	},
 	
 	/**
 	 * returns the capture circle size value
@@ -89,20 +103,49 @@ O2.createClass('MANSION.Logic', {
 	},
 	
 	/**
+	 * returns true of camera is ready to tak a picture
+	 */
+	isCameraReady: function() {
+		return this._nTime > this._nCameraNextShotTime;
+	},
+	
+	/**
 	 * We have taken photo
+	 * updating energy gauges
 	 */
 	cameraShoot: function() {
-		var nEnergy = this._nCameraEnergy;
-		this._aCapturedGhosts.forEach(function(g) {
+		this._nCameraNextShotTime = this._nTime + this._nCameraIntervalTime;
+		var fEnergy = this._nCameraEnergy;
+		var bFullEnergy = fEnergy == this._nCameraMaxEnergy;
+		if (bFullEnergy) {
+			fEnergy = fEnergy * this._fCameraFullEnergyBonus | 0;
+		}
+		this._aCapturedGhosts.forEach((function(g) {
 			var fDistance = g[2];
 			var fAngle = g[1];
 			var oGhost = g[0];
-			var bFullEnergy = nEnergy == this._nCameraMaxEnergy;
-			if (bFullEnergy) {
-				nEnergy = nEnergy * this._fFullEnergyBonus | 0;
-			}
-		});
+			var e = fEnergy * this.getEnergyDissipation(fAngle, fDistance) | 0;
+			oGhost.getThinker().damage(e, bFullEnergy);
+		}).bind(this));
 		this._nCameraEnergy = 0;
+	},
+	
+	/**
+	 * Given angle and distance, returns
+	 */
+	getEnergyDissipation: function(fAngle, fDistance) {
+		var fCaptureAngle = this.getCameraCaptureAngle();
+		var fCaptureDistance = this.getCameraCaptureDistance();
+		var fEnergy = 0;
+		if (fAngle <= fCaptureAngle) {
+			fEnergy = 1 - fAngle / fCaptureAngle;
+			if (fDistance <= fCaptureDistance) {
+				fEnergy *= 1 - fDistance / fCaptureDistance;
+			} else {
+				fEnergy = 0;
+			}
+		}
+		return fEnergy;
 	},
 
 	/**
@@ -110,7 +153,7 @@ O2.createClass('MANSION.Logic', {
 	 */
 	setVisibleMobiles: function(aMobs) {
 		var nGhostCaptured = 0;
-		var fEnergy = 0, fAllEnergies = 0;
+		var fEnergy = 0, fTotalEnergy = 0;
 		var fCaptureAngle = this.getCameraCaptureAngle();
 		var fCaptureDistance = this.getCameraCaptureDistance();
 		var aCaptured = [];
@@ -119,28 +162,22 @@ O2.createClass('MANSION.Logic', {
 			var fAngle;
 			var fDistance;
 			var oGhost;
-			for (var i = 0, l = aMobs.length; i < l; i += 3) {
+			for (var i = 0, l = aMobs.length; i < l; ++i) {
 				mi = aMobs[i];
 				oGhost = mi[0];
 				fAngle = mi[1];
 				fDistance = mi[2];
-				fEnergy = 0;
-				if (fAngle <= fCaptureAngle) {
-					fEnergy = 1 - fAngle / fCaptureAngle;
-					if (fDistance <= fCaptureDistance) {
-						fEnergy *= 1 - fDistance / fCaptureDistance;
-						aCaptured.push(mi);
-					} else {
-						fEnergy = 0;
-					}
+				fEnergy = this.getEnergyDissipation(fAngle, fDistance);
+				if (fEnergy > 0) {
+					aCaptured.push(mi);
+					fTotalEnergy += fEnergy;
 				}
 			}
-			fAllEnergies += fEnergy;
 		}
-		if (fAllEnergies) {
-			this.increaseCameraEnergy(10 * fAllEnergies);
+		if (fTotalEnergy) {
+			this.increaseCameraEnergy(this._nCameraEnergyAcc * fTotalEnergy);
 		} else {
-			this.decreaseCameraEnergy(this._nCameraEnergyDepletion);
+			this.decreaseCameraEnergy(this._nCameraEnergyDep);
 		}
 		this._aCapturedGhosts = aCaptured;
 	},

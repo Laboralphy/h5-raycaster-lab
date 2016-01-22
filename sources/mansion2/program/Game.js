@@ -23,7 +23,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('tag.msg', this.tagEventMessage.bind(this));
 		this.on('tag.script', this.tagEventScript.bind(this));
-		
+		this.on('tag.zone', this.tagEventZone.bind(this));
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('command2', this.gameEventCommand2.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
@@ -134,7 +134,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oPlayer.getThinker().button2Down = (function() { 
 			this.trigger('command2');
 		}).bind(this);
-		//this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
+		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
 		this._oGhostScreamer = this.oRaycaster.addGXEffect(MANSION.GX.GhostScreamer);
 	},
@@ -175,7 +175,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return;
 		}
 		if (this.oPhone.isActive('Camera')) {
-			this.cameraTakePicture();
+			this.cameraShoot();
 		}
 	},
 
@@ -248,6 +248,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventDoomloop: function(oEvent) {
 		// update camera
 		var gl = this.oLogic;
+		gl.setTime(this.getTime()); // transmit game time
 		if (this.oPhone.isActive('Camera')) {
 			var oCameraApp = this.oPhone.getCurrentApplication();
 			oCameraApp.setEnergyGauges(gl.getCameraEnergy(), gl.getCameraMaxEnergy());
@@ -358,7 +359,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	tagEventZone: function(oEvent) {
 		// changement d'ambiance sonore
-		this.playAmbience(SOUNDS_DATA.ambience[oEvent.data]);
+		this.playAmbience(SOUNDS_DATA.bgm[oEvent.data]);
 	},
 	
 	/**
@@ -416,12 +417,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Take a picture from the camera obscura
 	 */
-	cameraTakePicture: function() {
-		if (this.oLogic.cameraShoot()) {
+	cameraShoot: function() {
+		var gl = this.oLogic;
+		if (gl.isCameraReady()) {
+			gl.cameraShoot();
 			// draw the flash effect
 			this.oPhone.getCurrentApplication().flash();
+			this.playSound(SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects
-			this.oLogic.getCapturedGhosts().forEach((function(g) {
+			gl.getCapturedGhosts().forEach((function(g) {
 				var fDistance = g[2];
 				var fAngle = g[1];
 				var oSprite = g[0];
