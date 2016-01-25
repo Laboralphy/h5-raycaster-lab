@@ -58,6 +58,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	initAudio: function() {
 		a = new SoundSystem();
 		a.addChans(8);
+		a.mute();
 		this._oAudio = a;
 	},
 	
@@ -103,7 +104,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oCanvas = this.oRaycaster.oCanvas;
 		var oContext = this.oRaycaster.oContext;
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
-		var sMsg = MESSAGES_DATA.RC['l_' + s];
+		var sMsg = STRINGS_DATA.RC['l_' + s];
 		var y = oCanvas.height >> 1;
 		var nPad = 96;
 		var xMax = oCanvas.width - (nPad << 1);
@@ -350,7 +351,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	tagEventMessage: function(oEvent) {
 		var sTag = oEvent.data;
-		this.popupMessage(MESSAGES_DATA[this.getLevel()]['m_' + sTag]);
+		this.popupMessage(STRINGS_DATA[this.getLevel()]['m_' + sTag]);
 		oEvent.remove = true;
 	},
 	
@@ -393,6 +394,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			var oAppCamera = this.oPhone.activate('Camera');
 			oAppCamera.setEnergyGauges(0, this.oLogic.getCameraMaxEnergy());
 			oAppCamera.nCircleSize = this.oLogic.getCameraCircleSize();
+			oAppCamera.oParticles.setParticleCanvas(this.oRaycaster.getTile('l_particle').oImage);
+			var p = this.oPhone.getCurrentPhone();
+			oAppCamera.oParticles.setAttractor(0, p.SCREEN_H, 20480);
 			this.getPlayer().fSpeed = 2;
 		}
 	},
@@ -420,16 +424,30 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	cameraShoot: function() {
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
-			gl.cameraShoot();
+			var nDamage = gl.cameraShoot();
 			// draw the flash effect
-			this.oPhone.getCurrentApplication().flash();
+			var oApp = this.oPhone.getCurrentApplication();
+			var p = this.oPhone.getCurrentPhone();
+			oApp.flash();
+			var lss = gl.getLastShotStats();
+			var nDamage = lss.damage;
+			if (lss.damage > 0) {
+				var aShotStr = ArrayTools.unique(lss.shots).map(function(s) {
+					return STRINGS_DATA.SHOTS[s];
+				});
+				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
+				oApp.displayScore(aShotStr);
+				console.log('damage', nDamage, aShotStr);
+			} else {
+				console.log('no damage', nDamage);
+			}
 			this.playSound(SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects
 			gl.getCapturedGhosts().forEach((function(g) {
 				var fDistance = g[2];
 				var fAngle = g[1];
-				var oSprite = g[0];
-				this._oGhostScreamer.addGhost(g[0]);
+				var oGhost = g[0];
+				this._oGhostScreamer.addGhost(oGhost);
 			}).bind(this));
 		}
 	},

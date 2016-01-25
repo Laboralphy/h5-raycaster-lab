@@ -10,6 +10,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	_fFireProb: 0.333,
 	_fFireProb: 0.333,
 	
+	_bShutter: false, // when "true", the ghost is about to attack
+	// means the next few moves will aim at attacking player
+	// ex : rush,  or teleport + rush...
+	
 	MAX_INVISIBLE_DISTANCE: 384,
 	MAX_VISIBLE_DISTANCE: 640,
 	
@@ -31,6 +35,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	isTimeMultiple: function(n) {
 		return this._nTime % n === 0;
+	},
+	
+	isShutterChance: function() {
+		return this._sCurrentThinkProc == 'Shutter';
 	},
 	
 	
@@ -421,5 +429,21 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			this.setThink('Idle');
 		}
 	},
+	
+	/**
+	 * Special thinker
+	 */
+	thinkShutter_enter: function() {
+		this.setExpireTime(30);
+	},
+	
+	thinkShutter: function() {
+		this.process();
+		if (this.isActionExpired()) {
+			this.setThink('Idle');
+		}
+	},
+	
+	
 	
 });

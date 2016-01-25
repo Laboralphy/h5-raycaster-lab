@@ -11,22 +11,28 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	nMaxEnergy: 100, // maximum amount of energy
 	
 	nCircleSize: 0,
-	aParticles: null,
 	
-	oRenderRect: null,
+	oParticles: null,
+	
+	aDisplayScore: null,
+	nTextSize: 14,
+	oScoreCanvas: null,
+	nDisplayScoreTime: 60,
 	
 	
 	__construct: function() {
 		this.oEasing = new O876.Easing();
-		this.aParticles = [];
+		this.oParticles = new MANSION.PhoneApps.Particles();
+		this.oScoreCanvas = O876.CanvasFactory.getCanvas();
+		this.oScoreCanvas.width = 160;
+		this.oScoreCanvas.height = 160;
+		var ctx = this.oScoreCanvas.getContext('2d');
+		ctx.fillStyle = 'rgb(255, 255, 255)';
+		ctx.strokeStyle = 'rgb(0, 0, 0)';
+		ctx.font = 'bold ' + this.nTextSize.toString() + 'px courier';
+		ctx.textBaseline = 'top';
 	},
-	
-	addParticle: function(x, y, dx, dy) {
-	},
-	
-	renderParticles: function() {
-		
-	},
+
 
 	render: function(oPhone) {
 		var oScreen = oPhone.oScreen;
@@ -39,6 +45,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		var wNew = ch * rcc.width / rcc.height | 0;
 		var xNew = (cw - wNew) >> 1;
 		
+		oScreenCtx.fillStyle = '#000';
 		oScreenCtx.drawImage(rcc, 0, 0, rcc.width, rcc.height, xNew, 0, wNew, ch);
 
 		// HUD
@@ -68,7 +75,23 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		
 		// particles
 		// particles are attracted to the left bottom corner of the screen
+		// this.oParticles.render(oPhone);
 		
+		// scores
+		if (this.aDisplayScore) {
+			var fAlpha = this.nDisplayScoreTime / 10;
+			if (fAlpha < 1) {
+				var fSaveAlpha = oScreenCtx.globalAlpha;
+				oScreenCtx.globalAlpha = fAlpha;
+				oScreenCtx.drawImage(this.oScoreCanvas, -64 * (1 - fAlpha) * (1 - fAlpha), 0);
+				oScreenCtx.globalAlpha = fSaveAlpha;
+			} else {
+				oScreenCtx.drawImage(this.oScoreCanvas, 0, 0);
+			}
+			if (--this.nDisplayScoreTime <= 0) {
+				this.aDisplayScore = null;
+			}			
+		}		
 		
 		// flash
 		if (this.bFlash) {
@@ -79,6 +102,10 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 				oScreenCtx.fillRect(xNew, 0, wNew, ch);
 			}
 		}
+
+		oScreenCtx.fillStyle = '#000';
+		oScreenCtx.fillRect(0, 0, xNew, ch);
+		oScreenCtx.fillRect(cw - xNew, 0, xNew, ch);
 	},
 	
 	flash: function() {
@@ -91,6 +118,19 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	setEnergyGauges: function(nVal, nMax) {
 		this.nEnergy = nVal;
 		this.nMaxEnergy = nMax;
-	}
+	},
+	
+	displayScore: function(aScore) {
+		var c = this.oScoreCanvas;
+		var ctx = c.getContext('2d');
+		this.aDisplayScore = aScore;
+		ctx.clearRect(0, 0, c.width, c.height);
+		var ts = this.nTextSize;
+		aScore.forEach(function(sLine, i) {
+			ctx.strokeText(sLine, 16, 4 + i * ts);
+			ctx.fillText(sLine, 16, 4 + i * ts);
+		});
+		this.nDisplayScoreTime = 60;
+	},
 
 });

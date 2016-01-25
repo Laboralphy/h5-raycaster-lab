@@ -20,6 +20,7 @@ O2.createClass('MANSION.Logic', {
 	_nCameraNextShotTime: 1000, // last time the camera took a photo
 	
 	_aCapturedGhosts: null,
+	_aLastShotStats: null,
 	
 
 	/**
@@ -120,14 +121,58 @@ O2.createClass('MANSION.Logic', {
 		if (bFullEnergy) {
 			fEnergy = fEnergy * this._fCameraFullEnergyBonus | 0;
 		}
+		var nTotalDamage = 0;
+		var nTotalShots = 0;
+		var aTags = [];
 		this._aCapturedGhosts.forEach((function(g) {
 			var fDistance = g[2];
 			var fAngle = g[1];
 			var oGhost = g[0];
 			var e = fEnergy * this.getEnergyDissipation(fAngle, fDistance) | 0;
-			oGhost.getThinker().damage(e, bFullEnergy);
+			if (e) {
+				if (fDistance < 64) {
+					aTags.push('close');
+				}
+				if (fAngle < 0.01) {
+					aTags.push('core');
+				}
+				if (oGhost.getThinker().isShutterChance()) {
+					aTags.push('fatal');
+				}
+				if (bFullEnergy) {
+					aTags.push('zero');
+				}
+				oGhost.getThinker().damage(e, bFullEnergy);
+				nTotalDamage += e;
+				++nTotalShots;
+			}
 		}).bind(this));
+		switch (nTotalShots) {
+			case 0:
+			case 1:
+			break;
+			
+			case 2: 
+				aTags.push('double');
+			break;
+			
+			case 3: 
+				aTags.push('triple');
+			break;
+			
+			default:
+				aTags.push('multiple');
+			break;
+		}
 		this._nCameraEnergy = 0;
+		this._aLastShotStats = {
+			damage: nTotalDamage,
+			shots: aTags
+		}
+	},
+	
+	getLastShotStats: function() {
+		return this._aLastShotStats;
 	},
 	
 	/**

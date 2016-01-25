@@ -46,5 +46,16 @@ O2.createObject('ArrayTools', {
 			}
 		}
 		return iGreater;
+	},
+	
+	unique: function(aInput) {
+		var u = {}, a = [];
+		for (var i = 0, l = aInput.length; i < l; ++i) {
+			if (!u.hasOwnProperty(aInput[i])) {
+				a.push(aInput[i]);
+				u[aInput[i]] = 1;
+			}
+		}
+		return a;
 	}
 });

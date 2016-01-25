@@ -69,6 +69,10 @@ O2.createClass('MANSION.Phone', {
 		}
 	},
 	
+	getCurrentPhone: function() {
+		return this._oPhone[this.sCurrentPhone];
+	},
+	
 	getCurrentApplication: function() {
 		if (this.sCurrentPhone) {
 			return this._oPhone[this.sCurrentPhone].getCurrentApplication();
