@@ -11,12 +11,21 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	nMaxEnergy: 100, // maximum amount of energy
 	
 	nCircleSize: 0,
+	aParticles: null,
 	
 	oRenderRect: null,
 	
 	
 	__construct: function() {
 		this.oEasing = new O876.Easing();
+		this.aParticles = [];
+	},
+	
+	addParticle: function(x, y, dx, dy) {
+	},
+	
+	renderParticles: function() {
+		
 	},
 
 	render: function(oPhone) {
@@ -56,6 +65,10 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 			oScreenCtx.arc(cw >> 1, ch >> 1, cs, fEnergyAngle - PI / 2, 2 * PI - PI / 2);
 			oScreenCtx.stroke();
 		}
+		
+		// particles
+		// particles are attracted to the left bottom corner of the screen
+		
 		
 		// flash
 		if (this.bFlash) {
