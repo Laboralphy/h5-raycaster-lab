@@ -402,6 +402,20 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	/**
+	 * A ghost is spawned.
+	 * @param sBlueprint string reference to the blueprint
+	 * @param x float initial ghost position x
+	 * @param y float initial ghost position y
+	 * @param a float initial ghost angle
+	 * @return Mobile
+	 */
+	spawnGhost: function(sBlueprint, x, y, a) {
+		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
+		oGhost.setData('hp', oGhost.getData('life'));
+		oGhost.getThinker().setSpeed(oGhost.getData('speed'));
+	},
+	
+	/**
 	 * Le mobile spécifié tire un missile
 	 * @param sBlueprint string la référence du blueprint du missile
 	 * @param oShooter mobile qui a tiré
@@ -415,6 +429,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oMissile.fSpeed = oMissile.getData('speed');
 		oMissile.getThinker().fire(oShooter);
 		return oMissile;
+	},
+	
+	
+	/**
+	 * A visual effect is spawned at the spécified position
+	 */
+	spawnVisualEffect: function(sBlueprint, x, y) {
+		var oVFX = this.spawnMobile(sBlueprint, x, y, 0);
+		oVFX.getThinker().reset();
+		return oVFX;
 	},
 
 
@@ -437,9 +461,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				});
 				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
 				oApp.displayScore(aShotStr);
-				console.log('damage', nDamage, aShotStr);
-			} else {
-				console.log('no damage', nDamage);
 			}
 			this.playSound(SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects

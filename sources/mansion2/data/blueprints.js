@@ -1,31 +1,15 @@
 O2.createObject('BLUEPRINTS_DATA', {
-	g_head1: {
+	g_pat: {
 		type: RC.OBJECT_TYPE_MOB,
 		tile: 'g_head1',
-		width: 32,
-		height: 96,
-		thinker: 'MANSION.Vengeful',
-		fx: 3,
-		data: {
-			name: 'head1',
-			speed: 2,
-			cyber: {
-				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
-				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
-			}
-		}
-	},
-
-	g_head2: {
-		type: RC.OBJECT_TYPE_MOB,
-		tile: 'g_head2',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.G_Chaser',
 		fx: 3,
 		data: {
-			name: 'head2',
-			speed: 2,
+			name: 'Pat',
+			speed: 1,
+			life: 1000,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
@@ -33,7 +17,25 @@ O2.createObject('BLUEPRINTS_DATA', {
 		}
 	},
 
-	g_head3: {
+	g_warami: {
+		type: RC.OBJECT_TYPE_MOB,
+		tile: 'g_head2',
+		width: 32,
+		height: 96,
+		thinker: 'MANSION.G_Zigzag',
+		fx: 3,
+		data: {
+			name: 'Waramichan',
+			speed: 2,
+			life: 1500,
+			cyber: {
+				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
+				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			}
+		}
+	},
+
+	g_dementia: {
 		type: RC.OBJECT_TYPE_MOB,
 		tile: 'g_head3',
 		width: 32,
@@ -41,8 +43,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.G_Chaser',
 		fx: 3,
 		data: {
-			name: 'head3',
+			name: 'Dementia',
 			speed: 2,
+			life: 2000,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
@@ -50,7 +53,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		}
 	},
 	
-	g_head4: {
+	g_angryman: {
 		type: RC.OBJECT_TYPE_MOB,
 		tile: 'g_head4',
 		width: 32,
@@ -58,8 +61,45 @@ O2.createObject('BLUEPRINTS_DATA', {
 		thinker: 'MANSION.G_Chaser',
 		fx: 3,
 		data: {
-			name: 'head4',
+			name: 'Angryman',
+			speed: 3,
+			life: 2500,
+			cyber: {
+				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
+				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			}
+		}
+	},
+	
+	g_bloodia: {
+		type: RC.OBJECT_TYPE_MOB,
+		tile: 'g_head5',
+		width: 32,
+		height: 96,
+		thinker: 'MANSION.G_Chaser',
+		fx: 3,
+		data: {
+			name: 'Bloodia',
 			speed: 2,
+			life: 3000,
+			cyber: {
+				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
+				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			}
+		}
+	},
+	
+	g_edwound: {
+		type: RC.OBJECT_TYPE_MOB,
+		tile: 'g_head6',
+		width: 32,
+		height: 96,
+		thinker: 'MANSION.G_Chaser',
+		fx: 3,
+		data: {
+			name: 'Edwound',
+			speed: 2,
+			life: 5000,
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
@@ -82,6 +122,23 @@ O2.createObject('BLUEPRINTS_DATA', {
 			sounds: {
 				fire: 'fire1',
 				explode: 'impact1'
+			}
+		}
+	},
+	
+	o_flame: {
+		type: RC.OBJECT_TYPE_PLACEABLE,
+		tile: 'o_flame',
+		width: 62,
+		height: 62,
+		thinker: 'MANSION.Timed',
+		fx: 3,
+		data: {
+			name: 'ectoflame',
+			speed: 0,
+			sounds: {
+				//fire: 'fire1',
+				//explode: 'impact1'
 			}
 		}
 	}

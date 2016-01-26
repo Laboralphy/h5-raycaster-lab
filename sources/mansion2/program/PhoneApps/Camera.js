@@ -6,11 +6,14 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	nFlashDuration: 25,
 	oEasing: null,
 	bFlash: false,
-	nFlash: 0,
+	nFlashTime: 0,
+	nPulseTime: 0,
 	nEnergy: 0, // amount of energy
 	nMaxEnergy: 100, // maximum amount of energy
 	
 	nCircleSize: 0,
+	oCircleColor1: null,
+	oCircleColor2: null,
 	
 	oParticles: null,
 	
@@ -31,6 +34,8 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		ctx.strokeStyle = 'rgb(0, 0, 0)';
 		ctx.font = 'bold ' + this.nTextSize.toString() + 'px courier';
 		ctx.textBaseline = 'top';
+		this.oCircleColor1 = {r: 64, g: 128, b: 255, a: 1};
+		this.oCircleColor2 = {r: 150, g: 200, b: 255, a: 1};
 	},
 
 
@@ -51,16 +56,28 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		// HUD
 		var cs = this.nCircleSize;
 		if (cs) {
-			var sColor1, sColor2;
 			var fEnergy = this.nEnergy / this.nMaxEnergy;
 			var fEnergyAngle = PI * 2 * fEnergy;
 			if (fEnergyAngle) {
-				oScreenCtx.strokeStyle = 'rgba(64, 128, 255, ' + (fEnergy / 2) + ')';
+				var fSin = 0;
+				var c1 = this.oCircleColor1;
+				var c2 = this.oCircleColor2;
+				if (fEnergy === 1) {
+					++this.nPulseTime;
+					var fSin = Math.sin(this.nPulseTime);
+				}					
+				c1.r = 60 + 64 * fSin | 0;
+				c1.g = 60 + 32 * fSin | 0;
+				c1.a = fEnergy / 2;
+				c2.r = 150 + 32 * fSin | 0;
+				c2.r = 150 + 64 * fSin | 0;
+				c2.a = fEnergy / 2 + 0.5;
+				oScreenCtx.strokeStyle = GfxTools.buildRGBA(c1);
 				oScreenCtx.lineWidth = 5;
 				oScreenCtx.beginPath();
 				oScreenCtx.arc(cw >> 1, ch >> 1, cs, 0 - PI / 2, fEnergyAngle - PI / 2);
 				oScreenCtx.stroke();
-				oScreenCtx.strokeStyle = 'rgba(150, 200, 255, ' + (fEnergy / 2 + 0.5) + ')';
+				oScreenCtx.strokeStyle = GfxTools.buildRGBA(c2);
 				oScreenCtx.lineWidth = 1;
 				oScreenCtx.beginPath();
 				oScreenCtx.arc(cw >> 1, ch >> 1, cs, 0 - PI / 2, fEnergyAngle - PI / 2);
@@ -95,7 +112,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		
 		// flash
 		if (this.bFlash) {
-			if (this.oEasing.move(++this.nFlash)) {
+			if (this.oEasing.move(++this.nFlashTime)) {
 				this.bFlash = false;
 			} else {
 				oScreenCtx.fillStyle = 'rgba(255, 255, 255, ' + this.oEasing.x + ')';
@@ -109,7 +126,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	},
 	
 	flash: function() {
-		this.nFlash = 0;
+		this.nFlashTime = 0;
 		this.bFlash = true;
 		this.oEasing.setFunction('cubeDeccel');
 		this.oEasing.setMove(1, 0, 0, 0, this.nFlashDuration);

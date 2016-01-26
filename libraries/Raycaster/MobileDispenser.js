@@ -26,13 +26,16 @@ O2.createClass('O876_Raycaster.MobileDispenser', {
   /**
    * @return O876_Raycaster.Mobile
    */
-  popMobile: function(sBlueprint) {
-    if (this.aBlueprints[sBlueprint].length) {
-      return this.aBlueprints[sBlueprint].pop();
-    } else {
-      return null;
-    }
-  },
+	popMobile: function(sBlueprint) {
+		if (!(sBlueprint in this.aBlueprints)) {
+			throw new Error('no such blueprint : "' + sBlueprint + '"');
+		}
+		if (this.aBlueprints[sBlueprint].length) {
+			return this.aBlueprints[sBlueprint].pop();
+		} else {
+			return null;
+		}  
+	},
 
   render: function() {
     var sRender = '';

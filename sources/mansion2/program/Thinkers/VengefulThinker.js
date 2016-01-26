@@ -16,7 +16,14 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	MAX_INVISIBLE_DISTANCE: 384,
 	MAX_VISIBLE_DISTANCE: 640,
-	
+
+	/**
+	 * sets the normal moving speed of the ghost
+	 * @param f float normal speed
+	 */
+	setSpeed: function(f) {
+		this._fSpeed = f;
+	},
 
 	setExpireTime: function(t) {
 		this._nActionTime = this._nTime + t;
@@ -181,6 +188,12 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	
 	damage: function(nAmount, bCritical) {
+		var hp = this.oMobile.getData('hp');
+		this.oMobile.setData('hp', hp -= nAmount);
+		if (hp <= 0) {
+			this.setThink('Die');
+			return;
+		}
 		if (bCritical) {
 			this.setThink('Wounded', 30);
 		} else {
@@ -429,14 +442,14 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			this.setThink('Idle');
 		}
 	},
-	
+
 	/**
 	 * Special thinker
 	 */
 	thinkShutter_enter: function() {
 		this.setExpireTime(30);
 	},
-	
+
 	thinkShutter: function() {
 		this.process();
 		if (this.isActionExpired()) {
@@ -445,5 +458,37 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 	
 	
+	thinkDie_enter: function() {
+		this.oMobile.oSprite.playAnimationType(2);
+		this.setExpireTime(30);
+	},
 	
+	thinkDie: function() {
+		this.process();
+		if (this.isActionExpired()) {
+			this.setThink('Dead');
+		}
+	},
+
+	thinkDead_enter: function() {
+		var g = this.oGame;
+		var m = this.oMobile;
+		var s = m.oSprite;
+		m.setData('hp', 0);
+		g.spawnVisualEffect('o_flame', m.x, m.y);
+		s.nAlpha = 0;
+		s.bTranslucent = true;
+	},
+	
+	thinkDead: function() {
+		var m = this.oMobile;
+		var s = m.oSprite;
+		++s.nAlpha;
+		if (s.nAlpha > 3) {
+			m.gotoLimbo();
+			s.nAlpha = 0;
+			s.bTranslucent = false;
+			m.bActive = false;
+		}
+	}
 });

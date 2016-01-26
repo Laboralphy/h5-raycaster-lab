@@ -70,6 +70,20 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 	
+	////////// EXPLO /////////////
+		
+	o_flame: {
+		src: 'resources/sprites/o_flame.png',
+		frames: 18,
+		width: 62,
+		height: 62,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 18, 80, 0],
+		]
+	},
+	
 	
 	//////////// SMARTPHONE LAYOUT //////////
 	
