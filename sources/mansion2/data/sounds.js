@@ -11,7 +11,8 @@ O2.createObject('SOUNDS_DATA', {
 		dooropen: 'a-dooropen.ogg',
 		doorclose: 'a-doorclose.ogg',
 		secret: 'a-pushston.ogg',
-		camera: 'a-camera.ogg'
+		camera: 'a-camera.ogg',
+		charge: 'a-charge.ogg'
 	},
 	ghosts: {
 		// supernatural events
