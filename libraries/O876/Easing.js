@@ -130,6 +130,16 @@ O2.createClass('O876.Easing', {
 		return 1 - (1 - v) * (1 - v) * (1 - v);
 	},
 	
+	cubeInOut: function(v) {
+		if (v < 0.5) {
+			v = 2 * v;
+			return v * v * v;
+		} else {
+			v = (1 - v) * 2;
+			return v * v * v;
+		}
+	},
+	
 	sine: function(v) {
 		return Math.sin(v * 3.14159265 / 2);
 	},

@@ -4,8 +4,11 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	name: 'Camera',
 	
 	nFlashDuration: 25,
+	nChargeDuration: 15,
 	oEasing: null,
 	bFlash: false,
+	sFlashColor: '',
+	sFlashGCO: '',
 	nFlashTime: 0,
 	nPulseTime: 0,
 	nEnergy: 0, // amount of energy
@@ -115,8 +118,17 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 			if (this.oEasing.move(++this.nFlashTime)) {
 				this.bFlash = false;
 			} else {
-				oScreenCtx.fillStyle = 'rgba(255, 255, 255, ' + this.oEasing.x + ')';
+				var sFGCO = this.sFlashGCO;
+				var sGCO = '';
+				if (sFGCO) {
+					sGCO = oScreenCtx.globalCompositeOperation;
+					oScreenCtx.globalCompositeOperation = sFGCO;
+				}
+				oScreenCtx.fillStyle = this.sFlashColor + this.oEasing.x + ')';
 				oScreenCtx.fillRect(xNew, 0, wNew, ch);
+				if (sGCO) {
+					oScreenCtx.globalCompositeOperation = sGCO;
+				}
 			}
 		}
 
@@ -127,10 +139,24 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	
 	flash: function() {
 		this.nFlashTime = 0;
+		this.sFlashColor = 'rgba(255, 255, 255, ';
 		this.bFlash = true;
+		this.sFlashGCO = '';
 		this.oEasing.setFunction('cubeDeccel');
 		this.oEasing.setMove(1, 0, 0, 0, this.nFlashDuration);
 	},	
+	
+	/**
+	 * Sends visual feedback when camera is chargin
+	 */
+	charge: function() {
+		this.nFlashTime = 0;
+		this.sFlashColor = 'rgba(0, 64, 128, ';
+		this.sFlashGCO = 'lighter';
+		this.bFlash = true;
+		this.oEasing.setFunction('cubeInOut');
+		this.oEasing.setMove(0, 0, 0.75, 0, this.nChargeDuration);
+	},
 	
 	setEnergyGauges: function(nVal, nMax) {
 		this.nEnergy = nVal;

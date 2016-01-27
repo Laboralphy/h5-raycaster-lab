@@ -13,6 +13,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-pat-hit.ogg',
+				die: 'e-pat-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},
@@ -137,6 +142,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 			name: 'ectoflame',
 			speed: 0,
 			sounds: {
+				spawn: 'bluefire'
 				//fire: 'fire1',
 				//explode: 'impact1'
 			}

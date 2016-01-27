@@ -203,12 +203,16 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	
 	
+	
+	
 	/**
 	 * ghost is being hurt and move backward slightly
 	 */
 	thinkWounded_enter: function(n) {
 		this.setExpireTime(n);
-		this.oMobile.fSpeed = this._fSpeed / 2;
+		var m = this.oMobile;
+		m.fSpeed = this._fSpeed / 2;
+		this.playSound('hit');
 	},
 	
 	
@@ -434,6 +438,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	thinkAttack_enter: function() {
 		this.attack();
 		this.setExpireTime(30);
+		this.playSound('attack');
 	},
 	
 	thinkAttack: function() {
@@ -460,7 +465,9 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	thinkDie_enter: function() {
 		this.oMobile.oSprite.playAnimationType(2);
+		this.oMobile.setData('dead', true);
 		this.setExpireTime(30);
+		this.playSound('die');
 	},
 	
 	thinkDie: function() {

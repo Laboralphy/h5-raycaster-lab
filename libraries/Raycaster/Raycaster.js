@@ -130,7 +130,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oMobileSectors : null,
 	oThinkerManager : null,
 	aVisibleMobiles: null,
-	
+	aDiscardedMobiles: null,
+
 	// weapon Layer
 	oWeaponLayer: null,
 
@@ -250,9 +251,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oUpper.fViewHeight = this.fViewHeight + 2; 
 		this.oUpper.drawScreen();
 	},
+	
+	getDiscardedMobiles: function() {
+		return this.aDiscardedMobiles;
+	},
 
 	frameProcess : function() {
-		this.updateHorde();
+		this.aDiscardedMobiles = this.updateHorde();
 		this.oEffects.process();
 	},
 
@@ -335,7 +340,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	updateHorde : function() {
-		this.oHorde.think();
+		return this.oHorde.think();
 	},
 
 	initCanvas : function() {

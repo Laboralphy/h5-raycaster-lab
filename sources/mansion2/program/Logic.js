@@ -13,7 +13,11 @@ O2.createClass('MANSION.Logic', {
 	_nCameraMaxEnergy: 1000,
 	_nCameraEnergyDep: 2,
 	_nCameraEnergyAcc: 10,
+	_nCameraESStep: 126,
+	_nCameraESNext: null,
 	_fCameraFullEnergyBonus: 1.5, // damage bonus granted when camera is fully loaded
+	_bCameraCharging: false,
+	_bCameraFullCharge: false,
 	
 	_nTime: 0, 
 	_nCameraIntervalTime: 1000, // minimum time between two camera shots
@@ -165,6 +169,8 @@ O2.createClass('MANSION.Logic', {
 			break;
 		}
 		this._nCameraEnergy = 0;
+		this._bCameraFullCharge = false;
+		this._nCameraESNext = null;
 		this._aLastShotStats = {
 			damage: nTotalDamage,
 			shots: aTags
@@ -210,21 +216,54 @@ O2.createClass('MANSION.Logic', {
 			for (var i = 0, l = aMobs.length; i < l; ++i) {
 				mi = aMobs[i];
 				oGhost = mi[0];
-				fAngle = mi[1];
-				fDistance = mi[2];
-				fEnergy = this.getEnergyDissipation(fAngle, fDistance);
-				if (fEnergy > 0) {
-					aCaptured.push(mi);
-					fTotalEnergy += fEnergy;
+				if (!oGhost.getData('dead')) {
+					fAngle = mi[1];
+					fDistance = mi[2];
+					fEnergy = this.getEnergyDissipation(fAngle, fDistance);
+					if (fEnergy > 0) {
+						aCaptured.push(mi);
+						fTotalEnergy += fEnergy;
+					}
 				}
 			}
 		}
-		if (fTotalEnergy) {
+		if (fTotalEnergy > 0) {
 			this.increaseCameraEnergy(this._nCameraEnergyAcc * fTotalEnergy);
 		} else {
 			this.decreaseCameraEnergy(this._nCameraEnergyDep);
 		}
+		this._bCameraCharging = fTotalEnergy > 0;
 		this._aCapturedGhosts = aCaptured;
+	},
+	
+	/**
+	 * Return true if the camera is being charged and making noise
+	 */
+	isCameraBuzzing: function() {
+		var esn = this._nCameraESNext;
+		var ess = this._nCameraESStep;
+		if (esn === null) {
+			esn = this._nCameraESNext = this._nCameraEnergy + ess;
+		}
+		if (this._bCameraCharging) {
+			if (this._nCameraEnergy >= esn) {
+				this._nCameraESNext = esn + ess;
+				return true;
+			}
+		} else {
+			this._nCameraESNext = null;
+		}
+		return false;
+	},
+	
+	hasCameraReachedFullCharge: function() {
+		if (!this._bCameraFullCharge && this._nCameraEnergy >= this._nCameraMaxEnergy) {
+			this._bCameraFullCharge = true;
+			return true;
+		} else if (this._nCameraEnergy < this._nCameraMaxEnergy) {
+			this._bCameraFullCharge = false;
+		}
+		return false;
 	},
 	
 	/**

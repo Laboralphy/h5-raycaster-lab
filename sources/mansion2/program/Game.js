@@ -1,8 +1,11 @@
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
 	_sAmbience: '',
+	_sAmbienceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
+	
+	_bFighting: false,
 	
 	aDebugLines: null,
 	oPhone: null,
@@ -246,6 +249,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	gameEventDoomloop: function(oEvent) {
+		// discarded mobiles
+		var aDiscarded = this.oRaycaster.getDiscardedMobiles();
+		if (this._bFighting && aDiscarded && this.getGhostCount() === 0) {
+			this._bFighting = false;
+			this.restoreAmbienceTrack();
+		}
 		// update camera
 		var gl = this.oLogic;
 		gl.setTime(this.getTime()); // transmit game time
@@ -359,7 +368,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	tagEventZone: function(oEvent) {
 		// changement d'ambiance sonore
-		this.playAmbience(SOUNDS_DATA.bgm[oEvent.data]);
+		var sSoundFile = SOUNDS_DATA.bgm[oEvent.data];
+		if (this._bFighting) {
+			this._sAmbienceAfterFight = sSoundFile;
+		} else {
+			this.playAmbience(sSoundFile);
+		}
 	},
 	
 	/**
@@ -401,7 +415,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	/**
-	 * A ghost is spawned.
+	 * A hostile ghost is spawned.
 	 * @param sBlueprint string reference to the blueprint
 	 * @param x float initial ghost position x
 	 * @param y float initial ghost position y
@@ -409,9 +423,34 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @return Mobile
 	 */
 	spawnGhost: function(sBlueprint, x, y, a) {
+		if (!this._bFighting) {
+			// save ambiance track
+			this._sAmbienceAfterFight = this._sAmbience;
+			this.playAmbience(SOUNDS_DATA.bgm['ghost']);
+			this._bFighting = true;
+		}
 		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
 		oGhost.setData('hp', oGhost.getData('life'));
+		oGhost.setData('dead', false);
 		oGhost.getThinker().setSpeed(oGhost.getData('speed'));
+	},
+	
+	/**
+	 * Return the number of currently active and hostile ghosts
+	 */
+	getGhostCount: function() {
+		var aMobs = this.oRaycaster.oHorde.aMobiles;
+		var n = 0;
+		for (var i = 0, l = aMobs.length; i < l; ++i) {
+			if (aMobs[i].getData('life')) {
+				++n;
+			}
+		}
+		return n;
+	},
+	
+	restoreAmbienceTrack: function() {
+		this.playAmbience(this._sAmbienceAfterFight);
 	},
 	
 	/**
@@ -437,6 +476,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	spawnVisualEffect: function(sBlueprint, x, y) {
 		var oVFX = this.spawnMobile(sBlueprint, x, y, 0);
 		oVFX.getThinker().reset();
+		var oSounds = oVFX.getData('sounds');
+		if (oSounds && ('spawn' in oSounds)) {
+			this.playSound(SOUNDS_DATA.visualeffects[oSounds.spawn], x, y);
+		}
 		return oVFX;
 	},
 

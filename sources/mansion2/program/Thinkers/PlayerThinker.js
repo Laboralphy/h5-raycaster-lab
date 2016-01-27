@@ -95,6 +95,14 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinke
 		if (this.oGame.oPhone.isActive('Camera')) {
 			var aMobs = this.getVisibleMobiles();
 			gl.setVisibleMobiles(aMobs);
+			if (gl.isCameraBuzzing()) {
+				this.oGame.oPhone.getCurrentApplication().charge();
+				this.oGame.playSound(SOUNDS_DATA.events.charge);
+			}
+			if (gl.hasCameraReachedFullCharge()) {
+				this.oGame.oPhone.getCurrentApplication().charge();
+				this.oGame.playSound(SOUNDS_DATA.events.fullcharge);
+			}
 		}
 	},
 	

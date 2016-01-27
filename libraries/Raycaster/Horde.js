@@ -32,7 +32,7 @@ O2.createClass('O876_Raycaster.Horde',  {
 	/** lance think pour chaque élément de la horde
 	 */
 	think : function() {
-		var oMobile;
+		var oMobile, aDiscarded = null;
 		var i = 0;
 		while (i < this.aMobiles.length) {
 			oMobile = this.aMobiles[i];
@@ -40,10 +40,15 @@ O2.createClass('O876_Raycaster.Horde',  {
 			if (oMobile.bActive) {
 				i++;
 			} else {
+				if (aDiscarded === null) {
+					aDiscarded = [];
+				}
+				aDiscarded.push(oMobile);
 				this.unlinkMobile(oMobile);
 				this.oMobileDispenser.pushMobile(oMobile.oSprite.oBlueprint.sId, oMobile);
 			}
 		}
+		return aDiscarded;
 	},
 
 	/**
