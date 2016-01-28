@@ -5,8 +5,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oScripts: null,
 	_oDarkHaze: null,
 	
-	_bFighting: false,
-	
 	aDebugLines: null,
 	oPhone: null,
 	oLogic: null,
@@ -231,12 +229,36 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.ALPHANUM.E:
 				
 			break;
-			case KEYS.F1: 
+			case KEYS.F1:
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_pat', pos.x, pos.y);
+			break;
+			
 			case KEYS.F2: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_warami', pos.x, pos.y);
+			break;
+			
 			case KEYS.F3: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_dementia', pos.x, pos.y);
+			break;		
+			
 			case KEYS.F4: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_angryman', pos.x, pos.y);
+			break;
+			
 			case KEYS.F5: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_bloodia', pos.x, pos.y);
+			break;
+			
 			case KEYS.F6: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_edwound', pos.x, pos.y);
+			break;
+			
 			case KEYS.F7: 
 			case KEYS.F8: 
 			case KEYS.F9: 
@@ -251,9 +273,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventDoomloop: function(oEvent) {
 		// discarded mobiles
 		var aDiscarded = this.oRaycaster.getDiscardedMobiles();
-		if (this._bFighting && aDiscarded && this.getGhostCount() === 0) {
-			this._bFighting = false;
-			this.restoreAmbienceTrack();
+		if (aDiscarded) {
+			this.checkGhostAmbience();
 		}
 		// update camera
 		var gl = this.oLogic;
@@ -369,11 +390,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	tagEventZone: function(oEvent) {
 		// changement d'ambiance sonore
 		var sSoundFile = SOUNDS_DATA.bgm[oEvent.data];
-		if (this._bFighting) {
-			this._sAmbienceAfterFight = sSoundFile;
-		} else {
-			this.playAmbience(sSoundFile);
-		}
+		this.playAmbience(sSoundFile);
 	},
 	
 	/**
@@ -423,16 +440,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @return Mobile
 	 */
 	spawnGhost: function(sBlueprint, x, y, a) {
-		if (!this._bFighting) {
-			// save ambiance track
-			this._sAmbienceAfterFight = this._sAmbience;
-			this.playAmbience(SOUNDS_DATA.bgm['ghost']);
-			this._bFighting = true;
-		}
 		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
+		oGhost.getThinker().reset();
 		oGhost.setData('hp', oGhost.getData('life'));
 		oGhost.setData('dead', false);
 		oGhost.getThinker().setSpeed(oGhost.getData('speed'));
+		this.playGhostAmbience(SOUNDS_DATA.bgm.ghost);
 	},
 	
 	/**
@@ -448,11 +461,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		return n;
 	},
-	
-	restoreAmbienceTrack: function() {
-		this.playAmbience(this._sAmbienceAfterFight);
-	},
-	
+
 	/**
 	 * Le mobile spécifié tire un missile
 	 * @param sBlueprint string la référence du blueprint du missile
@@ -587,12 +596,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this._oAudio.play(sFile, nChan, fVolume);
 		}
 	},
+
+
+	_sPreviousAmbience: '',
 	
 	/**
 	 * Lance le fichier musical d'ambiance
 	 * @param string sAmb nom du fichier
 	 */
 	playAmbience: function(sAmb) {
+		if (this._sPreviousAmbience) {
+			this._sPreviousAmbience = sAmb;
+			return;
+		}
 		if (this.sAmbience == sAmb) {
 			return;
 		} else if (this.sAmbience) {
@@ -603,4 +619,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.sAmbience = sAmb;
 		}
 	},
+
+	checkGhostAmbience: function() {
+		if (this._sPreviousAmbience && this.getGhostCount() === 0) {
+			var pa = this._sPreviousAmbience;
+			this._sPreviousAmbience = '';
+			this.playAmbience(pa);
+		}
+	},
+
+	/**
+	 * plays a ghost music
+	 */
+	playGhostAmbience: function(sGhostAmb) {
+		if (this._sPreviousAmbience === '') {
+			var pa = this.sAmbience;
+			this.playAmbience(sGhostAmb);
+			this._sPreviousAmbience = pa;
+		}
+	}
 });
+

@@ -271,5 +271,5 @@ O2.createClass('MANSION.Logic', {
 	 */
 	getCapturedGhosts: function() {
 		return this._aCapturedGhosts;
-	}	
+	}
 });

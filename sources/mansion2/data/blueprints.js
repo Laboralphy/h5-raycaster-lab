@@ -4,7 +4,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		tile: 'g_head1',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.G_Chaser',
+		thinker: 'MANSION.GPat',
 		fx: 3,
 		data: {
 			name: 'Pat',
@@ -27,7 +27,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		tile: 'g_head2',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.G_Zigzag',
+		thinker: 'MANSION.GWarami',
 		fx: 3,
 		data: {
 			name: 'Waramichan',
@@ -36,6 +36,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-warami-hit.ogg',
+				die: 'e-warami-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},
@@ -45,7 +50,7 @@ O2.createObject('BLUEPRINTS_DATA', {
 		tile: 'g_head3',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.G_Chaser',
+		thinker: 'MANSION.GDementia',
 		fx: 3,
 		data: {
 			name: 'Dementia',
@@ -54,6 +59,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-mad-hit.ogg',
+				die: 'e-mad-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},
@@ -72,6 +82,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-gman-hit.ogg',
+				die: 'e-gman-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},
@@ -90,6 +105,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-dem-hit.ogg',
+				die: 'e-dem-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},
@@ -108,6 +128,11 @@ O2.createObject('BLUEPRINTS_DATA', {
 			cyber: {
 				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-mons-hit.ogg',
+				die: 'e-mons-die.ogg',
+				attack: 'e-ghost-attack.ogg'
 			}
 		}
 	},

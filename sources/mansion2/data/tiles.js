@@ -53,6 +53,33 @@ O2.createObject('TILES_DATA', {
 			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
 			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
 		]
+	},	
+	g_head5: {
+		src: 'resources/sprites/g_head5.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+
+	g_head6: {
+		src: 'resources/sprites/g_head6.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
 	},
 	
 	////////// MISSILES //////////

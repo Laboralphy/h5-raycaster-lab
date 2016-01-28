@@ -5,6 +5,10 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	
 
 	__construct : function() {
+		this.reset();
+	},
+	
+	reset: function() {
 		this.setThink('Init');
 	},
 	
@@ -26,7 +30,7 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	playSound: function(sSound) {
 		oMe = this.oMobile;
 		var oSounds = oMe.getData('sounds');
-		if (sSound in oSounds) {
+		if (oSounds && (sSound in oSounds)) {
 			this.oGame.playSound(oSounds[sSound], oMe.x, oMe.y);
 		}
 	},

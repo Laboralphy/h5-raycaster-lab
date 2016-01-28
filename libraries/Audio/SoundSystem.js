@@ -32,9 +32,11 @@ O2.createClass('SoundSystem', {
 	sSndPlayedFile: '',
 	fSndPlayedVolume: 0,
 	nSndPlayedTime: 0,
+	
+	oInterval: null,
 
 	__construct : function() {
-		this.oBase = document.getElementsByTagName('body')[0];
+		this.oBase = document.body;
 		this.aChans = [];
 		this.aAmbient = [];
 		this.oMusicChan = this.createChan();
@@ -42,6 +44,14 @@ O2.createClass('SoundSystem', {
 		this.aChans = [];
 	},
 	
+	/**
+	 * returns true if the specified audio file is worth playing.
+	 * will return false if an audio file with the same name, volume
+	 * has already been played recently (same timestamp)
+	 * @param nTime current timestamp (given by Date.now() for example)
+	 * @param sFile audio file name
+	 * @param fVolume
+	 */
 	worthPlaying: function(nTime, sFile, fVolume) {
 		if (this.nSndPlayedTime != nTime || this.sSndPlayedFile != sFile || this.fSndPlayedVolume != fVolume) {
 			this.sSndPlayedFile = sFile;
@@ -53,13 +63,21 @@ O2.createClass('SoundSystem', {
 		}
 	},
 	
+	/**
+	 * Stops sounds from being played
+	 * call unmute to restore normal audio function
+	 */
 	mute: function() {
 		if (!this.bMute) {
 			this.oMusicChan.pause();
 			this.bMute = true;
 		}
 	},
-	
+
+	/**
+	 * Restores normal audio function
+	 * useful to restore sound after a mute() call
+	 */
 	unmute: function() {
 		if (this.bMute) {
 			this.oMusicChan.play();
@@ -68,15 +86,11 @@ O2.createClass('SoundSystem', {
 	},
 
 	
-	destroyItem: function(o) {
-		o.parentNode.removeChild(o);
-	},
-
 	free : function() {
 		for ( var i = 0; i < this.aChans.length; i++) {
-			this.destroyItem(this.aChans[i]);
+			this.aChans[i].remove();
 		}
-		this.destroyItem(this.oMusicChan);
+		this.oMusicChan.remove();
 		this.aChans = [];
 	},
 	
@@ -121,15 +135,12 @@ O2.createClass('SoundSystem', {
 	},
 
 	isChanFree : function(nChan, sFile) {
+		// case : music channel
 		if (nChan == this.CHAN_MUSIC) {
 			return this.oMusicChan.ended;
 		}
-		if (nChan < 0) {
-			nChan = 0;
-		}
-		if (nChan >= this.aChans.length) {
-			nChan = this.aChans.length - 1;
-		}
+		// check specified channel number validity
+		nChan = Math.max(0, Math.min(this.aChans.length - 1, nChan));
 		var oChan = this.aChans[nChan];
 		if (sFile === undefined) {
 			return oChan.ended;
@@ -145,13 +156,13 @@ O2.createClass('SoundSystem', {
 		if (!this.hasChan()) {
 			return -1;
 		}
-		var iChan;
-		for (iChan = 0; iChan < this.aChans.length; iChan++) {
+		var iChan, nChanCount;
+		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
 			if (this.isChanFree(iChan, sFile)) {
 				return iChan;
 			}
 		}
-		for (iChan = 0; iChan < this.aChans.length; iChan++) {
+		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
 			if (this.isChanFree(iChan)) {
 				return iChan;
 			}
@@ -165,34 +176,45 @@ O2.createClass('SoundSystem', {
 	},
 
 	play : function(sFile, nChan, fVolume) {
-		if (this.bMute) {
-			return -1;
-		}
 		var oChan = null;
-		if (sFile === undefined) {
+		// check if we should cancel the play call
+		if (this.bMute || sFile === undefined) {
 			return -1;
 		}
+		// case : music channel -> redirect to playMusic
 		if (nChan == this.CHAN_MUSIC) {
 			this.playMusic(sFile);
-			return;
-		} else if (this.hasChan()) {
+			return nChan;
+		} else if (this.hasChan()) { 
+			// checks channel availability
 			if (nChan === undefined) {
+				// get a free channel, if none specified
 				nChan = this.getFreeChan(sFile);
 			}
 			oChan = this.aChans[nChan];
 		} else {
+			// no free channel available
 			oChan = null;
+			return -1;
 		}
 		if (oChan !== null) {
+			// we got a channel
 			if (oChan.__file != sFile) {
+				// new file
 				oChan.src = sFile;
 				oChan.__file = sFile;
 				oChan.load();
 			} else if (oChan.readyState > this.HAVE_NOTHING) {
+				// same file, play again from start
 				oChan.currentTime = 0;
 				oChan.play();
 			}
+		} else {
+			// could not get a channel:
+			// exit in shame
+			return -1;
 		}
+		// set volume, if specified
 		if (fVolume !== undefined) {
 			oChan.volume = fVolume;
 		}
@@ -202,7 +224,7 @@ O2.createClass('SoundSystem', {
 	/**
 	 * Joue le prochain fichier musical dans la liste
 	 */
-	playMusic : function(sFile) {
+	playMusic : function(sFile, bOverride) {
 		var oChan = this.oMusicChan;
 		oChan.src = sFile;
 		oChan.load();
@@ -223,14 +245,17 @@ O2.createClass('SoundSystem', {
 		var iVolume = 100;
 		var nVolumeDelta = -10;
 		this.bCrossFading = true;
-		var oInterval = null;
-		oInterval = window.setInterval((function() {
+		if (this.oInterval) {
+			window.clearInterval(this.oInterval);
+		}
+		this.oInterval = window.setInterval((function() {
 			iVolume += nVolumeDelta;
 			this.oMusicChan.volume = iVolume / 100;
 			if (iVolume <= 0) {
 				this.playMusic(sFile);
 				this.oMusicChan.volume = 1;
-				window.clearInterval(oInterval);
+				window.clearInterval(this.oInterval);
+				this.oInterval = null;
 				this.bCrossFading = false;
 				if (this.sCrossFadeTo) {
 					this.crossFadeMusic(this.sCrossFadeTo);
