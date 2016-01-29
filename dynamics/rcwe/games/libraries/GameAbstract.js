@@ -150,6 +150,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	onDoomLoop: function() {
 		this.processKeys();
 		this.oRaycaster.textureAnimation();
+		this.trigger('doomloop');
 	},
 	
 	
@@ -260,7 +261,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
 		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag, 'move');
+			this.triggerTag(x, y, sTag);
 			this._sTag = sTag;
 		}
 	},
