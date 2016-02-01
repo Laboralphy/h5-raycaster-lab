@@ -3,8 +3,8 @@
 code-bloc-physique
 entier conservant les propriété physique et graphique d'un bloc.
   format: 0xaabbccdd
-  dd: code-texture : fait référence à l'un des éléments de levelData.walls.codes
-  cc: code-bloc-prop : fait référence à une propriété de bloc définie dans Raycaster
+  ddd: code-texture : fait référence à l'un des éléments de levelData.walls.codes
+  c: code-bloc-prop : fait référence à une propriété physique de bloc définie dans Raycaster
   bb: offset d'enfoncement de la texture valeur de 00 (pas d'enfoncement) à 3F (limite)
   aa: non utilisé 00
 
