@@ -140,7 +140,8 @@ function checkDirectory($aDir) {
 
 function main() {
 	//checkDirectory(array('libraries', 'sources', 'dynamics'));
-	checkDirectory(array('dynamics/rcwe/server.storage/exports/work/tc-l1'));
+	//checkDirectory(array('dynamics/rcwe/server.storage/exports/work/tc-l1'));
+	checkDirectory(array('libraries'));
 }
 
 main();

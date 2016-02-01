@@ -1,4 +1,0 @@
-BIN
-
-This directory gather tools written in BASH-SHELL
-

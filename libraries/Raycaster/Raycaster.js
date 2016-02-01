@@ -162,6 +162,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	defineWorld : function(aWorld) {
 		this.aWorld = aWorld;
 	},
+	
+	getMapSize: function() {
+		return this.nMapSize;
+	},
 
 	initialize : function() {
 		this.fViewAngle = PI / 4;

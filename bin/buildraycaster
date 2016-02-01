@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# a module builder tool
+# this tool converts "sources" to "modules"
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+sBasePath="$sScriptDir/.."
+
+buildLibraries() {
+	local sPackerDir="$sBasePath/dynamics/packer"
+	local myPwd=`pwd`
+
+	cd "$sPackerDir"
+	php -f buildraycasterlib.php -- pack > "$sBasePath/build/libraycaster.min.js"
+	cd "$myPwd"
+}
+
+buildLibraries

@@ -2,7 +2,7 @@
 
 code-bloc-physique
 entier conservant les propriété physique et graphique d'un bloc.
-  format: 0xaabbccdd
+  format: 0xaabbcddd
   ddd: code-texture : fait référence à l'un des éléments de levelData.walls.codes
   c: code-bloc-prop : fait référence à une propriété physique de bloc définie dans Raycaster
   bb: offset d'enfoncement de la texture valeur de 00 (pas d'enfoncement) à 3F (limite)
@@ -32,20 +32,6 @@ code-bloc-prop
 
 
 levelData = {
-  map: [                         // Tableau double dimension contenant les codes-block-physiques, le nombre d'éléments conditionne la taille du labyrinthe
-    [ int, int, int, ... ],      // Carte du labyrinthe, chaque élément est un code-bloc-physique
-    [ int, int, int, ... ],
-    [ int, int, int, ... ],
-    ...  
-  ],
-  
-  uppermap: [                    // Exactement le même type de tableau que "map"
-    [ int, int, int, ... ],      // Mais pour le second niveau
-    [ int, int, int, ... ],
-    [ int, int, int, ... ],
-    ...  
-  ],
-      
   walls: {                       // Données concernant les bloc et les murs (textures et propriétés)
     src: string,                 // url de l'image contenant les textures
                                  // Les textures sont alignées bout à bout.
@@ -76,6 +62,32 @@ levelData = {
     							  // manquant
   },
 
+  map: [                         // Tableau double dimension contenant les codes-block-physiques, le nombre d'éléments conditionne la taille du labyrinthe
+    [ int, int, int, ... ],      // Carte du labyrinthe, chaque élément est un code-bloc-physique
+    [ int, int, int, ... ],
+    [ int, int, int, ... ],
+    ...  
+  ],
+  
+  uppermap: [                    // Exactement le même type de tableau que "map"
+    [ int, int, int, ... ],      // Mais pour le second niveau
+    [ int, int, int, ... ],
+    [ int, int, int, ... ],
+    ...  
+  ],
+      
+  visual: {                       // Données visuelle d'ambiance
+    ceilColor: {r: int, g: int, b: int},      // couleur du plafond
+    floorColor: {r: int, g: int, b: int},     // couleur du sol
+    light: int,                               // indice de luminosité (200 = lumineux, 50 = sombre
+    fogDistance: int,                         // distance du fog (valeur conseillée 1)
+    fogColor: {r: int, g: int, b: int},        // couleur du fog
+    filter: false |  {r: float, g: float, b: float}   // filtre de couleur pour les sprites, chaque composante est un facteur multiplicateur
+    diffuse: float,								// entre 0 et 1 ratio de lumière emise	
+  },
+  
+  startpoint: {x: int, y: int, angle: float},  // coordonnée du point de spawn solo
+
   tiles: {                        // les tiles sont les images contenant plusieurs frames qui permettent d'animer un sprite
     string: {                     // Référence de la Tile
       src: string,                // source de l'image contenant les frames du sprites
@@ -103,17 +115,6 @@ levelData = {
     }
   },
 
-  visual: {                       // Données visuelle d'ambiance
-    ceilColor: {r: int, g: int, b: int},      // couleur du plafond
-    floorColor: {r: int, g: int, b: int},     // couleur du sol
-    light: int,                               // indice de luminosité (200 = lumineux, 50 = sombre
-    fogDistance: int,                         // distance du fog (valeur conseillée 1)
-    fogColor: {r: int, g: int, b: int},        // couleur du fog
-    filter: false |  {r: float, g: float, b: float}   // filtre de couleur pour les sprites, chaque composante est un facteur multiplicateur
-    diffuse: float,								// entre 0 et 1 ratio de lumière emise	
-  },
-  
-  startpoint: {x: int, y: int, angle: float},  // coordonnée du point de spawn solo
 
   blueprints: {
     string: {                               // Référence du blueprint
