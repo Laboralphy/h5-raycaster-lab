@@ -48,6 +48,26 @@ O2.extendClass('TUTORIAL1.Game', O876_Raycaster.Engine, {
 		if (x === rc.oCamera.xSector && y === rc.oCamera.ySector) {
 			return;
 		}
+		/**
+		 * Some Raycaster methods
+		 * getMapSize() : returns the map size (in blocks)
+		 * getMapXY(x, y) : get the block value at x, y
+		 * 
+		 * a block value is an integer which stores several sub-values
+		 * - bits 0 to 11 : texture code value
+		 * - bits 12 to 15 : physic code
+		 * - bits 16 to 23 : offset
+		 * 
+		 * the texture code is the texture index of the "walls" or "flats" entry in the level definition object
+		 * the physic code is a value....
+		 * - 0 : the block is walkable (has no wall)
+		 * - 1 : the block is a wall (not walkable);
+		 * - 2-8 : a door that opens in different ways
+		 * - 9 : a secret block
+		 * - 10 : a transparent wall : that means that you can see through it
+		 * - 11 : an invisible wall, you can't see it, be you can't walk over it
+		 * - 12 : an offseted block (a solid block with an offset value)
+		 */
 		switch (rc.getMapXY(x, y)) {
 			case 0x1001:
 				if (x > 0 && y > 0 && x < (rc.getMapSize() - 1) && y < (rc.getMapSize() - 1)) {
