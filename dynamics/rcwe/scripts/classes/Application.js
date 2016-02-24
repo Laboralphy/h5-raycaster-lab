@@ -1177,7 +1177,7 @@ O2.createClass('RCWE.Application', {
 		}).bind(this);
 			
 		var pLoad = function() {
-			$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived);
+			$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived);
 		};
 		
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
@@ -1334,7 +1334,11 @@ O2.createClass('RCWE.Application', {
 		}).bind(this);
 			
 		var pLoad = function() {
-			$.getJSON('services/?action=import.import&p=' + sProject + '&l=' + sMap, pDataReceived);
+			$.rcweGetJSON('services/', {
+				action: 'import.import',
+				p: sProject,
+				l: sMap
+			}, pDataReceived);
 		};
 		
 		this.popup('Message', 'Importing level, please wait...', '', pLoad);

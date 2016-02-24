@@ -62,7 +62,7 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 		var $select = $('<select name="map"></select>');
 		$select.attr('size', '8');
 		$form.append($select);
-		$.getJSON('services/?action=mw.list', function(data) {
+		$.rcweGetJSON('services/', { action: 'mw.list' }, function(data) {
 			data.forEach(function(sMap) {
 				var $option = $('<option></option>');
 				$select.append($option.val(sMap).html(sMap));
@@ -99,13 +99,22 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 			return;
 		}
 		var oApplication = W;
-		$.get('services/?action=mw.import&l=' + sLevel)
+		$.rcweGetJSON('services/', { 
+				action: 'mw.import', 
+				l: sLevel 
+		}, function(d) {
+			oApplication.unserialize(JSON.parse(d));
+			oApplication.cmd_clickOnBlockBrowser();
+		}, function(err) {
+			oApplication.error(err);
+		});
+		/*$.get('services/?action=mw.import&l=' + sLevel)
 		.fail(function(err) {
 			oApplication.error(err);
 		}).success(function(d) {
 			oApplication.unserialize(JSON.parse(d));
 			oApplication.cmd_clickOnBlockBrowser();
-		});
+		});*/
 	},
 	
 	cmd_exportnew: function() {

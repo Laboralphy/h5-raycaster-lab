@@ -62,15 +62,15 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 
 	show: function() {
 		__inherited();
-		$.getJSON('services/?action=level.list', (function(data) {
+		$.rcweGetJSON('services/', { action: 'level.list' }, (function(data) {
 			data.forEach(function(f) {
-				$.getJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/template.json', (function(temp) {
+				$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/template.json', (function(temp) {
 					var $d = this.makeFileThumbnail({name: f, img: RCWE.CONST.PATH_TEMPLATES + '/levels/' + f + '/thumbnail.png'});
 					$d.addClass('remote');
 				}).bind(this));
 			}, this);
-		}).bind(this))
-		.fail(function(data) {
+		}).bind(this),
+		function(data) {
 			W.error(data.responseText);
 		});
 	},

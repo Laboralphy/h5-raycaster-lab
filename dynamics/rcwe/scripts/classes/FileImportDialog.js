@@ -62,7 +62,7 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 	
 	show: function() {
 		__inherited();
-		$.getJSON('services/?action=import.list', (function(data) {
+		$.rcweGetJSON('services/', { action: 'import.list' }, (function(data) {
 			var $opt;
 			var $form = $('<form class="levelSelector"></form>');
 			$form.twinSelect({data: data});
