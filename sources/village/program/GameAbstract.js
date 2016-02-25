@@ -76,14 +76,14 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		this.oRaycaster.nPlaneSpacing = 64;
-		var oCT = new O876_Raycaster.CameraMouseKeyboardThinker();
-		oCT.oMouse = this._getMouseDevice(this.oRaycaster.oCanvas);
-		oCT.oKeyboard = this._getKeyboardDevice();
+		var oCT = new O876_Raycaster.FirstPersonThinker();
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
-		oCT.useDown = function() {
+		oCT.on('use.down', (function() {
 			this.oGame.activateWall(this.oMobile);    
-		};
+		}).bind(oCT));
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
@@ -172,7 +172,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	},
 
 	processKeys: function() {
-		this.trigger('key', this._getKeyboardDevice().inputKey());
+		this.trigger('key', this.getKeyboardDevice().inputKey());
 	},
 	
 	/**
@@ -211,6 +211,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	/**
 	 * Effectue un screenshot de l'écran actuellement rendu
 	 * L'image (canvas) générée est stockée dans la propriété _oScreenShot
+	 * et renvoyé par la fonction
 	 */
 	screenShot: function() {
 		var oCanvas = O876.CanvasFactory.getCanvas();
@@ -222,7 +223,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
 		oContext.drawImage(this.oRaycaster.oCanvas, 0, 0, wr, hr, 0, 0, w, h);
-		this._oScreenShot = oCanvas;
+		return this._oScreenShot = oCanvas;
 	},
 
 	/**

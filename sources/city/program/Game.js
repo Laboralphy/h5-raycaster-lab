@@ -50,14 +50,14 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		this.oRaycaster.nPlaneSpacing = 64;
-		var oCT = new O876_Raycaster.CameraKeyboardThinker();
-		oCT.oMouse = this._getMouseDevice(this.oRaycaster.oCanvas);
-		oCT.oKeyboard = this._getKeyboardDevice();
+		var oCT = new O876_Raycaster.FirstPersonThinker();
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
-		oCT.useDown = function() {
-			this.oGame.activateWall(this.oMobile);    
-		};
+		oCT.on('use.down', (function() {
+			this.activateWall(oCT.oMobile);    
+		}).bind(this));
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
@@ -113,7 +113,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
 
 	processKeys: function() {
-		switch (this._getKeyboardDevice().inputKey()) {
+		switch (this.getKeyboardDevice().inputKey()) {
 			case KEYS.ALPHANUM.I:
 				this.oRaycaster.fViewHeight += 0.1;
 				break;

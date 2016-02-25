@@ -92,8 +92,9 @@ function startGame(sLogin) {
 
 	var g = new MW.Game();
 	window.G = g;	
-		
-	g.csLogin(sLogin);
+	g.onConnected = function() {
+		g.csLogin(sLogin);
+	};
 }
 
 function processLogin(oLogin) {

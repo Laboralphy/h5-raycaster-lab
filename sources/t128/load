@@ -1,3 +1,0 @@
-load ../../libraries
-load ../../sources/t128
-top ../../libraries/o2.js

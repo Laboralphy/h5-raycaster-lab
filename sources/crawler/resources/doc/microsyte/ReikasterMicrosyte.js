@@ -3,7 +3,7 @@ var ReikasterMicrosyte = {
 
 	open: function(sTitle, w, h) {
 		G.pause();
-		G._getKeyboardDevice().unplugEvents();
+		G.getKeyboardDevice().unplugEvents();
 		ReikasterMicrosyte.oMicrosyte = new O876.Microsyte('page');
 		var m = ReikasterMicrosyte.oMicrosyte;
 		m.setSize(w, h);
@@ -19,7 +19,7 @@ var ReikasterMicrosyte = {
 	
 	close: function() {
 		ReikasterMicrosyte.oMicrosyte.hide();
-		G._getKeyboardDevice().plugEvents();
+		G.getKeyboardDevice().plugEvents();
 		G.resume();
 	},
 	

@@ -66,17 +66,17 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			var ControlThinkerClass = this._oClassLoader.loadClass(CONFIG.game.controlthinker);
 			oCT = new ControlThinkerClass();
 		} else if (CONFIG.game.fpscontrol) {
-			oCT = new O876_Raycaster.CameraMouseKeyboardThinker();
+			oCT = new O876_Raycaster.FirstPersonThinker();
 		} else {
 			oCT = new O876_Raycaster.CameraKeyboardThinker();
 		}
-		oCT.oMouse = this._getMouseDevice(this.oRaycaster.oCanvas);
-		oCT.oKeyboard = this._getKeyboardDevice();
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
-		oCT.useDown = function() {
+		oCT.on('use.down', (function() {
 			this.oGame.activateWall(this.oMobile);    
-		};
+		}).bind(this));
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
@@ -148,7 +148,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * Ici on lance les animation de textures
 	 */
 	onDoomLoop: function() {
-		this.processKeys();
+		this._processKeys();
 		this.oRaycaster.textureAnimation();
 		this.trigger('doomloop');
 	},
@@ -175,30 +175,68 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * Evènement appelé à chaque rendu de frame
 	 */
 	onFrameRendered: function() {
-		this.detectTag();
+		this._detectTag();
 		this.trigger('frame');
 	},	
 
 
 
-	////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
-	////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
-	////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
+
+	////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS //////
+	////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS //////
+	////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS ////// PROTECTED FUNCTIONS //////
+
+	/**
+	 * Reads key from keyborad device
+	 * and trigger events
+	 */
+	_processKeys: function() {
+		var nKey = this.getKeyboardDevice().inputKey();
+		if (nKey > 0) {
+			this.trigger('key.down', {k: nKey});
+		} else if (nKey < 0) {
+			this.trigger('key.up', {k: -nKey});
+		}
+	},
+
+	/**
+	 * Effectue une vérification du block actuellement traversé
+	 * Si on entre dans une zone taggée (ensemble des blocks contigüs portant le même tag), on déclenche l'évènement.
+	 */
+	_detectTag: function() {
+		var rc = this.oRaycaster;
+		var rcc = rc.oCamera;
+		var x = rcc.xSector;
+		var y = rcc.ySector;
+		var sTag = this.getBlockTag(x, y);
+		if (sTag && sTag != this._sTag) {
+			this.triggerTag(x, y, sTag);
+			this._sTag = sTag;
+		}
+	},
+	
+
+	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
+	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
+	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
 	
 	/**
-	 * Renvoie l'identifiant du niveau actuellement chargé
+	 * Return the name of the level currently loaded
 	 * @return string
 	 */
 	getLevel: function() {
 		return this._sLevelIndex;
 	},
-
-	processKeys: function() {
-		var nKey = this._getKeyboardDevice().inputKey();
-		if (nKey) {
-			this.trigger('key', {k: nKey});
-		}
+	
+	/**
+	 * Loads a new Level
+	 * @param sLevel new level reference
+	 */
+	setLevel: function(sLevel) {
+		this._sLevelIndex = sLevel;
+		this.enterLevel();
 	},
+
 	
 	/**
 	 * Affiche un message popup
@@ -247,25 +285,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
 		oContext.drawImage(this.oRaycaster.oCanvas, 0, 0, wr, hr, 0, 0, w, h);
-		this._oScreenShot = oCanvas;
+		return this._oScreenShot = oCanvas;
 	},
 
-	/**
-	 * Effectue une vérification du block actuellement traversé
-	 * Si on entre dans une zone taggée (ensemble des blocks contigüs portant le même tag), on déclenche l'évènement.
-	 */
-	detectTag: function() {
-		var rc = this.oRaycaster;
-		var rcc = rc.oCamera;
-		var x = rcc.xSector;
-		var y = rcc.ySector;
-		var sTag = this.getBlockTag(x, y);
-		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag);
-			this._sTag = sTag;
-		}
-	},
-	
 	/**
 	 * TriggerTag
 	 * Active volontaire le tag s'il existe à la position spécifiée

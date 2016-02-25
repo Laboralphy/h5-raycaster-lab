@@ -44,16 +44,20 @@ O2.extendClass('MW.PlayerThinker', O876_Raycaster.MouseKeyboardThinker, {
 			this.oAttributes[sAttr] = 0;
 		}
 		this.defineKeys( {
-			forward : KEYS.ALPHANUM.Z,
-			forward_w : KEYS.ALPHANUM.W,
+			forward : [KEYS.ALPHANUM.Z, KEYS.ALPHANUM.W],
 			backward : KEYS.ALPHANUM.S,
-			left : KEYS.ALPHANUM.Q,
-			left_a : KEYS.ALPHANUM.A,
-			right : KEYS.ALPHANUM.D,
-			right_e : KEYS.ALPHANUM.E,
+			left : [KEYS.ALPHANUM.Q, KEYS.ALPHANUM.A],
+			right : [KEYS.ALPHANUM.D, KEYS.ALPHANUM.E],
 			use : KEYS.SPACE
 		});
 		this.think = this.thinkAlive;
+		this.on('button0.up', this.button0Up.bind(this));
+		this.on('button0.down', this.button0Down.bind(this));
+		this.on('button0.command', this.button0Command.bind(this));
+		this.on('button2.down', this.button0Down.bind(this));
+		this.on('use.down', this.useDown.bind(this));
+		this.on('wheel.up', this.wheelUp.bind(this));
+		this.on('wheel.down', this.wheelDown.bind(this));
 	},
 
 	

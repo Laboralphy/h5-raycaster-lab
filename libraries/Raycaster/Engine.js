@@ -2,17 +2,17 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	// Juste une copie du TIME_FACTOR du raycaster
 	TIME_FACTOR : 50, // Doit être identique au TIME_FACTOR du raycaster
 
+	// public
 	oRaycaster : null,
 	oKbdDevice : null,
 	oMouseDevice : null,
 	oThinkerManager : null,
-	oObjectIndex : null,
 	
-	oFrameCounter: null,
-
-	nTimeStamp : 0,
-	nShadedTiles : 0,
-	nShadedTileCount : 0,
+	// protected
+	_oFrameCounter: null,
+	_nTimeStamp : 0,
+	_nShadedTiles : 0,
+	_nShadedTileCount : 0,
 	
 	__construct : function() {
 		if (!this.browserIsHTML5()) {
@@ -54,7 +54,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	
 	initDoomLoop: function() {
 		__inherited();
-		this.nTimeStamp = null;
+		this._nTimeStamp = null;
 	},
 
 	/**
@@ -103,7 +103,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * 
 	 * @return KeyboardDevice
 	 */
-	_getKeyboardDevice : function() {
+	getKeyboardDevice : function() {
 		if (this.oKbdDevice === null) {
 			this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
 			this.oKbdDevice.plugEvents();
@@ -111,7 +111,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		return this.oKbdDevice;
 	},
 
-	_getMouseDevice : function(oElement) {
+	getMouseDevice : function(oElement) {
 		if (this.oMouseDevice === null) {
 			if (oElement === undefined) {
 				throw new Error('no target element specified for the mouse device');
@@ -127,7 +127,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * @return int
 	 */
 	getTime: function() {
-		return this.nTimeStamp;
+		return this._nTimeStamp;
 	},
 
 	/**
@@ -136,7 +136,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * and avoid a large amount of compensating calc.
 	 */
 	setTime: function(n) {
-		this.nTimeStamp = n;
+		this._nTimeStamp = n;
 	},
 
 	// ////////// METHODES PUBLIQUES API ////////////////
@@ -149,7 +149,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * @param sLevel
 	 *            référence du niveau à charger
 	 */
-	enterLevel : function(sLevel) {
+	enterLevel : function() {
 		this._callGameEvent('onExitLevel');
 		this.setDoomloop('stateStartRaycaster');
 	},
@@ -224,47 +224,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		return oDoor;
 	},
 
-	/**
-	 * Permet d'indexé un objet, de lui attribuer un identifiant afin de le
-	 * retrouver plus facilement plus tard Ceci est utilisé dans le cadre des
-	 * parties en réseaux dans lesquelles le serveur tient un registre d'objet
-	 * qu'il partage avec ses clients.
-	 * 
-	 * @param oObject
-	 *            objet (généralement mobile)
-	 * @param id
-	 *            identifiant
-	 * @return objet
-	 */
-	setObjectIndex : function(oObject, id) {
-		this.oObjectIndex[id] = oObject;
-	},
-
-	/**
-	 * Supprime l'index précédemment attribué d'un objet, ne supprime pas
-	 * l'objet
-	 * 
-	 * @param id
-	 */
-	clearObjectIndex : function(id) {
-		delete this.oObjectIndex[id];
-	},
-
-	/**
-	 * Retrouve un objet à partir de son id
-	 * 
-	 * @param id
-	 * @return objet retrouvé grace à l'id, ou null si aucun objet trouvé
-	 * @throws Error
-	 *             si objet non trouvé
-	 */
-	getObjectIndex : function(id) {
-		if (id in this.oObjectIndex) {
-			return this.oObjectIndex[id];
-		} else {
-			throw new Error('game.getObjectIndex: object (' + id + ') not found.');
-		}
-	},
 
 	/**
 	 * Création d'un nouveau mobile à la position spécifiée
@@ -349,7 +308,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
 		}
 		this.oRaycaster.setConfig(CONFIG.raycaster);
-		this.oObjectIndex = {};
 		this.oRaycaster.initialize();
 		this.oThinkerManager = this.oRaycaster.oThinkerManager;
 		this.oThinkerManager.oGameInstance = this;
@@ -377,11 +335,11 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		}
 
 		// calculer le nombre de shading à faire
-		this.nShadedTileCount = 0;
+		this._nShadedTileCount = 0;
 		var iStc = '';
 		for (iStc in this.oRaycaster.oHorde.oTiles) {
 			if (this.oRaycaster.oHorde.oTiles[iStc].bShading) {
-				++this.nShadedTileCount;
+				++this._nShadedTileCount;
 			}
 		}
 		this.setDoomloop('stateLoadComplete');
@@ -391,10 +349,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Patiente jusqu'à ce que les ressource soient chargée
 	 */
 	stateLoadComplete : function() {
-		this._callGameEvent('onLoading', 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading() + this.nShadedTileCount);
+		this._callGameEvent('onLoading', 'gfx', this.oRaycaster.oImages.countLoaded(), this.oRaycaster.oImages.countLoading() + this._nShadedTileCount);
 		if (this.oRaycaster.oImages.complete()) {
 			this.oRaycaster.backgroundRedim();
-			this.nShadedTiles = 0;
+			this._nShadedTiles = 0;
 			this.setDoomloop('stateShading');
 		}
 	},
@@ -403,13 +361,13 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * Procède à l'ombrage des textures
 	 */
 	stateShading : function() {
-		this._callGameEvent('onLoading', 'shd', this.oRaycaster.oImages.countLoaded() + this.nShadedTiles, this.oRaycaster.oImages.countLoading() + this.nShadedTileCount);
-		++this.nShadedTiles;
+		this._callGameEvent('onLoading', 'shd', this.oRaycaster.oImages.countLoaded() + this._nShadedTiles, this.oRaycaster.oImages.countLoading() + this._nShadedTileCount);
+		++this._nShadedTiles;
 		if (!this.oRaycaster.shadeProcess()) {
 			return;
 		}
 		// this._callGameEvent('onLoading', 'shd', 1, 1);
-		this.oFrameCounter = new O876_Raycaster.FrameCounter();
+		this._oFrameCounter = new O876_Raycaster.FrameCounter();
 		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
 		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
@@ -426,14 +384,14 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	stateRunningInt : function() {
 		var nNowTimeStamp = performance.now();
 		var nFrames = 0;
-		while (this.nTimeStamp < nNowTimeStamp) {
+		while (this._nTimeStamp < nNowTimeStamp) {
 			this.oRaycaster.frameProcess();
 			this._callGameEvent('onDoomLoop');
-			this.nTimeStamp += this.nInterval;
+			this._nTimeStamp += this.nInterval;
 			nFrames++;
 		}
 		if (nFrames) {
-			var fc = this.oFrameCounter;
+			var fc = this._oFrameCounter;
 			this.oRaycaster.frameRender();
 			this._callGameEvent('onFrameRendered');
 			if (fc.check(nNowTimeStamp)) {
@@ -448,19 +406,19 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	stateRunningRAF : function(nTime) {
 		var nFrames = 0;
 		var rc = this.oRaycaster;
-		if (this.nTimeStamp === null) {
-			this.nTimeStamp = nTime;
+		if (this._nTimeStamp === null) {
+			this._nTimeStamp = nTime;
 		}
-		while (this.nTimeStamp < nTime) {
+		while (this._nTimeStamp < nTime) {
 			rc.frameProcess();
 			this._callGameEvent('onDoomLoop');
-			this.nTimeStamp += this.nInterval;
+			this._nTimeStamp += this.nInterval;
 			nFrames++;
 		}
 		if (nFrames) {
 			rc.frameRender();
 			this._callGameEvent('onFrameRendered');
-			var fc = this.oFrameCounter;
+			var fc = this._oFrameCounter;
 			if (fc.check(nTime | 0)) {
 				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
 			}

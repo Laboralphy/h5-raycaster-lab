@@ -1,4 +1,4 @@
-O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.CameraMouseKeyboardThinker, {
+O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	
 	oEasingAngle: null,
 	

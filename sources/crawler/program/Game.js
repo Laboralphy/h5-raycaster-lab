@@ -227,7 +227,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 			this.oMPL.requestPointerLock(this.oCanvas);
 			this.oMPL.setHook(this.getPlayer().oThinker.readMouseMovement, this.getPlayer().oThinker);
 		}
-		this._getMouseDevice().nSecurityDelay = 10;
+		this.getMouseDevice().nSecurityDelay = 10;
 	},
 	
 	exitPointerLockedMode: function() {
@@ -300,7 +300,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		this.oContext = this.oCanvas.getContext('2d');
 
 		// Keyboard
-		this._getKeyboardDevice();
+		this.getKeyboardDevice();
 		this.oControls = {
 			normal: {
 				forward : KEYS._CNT_FORWARD,
@@ -323,7 +323,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		this.oControls.ALIASES[KEYS._CNTFPS_A_FORWARD] = KEYS._CNTFPS_Q_FORWARD;
 		this.oControls.ALIASES[KEYS._CNTFPS_A_LEFT] = KEYS._CNTFPS_Q_LEFT;
 		// Mouse
-		this._getMouseDevice(this.oCanvas);
+		this.getMouseDevice(this.oCanvas);
 		
 		// Mouse pointer lock system
 		this.oMPL = O876_Raycaster.PointerLock;
@@ -524,8 +524,8 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 		// Instancier un Thinker PlayerKeyboard et l'assigner au mobile Camera
 		this.oMPL.setHook(null);
 		var oPlayerThinker = this.oThinkerManager.createThinker('PlayerKeyboard');
-		oPlayerThinker.oKeyboard = this._getKeyboardDevice();
-		oPlayerThinker.oMouse = this._getMouseDevice();
+		oPlayerThinker.oKeyboard = this.getKeyboardDevice();
+		oPlayerThinker.oMouse = this.getMouseDevice();
 		oPlayerThinker.oMouse.clearEvents();
 		if (this.bMPL) {
 			oPlayerThinker.defineKeys(this.oControls.fps);
@@ -895,7 +895,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	 * Transfère la machine à l'état Running quand on appui sur pause
 	 */
 	pausedKeyboardProcess: function() {
-		var k = this._getKeyboardDevice();
+		var k = this.getKeyboardDevice();
 		var nKey, sCmd, aCmd;
 		while ((nKey = k.inputKey()) !== 0) {
 			switch (nKey) {
@@ -953,7 +953,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	},
 	
 	cutsceneKeyboardProcess: function() {
-		var k = this._getKeyboardDevice();
+		var k = this.getKeyboardDevice();
 		var nKey;
 		while ((nKey = k.inputKey()) !== 0) {
 			switch (nKey) {
@@ -965,7 +965,7 @@ O2.extendClass('Game', O876_Raycaster.Engine, {
 	},
 	
 	gameKeyboardProcess: function() {
-		var k = this._getKeyboardDevice();
+		var k = this.getKeyboardDevice();
 		var nKey;
 		while ((nKey = k.inputKey()) !== 0) {
 			this.sendPluginSignal('key', nKey);

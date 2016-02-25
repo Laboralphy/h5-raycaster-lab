@@ -37,14 +37,14 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	 */
 	onEnterLevel: function() {
 		this.oRaycaster.nPlaneSpacing = 64;
-		var oCT = new O876_Raycaster.CameraMouseKeyboardThinker();
-		oCT.oMouse = this._getMouseDevice(this.oRaycaster.oCanvas);
-		oCT.oKeyboard = this._getKeyboardDevice();
+		var oCT = new O876_Raycaster.FirstPersonThinker();
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
-		oCT.useDown = function() {
+		oCT.on('use.down', (function() {
 			this.oGame.activateWall(this.oMobile);    
-		};
+		}).bind(oCT));
 
 		this.oRaycaster.oCamera.fSpeed = 6;
 		this.oRaycaster.bSky = true;
@@ -61,7 +61,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	},
 	
 	processKeys: function() {
-		switch (this._getKeyboardDevice().inputKey()) {
+		switch (this.getKeyboardDevice().inputKey()) {
 			case KEYS.ALPHANUM.I:
 				this.oRaycaster.fViewHeight += 0.1;
 				break;

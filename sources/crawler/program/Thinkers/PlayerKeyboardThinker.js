@@ -1,4 +1,4 @@
-O2.extendClass('PlayerKeyboardThinker', O876_Raycaster.MouseKeyboardThinker, {
+O2.extendClass('PlayerKeyboardThinker', CRAWLER.MouseKeyboardThinker, {
 	nDeadTime : 0,
 	nRotationTime : 0,
 	nRotationMask : 0,

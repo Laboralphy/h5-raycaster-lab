@@ -25,7 +25,7 @@ O2.extendClass('TUTORIAL1.Game', O876_Raycaster.Engine, {
 	onEnterLevel: function() {
 		this.oRaycaster.nPlaneSpacing = 64; // will be the size of a raycaster map cell
 		var oCT = new O876_Raycaster.CameraKeyboardThinker(); // the camera will be controllable by keyboard
-		oCT.oKeyboard = this._getKeyboardDevice();
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		// we declare an event when SPACEBAR is pressed
 		oCT.useDown = function() {

@@ -129,12 +129,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oGXFade.fAlphaFade = -0.05;
 		var oPlayer = this.getPlayer();
 		oPlayer.fSpeed = 3;
-		oPlayer.getThinker().button0Down = (function() { 
+		oPlayer.getThinker().on('button0.down', (function() { 
 			this.trigger('command0');
-		}).bind(this);
-		oPlayer.getThinker().button2Down = (function() { 
+		}).bind(this));
+		oPlayer.getThinker().on('button2.down', (function() { 
 			this.trigger('command2');
-		}).bind(this);
+		}).bind(this));
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
 		this._oGhostScreamer = this.oRaycaster.addGXEffect(MANSION.GX.GhostScreamer);

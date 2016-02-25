@@ -191,6 +191,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 */
 	activateNetworkListeners : function() {
 		this.setSocketHandler('disconnect');
+		this.setSocketHandler('connect');
 		Object.keys(Object.getPrototypeOf(this)).filter(function(x) {
 			return x.match(/^sc[0-9A-Z]{2}$/);
 		}).map(function(x) {
@@ -209,6 +210,13 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		var pHandler = this[sHandler];
 		var pBound = pHandler.bind(this);
 		this.oClientSocket.setSocketHandler(sEvent, pBound);
+	},
+	
+	onConnected: function() {
+	},
+	
+	scconnect : function() {
+		this.onConnected();
 	},
 
 	/**
@@ -794,8 +802,8 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		oRC.bFlatSky = true;
 		oRC.nPlaneSpacing = 64;
 		var oCT = new MW.PlayerThinker();
-		oCT.oMouse = this._getMouseDevice(oRC.oCanvas);
-		oCT.oKeyboard = this._getKeyboardDevice();
+		oCT.oMouse = this.getMouseDevice(oRC.oCanvas);
+		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		oRC.oCamera.setThinker(oCT);
 		// Tags data
@@ -996,7 +1004,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 			p.oThinker.bActive = b;
 		}
 		if (b) {
-			this._getMouseDevice().nSecurityDelay = 8;
+			this.getMouseDevice().nSecurityDelay = 8;
 		}
 	},
 
@@ -1063,7 +1071,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	// //// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
 
 	processKeys : function() {
-		var nKey = this._getKeyboardDevice().inputKey();
+		var nKey = this.getKeyboardDevice().inputKey();
 		if (nKey) {
 			var oKey = {
 				k : nKey

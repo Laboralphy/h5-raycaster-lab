@@ -21,6 +21,20 @@ O2.extendClass('O876_Raycaster.CameraKeyboardThinker', O876_Raycaster.KeyboardTh
 			use : KEYS.SPACE,
 			strafe : KEYS.ALPHANUM.C
 		});
+		this.on('forward.command', this.forwardCommand.bind(this));
+		this.on('left.command', this.leftCommand.bind(this));
+		this.on('right.command', this.rightCommand.bind(this));
+		this.on('strafe.down', this.strafeDown.bind(this));
+		this.on('strafe.up', this.strafeUp.bind(this));
+		this.on('backward.command', this.backwardCommand.bind(this));
+		this.on('forward.down', this.forwardDown.bind(this));
+		this.on('backward.down', this.backwardDown.bind(this));
+		this.on('left.down', this.leftDown.bind(this));
+		this.on('right.down', this.rightDown.bind(this));
+		this.on('forward.up', this.forwardUp.bind(this));
+		this.on('backward.up', this.backwardUp.bind(this));
+		this.on('left.up', this.leftUp.bind(this));
+		this.on('right.up', this.rightUp.bind(this));
 	},
 
 	setRotationMask : function(nBit, bValue) {
@@ -41,12 +55,12 @@ O2.extendClass('O876_Raycaster.CameraKeyboardThinker', O876_Raycaster.KeyboardTh
 	},
 
 	checkCollision: function() {
-	  if (this.oMobile.oMobileCollision !== null) {
-	    var oTarget = this.oMobile.oMobileCollision;
-	    if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
-	      this.oMobile.rollbackXY();
-	    }
-	  }
+		if (this.oMobile.oMobileCollision !== null) {
+			var oTarget = this.oMobile.oMobileCollision;
+			if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
+				this.oMobile.rollbackXY();
+			}
+		}
 	},
 
 	forwardCommand: function() {
@@ -91,9 +105,6 @@ O2.extendClass('O876_Raycaster.CameraKeyboardThinker', O876_Raycaster.KeyboardTh
 		this.oMobile.moveBackward();
 		this.checkCollision();
 	},
-
-
-
 
 	forwardDown: function() {
 		this.setRotationMask(this.ROTATION_MASK_FORWARD, true);
