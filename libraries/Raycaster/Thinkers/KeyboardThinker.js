@@ -35,7 +35,6 @@ O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
 	 */
 	defineKeys : function(a) {
 		var sEvent, i, l;
-		console.log(a);
 		for (var sEvent in a) {
 			if (Array.isArray(a[sEvent])) {
 				l = a[sEvent].length;

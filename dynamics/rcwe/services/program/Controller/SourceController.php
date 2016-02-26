@@ -6,8 +6,17 @@ class SourceController extends M\Controller\Action {
 	 */
 	public function listAction() {
 		$oMF = M\Model\Factory::getInstance();
-		$oSrc = $oMF->getModel('ServiceSources');
-		$oSrc->getAllLevels()
+		$oSrc = $oMF->getModel('ServiceImport');
+		$aList = array();
+		foreach ($oSrc->listLevels() as $sProject => $aLevels) {
+			$aList[] = $sProject;
+		}
 		$this->setViewData('list', $aList);
+	}
+
+	public function createAction() {
+		$oMF = M\Model\Factory::getInstance();
+		$oSrc = $oMF->getModel('ServiceSources');
+		$oSrc->create($this->getRequest()->getParam('n'));
 	}
 }

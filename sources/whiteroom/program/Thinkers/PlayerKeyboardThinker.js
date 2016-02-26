@@ -22,7 +22,23 @@ O2.extendClass('PlayerKeyboardThinker', EntityKeyboardThinker, {
       fire: KEYS.ALPHANUM.X,
       strafe: KEYS.ALPHANUM.C
     });
-  },
+    this.on('forward.down', this.forwardDown.bind(this));
+    this.on('backward.down', this.backwardDown.bind(this));
+    this.on('left.down', this.leftDown.bind(this));
+    this.on('right.down', this.rightDown.bind(this));
+    this.on('forward.up', this.forwardUp.bind(this));
+    this.on('backward.up', this.backwardUp.bind(this));
+    this.on('left.up', this.leftUp.bind(this));
+    this.on('right.up', this.rightUp.bind(this));
+    this.on('forward.command', this.forwardCommand.bind(this));
+    this.on('backward.command', this.backwardCommand.bind(this));
+    this.on('left.command', this.leftCommand.bind(this));
+    this.on('right.command', this.rightCommand.bind(this));
+    this.on('use.down', this.useDown.bind(this));
+    this.on('fire.down', this.fireDown.bind(this));
+    this.on('strafe.down', this.strafeDown.bind(this));
+    this.on('strafe.up', this.strafeUp.bind(this));
+ },
   
   setRotationMask: function(nBit, bValue) {
     var nMask = 1 << nBit;

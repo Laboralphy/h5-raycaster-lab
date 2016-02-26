@@ -6,8 +6,7 @@
 .terminal {
 	background-color: #000;
 	color: #999;
-	
-	font-family: PrStart;
+	font-family: monospace;
 	font-size: 16px;
 }
 

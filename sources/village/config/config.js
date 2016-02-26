@@ -3,7 +3,8 @@ var CONFIG = {
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */
     cpumonitor: false,     /* use CPU Monitor system            */
-    fullscreen: false
+    fullscreen: false,
+    fpscontrol: true
   },
   raycaster: {
     canvas: 'screen',

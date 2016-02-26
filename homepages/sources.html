@@ -13,6 +13,7 @@ $(window).on('load', function() {
 	$.getJSON(sListURL, function(data) {
 		var $ul = $('<ul></ul>');
 		Object.keys(data).map(function(s) {
+			console.log(s);
 			return '<li><a href="../sources/' + s + '/">' + s + '</a></li>';
 		}).forEach(function(s) {
 			$ul.append(s);

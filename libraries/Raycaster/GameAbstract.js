@@ -76,7 +76,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.oCamera.setThinker(oCT);
 		oCT.on('use.down', (function() {
 			this.oGame.activateWall(this.oMobile);    
-		}).bind(this));
+		}).bind(oCT));
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
