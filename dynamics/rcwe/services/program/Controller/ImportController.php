@@ -1,6 +1,11 @@
 <?php
 use O876\MVC as M;
 class ImportController extends M\Controller\Action {
+	/**
+	 * lists all levels
+	 * the result is a JS object with project names as keys and arrays
+	 * of level names as values
+	 */
 	public function listAction() {
 		$oMF = M\Model\Factory::getInstance();
 		$oImp = $oMF->getModel('ServiceImport');
@@ -8,6 +13,11 @@ class ImportController extends M\Controller\Action {
 		$this->setViewData('list', $aList);
 	}
 
+	/**
+	 * Imports a level from the source directory
+	 * - l : level name
+	 * - p : project name
+	 */
 	public function importAction() {
 		$sLevel = trim($this->getRequest()->getParam('l'));
 		$sProject = trim($this->getRequest()->getParam('p'));
@@ -20,6 +30,15 @@ class ImportController extends M\Controller\Action {
 		$this->setViewData('data', $oLevel);
 	}
 
+	/**
+	 * Exports a level to the source directory of a project
+	 * the post data will be like this :
+	 * {
+	 * 		project: project name
+	 * 		name: level name
+	 * 		data: level data
+	 * }
+	 */
 	public function exportAction() {
 		$d = json_decode($this->getRequest()->getPostData());
 		$oMF = M\Model\Factory::getInstance();

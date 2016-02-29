@@ -103,18 +103,11 @@ O2.extendClass('RCWE.Plugin.MW', O876.Mediator.Plugin, {
 				action: 'mw.import', 
 				l: sLevel 
 		}, function(d) {
-			oApplication.unserialize(JSON.parse(d));
+			oApplication.unserialize(d);
 			oApplication.cmd_clickOnBlockBrowser();
 		}, function(err) {
 			oApplication.error(err);
 		});
-		/*$.get('services/?action=mw.import&l=' + sLevel)
-		.fail(function(err) {
-			oApplication.error(err);
-		}).success(function(d) {
-			oApplication.unserialize(JSON.parse(d));
-			oApplication.cmd_clickOnBlockBrowser();
-		});*/
 	},
 	
 	cmd_exportnew: function() {

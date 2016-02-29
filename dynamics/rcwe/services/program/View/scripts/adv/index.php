@@ -1,2 +1,0 @@
-adv/index
-<?php
