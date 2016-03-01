@@ -41,6 +41,10 @@
  *   zoom: int           // level of detail  
  * }
  */
+ 
+/* jshint undef: false, unused: true */
+/* globals O2, PI, O876, O876_Raycaster, GfxTools, ArrayTools, Marker, MathTools */
+ 
 O2.createClass('O876_Raycaster.Raycaster',  {
 	// Laby Phys Properties
 	PHYS_NONE : 0x00,

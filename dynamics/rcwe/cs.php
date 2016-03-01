@@ -1,12 +1,13 @@
 <?php
 /**
- * Compilateur de scripts
- * Charge le fichier load contenant les directive de chargement
+ * Script compiler
  */
 require_once('../packer/ScriptLoader.php');
 require_once('../packer/JavascriptPacker.php');
 require_once('../packer/helper.php');
 
-$s = compileScript('load');
 header('Content-type: text/javascript');
-print $s;
+print compileScript(array(
+	'load ../../libraries',
+	'top ../../libraries/o2.js'
+));

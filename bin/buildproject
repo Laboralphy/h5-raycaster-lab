@@ -18,16 +18,15 @@ buildModuleFromSource() {
 	fi
 	local sProject="$1"
 	local sSourceDir="$sScriptDir/../sources"
-	local sPackerDir="$sScriptDir/../dynamics/packer"
+	local sProjectDir="$sSourceDir/$sProject"
 	local myPwd=`pwd`
 
-	if [ ! -d "$sSourceDir/$sProject" ]
+	if [ ! -d "$sProjectDir" ]
 	then
 		echo "There is no source project named : $sProject"
 		listAvailableSourceProjects
 	else
-		cd "$sPackerDir"
-		php -f build.php -- "$sProject"
+		php -f $sProjectDir/cjs.php -- build
 	fi
 	cd "$myPwd"
 }

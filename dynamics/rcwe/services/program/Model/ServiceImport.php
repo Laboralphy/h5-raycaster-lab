@@ -26,13 +26,16 @@ class ServiceImport {
 	
 	public function getDirectoryLevels($sDataPath) {
 		$a = array();
-		foreach (scandir(self::BASE_PATH . '/' . $sDataPath) as $sFile) {
-			if (substr($sFile, 0, 1) != '.') {
-				$sEntry = $sDataPath . '/' . $sFile;
-				if (is_dir(self::BASE_PATH . '/' . $sEntry)) {
-					$a = array_merge($a, $this->getDirectoryLevels($sEntry));
-				} elseif (substr($sFile, -7) == '.lvl.js') {
-					$a[] = basename($sEntry, '.lvl.js');
+		$aFiles = scandir(self::BASE_PATH . '/' . $sDataPath);
+		if (is_array($aFiles)) {
+			foreach (scandir(self::BASE_PATH . '/' . $sDataPath) as $sFile) {
+				if (substr($sFile, 0, 1) != '.') {
+					$sEntry = $sDataPath . '/' . $sFile;
+					if (is_dir(self::BASE_PATH . '/' . $sEntry)) {
+						$a = array_merge($a, $this->getDirectoryLevels($sEntry));
+					} elseif (substr($sFile, -7) == '.lvl.js') {
+						$a[] = basename($sEntry, '.lvl.js');
+					}
 				}
 			}
 		}
@@ -56,6 +59,36 @@ class ServiceImport {
 		return $o;
 	}
 	
+	/**
+	 * The given base 64 encoded data is an image to be save inn the resources dir
+	 * @returns name of the images
+	 */
+	public function saveImage($sBasePath, $sData64) {
+		$xData = base64_decode($sData64);
+		$sName = md5($xData);
+		$sRelPath = 'resources/gfx';
+		$sPath = $sBasePath . '/' . $sRelPath; // mkdir($structure, 0777, true)
+		if (!file_exists($sPath)) {
+			mkdir($sPath, 0777, true);
+		}
+		file_put_contents("$sPath/$sName.png", $xData);
+		return "$sRelPath/$sName.png";
+	}
+
+	public function saveResources($sBasePath, $o) {
+		foreach($o as $k => $v) {
+			if (is_string($v)) {
+				if (preg_match('/^data:image\/png;base64,/i', $v)) {
+					$sPNGData = substr($v, 22);
+					$o->$k = $this->saveImage($sBasePath, $sPNGData);
+				}
+			} elseif (is_object($v)) {
+				$o->$k = $this->saveResources($sBasePath, $v);
+			}
+		}
+		return $o;
+	}
+	
 	public function import($sProject, $sFile) {
 		$s = trim(file_get_contents(self::BASE_PATH . "/$sProject/data/levels/$sFile.lvl.js"));
 		$sData = trim($s, ');');
@@ -67,12 +100,14 @@ class ServiceImport {
 		return $this->convert($oLevel);
 	}
 	
-	public function export($sProject, $sFile, $sData) {
+	public function export($sProject, $sFile, $oData) {
 		try {
+			$oNewData = $this->saveResources(self::BASE_PATH . '/' . $sProject, $oData);
 			$s = self::BASE_PATH . "/$sProject/data/levels/$sFile.lvl.js";
 			if (!is_writable(dirname($s)) || (file_exists($s) && !is_writable($s))) {
 				throw new Exception('Permission to write file ' . $s . ' is denied');
 			}
+			$sData = json_encode($oData);
 			file_put_contents($s, "O2.createObject('WORLD_DATA.$sFile', $sData);");
 			chmod($s, 0777);
 		} catch (Exception $e) {

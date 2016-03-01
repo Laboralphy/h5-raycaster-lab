@@ -1,3 +1,0 @@
-; id		icon	stack
-
-gold		gold	999

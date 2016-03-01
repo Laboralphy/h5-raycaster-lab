@@ -69,14 +69,13 @@ function main() {
 					console: false,
 					document: false
 				});
-				var sReport = '<table class="report"><tr class="file"><th colspan="3">' + f + '</th></tr><tr class="header"><th>code</th><th>line</th><th>char</th><th>reason</th></tr>' + JSHINT.errors.map(function(r2) {
-					if (r2) {
-						return '<tr class="event"><td>' + r2.code + '</td><td>' + r2.line + '</td><td>' + r2.character + '</td><td>' + r2.reason + '</td></tr>';
-					} else {
-						return '';
-					}
-				}).join('') + '</table>';
-				if (JSHINT.errors.length) {
+				var aTr = JSHINT.errors.filter(function(r2) {
+					return !!r2;
+				}).map(function(r2) {
+					return '<tr class="event"><td>' + r2.code + '</td><td>' + r2.line + '</td><td>' + r2.character + '</td><td>' + r2.reason + '</td></tr>';
+				});
+				var sReport = '<table class="report"><tr class="file"><th colspan="3">' + f + '</th></tr><tr class="header"><th>code</th><th>line</th><th>char</th><th>reason</th></tr>' + aTr.join('') + '</table>';
+				if (JSHINT.errors.length && aTr.length) {
 					aReports.push(sReport);
 				}
 				processNextFile();

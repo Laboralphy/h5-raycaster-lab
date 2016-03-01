@@ -1,4 +1,0 @@
-load ../../libraries
-load ../../sources/magewar
-top ../../sources/magewar/data/consts.js
-top ../../libraries/o2.js

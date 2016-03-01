@@ -43,7 +43,7 @@ class ImportController extends M\Controller\Action {
 		$d = json_decode($this->getRequest()->getPostData());
 		$oMF = M\Model\Factory::getInstance();
 		$oImp = $oMF->getModel('ServiceImport');
-		$oImp->export($d->project, $d->name, json_encode($d->data));
+		$oImp->export($d->project, $d->name, $d->data);
 		$this->setViewData('name', $d->name);
 	}
 }
