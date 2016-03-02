@@ -23,9 +23,9 @@ class ServiceMWDataBuilder {
 		}
 		mkdir($sPath);
 		mkdir($sPath . '/data');
-		mkdir($sPath . '/gfx');
+		mkdir($sPath . '/tiles');
 		$sPrevPath = getcwd();
-		chdir($sPath . '/gfx');
+		chdir($sPath . '/tiles');
 		// generate images
 		$oData = $oSG->saveImages($oData, '/maptiles/');
 		// return to previous dir
@@ -43,7 +43,7 @@ class ServiceMWDataBuilder {
 			if (is_string($v)) {
 				if (preg_match('/^\/maptiles\/[0-9a-f]{32}\.png$/i', $v)) {
 					$a = explode('/', $v);
-					$sImageFile = self::MAPEXP_PATH . "/$sBasePath/gfx/" . array_pop($a);
+					$sImageFile = self::MAPEXP_PATH . "/$sBasePath/tiles/" . array_pop($a);
 					$sImageData = 'data:image/png;base64,' . base64_encode(file_get_contents($sImageFile));
 					$o->$k = $sImageData;
 				}

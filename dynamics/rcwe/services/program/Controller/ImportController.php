@@ -46,4 +46,16 @@ class ImportController extends M\Controller\Action {
 		$oImp->export($d->project, $d->name, $d->data);
 		$this->setViewData('name', $d->name);
 	}
+	
+	public function resourcelistAction() {
+		$p = $this->getRequest()->getParam('p');
+		if (!$p) {
+			throw new Exception('no project specified');
+		}
+		$oMF = M\Model\Factory::getInstance();
+		$oImp = $oMF->getModel('ServiceImport');
+		$a = $oImp->getSourceLevelResources($p);
+		$this->setViewData('list', $a);
+		$this->render('import/list');
+	}
 }

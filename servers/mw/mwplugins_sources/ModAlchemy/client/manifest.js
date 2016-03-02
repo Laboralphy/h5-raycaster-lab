@@ -9,7 +9,7 @@ O2.createObject('MW.PLUGINS_DATA.ModAlchemy', {
 	},
 	tiles: { // liste des ressources graphique (images, icones) utilisée par le widget
 		alchemy_icons: {
-			src: 'resources/gfx/icons/alchemy_icons.png',	// fichier image
+			src: 'resources/tiles/icons/alchemy_icons.png',	// fichier image
 			width: 32,	// taille de l'image
 			height: 32,
 			frames: 6,	// nombre de frames

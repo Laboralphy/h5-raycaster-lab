@@ -6,8 +6,8 @@
 var GFX_DATA = {
   textures: {
     white: {
-      src: 'resources/gfx/textures_white.png',
-      image: 'resources/gfx/textures_white.png',
+      src: 'resources/tiles/textures_white.png',
+      image: 'resources/tiles/textures_white.png',
       codes: [
         [0, 0],     // 0 mur normal
         [2, 0],     // 1 mur / embrasure
@@ -85,7 +85,7 @@ var GFX_DATA = {
 
   tiles: {
     l1: {
-      src: 'resources/gfx/laser1.png',
+      src: 'resources/tiles/laser1.png',
       width: 64,
       height: 64,
       frames: 7,
@@ -95,7 +95,7 @@ var GFX_DATA = {
       ]
     },
     l3: {
-      src: 'resources/gfx/laser3.png',
+      src: 'resources/tiles/laser3.png',
       width: 64,
       height: 64,
       frames: 7,
@@ -105,7 +105,7 @@ var GFX_DATA = {
       ]
     },
     skull: {
-      src: 'resources/gfx/skull.png',
+      src: 'resources/tiles/skull.png',
       width: 64,
       height: 64,
       frames: 46,

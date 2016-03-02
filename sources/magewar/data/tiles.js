@@ -1,6 +1,6 @@
 O2.createObject('MW.TILES_DATA', {
 	m_warlock_b : {
-		src : 'resources/gfx/sprites/m_warlock_b.png',
+		src : 'resources/tiles/sprites/m_warlock_b.png',
 		width : 64,
 		height : 96,
 		frames : 27,
@@ -11,7 +11,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	m_succubus : {
-		src : 'resources/gfx/sprites/m_succubus.png',
+		src : 'resources/tiles/sprites/m_succubus.png',
 		width : 64,
 		height : 96,
 		frames : 67,
@@ -22,7 +22,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	m_imp1 : {
-		src : 'resources/gfx/sprites/m_imp1.png',
+		src : 'resources/tiles/sprites/m_imp1.png',
 		width : 64,
 		height : 96,
 		frames : 59,
@@ -34,7 +34,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	m_imp2 : {
-		src : 'resources/gfx/sprites/m_imp2.png',
+		src : 'resources/tiles/sprites/m_imp2.png',
 		width : 64,
 		height : 96,
 		frames : 59,
@@ -46,7 +46,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	m_pumpkin : {
-		src : 'resources/gfx/sprites/m_pumpkin.png',
+		src : 'resources/tiles/sprites/m_pumpkin.png',
 		width : 64,
 		height : 96,
 		frames : 19,
@@ -59,7 +59,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	m_bigknight : {
-		src : 'resources/gfx/sprites/m_bigknight.png',
+		src : 'resources/tiles/sprites/m_bigknight.png',
 		width : 64,
 		height : 96,
 		frames : 51,
@@ -71,7 +71,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	p_fireball : {
-		src : 'resources/gfx/sprites/p_fireball.png',
+		src : 'resources/tiles/sprites/p_fireball.png',
 		width : 50,
 		height : 64,
 		frames : 20,
@@ -81,7 +81,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	p_magbolt : {
-		src : 'resources/gfx/sprites/p_magbolt.png',
+		src : 'resources/tiles/sprites/p_magbolt.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -90,7 +90,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c2 : {
-		src : 'resources/gfx/sprites/p_magbolt_c2.png',
+		src : 'resources/tiles/sprites/p_magbolt_c2.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -99,7 +99,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c3 : {
-		src : 'resources/gfx/sprites/p_magbolt_c3.png',
+		src : 'resources/tiles/sprites/p_magbolt_c3.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -108,7 +108,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c4 : {
-		src : 'resources/gfx/sprites/p_magbolt_c4.png',
+		src : 'resources/tiles/sprites/p_magbolt_c4.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -117,7 +117,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c5 : {
-		src : 'resources/gfx/sprites/p_magbolt_c5.png',
+		src : 'resources/tiles/sprites/p_magbolt_c5.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -126,7 +126,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c6 : {
-		src : 'resources/gfx/sprites/p_magbolt_c6.png',
+		src : 'resources/tiles/sprites/p_magbolt_c6.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -135,7 +135,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c7 : {
-		src : 'resources/gfx/sprites/p_magbolt_c7.png',
+		src : 'resources/tiles/sprites/p_magbolt_c7.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -144,7 +144,7 @@ O2.createObject('MW.TILES_DATA', {
 				[ [ 4, 5, 6, 7, 0, 1, 2, 3 ], 1, 0, 0 ] ]
 	},
 	p_magbolt_c8 : {
-		src : 'resources/gfx/sprites/p_magbolt_c8.png',
+		src : 'resources/tiles/sprites/p_magbolt_c8.png',
 		width : 48,
 		height : 64,
 		frames : 14,
@@ -154,7 +154,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	p_lightbolt : {
-		src : 'resources/gfx/sprites/p_lightbolt.png',
+		src : 'resources/tiles/sprites/p_lightbolt.png',
 		width : 64,
 		height : 96,
 		frames : 6,
@@ -163,7 +163,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	p_spell: {
-		src : 'resources/gfx/sprites/p_spell.png',
+		src : 'resources/tiles/sprites/p_spell.png',
 		width : 64,
 		height : 51,
 		frames : 8,
@@ -173,7 +173,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	p_spell_c2: {
-		src : 'resources/gfx/sprites/p_spell_c2.png',
+		src : 'resources/tiles/sprites/p_spell_c2.png',
 		width : 64,
 		height : 51,
 		frames : 8,
@@ -183,7 +183,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	p_bouncing: {
-		src : 'resources/gfx/sprites/p_bouncing.png',
+		src : 'resources/tiles/sprites/p_bouncing.png',
 		width : 45,
 		height : 45,
 		frames : 5,
@@ -195,7 +195,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 
 	p_icebolt : {
-		src : 'resources/gfx/sprites/p_icebolt.png',
+		src : 'resources/tiles/sprites/p_icebolt.png',
 		width : 48,
 		height : 64,
 		frames : 30,
@@ -205,7 +205,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	p_slash : {
-		src : 'resources/gfx/sprites/p_slash.png',
+		src : 'resources/tiles/sprites/p_slash.png',
 		width : 64,
 		height : 96,
 		frames : 4,
@@ -216,7 +216,7 @@ O2.createObject('MW.TILES_DATA', {
 	
 
 	e_hazes: {
-		src : 'resources/gfx/sprites/e_hazes.png',
+		src : 'resources/tiles/sprites/e_hazes.png',
 		width : 16,
 		height : 24,
 		frames : 16,
@@ -226,7 +226,7 @@ O2.createObject('MW.TILES_DATA', {
 	
 	// objects
 	o_smoke_white : {
-		src : 'resources/gfx/sprites/o_smoke_white.png',
+		src : 'resources/tiles/sprites/o_smoke_white.png',
 		width : 64,
 		height : 96,
 		frames : 10,
@@ -235,7 +235,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	o_teleport : {
-		src : 'resources/gfx/sprites/o_teleport.png',
+		src : 'resources/tiles/sprites/o_teleport.png',
 		width : 64,
 		height : 96,
 		frames : 8,
@@ -245,7 +245,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	o_boom : {
-		src : 'resources/gfx/sprites/o_boom.png',
+		src : 'resources/tiles/sprites/o_boom.png',
 		width : 64,
 		height : 96,
 		frames : 7,
@@ -254,7 +254,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	o_expfire : {
-		src : 'resources/gfx/sprites/o_expfire.png',
+		src : 'resources/tiles/sprites/o_expfire.png',
 		width : 64,
 		height : 96,
 		frames : 8,
@@ -263,7 +263,7 @@ O2.createObject('MW.TILES_DATA', {
 	},
 	
 	o_bumporb : {
-		src : 'resources/gfx/sprites/p_bouncing.png',
+		src : 'resources/tiles/sprites/p_bouncing.png',
 		width : 45,
 		height : 45,
 		frames : 5,
@@ -273,7 +273,7 @@ O2.createObject('MW.TILES_DATA', {
 	
 	// icones
 	i_icons32 : {
-		src : 'resources/gfx/icons/icons32.png',
+		src : 'resources/tiles/icons/icons32.png',
 		width : 32,
 		height : 32,
 		frames : 64,
@@ -283,7 +283,7 @@ O2.createObject('MW.TILES_DATA', {
 	
 	// icones 16
 	i_icons16 : {
-		src : 'resources/gfx/icons/icons16.png',
+		src : 'resources/tiles/icons/icons16.png',
 		width : 16,
 		height : 32,
 		frames : 64,

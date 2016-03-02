@@ -9,7 +9,7 @@ O2.createObject('MW.PLUGINS_DATA.ModAccuracy', {
 	},
 	tiles: { // liste des ressources graphique (images, icones) utilisée par le widget
 		accuracy_icon: {
-			src: 'resources/gfx/icons/accuracy_icon.png',	// fichier image
+			src: 'resources/tiles/icons/accuracy_icon.png',	// fichier image
 			width: 32,	// taille de l'image
 			height: 32,
 			frames: 1,	// nombre de frames

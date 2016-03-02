@@ -41,10 +41,10 @@ class ServiceGame {
 			
 			
 			// creating resources dir
-			mkdir($sPath . '/resources/gfx', 0777, true);
+			mkdir($sPath . '/resources/tiles', 0777, true);
 			// go there
 			$sPrevPath = getcwd();
-			chdir($sPath . '/resources/gfx');
+			chdir($sPath . '/resources/tiles');
 			// generate images
 			$oData = $this->saveImages($oData);
 			// return to previous dir
@@ -99,7 +99,7 @@ class ServiceGame {
 	 * @param $oData données
 	 * @return array même données
 	 */
-	public function saveImages($oData, $sFinalPath = 'resources/gfx/') {
+	public function saveImages($oData, $sFinalPath = 'resources/tiles/') {
 		foreach ($oData as $k => $v) {
 			if (is_string($v) && preg_match('/^data:image\\/([0-9a-z]+);base64,(.*)$/', $v, $aRegs)) {
 				$sExt = $aRegs[1];

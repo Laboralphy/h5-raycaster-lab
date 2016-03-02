@@ -6,40 +6,80 @@ require_once('RaycasterConverter.php');
 class ServiceImport {
 	
 	const BASE_PATH = '../../../sources';
+	const TILE_PATH = 'tiles';
 	
 	/**
 	 * Builds the level list
+	 * @return array of array of strings : project => array of level-name
 	 */
 	public function listLevels() {
 		$a = array();
 		foreach (scandir(self::BASE_PATH) as $sFile) {
 			if (substr($sFile, 0, 1) != '.') {
-				$a[$sFile] = $this->getSourceLevels($sFile);
+				$a[$sFile] = array_keys($this->getSourceLevels($sFile));
 			}
 		}
 		return $a;
 	}
 	
+	/**
+	 * Return the levels of the given directory
+	 * A shortcut of the getDirectoryLevels function
+	 */
 	public function getSourceLevels($sSource) {
 		return $this->getDirectoryLevels($sSource . '/data/levels');
 	}
 	
+	/**
+	 * Return the levels of the given directory
+	 * And all the resources files used by the levels
+	 */
+	public function getSourceLevelResources($sSource) {
+		$a = $this->getSourceLevels($sSource);
+		foreach ($a as $l => $d) {
+			$sData = file_get_contents(self::BASE_PATH . '/' . $d['file']);
+			$a[$l]['resources'] = $this->getLevelResources($sData);
+		}
+		return $a;
+	}
+	
+	/**
+	 * Return the levels of the given directory
+	 * The returned array contains pairs of (level => data)
+	 * where "data" is an array of
+	 * (name => the level name, resources => array of string)
+	 * @param $sSource source directory
+	 * @return array of level-info (name => '', resources => '')
+	 */
 	public function getDirectoryLevels($sDataPath) {
 		$a = array();
 		$aFiles = scandir(self::BASE_PATH . '/' . $sDataPath);
 		if (is_array($aFiles)) {
-			foreach (scandir(self::BASE_PATH . '/' . $sDataPath) as $sFile) {
+			foreach ($aFiles as $sFile) {
 				if (substr($sFile, 0, 1) != '.') {
 					$sEntry = $sDataPath . '/' . $sFile;
 					if (is_dir(self::BASE_PATH . '/' . $sEntry)) {
 						$a = array_merge($a, $this->getDirectoryLevels($sEntry));
 					} elseif (substr($sFile, -7) == '.lvl.js') {
-						$a[] = basename($sEntry, '.lvl.js');
+						$a[basename($sEntry, '.lvl.js')] = array(
+							'file' => $sEntry
+						);
 					}
 				}
 			}
 		}
 		return $a;
+	}
+	
+	/**
+	 * Returns all resources referenced by the level json file
+	 */
+	public function getLevelResources($s) {
+		if (preg_match_all('/([0-9a-f]{32}\.png)/i', $s, $aRegs)) {
+			return $aRegs;
+		} else {
+			return null;
+		}
 	}
 	
 	public function loadResources($sBasePath, $o) {
@@ -58,7 +98,7 @@ class ServiceImport {
 		}
 		return $o;
 	}
-	
+
 	/**
 	 * The given base 64 encoded data is an image to be save inn the resources dir
 	 * @returns name of the images
@@ -66,7 +106,7 @@ class ServiceImport {
 	public function saveImage($sBasePath, $sData64) {
 		$xData = base64_decode($sData64);
 		$sName = md5($xData);
-		$sRelPath = 'resources/gfx';
+		$sRelPath = 'resources/' . self::TILE_PATH;
 		$sPath = $sBasePath . '/' . $sRelPath; // mkdir($structure, 0777, true)
 		if (!file_exists($sPath)) {
 			mkdir($sPath, 0777, true);
