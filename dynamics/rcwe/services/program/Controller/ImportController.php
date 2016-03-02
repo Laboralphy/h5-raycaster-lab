@@ -54,7 +54,7 @@ class ImportController extends M\Controller\Action {
 		}
 		$oMF = M\Model\Factory::getInstance();
 		$oImp = $oMF->getModel('ServiceImport');
-		$a = $oImp->getSourceLevelResources($p);
+		$a = $oImp->getHashedResourceStatus($p);
 		$this->setViewData('list', $a);
 		$this->render('import/list');
 	}

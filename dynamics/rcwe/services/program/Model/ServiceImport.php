@@ -34,13 +34,43 @@ class ServiceImport {
 	 * Return the levels of the given directory
 	 * And all the resources files used by the levels
 	 */
-	public function getSourceLevelResources($sSource) {
+	public function getSourceLevelHashedResources($sSource) {
 		$a = $this->getSourceLevels($sSource);
 		foreach ($a as $l => $d) {
 			$sData = file_get_contents(self::BASE_PATH . '/' . $d['file']);
-			$a[$l]['resources'] = $this->getLevelResources($sData);
+			$nFirstBrace = strpos($sData, '{');
+			$nLastBrace = strrpos($sData, '}');
+			$sData = substr($sData, $nFirstBrace, $nLastBrace - $nFirstBrace + 1);
+			$a[$l]['resources'] = $this->getLevelHashedResources(json_decode($sData));
 		}
 		return $a;
+	}
+	
+	/**
+	 * Returns an array pairing hasged resource name and hashed resource status (used or unused)
+	 * this method is used to list all unused hashed resources that can be safely deleted
+	 */
+	public function getHashedResourceStatus($sSource) {
+		$aResources = scandir(self::BASE_PATH . '/' . $sSource . '/resources/' . self::TILE_PATH);
+		$aHashedResources = array();
+		foreach ($aResources as $r) {
+			if (preg_match('/^[0-9a-f]{32}\.png$/i', $r)) {
+				$aHashedResources[$r] = 0; // by default : not found
+			}
+		}
+		$aSLHR = $this->getSourceLevelHashedResources($sSource);
+		foreach ($aSLHR as $sLevel => $aLevelData) {
+			foreach ($aLevelData['resources'] as $sFile) {
+				$r = basename($sFile);
+				if (array_key_exists($r , $aHashedResources)) {
+					// resource exists in .lvl.js and is present on disk
+					$aHashedResources[$r] = 1; // present on disk, and used in .lvl.js
+				} else {
+					$aHashedResources[$r] = 2; // referenced in .lvl.js but not found on disk
+				}
+			}
+		}
+		return $aHashedResources;
 	}
 	
 	/**
@@ -74,14 +104,20 @@ class ServiceImport {
 	/**
 	 * Returns all resources referenced by the level json file
 	 */
-	public function getLevelResources($s) {
-		if (preg_match_all('/([0-9a-f]{32}\.png)/i', $s, $aRegs)) {
-			return $aRegs;
-		} else {
-			return null;
+	public function getLevelHashedResources($o) {
+		$a = array();
+		foreach($o as $k => $v) {
+			if (is_string($v)) {
+				if (preg_match('/^resources.*[0-9a-f]{32}\.png$/i', $v)) {
+					$a[] = $v;
+				}
+			} elseif (is_object($v)) {
+				$a = array_merge($a, $this->getLevelHashedResources($v));
+			}
 		}
+		return $a;
 	}
-	
+
 	public function loadResources($sBasePath, $o) {
 		foreach($o as $k => $v) {
 			if (is_string($v)) {

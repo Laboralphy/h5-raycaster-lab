@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# a tool for archiving deprecated projects
+# this tools zip project sources and move them to "archive"
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+listAvailableSourceProjects() {
+	echo "Here are the available source projects : "
+	ls "$sScriptDir/../sources"
+}
+
+
+archiveProject() {
+	tar -czf "../$1.tar.gz" *
+	cd ..
+	mv "$1.tar.gz" ../archives/
+}
+
+
+projectOperation() {
+	local sOperation="$1"
+	local sProject="$2"
+	if [ -z "$sProject" ]
+	then
+		echo "syntax: <command> <project>"
+		echo "available commands : arc, build"
+		listAvailableSourceProjects
+		return
+	fi
+	local sSourceDir="$sScriptDir/../sources"
+	local sProjectDir="$sSourceDir/$sProject"
+	local myPwd=`pwd`
+
+	if [ ! -d "$sProjectDir" ]
+	then
+		echo "There is no source project named : $sProject"
+		listAvailableSourceProjects
+	else
+		cd "$sProjectDir"
+		case "$sOperation" in
+
+			# archive
+			"arc")
+				archiveProject "$sProject"
+			;;
+
+			# build			
+			"build")
+				php -f $sProjectDir/cjs.php -- build
+			;;
+
+			*)
+				echo "unknown command : $sOperation"
+			;;
+		esac
+
+		cd "$myPwd"
+	fi
+}
+
+projectOperation "$1" "$2"
+
