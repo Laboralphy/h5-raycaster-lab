@@ -39,8 +39,8 @@ cleanDir() {
 # si un paramètre "pack" est spécifié, on compresse le tout.
 buildProject() {
 	echo "(i) build client side project"
-	cd $rc_dir/dynamics/packer
-	php -f build.php -- magewar nopack > /dev/null
+	cd $rc_dir
+	bash bin/pman build magewar
 	cd $server_dir
 
 	rmFiles $server_mod_dir

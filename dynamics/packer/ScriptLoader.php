@@ -6,6 +6,7 @@ class ScriptLoader {
 	protected $_aTops = null;
 	protected $_aBottoms = null;
 	protected $_aOptions = null;
+	protected $_aExcludes = null;
 
 	/**
 	 * Modifier la valeur d'une option
@@ -207,6 +208,15 @@ class ScriptLoader {
 				$this->_aFiles = $this->setOnBottom($this->_aFiles, $sFile);
 			}
 		}
+		$aExcludes = $this->_aExcludes;
+		$this->_aFiles = array_filter($this->_aFiles, function($f) use ($aExcludes) {
+			foreach ($aExcludes as $x) {
+				if (trim($x) && preg_match('/' . strtr($x, array('/' => '\\/')) . '/', $f)) {
+					return false;
+				}
+			}
+			return true;
+		});
 	}
 
 	/** 
@@ -254,7 +264,16 @@ class ScriptLoader {
 		return $bSplit ? $aScriptList : implode("\n", $aScriptList);
 	}
 
+/**
+ * COMMAND syntax
+ * 
+ * the given parameter is an array of string , containing packing directives
+ * 
+ * load <path> -- loads the js file located in <path>
+ * top <file> -- move <file> on top of the js file list (it will be load prior to the other, for dependancy purpose)
+ */
 	public function execute($aCommands) {
+		$this->_aExcludes = array();
 		foreach ($aCommands as $sCommand) {
 			$aCommand = explode(' ', trim($sCommand));
 			$sOpcode = array_shift($aCommand);
@@ -267,7 +286,11 @@ class ScriptLoader {
 				case 'top':
 					$this->setTopFile($sParam);
 					break;
-
+					
+				case 'exclude':
+					$this->_aExcludes[] = $sParam;
+					break;
+					
 				default:
 					if ($sOpcode) {
 						$this->setOption($sOpcode, $sParam);

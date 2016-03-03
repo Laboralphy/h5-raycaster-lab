@@ -34,28 +34,15 @@
 	margin: 2px;
 }
 
-
-/*
-.fileimportdialog ul.import > li.source {
-	margin-top: 16px;
-}
-
-.fileimportdialog ul.import > li.source > span {
-	font-size: 130%;
-	font-weight: bold;
-}
-
-.fileimportdialog ul.import li.notfound {
-	font-style: italic;
-	font-weight: bold;
-	color: #800;
-}
-
-.fileimportdialog ul.import select {
-	min-width: 256px;
-}
-*/
-
 .fileimportdialog .levelSelector select.twinSelect {
 	width: 128px;
+}
+
+
+.fileimportdialog img.unused {
+	max-width: 64px;
+	height: 96px;
+	border: solid 2px #DD8800;
+	padding: 2px;
+	margin: 2px;
 }

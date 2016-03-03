@@ -5,7 +5,18 @@ function packScript($s, $sComp = 'Normal') {
 	return $oPacker->pack();
 }
 
-
+/**
+ * LOAD syntax
+ * 
+ * the given parameter is an array of string , containing packing directives
+ * 
+ * 
+ * load <path> -- loads the js file located in <path>
+ * top <file> -- move <file> on top of the js file list (it will be load prior to the other, for dependancy purpose)
+ * pack -- will pack all files
+ * verbose -- will add some comments (file list, sizes, etc...)
+ * list -- will only generate the file list
+ */
 function compileScript($f) {
 	if (is_array($f)) {
 		$aConfigFile = $f;

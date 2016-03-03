@@ -60,6 +60,57 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 		}
 	},
 	
+	cmd_delunused: function(oEvent) {
+		var $btn = $(oEvent.target);
+		var sProject = $btn.data('project');
+		var nTileCount = $btn.data('tilecount');
+		if (confirm('Delete ' + nTileCount + ' unused tile' + (nTileCount > 1 ? 's' : '') + ' from ' + sProject + ' project ? ')) {
+			$.ajax({
+				url: 'services/',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					action: 'import.remunused',
+					p: sProject
+				},
+				success: (function() {
+					W.popup('Message', 'Done.');
+					this.cmd_checkunused();
+				}).bind(this),
+				error: function(err) {
+					W.error('An error occured while deleting those tiles : ' + err);
+				}
+			});
+		}
+	},
+	
+	cmd_checkunused: function() {
+		var sProject = $('select.twinSelect', this.oScrollZone).eq(0).val();
+		// ask service
+		$.rcweGetJSON('services/', { action: 'import.unused', p: sProject }, (function(data) {
+			var $report = $('div.unused', this.oScrollZone);
+			$report.empty();
+			var nTileCount = Object.keys(data).length;
+			if (nTileCount) {
+				$report.append('<p>Here is the list of duplicate and unused tiles for <b>' + sProject + '</b>, you should delete them.</p>');
+				$div = $('<div></div>');
+				$remBtn = $('<button type="button" style="font-weight: bold; color: #800">DELETE THESE TILES</button>');
+				$report.append($div);
+				$div.append($remBtn);
+				$remBtn.data('project', sProject);
+				$remBtn.data('tilecount', nTileCount);
+				$remBtn.on('click', this.cmd_delunused.bind(this));
+				for (var sResource in data) {
+					if (data[sResource] == 0) {
+						$report.append('<img class="unused" src="../../sources/' + sProject + '/resources/tiles/' + sResource + '"/>');
+					}
+				}
+			} else {
+				$report.append('<p>It seems there are no unused tiles for <b>' + sProject + '</b>. This is good to know.</p>')
+			}
+		}).bind(this));
+	},
+	
 	show: function() {
 		__inherited();
 		$.rcweGetJSON('services/', { action: 'import.list' }, (function(data) {
@@ -75,8 +126,16 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 			$tds.eq(1).append($both.get(1));
 			
 			$form.append($table);
-			$p = $('<p><b>Import/Export a level</b></p><p>This is the import/export tool. It can be used to transfer levels from editor and game projects which are located under the <i>sources</i> directory.</p>');
+			var $p = $('<p><b>Import/Export a level</b></p><p>This is the import/export tool. It can be used to transfer levels from editor and game projects which are located under the <i>sources</i> directory.</p>');
 			this.oScrollZone.empty().append($p, $form);
+			
+			$p = $('<p><b>Check unused resources</b></p><p>You may check whereas each graphical resource (tile) is unused or missing.</p>');
+			var $missingBtn = $('<button type="button">Check unused/missing resources</button>');
+			var $unused = $('<div></div>');
+			$unused.append($missingBtn);
+			var $report = $('<div class="unused"></div>');
+			this.oScrollZone.append('<hr/>', $p, $unused, $report);
+			$missingBtn.on('click', this.cmd_checkunused.bind(this));
 		}).bind(this));
 	},
 

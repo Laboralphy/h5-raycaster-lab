@@ -18,17 +18,29 @@ require_once PROJECT_PATH . '/../../dynamics/packer/helper.php';
 
 
 
+function getLoadDirectives() {
+	$FILE = 'load.cjs';
+	if (file_exists($FILE)) {
+		$aDir = file($FILE);
+	} else {
+		$aDir = array();
+	}
+	return $aDir;
+}
+
+
 /**
  * Script concatenation
  * @return string
  */
-function concatScripts() {
+function concatScripts(array $aDirectives = array()) {
 	header('Content-type: text/javascript; charset=UTF-8');
-	return compileScript(array(
+	$a = array_merge(array(
 		'load ../../libraries',
 		'load .',
 		'top ../../libraries/o2.js'
-	));
+	), getLoadDirectives(), $aDirectives);
+	return compileScript($a);
 }
 
 function deploy($aArgOpt) {
@@ -53,12 +65,12 @@ function deploy($aArgOpt) {
 
 	// creating one-file script
 	print "packing scripts...\n";
-	$aLoadScript = array(
+	$aLoadScript = array_merge(array(
 		'load ../../libraries',
 		'load .',
 		'top ../../libraries/ClassMagic.js',
 		'top ../../libraries/o2.js'
-	);
+	), getLoadDirectives());
 
 
 	// option "nopack" will not use JsPacker
@@ -97,10 +109,13 @@ function cjs() {
 			case 'build':
 				deploy($argv);
 			break;
+			
+			case 'list':
+				print concatScripts(array('list')) . "\n";
+			break;
 		}
 	} else {
 		print concatScripts();
 	}
 	chdir($PWD);
 }
-

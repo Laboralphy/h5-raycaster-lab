@@ -83,6 +83,9 @@ class ServiceImport {
 	 */
 	public function getDirectoryLevels($sDataPath) {
 		$a = array();
+		if (!file_exists(self::BASE_PATH . '/' . $sDataPath)) {
+			return $a;
+		}
 		$aFiles = scandir(self::BASE_PATH . '/' . $sDataPath);
 		if (is_array($aFiles)) {
 			foreach ($aFiles as $sFile) {
@@ -194,5 +197,10 @@ class ServiceImport {
 
 	public function convert($oJSON) {
 		return RaycasterConverter::convert($oJSON);
+	}
+	
+	public function removeResource($sProject, $sFileRef) {
+		$sFileName = self::BASE_PATH . '/' . $sProject . '/resources/' . $sFileRef;
+		unlink($sFileName);
 	}
 }

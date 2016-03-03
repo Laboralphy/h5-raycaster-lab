@@ -47,15 +47,35 @@ class ImportController extends M\Controller\Action {
 		$this->setViewData('name', $d->name);
 	}
 	
-	public function resourcelistAction() {
+	public function unusedAction() {
 		$p = $this->getRequest()->getParam('p');
 		if (!$p) {
 			throw new Exception('no project specified');
 		}
 		$oMF = M\Model\Factory::getInstance();
 		$oImp = $oMF->getModel('ServiceImport');
-		$a = $oImp->getHashedResourceStatus($p);
+		$a = array_filter($oImp->getHashedResourceStatus($p), function($v) {
+			return $v !== 1;
+		});
 		$this->setViewData('list', $a);
 		$this->render('import/list');
 	}
+	
+	public function remunusedAction() {
+		$p = $this->getRequest()->getParam('p');
+		if (!$p) {
+			throw new Exception('no project specified');
+		}
+		$oMF = M\Model\Factory::getInstance();
+		$oImp = $oMF->getModel('ServiceImport');
+		$a = array_filter($oImp->getHashedResourceStatus($p), function($v) {
+			return $v !== 1;
+		});
+		foreach ($a as $sFile => $v) {
+			$oImp->removeResource($p, 'tiles/' . $sFile);
+		}
+		$this->setViewData('list', $a);
+		$this->render('import/list');
+	}
+	
 }
