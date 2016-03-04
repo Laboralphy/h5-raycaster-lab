@@ -6,7 +6,6 @@ var CONFIG = {
 	game: {
 		interval: 40,			/* timer interval (ms). you should not change this value */
 		doomloop: 'interval',	/* doomloop type "raf" or "interval". "raf" is very cpu intensive, "interval" is a cool method */
-		cpumonitor: false,		/* use CPU Monitor system, don't use it, leave this value at false */
 		fullscreen: $FULLSCREEN, /* fullscreen flag */
 		fpscontrol: $FPSCONTROL /* fps control (mouse + keyboard WASD) flag */
 	},

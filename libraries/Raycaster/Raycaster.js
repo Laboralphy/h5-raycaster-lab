@@ -36,9 +36,7 @@
  * 
  * raycasterConfig = {
  *   canvas: string | HTMLCanvasElement,   // canvas id or canvas instance
- *   ghostVision: float,   // alpha du ghost vision (intensité de l'effet de flou) 
  *   drawMap: boolean,   // drawing map or not
- *   zoom: int           // level of detail  
  * }
  */
  

@@ -158,24 +158,18 @@ levelData = {
 
 var CONFIG = {
   game: {
-    interval: 40,         /* timer interval (ms)                */
-    doomloop: 'interval', /* doomloop type "raf" or "interval"  */
-    cpumonitor: false,     /* use CPU Monitor system            */
-    fullscreen: false
+    interval: 40,			/* timer interval (ms)                */
+    doomloop: 'interval',	/* doomloop type "raf" or "interval"  */
+    fullscreen: false,		/* if true : the game will be fullscreen */
+    fpscontrol: false,		/* if true : the standard fps control will applied to move the camera */
+    controlthinker: ''		/* sets a custom control thinker ; give a classname here */
   },
   raycaster: {
-    canvas: 'screen',
-    ghostVision: 0,
-    drawMap: false,
-    smoothTextures: false,
-    zoom: 1
+    canvas: 'screen',		/* html identifient of the rendering DOM canvas */
+    drawMap: false,			/* if true : a small debug map will be displayed will playing */
+    smoothTextures: false,	/* if true : the wall textures will look smoother */
+    planeSpacing: 64,		/* the size of a map grid cell (by default : 64).
+    wallHeight: 96,			/* the height of walls */
+    shades: 16				/* how many shades : reduce this number to reduce memory consumption */
   }
 };
-
-planeSpacing		int		64			Valeur de l'espacement des blocks du laby 
-zoom				int		1			Valeur du niveau de détail (1, 2, 4) niveau 1 = très beau
-shades				int		15			Nombre de niveaux d'ombrage
-canvas				string				Identifiant du canvas servant d'écran de rendu
-smoothTextures		bool	false		true : les textures sont lissée
-ghostVision			int		0			si > 0 alors un effet de flou cinétique est ajouté. l'effet de flou cinétique augmente avec la valeur de ce paramètre
-drawMap				bool	false		affiche une petite carte si le paramètre vaut true

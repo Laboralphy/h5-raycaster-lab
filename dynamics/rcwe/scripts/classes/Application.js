@@ -747,7 +747,6 @@ O2.createClass('RCWE.Application', {
 			  game: {
 				interval: 40,         /* timer interval (ms)                */
 				doomloop: 'interval', /* doomloop type "raf" or "interval"  */
-				cpumonitor: false,     /* use CPU Monitor system            */
 				fullscreen: false
 			  },
 			  raycaster: {

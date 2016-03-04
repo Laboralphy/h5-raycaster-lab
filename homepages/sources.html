@@ -11,7 +11,7 @@
 var sListURL = '../dynamics/rcwe/services/?action=import.list';
 $(window).on('load', function() {
 	$.getJSON(sListURL, function(data) {
-		var $ul = $('<ul></ul>');
+		var $ul = $('<ul class="mainmenu"></ul>');
 		Object.keys(data).map(function(s) {
 			return '<li><a href="../sources/' + s + '/">' + s + '</a></li>';
 		}).forEach(function(s) {
@@ -29,7 +29,7 @@ $(window).on('load', function() {
 			<div class="container">
 				<div class="title">Laboralphy raycaster engine - projects</div>
 				<div class="suboptions">&lt; <a href="../">BACK</a></div>
-				<p>Here is a list of the W.I.P projects.</p>
+				<p>Here is a list of the "Work In Progress" projects.</p>
 			</div>
 			<br/>
 		</div>
