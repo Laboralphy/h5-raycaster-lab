@@ -93,7 +93,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -108,7 +108,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c2 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c2",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -123,7 +123,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c3 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c3",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -138,7 +138,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c4 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c4",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -153,7 +153,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c5 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c5",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -168,7 +168,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c6 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c6",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -183,7 +183,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c7 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c7",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -198,7 +198,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_magbolt_c8 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_magbolt_c8",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -213,7 +213,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_firebolt : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_fireball",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -228,7 +228,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_fireball : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_fireball",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -243,7 +243,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_lightbolt : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_lightbolt",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 3,
@@ -258,7 +258,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_spell : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_spell",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -273,7 +273,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_spell_c2 : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_spell_c2",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -288,7 +288,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_bouncing : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : 'p_bouncing',
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 45,
 		thinker : "MW.Mob",
 		fx : 2,
@@ -303,7 +303,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_icebolt : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_icebolt",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 32,
 		thinker : "MW.MagicMissile",
 		fx : 2,
@@ -318,7 +318,7 @@ O2.createObject('MW.BLUEPRINTS_DATA', {
 	p_slash : {
 		type : RC.OBJECT_TYPE_MISSILE,
 		tile : "p_slash",
-		width: CONST.MISSILE_SIZE_NORMAL,
+		width: 14,
 		height : 16,
 		thinker : "MW.MagicMissile",
 		fx : 2,

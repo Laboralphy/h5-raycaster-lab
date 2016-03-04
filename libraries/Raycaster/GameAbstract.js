@@ -39,10 +39,16 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
-		var aWorldDataKeys = Object.keys(WORLD_DATA);
-		this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
-		this.trigger('build', WORLD_DATA[this._sLevelIndex]);
-		return WORLD_DATA[this._sLevelIndex];
+		if ('WORLD_DATA' in window) {
+			var aWorldDataKeys = Object.keys(WORLD_DATA);
+			this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
+			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
+			return WORLD_DATA[this._sLevelIndex];
+		} else {
+			var wd = {};
+			this.trigger('build', wd);
+			return wd;
+		}
 	},
 	
 	/**
@@ -65,18 +71,20 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
 			var ControlThinkerClass = this._oClassLoader.loadClass(CONFIG.game.controlthinker);
 			oCT = new ControlThinkerClass();
-		} else if (CONFIG.game.fpscontrol) {
-			oCT = new O876_Raycaster.FirstPersonThinker();
 		} else {
-			oCT = new O876_Raycaster.CameraKeyboardThinker();
+			if (CONFIG.game.fpscontrol) {
+				oCT = new O876_Raycaster.FirstPersonThinker();
+			} else {
+				oCT = new O876_Raycaster.CameraKeyboardThinker();
+			}
+			oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+			oCT.oKeyboard = this.getKeyboardDevice();
+			oCT.oGame = this;
+			oCT.on('use.down', (function() {
+				this.oGame.activateWall(this.oMobile);    
+			}).bind(oCT));
 		}
-		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
-		oCT.oKeyboard = this.getKeyboardDevice();
-		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
-		oCT.on('use.down', (function() {
-			this.oGame.activateWall(this.oMobile);    
-		}).bind(oCT));
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
@@ -112,6 +120,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			});
 		}
 		this.oRaycaster.oCamera.fSpeed = 6;
+		this.trigger('enter');
 		this.setDoomloop('stateTagProcessing');
 	},
 
@@ -177,7 +186,15 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	onFrameRendered: function() {
 		this._detectTag();
 		this.trigger('frame');
-	},	
+	},
+	
+	onFrameCount: function(nFPS, nAVG, nTime) {
+		this.trigger('framecount', {
+			fps: nFPS, 
+			avg: nAVG, 
+			time: nTime
+		});
+	},
 
 
 

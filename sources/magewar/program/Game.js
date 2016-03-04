@@ -1,4 +1,4 @@
-O2.extendClass('MW.Game', O876_Raycaster.Engine, {
+O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	oData : null,
 	oSoundSystem : null,
 	oClientSocket : null,
@@ -688,7 +688,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	/**
 	 * Evènement apellé lors de l'initialisation du jeu Appelé une seule fois.
 	 */
-	onInitialize : function() {
+	init : function() {
 		// Sound system
 		this.oSoundSystem = new SoundSystem();
 		this.oSoundSystem.addChans(8);
@@ -708,6 +708,21 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		ps.addPlugin(new MW.HUDPlugin());
 		ps.addPlugin(new MW.PopupPlugin());
 		this.sendSignal = ps.sendPluginSignal.bind(ps);
+		
+		this.on('menuloop', this.menuLooping.bind(this));
+		this.on('build', this.levelBuilding.bind(this));
+		this.on('load', this.levelLoading.bind(this));
+		this.on('enter', this.levelEntering.bind(this));
+		this.on('doomloop', this.doomLooping.bind(this));
+		this.on('frame', this.frameRendering.bind(this));
+		this.on('framecount', this.frameCounting.bind(this));
+		this.on('key.down', this.keyPressed.bind(this));
+		
+		this.setPopupStyle({
+			text: 'rgb(220, 220, 220)',
+			shadow: 'black'
+			
+		});
 	},
 
 	/**
@@ -715,50 +730,49 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 * 
 	 * @return bool
 	 */
-	onMenuLoop : function() {
-
+	menuLooping : function(ctx) {
+		ctx.exit = false;
 		switch (this.nMenuState) {
-		case 0: // start game
-			if (this.sClientName) {
-				this.sendSignal('startgame');
-				this.nMenuState = 1;
-			}
-			break;
+			case 0: // start game
+				if (this.sClientName) {
+					this.sendSignal('startgame');
+					this.nMenuState = 1;
+				}
+				break;
 
-		case 1: // waiting for map to be ready
-			if (this.bMapReady) {
-				this.nMenuState = 0;
-				O876_Raycaster.PointerLock.exitPointerLock();
-				return true;
-			}
-			break;
+			case 1: // waiting for map to be ready
+				if (this.bMapReady) {
+					this.nMenuState = 0;
+					O876_Raycaster.PointerLock.exitPointerLock();
+					ctx.exit = true;
+				}
+				break;
 
-		case 2: // ending game init
-			this.sendSignal('exitlevel');
-			this.nTime = 0;
-			this.nMenuState = 3;
-			break;
+			case 2: // ending game init
+				this.sendSignal('exitlevel');
+				this.nTime = 0;
+				this.nMenuState = 3;
+				break;
 
-		case 3: // ending game / fade out
-			++this.nTime;
-			this.sendSignal('render');
-			if (this.nTime >= 10) {
-				this.nMenuState = 4;
-			}
-			break;
+			case 3: // ending game / fade out
+				++this.nTime;
+				this.sendSignal('render');
+				if (this.nTime >= 10) {
+					this.nMenuState = 4;
+				}
+				break;
 
-		case 4: // game has ended
-			this.sendSignal('render');
-			this.bMapReady = false;
-			this.oData = null;
-			this.idEntity = 0;
-			this.aEntities = null;
-			this.aInvisibles = null;
-			this.aDoorsOpen = null;
-			this.oCamera = null;
-			break;
+			case 4: // game has ended
+				this.sendSignal('render');
+				this.bMapReady = false;
+				this.oData = null;
+				this.idEntity = 0;
+				this.aEntities = null;
+				this.aInvisibles = null;
+				this.aDoorsOpen = null;
+				this.oCamera = null;
+				break;
 		}
-		return false;
 	},
 
 	/**
@@ -767,15 +781,20 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 * 
 	 * @return object
 	 */
-	onRequestLevelData : function() {
-		return this.oData;
+	levelBuilding : function(data) {
+		for (var i in this.oData) {
+			data[i] = this.oData[i];
+		}
 	},
 
 	/**
 	 * Evènement appelé quand une ressource et chargée sert à faire des barres
 	 * de progressions
 	 */
-	onLoading : function(s, n, nMax) {
+	levelLoading : function(data) {
+		var s = data.phase;
+		var n = data.progress;
+		var nMax = data.max;
 		var oCanvas = this.oRaycaster.oCanvas;
 		var oContext = this.oRaycaster.oContext;
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
@@ -796,18 +815,19 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	 * Evènement appelé lorsqu'un niveau a été chargé Permet l'initialisation
 	 * des objet nouvellement créés (comme la caméra)
 	 */
-	onEnterLevel : function() {
+	levelEntering : function() {
 		var oRC = this.oRaycaster;
 		oRC.bSky = true;
 		oRC.bFlatSky = true;
 		oRC.nPlaneSpacing = 64;
-		var oCT = new MW.PlayerThinker();
+		
+		var oCT = oRC.oCamera.getThinker();
 		oCT.oMouse = this.getMouseDevice(oRC.oCanvas);
 		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
-		oRC.oCamera.setThinker(oCT);
+		
 		// Tags data
-		if ('tags' in oRC.aWorld) {
+		/*if ('tags' in oRC.aWorld) {
 			var iTag, oTag;
 			var aTags = oRC.aWorld.tags;
 			this._oTagData = Marker.create();
@@ -815,9 +835,9 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 				oTag = aTags[iTag];
 				Marker.markXY(this._oTagData, oTag.x, oTag.y, oTag.tag);
 			}
-		}
+		}*/
 		// decals
-		if ('decals' in oRC.aWorld) {
+		/*if ('decals' in oRC.aWorld) {
 			oRC.aWorld.decals.forEach(function(d) {
 				var x = d.x;
 				var y = d.y;
@@ -830,7 +850,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 					oCanvas.getContext('2d').drawImage(oImage, 0, 0, wt, ht, (rc.xTexture - wt) >> 1, (rc.yTexture - ht) >> 1, wt, ht);
 				});
 			});
-		}
+		}*/
 		// ouvertures des portes
 		var oThis = this;
 		this.aDoorsOpen.forEach(function(dxy) {
@@ -851,19 +871,18 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	/**
 	 * Evènement appelé par le processeur Ici on lance les animation de textures
 	 */
-	onDoomLoop : function() {
-		this.processKeys();
-		this.oRaycaster.textureAnimation();
+	doomLooping : function() {
 	},
 
 	/**
 	 * Evènement appelé à chaque rendu de frame
 	 */
-	onFrameRendered : function() {
+	frameRendering : function() {
 		this.sendSignal('render');
 	},
 	
-	onFrameCount: function(nFPS, nAVG, nTime) {
+	frameCounting: function(data) {
+		var nFPS = data.fps, nAVG = data.avg, nTime = data.time;
 		if (nTime > 5 && this.oRaycaster.oCanvas.width > 400 && nAVG < CONST.MINIMUM_FPS) {
 			this.oRaycaster.downgrade();
 			this.sendSignal('ui_resize');
@@ -1031,17 +1050,7 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		}
 		this.aEntities[nId] = null;
 	},
-	
-	/**
-	 * Activation d'un mur On envoie un message au serveur pour l'occasion C'est
-	 * le serveur qui decide quoi faire ensuite...
-	 */
-	activateWall : function(oMobile) {
-		var oBlock = oMobile.getFrontCellXY();
-		var x = oBlock.x;
-		var y = oBlock.y;
-		this.openDoor(x, y);
-	},
+
 
 	// //// INTERFACE ////// INTERFACE ////// INTERFACE ////// INTERFACE ////// INTERFACE //////
 	// //// INTERFACE ////// INTERFACE ////// INTERFACE ////// INTERFACE ////// INTERFACE //////
@@ -1070,60 +1079,57 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 	// //// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
 	// //// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES ////// RAYCASTER UTILITIES //////
 
-	processKeys : function() {
-		var nKey = this.getKeyboardDevice().inputKey();
+	keyPressed : function(data) {
+		var nKey = data.k;
 		if (nKey) {
-			var oKey = {
-				k : nKey
-			};
-			this.sendSignal('key', oKey);
-			switch (oKey.k) {
-			case KEYS.ALPHANUM.B:
-				// touche boss
-				var oBody = document.getElementsByTagName('body')[0];
-				if (this.bBoss) {
-					this.oRaycaster.oCanvas.style.display = '';
-					oBody.style.backgroundColor = '';
-					oBody.style.color = '';
-					oBody.removeChild(this.oBossMsg);
-					this.oSoundSystem.unmute();
-					this.bBoss = false;
-					document.title = this.sBossModeTitle;
-				} else {
-					O876_Raycaster.PointerLock.exitPointerLock();
-					this.oRaycaster.oCanvas.style.display = 'none';
-					oBody.style.backgroundColor = 'white';
-					oBody.style.color = 'black';
-					this.oBossMsg = document.createElement('div');
-					this.oBossMsg.appendChild(document.createTextNode(STRINGS._('~boss_msg')));
-					oBody.appendChild(this.oBossMsg);
-					this.oSoundSystem.mute();
-					this.bBoss = true;
-					this.sBossModeTitle = document.title;
-					document.title = STRINGS._('~boss_title');
-				}
-				break;
-
-			case KEYS.ENTER:
-				MW.Microsyte.openChatForm();
-				break;
-				
-			case KEYS.TAB: 
-				this.sendSignal('hud_update', 'spells', null, 'next');
-				break;
-				
-			case KEYS.BACKSPACE:
-				var oSpells = this.oPluginSystem.getPlugin('HUD').getElement('spells');
-				var nItem = oSpells.nDisplayed;
-				if (nItem >= 0) {
-					this.csDrop(nItem);
-					var aItemData = oSpells.getItemName(nItem);
-					if (aItemData) {
-						var sName = aItemData[0];
-						var nIcon = aItemData[1];
-						this.popupMessage(STRINGS._('~item_drop', [sName]), nIcon);
+			this.sendSignal('key', data);
+			switch (nKey) {
+				case KEYS.ALPHANUM.B:
+					// touche boss
+					var oBody = document.getElementsByTagName('body')[0];
+					if (this.bBoss) {
+						this.oRaycaster.oCanvas.style.display = '';
+						oBody.style.backgroundColor = '';
+						oBody.style.color = '';
+						oBody.removeChild(this.oBossMsg);
+						this.oSoundSystem.unmute();
+						this.bBoss = false;
+						document.title = this.sBossModeTitle;
+					} else {
+						O876_Raycaster.PointerLock.exitPointerLock();
+						this.oRaycaster.oCanvas.style.display = 'none';
+						oBody.style.backgroundColor = 'white';
+						oBody.style.color = 'black';
+						this.oBossMsg = document.createElement('div');
+						this.oBossMsg.appendChild(document.createTextNode(STRINGS._('~boss_msg')));
+						oBody.appendChild(this.oBossMsg);
+						this.oSoundSystem.mute();
+						this.bBoss = true;
+						this.sBossModeTitle = document.title;
+						document.title = STRINGS._('~boss_title');
 					}
-				}
+					break;
+
+				case KEYS.ENTER:
+					MW.Microsyte.openChatForm();
+					break;
+					
+				case KEYS.TAB: 
+					this.sendSignal('hud_update', 'spells', null, 'next');
+					break;
+					
+				case KEYS.BACKSPACE:
+					var oSpells = this.oPluginSystem.getPlugin('HUD').getElement('spells');
+					var nItem = oSpells.nDisplayed;
+					if (nItem >= 0) {
+						this.csDrop(nItem);
+						var aItemData = oSpells.getItemName(nItem);
+						if (aItemData) {
+							var sName = aItemData[0];
+							var nIcon = aItemData[1];
+							this.popupMessage(STRINGS._('~item_drop', [sName]), nIcon);
+						}
+					}
 			}
 		}
 	},
@@ -1138,20 +1144,6 @@ O2.extendClass('MW.Game', O876_Raycaster.Engine, {
 		this.sendSignal('popup', sMessage, nIcon, sTile, sSound);
 	},
 
-	/**
-	 * permet de définir l'apparence des popups l'objet spécifié peut contenir
-	 * les propriété suivantes : - background : couleur de fond - border :
-	 * couleur de bordure - text : couleur du texte - shadow : couleur de
-	 * l'ombre du texte - width : taille x - height : taille y - speed : vitesse
-	 * de frappe - font : propriété de police - position : position y du popup
-	 */
-	setPopupStyle : function(oProp) {
-		var sProp = '';
-		var gmxp = O876_Raycaster.GXMessage.prototype.oStyle;
-		for (sProp in oProp) {
-			gmxp[sProp] = oProp[sProp];
-		}
-	},
 
 	/**
 	 * Lecture d'un son à la position x, y Le son est modifié en amplitude en

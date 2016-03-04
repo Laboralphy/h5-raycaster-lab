@@ -117,7 +117,13 @@ installPlugins() {
 		echo
 		return
 	fi
-	rm -r node_modules/mwplugins/*
+	if [ "`ls node_modules/mwplugins/* 2> /dev/null |wc -l`" -eq 0 ]
+	then
+		echo "(i) no need to clean plugin directory"
+	else
+		echo "(i) cleaning plugin directory"
+		rm -r node_modules/mwplugins/*
+	fi
 	for i in `ls mwplugins`
 	do
 		installPlugin $i
@@ -232,19 +238,20 @@ goUpload() {
 
 # Copy all maps into data/maps (json) & www/maptiles (resources)
 installMaps() {
-	local sTilePath="www/maptiles"
-	local sDataPath="data/maps"
-	local sExportPath="maps_sources"
+	local sSrcMapPath="../../sources/magewar/data/levels"
+	local sDstMapPath="data/maps"
 	local i
-	rm -r $sDataPath
-	rm -r $sTilePath
-	for i in `ls $sExportPath`
+	if [ -d $sDstMapPath ]
+	then
+		rm $sDstMapPath/*
+	else
+		mkdir $sDstMapPath
+	fi
+	# echo 'qsdqsdqsd  {iweigh{297} {} lbs});' | sed 's/^[^{]*//' | sed 's/[^}]*$//'
+	for i in `ls $sSrcMapPath/`
 	do
 		echo "(i) import map $i"
-		mkdir -p $sTilePath
-		mkdir -p $sDataPath
-		cp -r $sExportPath/$i/data/map.json $sDataPath/$i.json
-		cp -r $sExportPath/$i/tiles/* $sTilePath
+		cat $sSrcMapPath/$i | sed 's/^[^{]*//' | sed 's/[^}]*$//' > "$sDstMapPath/${i}on"
 	done
 }
 

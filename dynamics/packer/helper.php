@@ -37,6 +37,7 @@ function compileScript($f) {
 	$nUSize = strlen($s);
 
 	if ($oLoader->getOption('pack') !== null) {
+		print "PACK\n";
 		$s = packScript($s, 'Normal');
 	}
 	if ($oLoader->getOption('verbose') !== null) {

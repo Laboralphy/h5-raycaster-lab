@@ -38,6 +38,7 @@ function concatScripts(array $aDirectives = array()) {
 	$a = array_merge(array(
 		'load ../../libraries',
 		'load .',
+		'top ../../libraries/ClassMagic.js',
 		'top ../../libraries/o2.js'
 	), getLoadDirectives(), $aDirectives);
 	return compileScript($a);
@@ -60,7 +61,7 @@ function deploy($aArgOpt) {
 
 	// copying static files
 	print "copying resources...\n";
-	system('cp -ruv ' . RESOURCES_PATH . ' ' . MODULE_PATH . $sProject);
+	system('cp -ru ' . RESOURCES_PATH . ' ' . MODULE_PATH . $sProject);
 
 
 	// creating one-file script
@@ -72,11 +73,6 @@ function deploy($aArgOpt) {
 		'top ../../libraries/o2.js'
 	), getLoadDirectives());
 
-
-	// option "nopack" will not use JsPacker
-	if (!in_array('nopack', $aArgOpt)) {
-		$aLoadScript[] = "pack";
-	}
 
 	// writing output javascript file
 	file_put_contents(MODULE_PATH . $sProject . '/' . $sProject . '.js', $sOutput = compileScript($aLoadScript));

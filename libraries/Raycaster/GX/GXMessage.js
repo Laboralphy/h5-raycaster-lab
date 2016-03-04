@@ -197,11 +197,11 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 					sMessage2 += ' ';
 				}
 				sMessage = aWords.join(' ');
-				oCtx.fillStyle = this.oStyle.text;
+				oCtx.fillStyle = this.oStyle.shadow;
 				var yLine = (this.nTextHeight >> 1) + 2;
 				oCtx.fillText(sMessage2, this.xTextPos + 2, this.yTextPos + 2 - yLine);
 				oCtx.fillText(sMessage, this.xTextPos + 2, this.yTextPos + 2 + yLine);
-				oCtx.fillStyle = this.oStyle.shadow;
+				oCtx.fillStyle = this.oStyle.text;
 				oCtx.fillText(sMessage2, this.xTextPos, this.yTextPos - yLine);
 				oCtx.fillText(sMessage, this.xTextPos, this.yTextPos + yLine);
 			}

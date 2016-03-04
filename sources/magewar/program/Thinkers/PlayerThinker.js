@@ -54,7 +54,7 @@ O2.extendClass('MW.PlayerThinker', O876_Raycaster.MouseKeyboardThinker, {
 		this.on('button0.up', this.button0Up.bind(this));
 		this.on('button0.down', this.button0Down.bind(this));
 		this.on('button0.command', this.button0Command.bind(this));
-		this.on('button2.down', this.button0Down.bind(this));
+		this.on('button2.down', this.button2Down.bind(this));
 		this.on('use.down', this.useDown.bind(this));
 		this.on('wheel.up', this.wheelUp.bind(this));
 		this.on('wheel.down', this.wheelDown.bind(this));

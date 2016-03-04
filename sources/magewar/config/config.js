@@ -5,6 +5,7 @@ var CONFIG = {
     cpumonitor: false,     /* use CPU Monitor system            */
     fullscreen: false,
     sound: true,	/* true = sound / false = no sound */
+    controlthinker: 'MW.PlayerThinker'
   },
   raycaster: {
     canvas: 'screen',
