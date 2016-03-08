@@ -13,7 +13,6 @@ O2.extendClass('O876_Raycaster.CommandThinker', O876_Raycaster.Thinker, {
 	fms : 0, // Moving Speed
 
 	nDeadTime : 0,
-	
 
 	ANIMATION_STAND : 0,
 	ANIMATION_WALK : 1,

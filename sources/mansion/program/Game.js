@@ -11,7 +11,16 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.initAudio();
 		this.initPopup();
 		this.oGameScriptData = {};
-		this.on('tag', this.gameEventTag.bind(this));		
+		//this.on('tag', this.gameEventTag.bind(this));		
+
+		//this.on('itag.light', this.tagEventLight.bind(this));
+		//this.on('itag.shadow', this.tagEventShadow.bind(this));
+		this.on('tag.msg', this.tagEventMessage.bind(this));
+		this.on('tag.script', this.tagEventScript.bind(this));
+		this.on('tag.zone', this.tagEventZone.bind(this));
+		this.on('tag.pic', this.tagEventPicture.bind(this));
+
+
 		this.on('build', this.gameEventBuild.bind(this));	
 		this.on('level', this.gameEventLevel.bind(this));	
 		this.on('door', this.gameEventDoor.bind(this));
@@ -80,33 +89,36 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.oRaycaster.oEffects.addEffect(oGXFade);
 	},
 	
-	gameEventTag: function(data) {
-		var sTag = data.tag;
+
+	tagEventZone: function(oEvent) {
+		var sTag = oEvent.data;
+		if (!sTag) {
+			return;
+		}
+		this.playAmbience(SOUNDS_DATA.ambience[sTag]);
+	},
+	
+	tagEventMessage: function(oEvent) {
+		var sTag = oEvent.data;
+		this.popupMessage(MESSAGES_DATA[this.getLevel()]['m_' + sTag]);
+		oEvent.remove = true;
+	},
+	
+	tagEventPicture: function(oEvent) {
+		var sTag = oEvent.data;
+		this.popupMessage(MESSAGES_DATA[this.getLevel()]['p_' + sTag]);
+	},
+	
+	tagEventScript: function(oEvent) {
+		var sTag = oEvent.data;
 		if (!sTag) {
 			return;
 		}
 		var aTags = sTag.split(' ');
-		var sCmd = aTags.shift();
-		switch (sCmd) {
-			case 'zone':
-				this.playAmbience(SOUNDS_DATA.ambience[aTags[0]]);
-				break;
-				
-			case 'msg':
-				this.popupMessage(MESSAGES_DATA[this.getLevel()]['m_' + aTags[0]]);
-				this.clearBlockTag(data.x, data.y);
-				break;
-				
-			case 'pic':
-				this.popupMessage(MESSAGES_DATA[this.getLevel()]['p_' + aTags[0]]);
-				break;
-				
-			case 'script':
-				var sScript = 'gameScript' + aTags.shift();
-				if (sScript in this) {
-					this[sScript].apply(this, [data.x, data.y, aTags]);
-				}
-				break;
+		var sScript = 'gameScript' + aTags.shift();
+		if (sScript in this) {
+			this[sScript].apply(this, [oEvent.x, oEvent.y, aTags]);
+			oEvent.remove = true;
 		}
 	},
 	
@@ -158,7 +170,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		var oMob = this.spawnMobile('g_ayako', x * ps + ps2, (y + 2) * ps, 0); 
 		this.gsSetData('ga_ayako', oMob);
 		this.setBlockTag(x, y + 1, 'script AyakoGhostOff');
-		this.clearBlockTag(x, y);
 	},
 	
 	gameScriptAyakoGhostOff: function(x, y, aTags) {
@@ -167,7 +178,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			oMob.oThinker.vanish();
 			this.gsSetData('ga_ayako', null);
 		}
-		this.clearBlockTag(x, y);
 	},
 	
 	gameScriptHangedGhost: function(x, y, aTags) {
@@ -175,7 +185,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		var ps2 = ps >> 1;
 		var oMob = this.spawnMobile('g_hanged', (x - 1) * ps + ps2, (y + 4) * ps, 0); 
 		this.gsSetData('ga_hanged', oMob);
-		this.clearBlockTag(x, y);
 	},
 	
 	gameScriptHangedGhostOff: function(x, y, aTags) {
@@ -184,7 +193,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			oMob.oThinker.vanish();
 			this.gsSetData('ga_hanged', null);
 		}
-		this.clearBlockTag(x, y);
 	},
 
 	gameScriptReikaGhost: function(x, y, aTags) {
@@ -192,7 +200,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		var ps2 = ps >> 1;
 		var oMob = this.spawnMobile('g_reika', (x + 2) * ps + 1, (y + 4) * ps + ps2, 0); 
 		this.gsSetData('ga_reika', oMob);
-		this.clearBlockTag(x, y);
 	},
 
 	gameScriptReikaGhostOff: function(x, y, aTags) {
@@ -201,7 +208,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			oMob.oThinker.vanish();
 			this.gsSetData('ga_reika', null);
 		}
-		this.clearBlockTag(x, y);
 	},
 	
 	gameScriptHeadGhost: function(x, y, aTags) {
@@ -214,7 +220,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			xHead = (x + 1) * ps + 1;
 		}
 		this.spawnMobile('g_head', xHead, y * ps + ps2, 0); 
-		this.clearBlockTag(x, y);
 	},
 
 	gameScriptWandererGhost: function(x, y, aTags) {
@@ -225,7 +230,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		}
 		var oMob = this.spawnMobile('g_wanderer', (x + 3) * ps + ps2, (y - 1) * ps + ps2, PI / 2);
 		oMob.fSpeed = 2;
-		this.clearBlockTag(x, y);
 	},
 	
 	getPlayer: function() {

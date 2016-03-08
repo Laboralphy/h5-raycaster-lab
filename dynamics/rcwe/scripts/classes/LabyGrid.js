@@ -123,11 +123,11 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('◫', 'Block view', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
-		this.addCommand('♜', 'Thing view', this.cmd_viewThing.bind(this)).addClass('view');
-		this.addCommand('✜', 'Starting point view', this.cmd_viewStartPoint.bind(this)).addClass('view');
-		this.addCommand('☀', 'Sky and background view', this.cmd_viewSky.bind(this)).addClass('view');
-		this.addCommand('▶', '3D view', this.cmd_view3D.bind(this)).addClass('view');
+		this.addCommand('◫', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
+		this.addCommand('♜', 'Add/Remove Things', this.cmd_viewThing.bind(this)).addClass('view');
+		this.addCommand('✜', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
+		this.addCommand('☀', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
+		this.addCommand('▶', '3D render', this.cmd_view3D.bind(this)).addClass('view');
 		this.addCommandSeparator();
 		this.addCommand('⇄', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
 		this.addCommand('⚠', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');

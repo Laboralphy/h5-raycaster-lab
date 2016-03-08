@@ -9,7 +9,9 @@
 
 body {
 	background-image: url("images/bg-dam.png");
-	background-position: 10px 10px;
+}
+
+body.animated {
     animation-name: diag_se_anim;
     animation-duration: 4s;
     animation-iteration-count: infinite;

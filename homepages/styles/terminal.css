@@ -4,15 +4,15 @@
 }
 
 .terminal {
-	background-color: #000;
-	color: #999;
-	font-family: verdana;
+	background-color: #DDD;
+	color: #000;
+	font-family: sans;
 	font-size: 16px;
 }
 
 /* global styles */
 .terminal .title {
-	color: #AAA;
+	color: #CCC;
 	background-color: #444;
 	border: solid 2px #AAA;
 	padding: 8px;
@@ -22,7 +22,7 @@
 }
 
 .terminal .description {
-	color: #666;
+	color: #444;
 	margin-left: 64px;
 }
 
@@ -41,11 +41,11 @@
 
 /* links */
 .terminal a {
-	color: #999;
+	color: #333;
 }			
 			
 .terminal a:hover {
-	color: #DDD;
+	color: #00F;
 	text-decoration: underline;
 }
 

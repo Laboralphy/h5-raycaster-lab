@@ -4,8 +4,9 @@
  */
 var CONFIG = {
 	game: {
+		namespace: 'STUB',		/* game namespace */
 		interval: 40,			/* timer interval (ms). you should not change this value */
-		doomloop: 'raf',		/* doomloop type "raf" or "interval". "raf" is very cpu intensive, "interval" is a cool method */
+		doomloop: 'raf',		/* doomloop type "raf" or "interval". "raf" is very cpu intensive but runs better, "interval" is a less cpu time consuming method, but causes some glitches with lockpointer */
 		fullscreen: false, 		/* fullscreen flag */
 		fpscontrol: true 		/* fps control (mouse + keyboard WASD) flag : if true, the standard FPS control thinker will be used */
 		//controlthinker: '',	/* custom control thinker */

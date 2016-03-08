@@ -508,7 +508,6 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 				a.ctx_right.drawImage(oRight, 0, 0);
 			}
 			if (a.left2 !== null && a.left2 !== undefined) {
-				console.log(a.left2);
 				oLeft2 = this._getWallTile(a.left2);
 				a.ctx_left2.drawImage(oLeft2, 0, 0);
 			}

@@ -14,6 +14,5 @@ var CONFIG = {
 		canvas: 'screen', /* id of rendering DOM canvas */
 		drawMap: false, /* mini map for debug purpose */
 		smoothTextures: false, /* set to TRUE for old school games */
-		zoom: 1 /* useless. Leave it at 1. possible values are 1, 2, 4. the greater, the uglier, the faster */
 	}
 };

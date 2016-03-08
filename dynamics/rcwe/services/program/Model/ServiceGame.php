@@ -29,6 +29,8 @@ class ServiceGame {
 			if (file_exists($sPath)) {
 				$oFS->rmrf($sPath);
 				mkdir($sPath);
+			} else {
+				mkdir($sPath, 0777, true);
 			}
 			
 			// copy stub files
@@ -71,15 +73,16 @@ class ServiceGame {
 			
 			// script compilation
 			$s = $this->compileScript(array(
-				'pack',
+				$oOptions['pack'] ? 'pack' : '',
 				'load ../../../libraries',
-				'load ../games/libraries',
+				'top ../../../libraries/ClassMagic.js',
 				'top ../../../libraries/o2.js'
 			));
 			
-			file_put_contents($sPath . '/libraries/libraycaster.js', $s);
+			file_put_contents($sPath . '/program/libraycaster.js', $s);
 
 			// pack everything into a zip file
+			mkdir('../server.storage/exports/z/', 0777, true);
 			$sZipFile = '../server.storage/exports/z/' . $sName . '.zip';
 			$oFS->zip($sPath, $sZipFile);
 			chmod($sZipFile, 0777);

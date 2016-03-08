@@ -50,7 +50,7 @@ O2.extendClass('EntityKeyboardThinker', O876_Raycaster.KeyboardThinker, {
   },
 
   useDown: function() {
-    G.activateWall(this.oMobile);    
+    this.oGame.activateWall(this.oMobile);    
   }
 });
 

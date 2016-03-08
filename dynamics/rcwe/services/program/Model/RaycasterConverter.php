@@ -86,8 +86,7 @@ class RaycasterConverter {
 			);
 		}
 		$oThings = array();
-		
-		
+
 		foreach ($oJSON->objects as $k => $v) {
 			$oThings[] = array(
 				'x' => floor($v->x * 3 / 64),
@@ -122,7 +121,7 @@ class RaycasterConverter {
 			'filtr' => '#888888',
 			'visib' => floor($oJSON->visual->light / 10),
 			'diffu' => floor(10 * $oJSON->visual->diffuse),
-			'sky' => $oJSON->background
+			'sky' => isset($oJSON->background) ? $oJSON->background : null
 		);
 
 		$oTiles = array(
@@ -154,7 +153,7 @@ class RaycasterConverter {
 		
 		
 		$createBlock = function($nCode) use ($oJSON, &$oBlocks, &$oBlockDic, &$aWallIds, &$aFlatIds) {
-			if ($nCode === 0) {
+			if (!$nCode) {
 				return 0;
 			}
 			if (!isset($oBlockDic[$nCode])) {
@@ -180,11 +179,11 @@ class RaycasterConverter {
 						$aWallFace = $aWall;
 						$aAnim = null;
 					}
-					if ($aWallFace[1] >= 0) {
+					if ($aWallFace[0] >= 0) {
 						$sLeft = 'wall_' . strval($aWallFace[0] + 1);
 						$aWallIds[] = $sLeft;
 					}
-					if ($aWallFace[0] >= 0) {
+					if ($aWallFace[1] >= 0) {
 						$sRight = 'wall_' . strval($aWallFace[1] + 1);
 						$aWallIds[] = $sRight;
 					}
@@ -194,7 +193,7 @@ class RaycasterConverter {
 					}
 					if (count($aWallFace) > 3 && $aWallFace[3] >= 0) {
 						$sRight2 = 'wall_' . strval($aWallFace[3] + 1);
-						$aWallIds[] = $sRight;
+						$aWallIds[] = $sRight2;
 					}
 					if ($aAnim) {
 						$nFrameCount = $aAnim['framecount'];
@@ -233,9 +232,6 @@ class RaycasterConverter {
 			return $oBlocks[$oBlockDic[$nCode]]['id'];
 		};
 
-		
-		
-
 		foreach ($oJSON->map as $y => $row) {
 			$oRow = array();
 			foreach ($row as $x => $nLower) {
@@ -243,11 +239,6 @@ class RaycasterConverter {
 				$oMap[$y][$x] = $createBlock($nLower) | ($createBlock($nUpper) << 12); // **code12** storey
 			}
 		}
-
-
-
-
-
 
 		$pCompare = function($a, $b) {
 			$ax = explode('_', $a);

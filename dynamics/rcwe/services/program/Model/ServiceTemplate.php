@@ -5,23 +5,34 @@ class ServiceTemplate {
 	
 	const BASE_PATH = '../server.storage/templates/';
 	
-	protected function _checkWritingPermissions() {
-		if (!is_writable(self::BASE_PATH)) {
-			throw new Exception('writing permission denied');
+	protected function _checkPermissions($s) {
+		$sDir = self::BASE_PATH;
+		if ($s) {
+			$sDir .= '/' . $s;
 		}
-	}
-	
-	protected function _checkReadingPermissions() {
+		if (!file_exists($sDir)) {
+			if (!mkdir($sDir, 0777, true)) {
+				throw new Exception('could not create template directory, please check permissions');
+			}
+		}
+		$a = array();
 		if (!is_readable(self::BASE_PATH)) {
-			throw new Exception('reading permission denied');
+			$a[] = 'reading';
+		}
+		if (!is_writable($sDir)) {
+			$a[] = 'writing';
+		}
+		if (count($a)) {
+			throw new Exception(implode(' and ', $a). ' permission denied');
 		}
 	}
+
 	
 	/**
 	 * Store the given template on the file system
 	 */
 	public function storeTemplate($sType, $oData) {
-		$this->_checkWritingPermissions();
+		$this->_checkPermissions($sType . 's');
 		$sName = $oData->name;
 		$sThumbnail = $oData->thumbnail;
 		unset($oData->name);
@@ -42,7 +53,7 @@ class ServiceTemplate {
 	}
 	
 	public function deleteTemplate($sType, $sName) {
-		$this->_checkWritingPermissions();
+		$this->_checkPermissions($sType . 's');
 		$sFilePath = self::BASE_PATH . $sType . 's/' . $sName;
 		unlink($sFilePath . '/template.json');
 		unlink($sFilePath . '/thumbnail.png');
@@ -50,7 +61,7 @@ class ServiceTemplate {
 	}
 
 	public function listTemplates($sType) {
-		$this->_checkReadingPermissions();
+		$this->_checkPermissions($sType . 's');
 		$a = array();
 		if (preg_match('/^[a-z]+$/', $sType)) {
 			$sFilePath = self::BASE_PATH . $sType . 's/';

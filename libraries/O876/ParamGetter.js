@@ -2,10 +2,8 @@ O2.createObject('O876.ParamGetter' , {
 	parse: function(sSearch) {
 		if (sSearch) {
 			var nQuest = sSearch.indexOf('?');
-			console.log(nQuest);
 			if (nQuest >= 0) {
 				sSearch = sSearch.substr(nQuest + 1);
-				console.log(sSearch);
 			} else {
 				return {};
 			}

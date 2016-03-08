@@ -15,22 +15,12 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_nShadedTileCount : 0,
 	
 	__construct : function() {
-		if (!this.browserIsHTML5()) {
+		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
 		__inherited('stateInitialize');
 		this.resume();
 	},
-
-	browserIsHTML5: function() {
-		var oHTML5 = O876.Browser.isHTML5();
-		if (!oHTML5.all) {
-			document.body.innerHTML = '<div style="color: #AAA; font-family: monospace; background-color: black; border: solid 4px #666; padding: 8px"><h1>O876 Raycaster Engine</h1><p>The game won\'t run because some HTML 5 features are not supported by this browser. You should install the latest version of <b>Firefox</b>, <b>Chrome</b> or <b>Chromium</b>.</p>' + oHTML5.html + '</div>'; 
-			return false;
-		}
-		return oHTML5.all;
-	},
-
 
 	initRequestAnimationFrame : function() {
 		if ('requestAnimationFrame' in window) {

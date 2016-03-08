@@ -50,6 +50,10 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     this.setDoomloop('stateBuildLevel');
     this.resume();
   },
+  
+  getKeyboardDevice: function() {
+	  return this.oKbdDevice;
+  },
 
   /** Prépare le chargement du niveau. RAZ de tous les objets.
    */
@@ -59,7 +63,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     this.oRaycaster.oThinkerManager.oGameInstance = this;
     this.oRaycaster.buildLevel();
     var oCT = new PlayerKeyboardThinker(); 
-    oCT.oKeyboard = this.oKbdDevice;   
+    oCT.oGame = this;
     this.oRaycaster.oCamera.setThinker(oCT);
     if (this.oPlayerData) {
       this.oRaycaster.oCamera.setData('score', this.oPlayerData.score);

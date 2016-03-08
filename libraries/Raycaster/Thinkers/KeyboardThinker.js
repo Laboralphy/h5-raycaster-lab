@@ -5,7 +5,6 @@
  * Se sert d'un device keyboard pour bouger le mobile
  */
 O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
-	oKeyboard : null,
 	aCommands : null,
 	oBinds: null,
 	aKeyBindings: null, // binds keycodes to symbolic events
@@ -55,7 +54,7 @@ O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
 		var sKey = '', nKey, sProc, pProc, aButton;
 		var aKeys = this.aKeys;
 		var aCmds = this.aCommands;
-		var oKbd = this.oKeyboard;
+		var oKbd = this.oGame.getKeyboardDevice();
 		var aKeyData;
 		var sEvent;
 		var kbl = this.aKeyBoundList;

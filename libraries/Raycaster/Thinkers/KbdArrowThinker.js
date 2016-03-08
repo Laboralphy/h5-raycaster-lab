@@ -14,7 +14,6 @@ O2.extendClass('O876_Raycaster.KbdArrowThinker', O876_Raycaster.KeyboardThinker,
 			left : KEYS.LEFT,
 			right : KEYS.RIGHT
 		});
-		
 	},
 	
 	think: function() {
@@ -24,12 +23,12 @@ O2.extendClass('O876_Raycaster.KbdArrowThinker', O876_Raycaster.KeyboardThinker,
 	},
 
 	checkCollision: function() {
-		  if (this.oMobile.oMobileCollision !== null) {
-		    var oTarget = this.oMobile.oMobileCollision;
-		    if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
-		      this.oMobile.rollbackXY();
-		    }
-		  }
+		if (this.oMobile.oMobileCollision !== null) {
+			var oTarget = this.oMobile.oMobileCollision;
+			if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
+			  this.oMobile.rollbackXY();
+			}
+		}
 	},
 
 	forwardDown: function() {

@@ -40,7 +40,7 @@ cleanDir() {
 buildProject() {
 	echo "(i) build client side project"
 	cd $rc_dir
-	bash bin/pman build magewar
+	bash bin/build magewar
 	cd $server_dir
 
 	rmFiles $server_mod_dir
@@ -49,7 +49,7 @@ buildProject() {
 # compression du projet
 packProject() {
 	echo "(i) packing client files"
-	php -f ../../dynamics/packer/pack.php -- $module_file $module_file
+	php -f ../../sources/magewar/cjs.php -- build
 }
 
 # compie le module vers le répertoire web du server

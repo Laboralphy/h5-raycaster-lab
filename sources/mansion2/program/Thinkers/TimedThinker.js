@@ -16,7 +16,6 @@ O2.extendClass('MANSION.TimedThinker', O876_Raycaster.Thinker, {
 		t = a.nDuration * a.nCount;
 		this.nTimeOut = this.oGame.getTime() + t;
 		this.think = this.thinkAlive;
-		console.log('vfx time', this.oGame.getTime(), '+', t, '=', this.nTimeOut);
 	},
 	
 	thinkAlive: function() {
@@ -26,7 +25,6 @@ O2.extendClass('MANSION.TimedThinker', O876_Raycaster.Thinker, {
 	},
 	
 	thinkDead: function() {
-		console.log('vfx dead');
 		this.oMobile.gotoLimbo();
 		this.oMobile.bActive = false;
 	},

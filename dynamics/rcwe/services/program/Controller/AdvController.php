@@ -13,7 +13,8 @@ class AdvController extends M\Controller\Action {
 			'gamename' => $this->getRequest()->getParam('gn'),
 			'fullscreen' => !!$this->getRequest()->getParam('fs'),
 			'fpscontrol' => !!$this->getRequest()->getParam('fc'),
-			'smoothtextures' => !!$this->getRequest()->getParam('st')
+			'smoothtextures' => !!$this->getRequest()->getParam('st'),
+			'pack' => !!$this->getRequest()->getParam('pack')
 		);
 		$oMF = M\Model\Factory::getInstance();
 		$oGame = $oMF->getModel('ServiceGame');

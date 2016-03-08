@@ -5,8 +5,6 @@
  * Se sert d'un device keyboard pour bouger le mobile
  */
 O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
-	oKeyboard : null,
-	oMouse : null,
 	aCommands : null,
 	oBinds: null,
 	aKeyBindings: null, // binds keycodes to symbolic events
@@ -56,7 +54,7 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 		var sKey = '', nKey, sProc, pProc, aButton;
 		var aKeys = this.aKeys;
 		var aCmds = this.aCommands;
-		var oKbd = this.oKeyboard;
+		var oKbd = this.oGame.getKeyboardDevice();
 		var aKeyData;
 		var sEvent;
 		var kbl = this.aKeyBoundList;
@@ -90,7 +88,8 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 				this.trigger(sProc);
 			}
 		}
-		while (aButton = this.oMouse.inputMouse()) {
+		var oMouse = this.oGame.getMouseDevice();
+		while (aButton = oMouse.inputMouse()) {
 			nKey = aButton[3];
 			sEvent = 'button' + nKey;
 			sProc = '';

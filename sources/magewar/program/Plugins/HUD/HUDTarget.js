@@ -31,9 +31,6 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 		this.sName = sName;
 		if (sColor) {
 			var a = GfxTools.buildStructure(sColor);
-			if (!'r' in a) {
-				console.log(a);
-			}
 			this.aFGColor.r = a.r;
 			this.aFGColor.g = a.g;
 			this.aFGColor.b = a.b;

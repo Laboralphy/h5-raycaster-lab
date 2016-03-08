@@ -27,6 +27,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('tag.zone', this.tagEventZone.bind(this));
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('command2', this.gameEventCommand2.bind(this));
+		this.on('activate', this.gameEventActivate.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
@@ -135,6 +136,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oPlayer.getThinker().on('button2.down', (function() { 
 			this.trigger('command2');
 		}).bind(this));
+		oPlayer.getThinker().on('use.down', (function() { 
+			this.trigger('activate');
+		}).bind(this));
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
 		this._oGhostScreamer = this.oRaycaster.addGXEffect(MANSION.GX.GhostScreamer);
@@ -190,6 +194,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return;
 		}
 		this.toggleCamera();
+	},
+
+	/**
+	 * Evènement déclenché par la commande 2 
+	 * Bouton droit de la souris
+	 * Bring the camera up and down
+	 */
+	gameEventActivate: function() {
+		this.activateWall(this.getPlayer());
 	},
 
 	/**

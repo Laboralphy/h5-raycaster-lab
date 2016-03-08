@@ -1326,6 +1326,7 @@ O2.createClass('RCWE.Application', {
 	
 	importLevel: function(sProject, sMap) {
 		var pDataReceived = (function(data) {
+			console.log(data);
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
 			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
