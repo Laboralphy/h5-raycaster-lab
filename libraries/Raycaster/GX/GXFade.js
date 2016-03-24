@@ -23,7 +23,26 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 		this.oCanvas = this.oRaycaster.oCanvas;
 		this.oContext = this.oCanvas.getContext('2d');
 	},
-
+	
+	setColor: function(r, g, b, a) {
+		this.oColor = {
+			r: r,
+			g: g,
+			b: b,
+			a: a
+		};
+	},
+	
+	fadeIn: function(fSpeed) {
+		this.fAlpha = 0;
+		this.fAlphaFade = this.oRaycaster.TIME_FACTOR / fSpeed;
+	},
+	
+	fadeOut: function(fSpeed) {
+		this.fAlpha = 1;
+		this.fAlphaFade = -this.oRaycaster.TIME_FACTOR / fSpeed;
+	},
+	
 	isOver : function() {
 		return this.fAlphaFade > 0 ? this.fAlpha >= 1 : this.fAlpha <= 0;
 	},

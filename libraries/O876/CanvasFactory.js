@@ -21,6 +21,7 @@ O2.createObject('O876.CanvasFactory', {
 	setImageSmoothing: function(oContext, b) {
 		oContext.webkitImageSmoothingEnabled = b;
 		oContext.mozImageSmoothingEnabled = b;
+		oContext.msImageSmoothingEnabled = b;
 		oContext.imageSmoothingEnabled = b;
 	},
 	

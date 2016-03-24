@@ -133,10 +133,10 @@ O2.createClass('RCWE.Block', {
 				
 			case bt.SOLID:
 				if (this.getData('left2')) {
-					this.renderTile(oCanvas, 'left2', 0.5, 0.5, 0, 0);
-					this.renderTile(oCanvas, 'right2', 0.5, 0.5, 0.5, 0);
-					this.renderTile(oCanvas, 'left', 0.5, 0.5, 0, 0.5);
-					this.renderTile(oCanvas, 'right', 0.5, 0.5, 0.5, 0.5);
+					this.renderTile(oCanvas, 'left', 0.5, 0.5, 0, 0);
+					this.renderTile(oCanvas, 'right', 0.5, 0.5, 0.5, 0);
+					this.renderTile(oCanvas, 'left2', 0.5, 0.5, 0, 0.5);
+					this.renderTile(oCanvas, 'right2', 0.5, 0.5, 0.5, 0.5);
 				} else {
 					this.renderTile(oCanvas, 'left', 0.5, 1, 0, 0);
 					this.renderTile(oCanvas, 'right', 0.5, 1, 0.5, 0);
@@ -150,12 +150,26 @@ O2.createClass('RCWE.Block', {
 				if (this.getData('ceil')) {
 					this.renderCeil(oCanvas, 0.25);
 					this.renderFloor(oCanvas, 0.25);
-					this.renderTile(oCanvas, 'left', 0.5, 0.5, 0, 0.25);
-					this.renderTile(oCanvas, 'right', 0.5, 0.5, 0.5, 0.25);
+					if (this.getData('left2')) {
+						this.renderTile(oCanvas, 'left', 0.5, 0.25, 0, 0.25);
+						this.renderTile(oCanvas, 'right', 0.5, 0.25, 0.5, 0.25);
+						this.renderTile(oCanvas, 'left2', 0.5, 0.25, 0, 0.5);
+						this.renderTile(oCanvas, 'right2', 0.5, 0.25, 0.5, 0.5);
+					} else {
+						this.renderTile(oCanvas, 'left', 0.5, 0.5, 0, 0.25);
+						this.renderTile(oCanvas, 'right', 0.5, 0.5, 0.5, 0.25);
+					}
 				} else {
 					this.renderFloor(oCanvas, 0.25);
-					this.renderTile(oCanvas, 'left', 0.5, 0.75, 0, 0);
-					this.renderTile(oCanvas, 'right', 0.5, 0.75, 0.5, 0);
+					if (this.getData('left2')) {
+						this.renderTile(oCanvas, 'left', 0.5, 0.37, 0, 0);
+						this.renderTile(oCanvas, 'right', 0.5, 0.37, 0.5, 0);
+						this.renderTile(oCanvas, 'left2', 0.5, 0.38, 0, 0.37);
+						this.renderTile(oCanvas, 'right2', 0.5, 0.38, 0.5, 0.37);
+					} else {
+						this.renderTile(oCanvas, 'left', 0.5, 0.75, 0, 0);
+						this.renderTile(oCanvas, 'right', 0.5, 0.75, 0.5, 0);
+					}
 				}
 				break;
 		}

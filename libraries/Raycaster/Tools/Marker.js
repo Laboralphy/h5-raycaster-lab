@@ -1,4 +1,9 @@
 O2.createObject('Marker', {
+	
+	/**
+	 * Execute a callback function for each value of the given object
+	 * The callback will accept 3 parameters : x, y, and v
+	 */
 	iterate: function(o, f) {
 		o.forEach(function(aRow, x) {
 			if (aRow) {

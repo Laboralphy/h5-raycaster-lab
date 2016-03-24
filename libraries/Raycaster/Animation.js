@@ -34,18 +34,17 @@ O2.createClass('O876_Raycaster.Animation',  {
 		// Dépassement de duration (pour une seule fois)
 		if (this.nTime >= this.nDuration) {
 			this.nTime -= this.nDuration;
-			this.nIndex += this.nDirLoop;
+			if (this.nLoop === 3) {
+				this.nIndex = Math.random() * this.nCount | 0;
+			} else {
+				this.nIndex += this.nDirLoop;
+			}
 		}
 		// pour les éventuels très gros dépassement de duration (pas de boucle)
 		if (this.nTime >= this.nDuration) {
 			this.nIndex += this.nDirLoop * (this.nTime / this.nDuration | 0);
 			this.nTime %= this.nDuration;
 		}
-		/** older version
-		while (this.nTime >= this.nDuration) {
-			this.nTime -= this.nDuration;
-			this.nIndex += this.nDirLoop;
-		}*/
 		
 		switch (this.nLoop) {
 			case 1:

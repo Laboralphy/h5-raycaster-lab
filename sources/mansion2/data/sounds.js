@@ -1,33 +1,33 @@
 O2.createObject('SOUNDS_DATA', {
 	bgm: {
-		'tc-l1': 'amb-forest.ogg',
-		woods: 'amb-forest.ogg',
-		atrium: 'amb-atrium.ogg',
-		mansion: 'amb-inside.ogg',
-		cellar: 'amb-manor.ogg',
-		ghost: 'amb-ghost.ogg'
+		'tc-l1': 'amb-forest',
+		woods: 'amb-forest',
+		atrium: 'amb-atrium',
+		mansion: 'amb-inside',
+		cellar: 'amb-manor',
+		ghost: 'amb-ghost'
 	},
 	events: {
 		// mechanical events
-		dooropen: 'a-dooropen.ogg',
-		doorclose: 'a-doorclose.ogg',
-		secret: 'a-pushston.ogg',
-		camera: 'a-camera.ogg',
-		charge: 'a-charge.ogg',
-		fullcharge: 'a-fullcharge.ogg'
+		dooropen: 'a-dooropen',
+		doorclose: 'a-doorclose',
+		secret: 'a-pushston',
+		camera: 'a-camera',
+		charge: 'a-charge',
+		fullcharge: 'a-fullcharge'
 	},
 	ghosts: {
 		// supernatural events
-		laugh: 'e-laugh.ogg',
-		ropes: 'e-ropes.ogg',
-		ghost: 'e-ghost.ogg',
-		mourn: 'e-mournful.ogg',
+		laugh: 'e-laugh',
+		ropes: 'e-ropes',
+		ghost: 'e-ghost',
+		mourn: 'e-mournful',
 	},
 	missiles: {
-		fire1: 'atk-fire.ogg',
-		impact1: 'hit-fire.ogg'
+		fire1: 'atk-fire',
+		impact1: 'hit-fire'
 	},
 	visualeffects: {
-		bluefire: 'e-fire.ogg'
+		bluefire: 'e-fire'
 	}
 });

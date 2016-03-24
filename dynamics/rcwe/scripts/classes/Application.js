@@ -1031,10 +1031,35 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_advancedpad_shiftmap: function(sDir, n) {
 		try {
+			var dx, dy;
+			switch (sDir) {
+				case 'up': 
+					dx = 0;
+					dy = -n;
+				break;
+				
+				case 'down': 
+					dx = 0;
+					dy = n;
+				break;
+				
+				case 'left': 
+					dx = -n;
+					dy = 0;
+				break;
+				
+				case 'right': 
+					dx = n;
+					dy = 0;
+				break;
+				
+				
+			}
 			for (var i = 0; i < n; ++i) {
 				this.oMapGrid.shiftGrid(sDir, 1);
 				this.oThingGrid.shiftThingPosition(sDir, 1);
 			}
+			this.oMapGrid.moveTags(dx, dy);
 		} catch (e) {
 			this.error('could not shift ' + sDir + ' the level : ' + e.message);
 		}

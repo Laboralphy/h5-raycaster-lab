@@ -15,9 +15,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-pat-hit.ogg',
-				die: 'e-pat-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-pat-hit',
+				die: 'e-pat-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},
@@ -38,9 +38,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-warami-hit.ogg',
-				die: 'e-warami-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-warami-hit',
+				die: 'e-warami-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},
@@ -61,9 +61,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-mad-hit.ogg',
-				die: 'e-mad-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-mad-hit',
+				die: 'e-mad-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},
@@ -84,9 +84,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-gman-hit.ogg',
-				die: 'e-gman-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-gman-hit',
+				die: 'e-gman-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},
@@ -107,9 +107,9 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-dem-hit.ogg',
-				die: 'e-dem-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-dem-hit',
+				die: 'e-dem-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},
@@ -130,9 +130,55 @@ O2.createObject('BLUEPRINTS_DATA', {
 				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
 			},
 			sounds: {
-				hit: 'e-mons-hit.ogg',
-				die: 'e-mons-die.ogg',
-				attack: 'e-ghost-attack.ogg'
+				hit: 'e-mons-hit',
+				die: 'e-mons-die',
+				attack: 'e-ghost-attack'
+			}
+		}
+	},
+	
+	g_edwound: {
+		type: RC.OBJECT_TYPE_MOB,
+		tile: 'g_head6',
+		width: 32,
+		height: 96,
+		thinker: 'MANSION.G_Chaser',
+		fx: 3,
+		data: {
+			name: 'Edwound',
+			speed: 2,
+			life: 5000,
+			cyber: {
+				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
+				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-mons-hit',
+				die: 'e-mons-die',
+				attack: 'e-ghost-attack'
+			}
+		}
+	},
+	
+	g_doll: {
+		type: RC.OBJECT_TYPE_MOB,
+		tile: 'g_head9',
+		width: 32,
+		height: 96,
+		thinker: 'MANSION.G_Chaser',
+		fx: 3,
+		data: {
+			name: 'Doll',
+			speed: 2,
+			life: 2000,
+			cyber: {
+				shootprob: 0.333,  // probabilité de tirer un missile lors d'un mouvement de contre attaque
+				reaction: 20,	// temps de réaction : plus c'est bas, plus le fantôme est réactif
+			},
+			sounds: {
+				hit: 'e-doll-hit',
+				die: 'e-doll-die',
+				attack: 'e-ghost-attack'
 			}
 		}
 	},

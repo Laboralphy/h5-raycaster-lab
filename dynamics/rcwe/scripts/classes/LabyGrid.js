@@ -434,6 +434,19 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		}
 		return a;
 	},
+	
+	/**
+	 * Move all tags by dx, dy cells
+	 * @param dx int
+	 * @param dy int
+	 */
+	moveTags: function(dx, dy) {
+		var t = Marker.create();
+		Marker.iterate(this.aTags, function(x, y, v) {
+			Marker.markXY(t, x + dx, y + dy, v);
+		});
+		this.aTags = t;
+	},
 
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////

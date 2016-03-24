@@ -691,6 +691,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	init : function() {
 		// Sound system
 		this.oSoundSystem = new SoundSystem();
+		this.oSoundSystem.setPath('resources/snd');
 		this.oSoundSystem.addChans(8);
 		this.oSoundSystem.bMute = !CONFIG.game.sound;
 
@@ -1157,7 +1158,6 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * @param y
 	 */
 	playSound : function(sFile, x, y) {
-		sFile = 'resources/snd/' + this.sAudioType + '/' + sFile + '.' + this.sAudioType;
 		var nChan = this.oSoundSystem.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {

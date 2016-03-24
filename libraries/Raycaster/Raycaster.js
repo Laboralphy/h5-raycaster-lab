@@ -523,7 +523,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 	shadeCloneWall : function(oCanvas, x, y, nSide) {
 		var a = this.shadeImage(oCanvas, false);
-		this.oXMap.get(x, y, nSide).oCanvas = a;
+		this.oXMap.get(x, y, nSide).surface = a;
 		return a;
 	},
 	
@@ -1013,11 +1013,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			oData.nWallPos = oData.bSideWall ? yint % oData.xTexture
 					: xint % oData.xTexture;
 			if (oData.bSideWall && dxi < 0) {
-				oData.nWallPos = oData.xTexture - 1 - oData.nWallPos;
+				oData.nWallPos = oData.xTexture - oData.nWallPos;
 				oData.nSideWall = 2;
 			}
 			if (!oData.bSideWall && dyi > 0) {
-				oData.nWallPos = oData.xTexture - 1 - oData.nWallPos;
+				oData.nWallPos = oData.xTexture - oData.nWallPos;
 				oData.nSideWall = 3;
 			}
 			oData.xWall = xi;
@@ -1062,8 +1062,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					// Lecture données extra du block;
 					oXBlock = this.oXMap.get(oData.xWall, oData.yWall,
 							oData.nSideWall);
-					if (oXBlock.oCanvas) {
-						oWall = oXBlock.oCanvas;
+					if (oXBlock.surface) {
+						oWall = oXBlock.surface;
 						nTextureBase = 0;
 					} else {
 						oWall = oData.oWall.image;						
@@ -1071,7 +1071,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					}
 					this.drawLine(xScreen, oData.fDist, nTextureBase,
 							oData.nWallPos | 0, oData.bSideWall, oWall,
-							oData.nWallPanel);
+							oData.nWallPanel, oXBlock.diffuse);
 				} 
 				if (oData.oContinueRay.bContinue) {
 					Marker.markXY(aExcludes, oData.xWall, oData.yWall);
@@ -1171,6 +1171,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			return this.getMapOffs(xw, yw);
 		}
 		return 0;
+	},
+	
+	getBlockData: function(x, y, nSide) {
+		return this.oXMap.get(x, y, nSide);
 	},
 
 	setMapXY: function(x, y, nCode) {
@@ -1790,7 +1794,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oRenderContext.putImageData(oFloor.renderSurface, 0, 0);
 	},
 
-	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel) {
+	drawLine : function(x, z, nTextureBase, nPos, bDim, oWalls, nPanel, nLight) {
 		if (z < 0.1) {
 			z = 0.1;
 		}
@@ -1798,19 +1802,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var ytex = this.yTexture;
 		var xtex = this.xTexture;
 		var yscr = this.yScrSize;
+		var shf = this.nShadingFactor;
+		var sht = this.nShadingThreshold;
+		var dmw = this.nDimmedWall;
 		var dz = ytex * yscr / z;
 		var fvh = this.fViewHeight;
 		dz = dz + 0.5 | 0;
 		var dzy = yscr - (dz * fvh);
 		var nPhys = (nPanel >> 12) & 0xF;  // **code12** phys
 		var nOffset = (nPanel >> 16) & 0xFF; // **code12** offs
-		var nOpacity = z / this.nShadingFactor | 0;
+		var nOpacity = z / shf | 0;
 		if (bDim) {
-			nOpacity += this.nDimmedWall;
+			nOpacity = (sht - dmw) * nOpacity / sht + dmw - nLight | 0;
+		} else {
+			nOpacity += nLight;
 		}
-		if (nOpacity > this.nShadingThreshold) {
-			nOpacity = this.nShadingThreshold;
-		}
+		nOpacity = Math.max(0, Math.min(sht, nOpacity));
 		var aData = [
 				oWalls, // image 0
 				nTextureBase + nPos, // sx  1

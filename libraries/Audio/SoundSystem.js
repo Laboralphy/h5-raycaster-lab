@@ -33,6 +33,9 @@ O2.createClass('SoundSystem', {
 	fSndPlayedVolume: 0,
 	nSndPlayedTime: 0,
 	
+	sFormat: '',
+	sPath: '', 
+	
 	oInterval: null,
 
 	__construct : function() {
@@ -41,7 +44,18 @@ O2.createClass('SoundSystem', {
 		this.aAmbient = [];
 		this.oMusicChan = this.createChan();
 		this.oMusicChan.loop = true;
+		if (this.oMusicChan.canPlayType('audio/ogg')) {
+			this.sFormat = 'ogg';
+		} else if (this.oMusicChan.canPlayType('audio/mp3')) {
+			this.sFormat = 'mp3';
+		} else {
+			throw new Error('neither ogg nor mp3 can be played back by this browser');
+		}
 		this.aChans = [];
+	},
+	
+	setChanSource: function(oChan, sSrc) {
+		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
 	},
 	
 	/**
@@ -201,7 +215,7 @@ O2.createClass('SoundSystem', {
 			// we got a channel
 			if (oChan.__file != sFile) {
 				// new file
-				oChan.src = sFile;
+				this.setChanSource(oChan, sFile);
 				oChan.__file = sFile;
 				oChan.load();
 			} else if (oChan.readyState > this.HAVE_NOTHING) {
@@ -226,9 +240,13 @@ O2.createClass('SoundSystem', {
 	 */
 	playMusic : function(sFile, bOverride) {
 		var oChan = this.oMusicChan;
-		oChan.src = sFile;
+		this.setChanSource(oChan, sFile);
 		oChan.load();
 		oChan.play();
+	},
+	
+	setPath: function(s) {
+		this.sPath = s;
 	},
 
 	/**

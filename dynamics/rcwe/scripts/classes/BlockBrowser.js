@@ -128,6 +128,7 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 		var id;
 		if (b === undefined) {
 			b = new RCWE.Block();
+			console.log(b);
 			id = this._oIdManager.pick();
 			b.setData('id', id);
 		} else {

@@ -30,6 +30,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	initAudio: function() {
 		a = new SoundSystem();
 		a.addChans(8);
+		a.setPath('resources/snd');
 		this._oAudio = a;
 	},
 	
@@ -245,7 +246,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	 * @param float y
 	 */
 	playSound : function(sFile, x, y) {
-		sFile = 'resources/snd/' + sFile;
 		var nChan = this._oAudio.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
@@ -280,10 +280,10 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		if (this.sAmbience == sAmb) {
 			return;
 		} else if (this.sAmbience) {
-			this._oAudio.crossFadeMusic('resources/snd/' + sAmb);
+			this._oAudio.crossFadeMusic(sAmb);
 			this.sAmbience = sAmb;
 		} else {
-			this._oAudio.playMusic('resources/snd/' + sAmb);
+			this._oAudio.playMusic(sAmb);
 			this.sAmbience = sAmb;
 		}
 	},

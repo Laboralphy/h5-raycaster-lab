@@ -5,7 +5,29 @@
  */
 
 (function ($) {
+	var aQueue = [];
+	var bRunning = false;
 	$.rcweGetJSON = function() {
+		
+		function goAjax() {
+			var aNext = aQueue.shift();			
+			if (!aNext) {
+				bRunning = false;
+				return;
+			}
+			bRunning = true;
+			var sURL = aNext[0];
+			var pComplete = aNext[1];
+			var pError = aNext[2];
+			$.getJSON(sURL, function(data) {
+				pComplete(data);
+				goAjax();
+			}).fail(function(err) {
+				pError(err);
+				goAjax();
+			});
+		}
+		
 		var sURL = '', oParams = {}, pComplete = function() {}, pError = function() {};
 		var nQuest = sURL.indexOf('?');
 		if (nQuest >= 0) {
@@ -42,7 +64,7 @@
 			break;
 		
 			default:
-				throw new Error('unknown function signature');
+				return aQueue;
 		}
 		var aParams = [];
 		oParams.__countercache = MathTools.rnd(1000000, 9999999).toString(36);
@@ -50,6 +72,9 @@
 			aParams.push(sParam + '=' + encodeURIComponent(oParams[sParam]));
 		}
 		sURL += '?' + aParams.join('&');
-		$.getJSON(sURL, pComplete).fail(pError);
+		aQueue.push([sURL, pComplete, pError]);
+		if (!bRunning) {
+			goAjax();
+		}
 	}
 })(jQuery);

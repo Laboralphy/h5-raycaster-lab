@@ -5,11 +5,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oScripts: null,
 	_oDarkHaze: null,
 	
+	_oLocators: null,
+	
 	aDebugLines: null,
 	oPhone: null,
 	oLogic: null,
 
 	init: function() {
+		this._oLocators = {};
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
@@ -20,18 +23,25 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
 		
+		// initiable
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
+		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
+		this.on('itag.locator', this.tagEventLocator.bind(this));
+
+		// activable
 		this.on('tag.msg', this.tagEventMessage.bind(this));
 		this.on('tag.script', this.tagEventScript.bind(this));
 		this.on('tag.zone', this.tagEventZone.bind(this));
+		this.on('tag.teleport', this.tagEventTeleport.bind(this));
+
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('command2', this.gameEventCommand2.bind(this));
 		this.on('activate', this.gameEventActivate.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
-		this.on('key', this.gameEventKey.bind(this));
+		this.on('key.down', this.gameEventKey.bind(this));
 	},
 	
 	/**
@@ -61,6 +71,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		a = new SoundSystem();
 		a.addChans(8);
 		this._oAudio = a;
+		a.setPath('resources/sounds');
 	},
 	
 	/**
@@ -123,8 +134,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * pas de paramètre
 	 */
 	gameEventEnterLevel: function() {
-		this._oDarkHaze = this.oRaycaster.addGXEffect(MANSION.GX.DarkHaze);
-		var oGXFade = this.oRaycaster.addGXEffect(O876_Raycaster.GXFade);
+		var rc = this.oRaycaster;
+		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
+		var oGXFade = rc.addGXEffect(O876_Raycaster.GXFade);
 		oGXFade.fAlpha = 1.5;
 		oGXFade.oColor = { r: 0, g: 0, b: 0, a: 1 };
 		oGXFade.fAlphaFade = -0.05;
@@ -141,7 +153,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}).bind(this));
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
-		this._oGhostScreamer = this.oRaycaster.addGXEffect(MANSION.GX.GhostScreamer);
+		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
 	},
 	
 	/**
@@ -275,6 +287,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F7: 
 			case KEYS.F8: 
 			case KEYS.F9: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_doll', pos.x, pos.y);
+			break;
 			case KEYS.F10: 
 			case KEYS.F11: 
 			case KEYS.F12: 
@@ -318,15 +333,54 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	/**
 	 * Gestionnaire de tag
-	 * tag : lightsource
+	 * tag : diffuse
+	 * Ce tag règle le facteur "diffuse" d'un bloc, c'est à dire la quantité
+	 * de lumière qu'il emet
+	 * diffuse 100 indique que le block est totalement lumineux
+	 * diffuse 0 indique que le block n'emet pas de lumière
+	 * diffuse -100 indique que le block absorbe la lumière (noir)
+	 */
+	tagEventDiffuse: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var nDiffuse = oEvent.data | 0;
+		var rc = this.oRaycaster;
+		var b;
+		for (var nSide = 0; nSide < 6; ++nSide) {
+			b = rc.getBlockData(x, y, nSide);
+			b.diffuse = rc.nShadingThreshold * nDiffuse / 100 | 0;
+		}
+		oEvent.remove = true;
+	},
+
+	/**
+	 * Gestionnaire de tag
+	 * tag : locator
+	 * Permet d'enregistrer un locator, c'est à dire un repère marqué
+	 * afin de pouvoir y faire référence ultérieurement
+	 * un locateur peut servir de :
+	 * - sortie de téléporteur
+	 * - point de spawn pour apparition
+	 */
+	tagEventLocator: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var sLocator = oEvent.data;
+		this._oLocators[sLocator] = {x: x, y: y};
+		oEvent.remove = true;
+	},
+
+	/**
+	 * Gestionnaire de tag
+	 * tag : light
 	 * Ce tag génère de la lumière statique lors du chargement du niveau
-	 * lightsource c|f|w pour indiquer une lumière venant du plafon (c) ou du
+	 * light c|f|w pour indiquer une lumière venant du plafon (c) ou du
 	 * sol (f) ou des murs (w)
 	 */
 	tagEventLight: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
-		var sType = oEvent.param;
+		var sType = oEvent.data;
 		var rc = this.oRaycaster;
 		var nPhys;
 		var aDir = [[1, 0],	[0, -1], [-1, 0], [0, 1]];		
@@ -420,6 +474,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			oInstance[sAction].apply(oInstance, [oEvent]);
 		}
 	},
+
+
+	tagEventTeleport: function(oEvent) {
+		var sDest = oEvent.data;
+		var oLoc = this.getLocator(sDest);
+		var p = this.getPlayer();
+		var rc = this.oRaycaster;
+		var oFade = rc.addGXEffect(O876_Raycaster.GXFade);
+		oFade.setColor(0, 0, 0, 1);
+		oFade.fadeOut(700);
+		p.setXY(oLoc.x * 64 + 32, oLoc.y * 64 + 32);
+	},
 	
 	
 	////// GAME LIFE //////
@@ -443,7 +509,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.getPlayer().fSpeed = 2;
 		}
 	},
-	
+
 	/**
 	 * A hostile ghost is spawned.
 	 * @param sBlueprint string reference to the blueprint
@@ -541,7 +607,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	////// UTILITIES //////
 	
-	
+	/**
+	 * Renvoie les coordonée d'un locator
+	 * @return object {x: int, y: int}
+	 */
+	getLocator: function(sLocator) {
+		var l = this._oLocators;
+		if (sLocator in l) {
+			return l[sLocator];
+		} else {
+			throw new Error('no locator "' + sLocator + '" defined');
+		}
+	},
 	
 	/**
 	 * Renvoie l'instance du joueur
@@ -583,7 +660,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param float y
 	 */
 	playSound : function(sFile, x, y) {
-		sFile = 'resources/snd/' + sFile;
 		var nChan = this._oAudio.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
@@ -625,10 +701,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.sAmbience == sAmb) {
 			return;
 		} else if (this.sAmbience) {
-			this._oAudio.crossFadeMusic('resources/snd/' + sAmb);
+			this._oAudio.crossFadeMusic(sAmb);
 			this.sAmbience = sAmb;
 		} else {
-			this._oAudio.playMusic('resources/snd/' + sAmb);
+			this._oAudio.playMusic(sAmb);
 			this.sAmbience = sAmb;
 		}
 	},

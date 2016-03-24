@@ -1,22 +1,22 @@
 O2.createObject('SOUNDS_DATA', {
 	ambience: {
-		level1: 'amb-inside.ogg',
-		woods: 'amb-forest.ogg',
-		atrium: 'amb-atrium.ogg',
-		mansion: 'amb-inside.ogg',
-		cellar: 'amb-manor.ogg'
+		level1: 'amb-inside',
+		woods: 'amb-forest',
+		atrium: 'amb-atrium',
+		mansion: 'amb-inside',
+		cellar: 'amb-manor'
 	},
 	events: {
 		// mechanical events
-		dooropen: 'a-dooropen.ogg',
-		doorclose: 'a-doorclose.ogg',
-		secret: 'a-pushston.ogg',
+		dooropen: 'a-dooropen',
+		doorclose: 'a-doorclose',
+		secret: 'a-pushston',
 	},
 	ghosts: {
 		// supernatural events
-		laugh: 'e-laugh.ogg',
-		ropes: 'e-ropes.ogg',
-		ghost: 'e-ghost.ogg',
-		mourn: 'e-mournful.ogg'
+		laugh: 'e-laugh',
+		ropes: 'e-ropes',
+		ghost: 'e-ghost',
+		mourn: 'e-mournful'
 	}
 });

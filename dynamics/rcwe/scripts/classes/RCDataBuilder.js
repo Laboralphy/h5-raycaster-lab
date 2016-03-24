@@ -73,7 +73,6 @@ O2.createClass('RCWE.RCDataBuilder', {
 					w.ids.indexOf(oBlock.left2), 
 					w.ids.indexOf(oBlock.right2)
 				], oBlock.delay, oBlock.yoyo);
-				console.log(id, oRes.codes[id]);
 			} else {
 				oRes.codes[id] = null;
 			}

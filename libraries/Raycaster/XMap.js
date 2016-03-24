@@ -31,7 +31,8 @@ O2.createClass('O876_Raycaster.XMap', {
 					aBlock.push({
 						x : x,
 						y : y,
-						oCanvas : null
+						surface : null,
+						diffuse: 0
 					});
 				}
 				aRow.push(aBlock);
@@ -69,10 +70,10 @@ O2.createClass('O876_Raycaster.XMap', {
 	cloneTexture: function(oTextures, iTexture, x, y, nSide) {
 		var oCanvas;
 		var oBlock = this.get(x, y, nSide);
-		if (oBlock.oCanvas === null) {
-			oBlock.oCanvas = oCanvas = O876.CanvasFactory.getCanvas();
+		if (oBlock.surface === null) {
+			oBlock.surface = oCanvas = O876.CanvasFactory.getCanvas();
 		} else {
-			oCanvas = oBlock.oCanvas;
+			oCanvas = oBlock.surface;
 			delete oCanvas.__shaded;
 		}
 		var w = this.nBlockWidth;
