@@ -8,7 +8,9 @@ projectBuild() {
 	local sProject="$1"
 	if [ -z "$sProject" ]
 	then
-		echo "Please specify a source project"
+		echo "Please specify a source project."
+		echo "Choose one of these : "
+		ls $sScriptDir/../sources
 		return
 	fi
 	local sSourceDir="$sScriptDir/../sources"

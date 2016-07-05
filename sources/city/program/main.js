@@ -1,15 +1,13 @@
 function main() {
 	screenResize();
 	window.addEventListener('resize', screenResize);
-	window.G = new Stub.Game();
+	window.G = new MANSION.Game();
 
 	var oScreen = document.getElementById(CONFIG.raycaster.canvas);
-	if (O876_Raycaster.PointerLock.init()) {
+	if (CONFIG.game.fpscontrol && O876_Raycaster.PointerLock.init()) {
 		oScreen.addEventListener('click', function(oEvent) {
 			lockPointer(oEvent.target);
 		});
-	} else {
-		document.getElementById('info').innerHTML = 'No PointerLock AP available on this browser';
 	}
 }
 
@@ -26,7 +24,7 @@ function lockPointer(oElement) {
 		return false;
 	}
 	if (CONFIG.game.fullscreen) {
-		O876_Raycaster.FullScreen.changeEvent = function() {
+		O876_Raycaster.FullScreen.changeEvent = function(e) {
 			if (O876_Raycaster.FullScreen.isFullScreen()) {
 				O876_Raycaster.PointerLock.requestPointerLock(oElement);
 				O876_Raycaster.PointerLock.setHook(G.oRaycaster.oCamera.oThinker.readMouseMovement, G.oRaycaster.oCamera.oThinker);
@@ -50,12 +48,13 @@ function screenResize(oEvent) {
 	var rBase = oCanvas.height / oCanvas.width; 
 	if (r < rBase) { // utiliser height
 		h -= nPadding;
-		oCanvas.style.width = '';
 		oCanvas.style.height = h.toString() + 'px';
+		oCanvas.style.width = (h * oCanvas.width / oCanvas.height | 0).toString() + 'px';
 	} else { // utiliser width
 		oCanvas.style.width = w.toString() + 'px';
-		oCanvas.style.height = '';
+		oCanvas.style.height = (w * oCanvas.height / oCanvas.width | 0).toString() + 'px';
 	}
 }
+
 
 window.addEventListener('load', main);

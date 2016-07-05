@@ -4,7 +4,7 @@
  */
 var CONFIG = {
 	game: {
-		namespace: 'STUB',		/* game namespace */
+		namespace: '$GAMENAME',		/* game namespace */
 		interval: 40,			/* timer interval (ms). you should not change this value */
 		doomloop: 'raf',	/* doomloop type "raf" or "interval". "raf" is very cpu intensive, "interval" is a cool method */
 		fullscreen: $FULLSCREEN, /* fullscreen flag */

@@ -65,11 +65,22 @@ class ServiceGame {
 
 			// modify config
 			$sFileContent = strtr(file_get_contents($sPath . '/config/config.js'), array(
+				'$GAMENAME' => $oOptions['gamename'] ? strtoupper($oOptions['gamename']) : 'STUB',
 				'$FULLSCREEN' => $oOptions['fullscreen'] ? 'true' : 'false',
 				'$FPSCONTROL' => $oOptions['fpscontrol'] ? 'true' : 'false',
 				'$SMOOTHTEXTURES' => $oOptions['smoothtextures'] ? 'true' : 'false'
 			));
-			file_put_contents($sPath . '/config/config.js', $sFileContent);			
+			file_put_contents($sPath . '/config/config.js', $sFileContent);
+			
+			// modify Game Class
+			$sFileContent = strtr(file_get_contents($sPath . '/program/Game.js'), array(
+				'$GAMENAME' => $oOptions['gamename'] ? strtoupper($oOptions['gamename']) : 'STUB',
+				'$FULLSCREEN' => $oOptions['fullscreen'] ? 'true' : 'false',
+				'$FPSCONTROL' => $oOptions['fpscontrol'] ? 'true' : 'false',
+				'$SMOOTHTEXTURES' => $oOptions['smoothtextures'] ? 'true' : 'false'
+			));
+			file_put_contents($sPath . '/program/Game.js', $sFileContent);
+			
 			
 			// script compilation
 			$s = $this->compileScript(array(
