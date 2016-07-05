@@ -38,8 +38,9 @@ function concatScripts(array $aDirectives = array()) {
 	$a = array_merge(array(
 		'load ../../libraries',
 		'load .',
-		'top ../../libraries/ClassMagic.js',
-		'top ../../libraries/o2.js'
+		'top ../../libraries/O876/Mixin/Data.js',
+		'top ../../libraries/O876/Mixin/Events.js',
+		'top ../../libraries/O876/o2.js'
 	), getLoadDirectives(), $aDirectives);
 	return compileScript($a);
 }
@@ -69,8 +70,9 @@ function deploy($aArgOpt) {
 	$aLoadScript = array_merge(array(
 		'load ../../libraries',
 		'load .',
-		'top ../../libraries/ClassMagic.js',
-		'top ../../libraries/o2.js'
+		'top ../../libraries/O876/Mixin/Data.js',
+		'top ../../libraries/O876/Mixin/Events.js',
+		'top ../../libraries/O876/o2.js'
 	), getLoadDirectives());
 
 

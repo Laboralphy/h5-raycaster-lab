@@ -31,10 +31,10 @@
 		var sURL = '', oParams = {}, pComplete = function() {}, pError = function() {};
 		var nQuest = sURL.indexOf('?');
 		if (nQuest >= 0) {
-			$.extend(oParams, O876.ParamGetter(sURL));
+			$.extend(oParams, O876.parseSearch(sURL));
 			sURL = sURL.substr(0, nQuest);
 		}
-		switch (O876.FunArgType(arguments)) {
+		switch (O876.typeMap(arguments, 'short')) {
 			case 'soff':
 				sURL = arguments[0];
 				oParams = $.extend(oParams, arguments[1]);

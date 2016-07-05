@@ -1,4 +1,4 @@
-/* globals O2, ClassMagic, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
+/* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
@@ -6,14 +6,12 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sTag: '',
 	_xTagProcessing: 0,
 	_yTagProcessing: 0,
-	_oClassLoader: null,
 
 	/** 
 	 * Evènement apellé lors de l'initialisation du jeu
 	 * Appelé une seule fois.
 	 */
 	onInitialize: function() {
-		this._oClassLoader = new O876.ClassLoader();
 		this.on('tag', this.onTagTriggered.bind(this));
 		if ('init' in this) {
 			this.init();
@@ -70,7 +68,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.nPlaneSpacing = 64;
 		var oCT;
 		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
-			var ControlThinkerClass = this._oClassLoader.loadClass(CONFIG.game.controlthinker);
+			var ControlThinkerClass = O2._loadObject(CONFIG.game.controlthinker);
 			oCT = new ControlThinkerClass();
 		} else {
 			if (CONFIG.game.fpscontrol) {
@@ -371,4 +369,4 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	}
 });
 
-ClassMagic.castEventHandler(O876_Raycaster.GameAbstract);
+O2.mixin(O876_Raycaster.GameAbstract, O876.Mixin.Events);

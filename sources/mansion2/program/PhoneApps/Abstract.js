@@ -5,6 +5,9 @@ O2.createClass('MANSION.PhoneApp.Abstract', {
 	getOrientation: function() {
 		return this.sOrientation;
 	},
+	
+	update: function(oLogic) {
+	},
 
 	render: function(oPhone) {
 	}	

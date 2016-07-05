@@ -1,3 +1,7 @@
+/**
+ * good to GIT
+ */
+
 O2.createObject('O876.Browser', {
 	
 	STRINGS: {
@@ -38,6 +42,9 @@ O2.createObject('O876.Browser', {
 		return /*@cc_on!@*/false || !!document.documentMode; // At least IE6
 	},
 	
+	/**
+	 * Return the lists of detected browsers
+	 */
 	getDetectedBrowserList: function() {
 		return (['Opera', 'Firefox', 'Safari', 'Chrome', 'IE']).filter(function(f) {
 			return O876.Browser['is' + f]();

@@ -180,6 +180,18 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 	
+	l_smart2: {
+		src: 'resources/ui/phone/layer2.png',
+		frames: 1,
+		width: 212,
+		height: 250,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
+	},
+	
 	//////////////// PARTICLE /////////////////
 	
 	l_particle: {

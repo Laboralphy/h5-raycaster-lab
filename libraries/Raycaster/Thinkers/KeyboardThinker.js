@@ -99,4 +99,4 @@ O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
 	}
 });
 
-ClassMagic.castEventHandler(O876_Raycaster.KeyboardThinker);
+O2.mixin(O876_Raycaster.KeyboardThinker, O876.Mixin.Events);

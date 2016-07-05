@@ -13,9 +13,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	_bShutter: false, // when "true", the ghost is about to attack
 	// means the next few moves will aim at attacking player
 	// ex : rush,  or teleport + rush...
+	_oBresenham: null,
 	
 	MAX_INVISIBLE_DISTANCE: 384,
 	MAX_VISIBLE_DISTANCE: 640,
+	
+	__construct: function() {
+		__inherited();
+		this._oBresenham = new O876.Bresenham();
+	},
 
 	/**
 	 * sets the normal moving speed of the ghost
@@ -70,7 +76,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		return false;
 	},
 	
-	boundTestSolid: null,
+	boundTestWalkable: null,
 
 	/**
 	 * Renvoie true si le sujet peut voir la cible.
@@ -86,10 +92,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		var yMe = oMe.ySector;
 		var xTarget = oTarget.xSector;
 		var yTarget = oTarget.ySector;
-		if (!this.boundTestSolid) {
-			this.boundTestSolid = this.testSolid.bind(this);
+		if (!this.boundTestWalkable) {
+			this.boundTestWalkable = this.testWalkable.bind(this);
 		}
-		return !O876.Bresenham.line(xMe, yMe, xTarget, yTarget, this.boundTestSolid);
+		return !!this._oBresenham.line(xMe, yMe, xTarget, yTarget, this.boundTestWalkable);
 	},
 
 
@@ -98,6 +104,16 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		var rcs = rc.nMapSize;
 		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
 			return rc.getMapPhys(x, y) !== rc.PHYS_NONE;
+		} else {
+			return false;
+		}
+	},
+
+	testWalkable: function(x, y) {
+		var rc = this.oGame.oRaycaster;
+		var rcs = rc.nMapSize;
+		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
+			return rc.getMapPhys(x, y) === rc.PHYS_NONE;
 		} else {
 			return false;
 		}

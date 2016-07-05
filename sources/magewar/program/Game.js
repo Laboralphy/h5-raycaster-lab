@@ -15,6 +15,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	sBossModeTitle : '', // sauvegarde du titre de la fenetre en mode boss
 	nWeaponChargeTime: 3000,
 	nInstanceId: 0,
+	oRainbow: null,
 	
 
 	// //// GAME PROCEDURES ////// GAME PROCEDURES ////// GAME PROCEDURES //////
@@ -689,8 +690,10 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * Evènement apellé lors de l'initialisation du jeu Appelé une seule fois.
 	 */
 	init : function() {
+		// Rainbow
+		this.oRainbow = new O876.Rainbow();
 		// Sound system
-		this.oSoundSystem = new SoundSystem();
+		this.oSoundSystem = new O876.SoundSystem();
 		this.oSoundSystem.setPath('resources/snd');
 		this.oSoundSystem.addChans(8);
 		this.oSoundSystem.bMute = !CONFIG.game.sound;
@@ -1192,7 +1195,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	gxFade : function(sStyle, fAlpha, fSpeed) {
 		var rc = this.oRaycaster;
 		var gx = new O876_Raycaster.GXFade(rc);
-		gx.oColor = GfxTools.buildStructure(sStyle);
+		gx.oColor = this.oRainbow.parse(sStyle);
 		gx.fAlpha = fAlpha;
 		gx.fAlphaFade = fSpeed;
 		rc.oEffects.addEffect(gx);

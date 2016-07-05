@@ -9,8 +9,10 @@ O2.createClass('RCWE.RCDataBuilder', {
 	sThingRoot: 'thing_',
 	
 	TYPE_CORR: null,
+	oRainbow: null,
 		
 	__construct: function() {
+		this.oRainbow = new O876.Rainbow();
 		this.TYPE_CORR = [0, 1, 10, [2, 4, 6, 7, 8, 3], 9, 12, 11];
 	},
 	
@@ -34,15 +36,15 @@ O2.createClass('RCWE.RCDataBuilder', {
 	buildVisuals: function(oData) {
 		var d = oData.visuals;
 		var oRes = {};
-		oRes.ceilColor = GfxTools.buildStructure(d.ceil);
-		oRes.fogColor = GfxTools.buildStructure(d.fog);
-		oRes.floorColor = GfxTools.buildStructure(d.floor);
+		oRes.ceilColor = this.oRainbow.parse(d.ceil);
+		oRes.fogColor = this.oRainbow.parse(d.fog);
+		oRes.floorColor = this.oRainbow.parse(d.floor);
 		oRes.fogDistance = d.visib / 10;
 		oRes.light = d.visib * 10;
 		oRes.diffuse = d.diffu / 10;
 		var f;
 		try {
-			f = GfxTools.buildStructure(d.filtr);
+			f = this.oRainbow.parse(d.filtr);
 		} catch (e) {
 		}
 		oRes.filter = d.filtr == '#888888' ? false : {

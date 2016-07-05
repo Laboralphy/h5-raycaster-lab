@@ -14,11 +14,11 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 		}
 		var fTurn = fMe - fTarget;
 		var e = new O876.Easing();
-		e.setFunction('cubeDeccel');
+		e.use('cubeDeccel');
 		if (fTurn > PI) {
-			e.setMove(fMe, fMe + fTurn, 6);
+			e.from(fMe).to(fMe + fTurn).during(6);
 		} else {
-			e.setMove(fMe, fMe - fTurn, 6);
+			e.from(fMe).to(fMe - fTurn).during(6);
 		}
 		this.oEasingAngle = e;
 	},
@@ -83,7 +83,7 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	},
 	
 	processAngle: function() {
-		var bLastMove = this.oEasingAngle.move();
+		var bLastMove = this.oEasingAngle.f();
 		this.oMobile.setAngle(this.oEasingAngle.x);
 		if (bLastMove) {
 			this.oEasingAngle = null;

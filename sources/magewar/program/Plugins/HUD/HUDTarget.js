@@ -5,8 +5,10 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 	aFGColor: null,
 	aSGColor: null,
 	bOver: false,
+	oRainbow: null,
 	
 	__construct: function() {
+		this.oRainbow = new O876.Rainbow();
 		this.aFGColor = {r: 255, g: 255, b: 255, a: 1};
 		this.aSGColor = {r: 0, g: 0, b: 0, a: 1};
 	},
@@ -30,7 +32,7 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 	setName: function(sName, sColor) {
 		this.sName = sName;
 		if (sColor) {
-			var a = GfxTools.buildStructure(sColor);
+			var a = this.oRainbow.parse(sColor);
 			this.aFGColor.r = a.r;
 			this.aFGColor.g = a.g;
 			this.aFGColor.b = a.b;
@@ -45,8 +47,8 @@ O2.extendClass('MW.HUDTarget', UI.HUDElement, {
 		var sName = this.sName;
 		c.clearRect(0, 0, w, h);
 		c.font = 'bold ' + this.nFontSize + 'px courier';
-		c.fillStyle = GfxTools.buildRGBA(this.aFGColor);
-		c.strokStyle = GfxTools.buildRGBA(this.aSGColor);
+		c.fillStyle = this.oRainbow.rgba(this.aFGColor);
+		c.strokStyle = this.oRainbow.rgba(this.aSGColor);
 		var nWidth = c.measureText(sName).width;
 		c.textBaseLine = 'middle';
 		var x = (w - nWidth) >> 1;

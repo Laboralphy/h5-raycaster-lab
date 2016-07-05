@@ -75,8 +75,9 @@ class ServiceGame {
 			$s = $this->compileScript(array(
 				$oOptions['pack'] ? 'pack' : '',
 				'load ../../../libraries',
-				'top ../../../libraries/ClassMagic.js',
-				'top ../../../libraries/o2.js'
+				'top ../../../libraries/O876/Mixin/Data.js',
+				'top ../../../libraries/O876/Mixin/Events.js',
+				'top ../../../libraries/O876/o2.js'
 			));
 			
 			file_put_contents($sPath . '/program/libraycaster.js', $s);

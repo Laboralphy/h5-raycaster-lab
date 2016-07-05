@@ -1,6 +1,8 @@
 O2.extendClass('RCWE.SkyEditor', RCWE.Window, {
+	oRainbow: null,
 	build: function() {
 		__inherited('SkyEditor');
+		this.oRainbow = new O876.Rainbow();
 		this.getContainer().addClass('SkyEditor');
 		var $structure = $(
 			'<table>' + 
@@ -87,9 +89,9 @@ O2.extendClass('RCWE.SkyEditor', RCWE.Window, {
 		
 		oGradient = oContext.createLinearGradient(0, 0, w, 0);
 		oGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-		var oFogColor = GfxTools.buildStructure(oData.fog);
+		var oFogColor = this.oRainbow.parse(oData.fog);
 		oFogColor.a = 1 - (oData.diffu / 10);
-		var sFogColor = GfxTools.buildRGBA(oFogColor);
+		var sFogColor = this.oRainbow.rgba(oFogColor);
 		if (oData.visib == 10) {
 			oGradient.addColorStop(0.5, sFogColor);
 		} else {

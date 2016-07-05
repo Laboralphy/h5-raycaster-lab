@@ -24,6 +24,12 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	
 	oApplication: null,
 	onHidden: null,
+	
+	SCREEN_W: 100, // application screen width
+	SCREEN_H: 100, // application screen height
+	SCREEN_X: 0, // application screen position relative to the start of the image skin
+	SCREEN_Y: 0,
+
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
@@ -44,6 +50,15 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		this.oBlurCvs.width = this.nBlurWidth;
 		this.oBlurCvs.height = this.nBlurHeight;
 		O876.CanvasFactory.setImageSmoothing(this.oBlurCvs.getContext('2d'), true);
+
+		var c = oRaycaster.getRenderCanvas();
+		// phone screen
+		this.oScreen = O876.CanvasFactory.getCanvas();
+		this.oScreen.width = this.SCREEN_W;
+		this.oScreen.height = this.SCREEN_H;
+		
+		this.oScreenContext = this.oScreen.getContext('2d');
+		O876.CanvasFactory.setImageSmoothing(this.oScreenContext, true);
 	},
 
 	
@@ -60,6 +75,11 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	getCurrentApplication: function() {
 		return this.oApplication;
 	},
+	
+	
+	isVisible: function() {
+		return this.nRaise === 1;
+	},	
 	
 	/**
 	 * Hides the camera
@@ -129,14 +149,13 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	process: function() {
 		switch (this.nState) {
 			case 10: // start raising
-				this.oEasing.setFunction('cubeDeccel');
-				this.oEasing.setMove(0.5, 0, 1, 0, this.nMaxTimeIndex);
+				this.oEasing.from(0.5).to(1).during(this.nMaxTimeIndex).use('cubeDeccel');
 				this.nTimeIndex = 0;
 				this.nState = 11;
 			break;
 
 			case 11: // raising
-				this.oEasing.move(++this.nTimeIndex);
+				this.oEasing.f(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
 					this.nState = 0;
 				}
@@ -144,7 +163,7 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 			break;
 
 			case 21: // falling
-				this.oEasing.move(++this.nTimeIndex);
+				this.oEasing.f(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
 					this.setApplication(null);
 					this.nState = 0;
@@ -157,18 +176,13 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 			break;
 
 			case 20: // start failling
-				this.oEasing.setFunction('cubeAccel');
-				this.oEasing.setMove(1, 0.5, 0, 0, this.nMaxTimeIndex);
+				this.oEasing.from(1).to(0).during(this.nMaxTimeIndex).use('cubeAccel');
 				this.nTimeIndex = 0;
 				this.nState = 21;
 			break;
 		}
 	},
 	
-	render: function() {
-		this.drawPhone();
-	},
-
 	done: function() {
 	},
 	
@@ -204,6 +218,38 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		O876.CanvasFactory.setImageSmoothing(rccc, bSmooth);
 	},
 	
-	drawPhone: null
+	/**
+	 * This function is call each frame
+	 */
+	render: function() {
+		if (this.nRaise === 0) { // no need to draw anything if not raised
+			return;
+		}
+		var rcc = this.oCanvas;
+		var rccc = this.oContext;
+		this.renderApplication();	// renders the application screen
+		this.blur();				// blurs the background image
+		
+		var p = this.oPhone.oImage;	
+		var rw = rcc.width;			
+		var rh = rcc.height;
+		var pw = p.width;
+		var ph = p.height;
+		
+		var xPhone = (rw -pw) >> 1;
+		var yPhone = ((rh - ph) >> 1) + ((1 - this.nRaise) * rh);
+		
+		var oScreen = this.oScreen;
+		var cw = oScreen.width;
+		var ch = oScreen.height;
+		var xim = xPhone + this.SCREEN_X;
+		var yim = yPhone + this.SCREEN_Y;
+		
+		var f = rccc.globalAlpha;
+		rccc.globalAlpha = this.nRaise;
+		rccc.drawImage(p, xPhone, yPhone);
+		rccc.drawImage(oScreen, xim, yim);
+		rccc.globalAlpha = f;
+	}
 });
 

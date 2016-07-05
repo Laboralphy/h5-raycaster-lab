@@ -16,7 +16,10 @@ O2.createClass('MW.Login', {
 		this.getElement('logo').style.display = '';
 		this.getElement('login').style.display = '';
 		// rapport de status à chercher en asynchrone (à mettre dans le div status)
-		XHR.get('/mwstatus/?h=1', this.getElement('status'));
+		var XHR = new O876.XHR();
+		XHR.get('/mwstatus/?h=1', (function(data) {
+			this.getElement('status').innerHTML = data;
+		}).bind(this));
 		// definir le toogle d'options
 		this.getElement('options_switch').addEventListener('click', this.toggleOptions.bind(this));
 		// "how to play" section : clicking on how to play will display a small window

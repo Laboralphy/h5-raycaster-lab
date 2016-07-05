@@ -26,14 +26,14 @@ O2.extendClass('MANSION.GX.DarkHaze', O876_Raycaster.GXEffect, {
 		this.oCanvas = c;
 		this.oContext = ctx;
 		this.oEasing = new O876.Easing();
-		this.oEasing.setFunction('smoothstep');
+		this.oEasing.use('smoothstep');
 		this.nTimeIndex = this.nTimeFinal;
 		this.processDark(this.fMin);
 	},
 	
 	setDark: function(f) {
 		this.fDarkFinal = f;
-		this.oEasing.setMove(this.fDarkIndex, 0, f, 0, this.nTimeFinal);
+		this.oEasing.from(this.fDarkIndex).to(f).during(this.nTimeFinal);
 		this.nTimeIndex = 0;
 		this.bPulse = true;
 	},
@@ -77,7 +77,7 @@ O2.extendClass('MANSION.GX.DarkHaze', O876_Raycaster.GXEffect, {
 
 	process: function() {
 		if (this.bPulse && this.nTimeIndex <= this.nTimeFinal) {
-			this.oEasing.move(this.nTimeIndex);
+			this.oEasing.f(this.nTimeIndex);
 			++this.nTimeIndex;
 			this.processDark(this.oEasing.x);
 			if (this.nTimeIndex === this.nTimeFinal) {

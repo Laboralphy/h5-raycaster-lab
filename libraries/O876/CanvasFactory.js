@@ -1,5 +1,6 @@
 /**
  * Canvas factory
+ * good to GIT
  */
 O2.createObject('O876.CanvasFactory', {
 	

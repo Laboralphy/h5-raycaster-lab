@@ -15,8 +15,6 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	
 	oIndex: null,
 
-	oClassLoader: null,
-
 	getName: function() {
 		return 'HUD';
 	},
@@ -51,7 +49,7 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	activateElement: function(sElement) {
 		var d, p;
 		d = this.oData[sElement];
-		p = this.oClassLoader.loadClass(d[0]);
+		p = O2._loadObject(d[0]);
 		d = this.centerElement(d);
 		var oElement = new p();
 		oElement._sClass = sElement;
@@ -66,7 +64,6 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	},
 	
 	init: function() {
-		this.oClassLoader = new O876.ClassLoader();
 		this.oIndex = {};
 		this.oHUD = new UI.HUD();
 		var c = document.getElementById(CONFIG.raycaster.canvas);

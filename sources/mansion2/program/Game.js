@@ -41,7 +41,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
-		this.on('key.down', this.gameEventKey.bind(this));
+		this.on('key.down', this.gameEventKey.bind(this));		
 	},
 	
 	/**
@@ -68,7 +68,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 	initAudio: function() {
-		a = new SoundSystem();
+		a = new O876.SoundSystem();
 		a.addChans(8);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
@@ -153,6 +153,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}).bind(this));
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
+		this.bindPhoneEvents(this.oPhone);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
 	},
 	
@@ -205,7 +206,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (!O876_Raycaster.PointerLock.locked()) {
 			return;
 		}
-		this.toggleCamera();
+		this.toggleApplication('Camera');
 	},
 
 	/**
@@ -255,8 +256,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				
 			break;
 			case KEYS.F1:
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_pat', pos.x, pos.y);
+				//var pos = this.getPlayer().getFrontCellXY();
+				//this.spawnGhost('g_pat', pos.x, pos.y);
+
+				this.toggleApplication('Notepad');				
 			break;
 			
 			case KEYS.F2: 
@@ -307,10 +310,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		// update camera
 		var gl = this.oLogic;
 		gl.setTime(this.getTime()); // transmit game time
+		this.oPhone.updateLogic(gl);
+		/*
 		if (this.oPhone.isActive('Camera')) {
 			var oCameraApp = this.oPhone.getCurrentApplication();
 			oCameraApp.setEnergyGauges(gl.getCameraEnergy(), gl.getCameraMaxEnergy());
-		}
+		}*/
 	},
 	
 	gameEventFrame: function(oEvent) {
@@ -349,6 +354,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (var nSide = 0; nSide < 6; ++nSide) {
 			b = rc.getBlockData(x, y, nSide);
 			b.diffuse = rc.nShadingThreshold * nDiffuse / 100 | 0;
+			console.log(x, y, b.diffuse);
 		}
 		oEvent.remove = true;
 	},
@@ -490,23 +496,40 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	////// GAME LIFE //////
 
+	bindPhoneEvents: function(p) {
+		p.on('phone.startup.Camera', this.phoneAppCameraOn.bind(this));
+		p.on('phone.shutdown.Camera', this.phoneAppCameraOff.bind(this));
+	},
+
+
+	phoneAppCameraOn: function(data) {
+		oAppCamera = data.application;
+		oAppCamera.setEnergyGauges(0, this.oLogic.getCameraMaxEnergy());
+		oAppCamera.nCircleSize = this.oLogic.getCameraCircleSize();
+		oAppCamera.oParticles.setParticleCanvas(this.oRaycaster.getTile('l_particle').oImage);
+		var p = this.oPhone.getCurrentPhone();
+		oAppCamera.oParticles.setAttractor(0, p.SCREEN_H, 20480);
+		this.getPlayer().fSpeed = 2;
+	},
+
+	phoneAppCameraOff: function() {
+		this.oLogic.cameraOff();
+		this.getPlayer().fSpeed = 3;
+	},
+	
+
+
+
+
+	
 	/**
 	 * puts the camera obscura on and off
 	 */
-	toggleCamera: function() {
-		var oApp = this.oPhone.getCurrentApplication();
-		if (oApp && oApp.name === 'Camera') {
-			this.oPhone.hide();
-			this.oLogic.cameraOff();
-			this.getPlayer().fSpeed = 3;
+	toggleApplication: function(sApplication) {
+		if (this.oPhone.isActive(sApplication)) {
+			this.oPhone.close();
 		} else {
-			var oAppCamera = this.oPhone.activate('Camera');
-			oAppCamera.setEnergyGauges(0, this.oLogic.getCameraMaxEnergy());
-			oAppCamera.nCircleSize = this.oLogic.getCameraCircleSize();
-			oAppCamera.oParticles.setParticleCanvas(this.oRaycaster.getTile('l_particle').oImage);
-			var p = this.oPhone.getCurrentPhone();
-			oAppCamera.oParticles.setAttractor(0, p.SCREEN_H, 20480);
-			this.getPlayer().fSpeed = 2;
+			this.oPhone.activate(sApplication);
 		}
 	},
 
@@ -578,28 +601,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	cameraShoot: function() {
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
-			var nDamage = gl.cameraShoot();
-			// draw the flash effect
-			var oApp = this.oPhone.getCurrentApplication();
-			var p = this.oPhone.getCurrentPhone();
-			oApp.flash();
-			var lss = gl.getLastShotStats();
-			var nDamage = lss.damage;
-			if (lss.damage > 0) {
-				var aShotStr = ArrayTools.unique(lss.shots).map(function(s) {
-					return STRINGS_DATA.SHOTS[s];
-				});
-				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
-				oApp.displayScore(aShotStr);
-			}
+			gl.cameraShoot();
 			this.playSound(SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects
-			gl.getCapturedGhosts().forEach((function(g) {
+			gl.getCapturedGhosts().forEach(function(g) {
 				var fDistance = g[2];
 				var fAngle = g[1];
 				var oGhost = g[0];
 				this._oGhostScreamer.addGhost(oGhost);
-			}).bind(this));
+			}, this);
 		}
 	},
 	

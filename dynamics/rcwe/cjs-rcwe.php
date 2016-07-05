@@ -9,6 +9,7 @@ print compileScript(array(
 	'load ../../libraries',
 	'load scripts',
 	'top scripts/classes/Window.js',
-	'top ../../libraries/ClassMagic.js',
-	'top ../../libraries/o2.js'
+	'top ../../libraries/O876/Mixin/Data.js',
+	'top ../../libraries/O876/Mixin/Events.js',
+	'top ../../libraries/O876/o2.js'
 ));

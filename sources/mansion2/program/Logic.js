@@ -18,6 +18,8 @@ O2.createClass('MANSION.Logic', {
 	_fCameraFullEnergyBonus: 1.5, // damage bonus granted when camera is fully loaded
 	_bCameraCharging: false,
 	_bCameraFullCharge: false,
+	_bCameraFlash: false,
+	
 	
 	_nTime: 0, 
 	_nCameraIntervalTime: 1000, // minimum time between two camera shots
@@ -25,6 +27,12 @@ O2.createClass('MANSION.Logic', {
 	
 	_aCapturedGhosts: null,
 	_aLastShotStats: null,
+	
+	
+	_nPhoneBattery: 100,
+	_nPhoneNetwork: 100,
+	_nPhoneClockH: 0,
+	_nPhoneClockM: 0,
 	
 
 	/**
@@ -79,11 +87,16 @@ O2.createClass('MANSION.Logic', {
 
 	/**
 	 * Returns the maximum amount of storable energy in the camera
+	 * @return int
 	 */
 	getCameraMaxEnergy: function() {
 		return this._nCameraMaxEnergy;
 	},
 	
+	/**
+	 * Returns the camera capture distance 
+	 * @return int
+	 */
 	getCameraCaptureDistance: function() {
 		return this._nCameraCaptureDistance;
 	},
@@ -96,6 +109,9 @@ O2.createClass('MANSION.Logic', {
 		this._nCameraEnergy = Math.max(0, Math.min(this._nCameraMaxEnergy, this._nCameraEnergy + nAmount));
 	},
 
+	/**
+	 * Decreases ecto energy (no ghost in the visor)
+	 */
 	decreaseCameraEnergy: function(nAmount) {
 		this._nCameraEnergy = Math.max(0, Math.min(this._nCameraMaxEnergy, this._nCameraEnergy - nAmount));
 	},
@@ -115,10 +131,21 @@ O2.createClass('MANSION.Logic', {
 	},
 	
 	/**
+	 * Returns true if the camera has flashed
+	 * Sets this flag to false, so the function can only be called once
+	 */
+	cameraFlashTriggered: function() {
+		var b = this._bCameraFlash;
+		this._bCameraFlash = false;
+		return b;
+	},
+	
+	/**
 	 * We have taken photo
 	 * updating energy gauges
 	 */
 	cameraShoot: function() {
+		this._bCameraFlash = true;
 		this._nCameraNextShotTime = this._nTime + this._nCameraIntervalTime;
 		var fEnergy = this._nCameraEnergy;
 		var bFullEnergy = fEnergy == this._nCameraMaxEnergy;
@@ -177,6 +204,11 @@ O2.createClass('MANSION.Logic', {
 		};
 	},
 	
+	/** 
+	 * Get statistic about the last shot
+	 * These stat are for displaying
+	 * @returns an objet {damage: int, shots: [description]}
+	 */
 	getLastShotStats: function() {
 		return this._aLastShotStats;
 	},
@@ -256,6 +288,9 @@ O2.createClass('MANSION.Logic', {
 		return false;
 	},
 	
+	/**
+	 * Returns true if the camera has reach full charge
+	 */
 	hasCameraReachedFullCharge: function() {
 		if (!this._bCameraFullCharge && this._nCameraEnergy >= this._nCameraMaxEnergy) {
 			this._bCameraFullCharge = true;
@@ -271,5 +306,35 @@ O2.createClass('MANSION.Logic', {
 	 */
 	getCapturedGhosts: function() {
 		return this._aCapturedGhosts;
-	}
+	},
+	
+	
+	
+	/***************************************
+	 *            PHONE STATE              *
+	 ***************************************/
+	
+	/**
+	 * Returns the network coverage indicator
+	 * @returns int between 0 and 100
+	 */
+	getNetworkIndicator: function() {
+		return this._nPhoneNetwork;
+	},
+
+	/**
+	 * Returns the battery charge indicator
+	 * @returns int between 0 and 100
+	 */
+	getBatteryIndicator: function() {
+		return Math.min(99, Math.max(0, this._nPhoneBattery));
+	},
+	
+	/**
+	 * Returns the time of night to be displayed
+	 * @returns string like "02:36"
+	 */
+	getClockTime: function() {
+		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
+	},
 });

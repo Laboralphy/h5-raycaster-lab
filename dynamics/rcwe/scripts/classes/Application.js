@@ -201,7 +201,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	loadPlugins: function() {
-		var oParams = O876.ParamGetter.parse();
+		var oParams = O876.parseSearch();
 		if (!('plugins' in oParams)) {
 			return;
 		}

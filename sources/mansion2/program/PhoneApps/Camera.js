@@ -25,8 +25,11 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 	oScoreCanvas: null,
 	nDisplayScoreTime: 60,
 	
+	oRainbow: null,
+	
 	
 	__construct: function() {
+		this.oRainbow = new O876.Rainbow();
 		this.oEasing = new O876.Easing();
 		this.oParticles = new MANSION.PhoneApps.Particles();
 		this.oScoreCanvas = O876.CanvasFactory.getCanvas();
@@ -39,6 +42,22 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		ctx.textBaseline = 'top';
 		this.oCircleColor1 = {r: 64, g: 128, b: 255, a: 1};
 		this.oCircleColor2 = {r: 150, g: 200, b: 255, a: 1};
+	},
+	
+	update: function(oLogic) {
+		if (oLogic.cameraFlashTriggered()) {
+			this.flash();
+			var lss = oLogic.getLastShotStats();
+			var nDamage = lss.damage;
+			if (nDamage > 0) {
+				var aShotStr = ArrayTools.unique(lss.shots).map(function(s) {
+					return STRINGS_DATA.SHOTS[s];
+				});
+				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
+				this.displayScore(aShotStr);
+			}		
+		}
+		this.setEnergyGauges(oLogic.getCameraEnergy(), oLogic.getCameraMaxEnergy());
 	},
 
 
@@ -75,12 +94,12 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 				c2.r = 150 + 32 * fSin | 0;
 				c2.r = 150 + 64 * fSin | 0;
 				c2.a = fEnergy / 2 + 0.5;
-				oScreenCtx.strokeStyle = GfxTools.buildRGBA(c1);
+				oScreenCtx.strokeStyle = this.oRainbow.rgba(c1);
 				oScreenCtx.lineWidth = 5;
 				oScreenCtx.beginPath();
 				oScreenCtx.arc(cw >> 1, ch >> 1, cs, 0 - PI / 2, fEnergyAngle - PI / 2);
 				oScreenCtx.stroke();
-				oScreenCtx.strokeStyle = GfxTools.buildRGBA(c2);
+				oScreenCtx.strokeStyle = this.oRainbow.rgba(c2);
 				oScreenCtx.lineWidth = 1;
 				oScreenCtx.beginPath();
 				oScreenCtx.arc(cw >> 1, ch >> 1, cs, 0 - PI / 2, fEnergyAngle - PI / 2);
@@ -115,7 +134,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		
 		// flash
 		if (this.bFlash) {
-			if (this.oEasing.move(++this.nFlashTime)) {
+			if (this.oEasing.f(++this.nFlashTime)) {
 				this.bFlash = false;
 			} else {
 				var sFGCO = this.sFlashGCO;
@@ -142,8 +161,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		this.sFlashColor = 'rgba(255, 255, 255, ';
 		this.bFlash = true;
 		this.sFlashGCO = '';
-		this.oEasing.setFunction('cubeDeccel');
-		this.oEasing.setMove(1, 0, 0, 0, this.nFlashDuration);
+		this.oEasing.from(1).to(0).during(this.nFlashDuration).use('cubeDeccel');
 	},	
 	
 	/**
@@ -154,8 +172,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		this.sFlashColor = 'rgba(0, 64, 128, ';
 		this.sFlashGCO = 'lighter';
 		this.bFlash = true;
-		this.oEasing.setFunction('cubeInOut');
-		this.oEasing.setMove(0, 0, 0.75, 0, this.nChargeDuration);
+		this.oEasing.from(0).to(0.75).during(this.nChargeDuration).use('cubeInOut');
 	},
 	
 	setEnergyGauges: function(nVal, nMax) {

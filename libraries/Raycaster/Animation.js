@@ -63,7 +63,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 					this.nIndex = 0;
 				}
 			break;
-				
+
 			default:
 				if (this.nIndex >= this.nCount) {
 					this.nIndex = this.nCount - 1;

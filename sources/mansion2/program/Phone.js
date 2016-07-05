@@ -1,40 +1,72 @@
 O2.createClass('MANSION.Phone', {
 	_oPhone: null,
 	aApplications: null,
-	sActiveApp: '',
 	sCurrentPhone: '',
 	
 	__construct: function(oRaycaster) {
 		this.aApplications = {};
-		this._oPhone = {
-			port: oRaycaster.addGXEffect(MANSION.GX.PhonePort),
+		var p = {
+			//port: oRaycaster.addGXEffect(MANSION.GX.PhonePort),
+			port: oRaycaster.addGXEffect(MANSION.GX.PhonePort2),
 			land: oRaycaster.addGXEffect(MANSION.GX.PhoneLand)
 		};
+		this._oPhone = p;
 	},
 	
+	/**
+	 * Will instanciate and return the specified application
+	 * This factory will only produce singleton
+	 */
 	openApplication: function(sApplication) {
-		if (this.sActiveApp === sApplication) {
-			return this.oApplication;
-		}
 		if (sApplication in this.aApplications) {
-			return this.oApplication = this.aApplications[sApplication];
+			return this.aApplications[sApplication];
 		} else if (sApplication in MANSION.PhoneApp) {
 			var A = MANSION.PhoneApp[sApplication];
-			return this.oApplication = this.aApplications[sApplication] = new A();
+			return this.aApplications[sApplication] = new A();
 		} else {
 			return null;
 		}
 	},
+	
+	/**
+	 * Violently kill currently running application
+	 */
+	clearApplication: function() {
+		this.getCurrentPhone().setApplication(null);
+		this.sCurrentPhone = '';
+	},
 
 	/**
-	 * Activates an Application 
+	 * Gently close currently running application
+	 * returns true if there was an application to close
+	 */
+	close: function(sNext) {
+		var oApp = this.getCurrentApplication();
+		if (oApp) {
+			this.trigger('phone.shutdown.' + oApp.name);
+			this.hide((function() {
+				this.clearApplication();
+				if (sNext) {
+					this.activate(sNext);
+				}
+			}).bind(this));
+			return true;
+		} else {
+			return false;
+		}
+	},
+
+	/**
+	 * Activates an Application
 	 * - loads the application if not already loaded
 	 * - brings over the proper phone (either portrait or landscape)
 	 * - displays the application
 	 * @param sApplication application name
 	 */
 	activate: function(sApplication) {
-		var oApp;
+		if (this.close(sApplication)) {
+			return;
+		}
 		if (sApplication in this.aApplications) {
 			oApp = this.aApplications[sApplication];
 		} else {
@@ -54,6 +86,7 @@ O2.createClass('MANSION.Phone', {
 				oNewPhone.show();
 			});
 		}
+		this.trigger('phone.startup.' + sApplication, {application: oApp});
 		return oApp;
 	},
 	
@@ -75,7 +108,7 @@ O2.createClass('MANSION.Phone', {
 	
 	getCurrentApplication: function() {
 		if (this.sCurrentPhone) {
-			return this._oPhone[this.sCurrentPhone].getCurrentApplication();
+			return this.getCurrentPhone().getCurrentApplication();
 		} else {
 			return null;
 		}
@@ -86,10 +119,26 @@ O2.createClass('MANSION.Phone', {
 	 */
 	hide: function(fNext) {
 		var p = this._oPhone;
-		if (p.land.getStatus('visible')) {
+		if (p.land.getStatus() === 'visible') {
 			return p.land.hide(fNext);
-		} else if (p.port.getStatus('visible')) {
+		} else if (p.port.getStatus() === 'visible') {
 			return p.port.hide(fNext);
 		}
+		if (fNext) {
+			fNext();
+		}
+	},
+	
+	/**
+	 * Updates phone application according to game logic
+	 */
+	updateLogic: function(gl) {
+		var oApp = this.getCurrentApplication();
+		if (oApp) {
+			oApp.update(gl);
+		}
 	}
+
 });
+
+O2.mixin(MANSION.Phone, O876.Mixin.Events);

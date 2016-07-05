@@ -1,17 +1,24 @@
 /**
- * Cette fonction parcoure tous les points en ligne droite sur le segment déterminé 
- * par les points (x0, y0) et (x1, y1) 
- * pour chaque point parcouru on appelle un callback fonction (x, y) qui devra renvoyer true
- * pour stopper le parcour, ou false pour le laisser continuer
- * @param x0 point de départ absice
- * @param y0 point de départ ordonnée
- * @param x1 point d'arrivée absice
- * @param y1 point d'arrivée ordonnée
- * @param pPlotFunction fonction callback
- * @returns {Boolean} true si le parcour a été interrompu / false sinon
+ * This class implements the bresenham algorithm
+ * and extend its use for other purpose than drawing pixel lines
+ * good to GIT
  */
-O2.createObject('O876.Bresenham', {
-	line: function(x0, y0, x1, y1, pPlotFunction) {
+O2.createClass('O876.Bresenham', {
+	/**
+	 * This function will virtually draw points along a line
+	 * and will call back a plot function. 
+	 * The line will start at x0, y0 and will end at x1, y1
+	 * Each time a points is "drawn" a callback is done 
+	 * if the callback returns false, the line function will stop and return false
+	 * else the line function will return an array of plots
+	 * @param x0 starting point x
+	 * @param y0 starting point y
+	 * @param x1 ending point x
+	 * @param y1 ending point y
+	 * @param pCallback a plot function of type function(x, y) { return bool; }
+	 * @returns {Boolean} false if the fonction has been canceled
+	 */
+	line: function(x0, y0, x1, y1, pCallback) {
 		var dx = Math.abs(x1 - x0);
 		var dy = Math.abs(y1 - y0);
 		var sx = (x0 < x1) ? 1 : -1;
@@ -19,8 +26,10 @@ O2.createObject('O876.Bresenham', {
 		var err = dx - dy;
 		var e2;
 		while (true) {
-			if (pPlotFunction(x0, y0)) {
-				return true;
+			if (pCallback) {
+				if (pCallback(x0, y0) === false) {
+					return false;
+				}
 			}
 			if (x0 == x1 && y0 == y1) {
 				break;
@@ -35,7 +44,6 @@ O2.createObject('O876.Bresenham', {
 				y0 += sy;
 			}
 		}
-		return false;
+		return true;
 	}
 });
-

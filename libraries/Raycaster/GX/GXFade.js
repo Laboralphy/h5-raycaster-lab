@@ -17,9 +17,11 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	fAlpha : 0,
 	fAlphaFade : 0,
 	oColor : null,
+	oRainbow: null,
 
 	__construct : function(oRaycaster) {
 		__inherited(oRaycaster);
+		this.oRainbow = oRaycaster.oRainbow;
 		this.oCanvas = this.oRaycaster.oCanvas;
 		this.oContext = this.oCanvas.getContext('2d');
 	},
@@ -59,7 +61,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	render : function() {
-		this.oContext.fillStyle = GfxTools.buildRGBA(this.oColor);
+		this.oContext.fillStyle = this.oRainbow.rgba(this.oColor);
 		this.oContext.fillRect(0, 0, this.oCanvas.width, this.oCanvas.height);
 	},
 

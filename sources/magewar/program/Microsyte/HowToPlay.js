@@ -15,6 +15,7 @@ O2.createClass('MW.HowToPlay', {
 			this.aButtons[1].disabled = '';
 		}
 		this.nPage = Math.max(0, Math.min(this.aPages.length, n));
+		var XHR = new O876.XHR();
 		XHR.get(this.aPages[this.nPage], this.oPage);
 	},
 	

@@ -84,6 +84,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oDoors : null,
 	oXMap : null, // Données supplémentaires pour chaque faces d'un block
 	oMinimap: null,
+	oRainbow: null, // outil de management des couleurs
 
 	// Textures
 	xTexture : 64,
@@ -170,6 +171,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	initialize : function() {
+		this.oRainbow = new O876.Rainbow();
 		this.fViewAngle = PI / 4;
 		if (this.oConfig.planeSpacing) {
 			this.nPlaneSpacing = this.oConfig.planeSpacing; 
@@ -471,7 +473,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				case 0: // Méthode conservant l'Alpha (ne marche pas sous moz)
 					oCtx.globalCompositeOperation = 'source-over';
 					oCtx.drawImage(oImage, 0, i * oImage.height);
-					oCtx.fillStyle = GfxTools.buildRGBA(g);
+					oCtx.fillStyle = this.oRainbow.rgba(g);
 					oCtx.fillRect(0, i * oImage.height, oImage.width,
 							oImage.height);
 					oCtx.globalCompositeOperation = 'destination-in';
@@ -482,7 +484,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				case 1:
 					oCtx.drawImage(oImage, 0, i * oImage.height);
 					oCtx.globalCompositeOperation = 'source-atop';
-					oCtx.fillStyle = GfxTools.buildRGBA(g);
+					oCtx.fillStyle = this.oRainbow.rgba(g);
 					oCtx.fillRect(0, i * oImage.height, oImage.width,
 							oImage.height);
 					oCtx.globalCompositeOperation = 'source-over';
@@ -776,21 +778,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 */
 	buildGradient : function() {
 		var g;
+		var rainbow = this.oRainbow;
 		this.oVisual.gradients = [];
 		g = this.oRenderContext.createLinearGradient(0, 0, 0, this.oCanvas.height >> 1);
-		g.addColorStop(0, GfxTools.buildRGBA(this.oVisual.ceilColor));
+		g.addColorStop(0, rainbow.rgba(this.oVisual.ceilColor));
 		if (this.oVisual.fogDistance < 1) {
-			g.addColorStop(this.oVisual.fogDistance, GfxTools.buildRGBA(this.oVisual.fogColor));
+			g.addColorStop(this.oVisual.fogDistance, rainbow.rgba(this.oVisual.fogColor));
 		}
-		g.addColorStop(1, GfxTools.buildRGBA(this.oVisual.fogColor));
+		g.addColorStop(1, rainbow.rgba(this.oVisual.fogColor));
 		this.oVisual.gradients[0] = g;
 
 		g = this.oRenderContext.createLinearGradient(0, this.oCanvas.height - 1, 0, (this.oCanvas.height >> 1) + 1);
-		g.addColorStop(0, GfxTools.buildRGBA(this.oVisual.floorColor));
+		g.addColorStop(0, rainbow.rgba(this.oVisual.floorColor));
 		if (this.oVisual.fogDistance < 1) {
-			g.addColorStop(this.oVisual.fogDistance, GfxTools.buildRGBA(this.oVisual.fogColor));
+			g.addColorStop(this.oVisual.fogDistance, rainbow.rgba(this.oVisual.fogColor));
 		}
-		g.addColorStop(1, GfxTools.buildRGBA(this.oVisual.fogColor));
+		g.addColorStop(1, rainbow.rgba(this.oVisual.fogColor));
 		this.oVisual.gradients[1] = g;
 
 		this.nShadingFactor = this.oVisual.light;
@@ -1815,7 +1818,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (bDim) {
 			nOpacity = (sht - dmw) * nOpacity / sht + dmw - nLight | 0;
 		} else {
-			nOpacity += nLight;
+			nOpacity -= nLight;
 		}
 		nOpacity = Math.max(0, Math.min(sht, nOpacity));
 		var aData = [
