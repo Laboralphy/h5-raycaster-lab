@@ -1,4 +1,4 @@
-O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
+O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
