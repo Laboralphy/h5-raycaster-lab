@@ -2,7 +2,9 @@ var CONFIG = {
   game: {
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */
-    fullscreen: false
+    fullscreen: false,
+	namespace: 'STUB',
+	fpscontrol: true
   },
   raycaster: {
     canvas: 'screen',
