@@ -1,4 +1,4 @@
-O2.createObject('O876.LZW', {
+O2.createClass('O876.LZW', {
 	DICT_SIZE: 4096,
 	PACKET_SEPARATOR: ':',
 	FILE_SIGN: 'O876' + String.fromCharCode(122) + ':',
@@ -7,26 +7,26 @@ O2.createObject('O876.LZW', {
 	nMystificator: 0,
 
 	encode: function(sData) {
-		var aPackets = O876.LZW._createEncodedPackets(sData);
-		var sBin = O876.LZW._bundlePackets(aPackets);
-		O876.LZW.nLastRatio = sBin.length * 100 / sData.length | 0;
-		return O876.LZW.FILE_SIGN + sBin;
+		var aPackets = this._createEncodedPackets(sData);
+		var sBin = this._bundlePackets(aPackets);
+		this.nLastRatio = sBin.length * 100 / sData.length | 0;
+		return this.FILE_SIGN + sBin;
 	},
 
 	decode: function(sZData) {
-		if (sZData.substr(0, O876.LZW.FILE_SIGN.length) !== O876.LZW.FILE_SIGN) {
+		if (sZData.substr(0, this.FILE_SIGN.length) !== this.FILE_SIGN) {
 			throw new Error('bad format');
 		}
-		var aPacketCount = O876.LZW._getPacketInt(sZData, O876.LZW.FILE_SIGN.length);
+		var aPacketCount = this._getPacketInt(sZData, this.FILE_SIGN.length);
 		var nCount = aPacketCount[0];
 		var iOffset = aPacketCount[1];
-		var aPackets = O876.LZW._parsePackets(sZData, nCount, iOffset); 
-		return O876.LZW._decodePackets(aPackets);
+		var aPackets = this._parsePackets(sZData, nCount, iOffset); 
+		return this._decodePackets(aPackets);
 	},
 
 	_bundlePackets: function(aPackets) {
 		var aOutput = [];
-		var sSep = O876.LZW.PACKET_SEPARATOR;
+		var sSep = this.PACKET_SEPARATOR;
 		aOutput.push(aPackets.length.toString(16));
 		aOutput.push(sSep);
 		for (var i = 0; i < aPackets.length; i++) {
@@ -40,7 +40,7 @@ O2.createObject('O876.LZW', {
 	_getPacketInt: function(sPacket, iFrom) {
 		var i = iFrom;
 		var sNumber = '0x';
-		var sSep = O876.LZW.PACKET_SEPARATOR;
+		var sSep = this.PACKET_SEPARATOR;
 		while (sPacket.substr(i, 1) != sSep) {
 			sNumber += sPacket.substr(i, 1);
 			i++;
@@ -55,7 +55,7 @@ O2.createObject('O876.LZW', {
 	_parsePackets: function(sPackets, nCount, iFrom) {
 		var aGPI, nLength, aOutput = [];
 		for (var i = 0; i < nCount; i++) {
-			aGPI = O876.LZW._getPacketInt(sPackets, iFrom);
+			aGPI = this._getPacketInt(sPackets, iFrom);
 			nLength = aGPI[0];
 			iFrom = aGPI[1];
 			aOutput.push(sPackets.substr(iFrom, nLength));
@@ -69,7 +69,7 @@ O2.createObject('O876.LZW', {
 		var o = [];
 		var aOutput = [];
 		do {
-			o = O876.LZW._encodeFragment(s, i);
+			o = this._encodeFragment(s, i);
 			i = o[1];
 			aOutput.push(o[2]);
 		} while (!o[0]);
@@ -79,7 +79,7 @@ O2.createObject('O876.LZW', {
 	_decodePackets: function(a) {
 		var o = [];
 		for (var i = 0; i < a.length; i++) {
-			o.push(O876.LZW._decodeFragment(a[i]));
+			o.push(this._decodeFragment(a[i]));
 		}
 		return o.join('');
 	},
@@ -107,7 +107,7 @@ O2.createObject('O876.LZW', {
 				o.push(d[w]);
 				w = c;
 			}
-			if (d.length >= O876.LZW.DICT_SIZE) {
+			if (d.length >= this.DICT_SIZE) {
 				bEnd = false;
 				iIndex++;
 				break;
@@ -115,7 +115,7 @@ O2.createObject('O876.LZW', {
 		}
 		o.push(d[w]);
 		for (i = 0; i < o.length; i++) {
-			o[i] = String.fromCharCode(o[i] ^ O876.LZW.nMystificator);
+			o[i] = String.fromCharCode(o[i] ^ this.nMystificator);
 		}
 		return [bEnd, iIndex, o.join('')];
 	},
@@ -128,7 +128,7 @@ O2.createObject('O876.LZW', {
 			a = s;
 		}
 		for (var i = 0; i < a.length; i++) {
-			a[i] = a[i].charCodeAt(0) ^ O876.LZW.nMystificator;
+			a[i] = a[i].charCodeAt(0) ^ this.nMystificator;
 		}
 		var c, w, e = '', o = [], d = [];
 		for (i = 0; i < 256; i++) {
