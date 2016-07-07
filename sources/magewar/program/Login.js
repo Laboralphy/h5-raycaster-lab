@@ -19,7 +19,7 @@ O2.createClass('MW.Login', {
 		var XHR = new O876.XHR();
 		XHR.get('/mwstatus/?h=1', (function(data, err) {
 			if (err == 404) {
-				this.getElement('status').innerHTML = '<h2>Sorry but the server is offline. The game won\'t run.</h2>';
+				this.getElement('status').innerHTML = '<h2>This game must connect to a BlighMagic websocket server.</h2>';
 				this.getElement('login').style.display = 'none';
 			} else {
 				this.getElement('status').innerHTML = data;
