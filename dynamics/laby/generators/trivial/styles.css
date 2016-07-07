@@ -1,0 +1,55 @@
+/* BLOCKS */
+
+table tr > td {
+  font-family: courier;
+  font-size: 10px;
+  text-align: center;
+  border: solid thin black;
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0px;
+}
+
+table.laby tr > td.wall {
+  background-color: #888;
+}
+
+
+
+
+/* MINI MAP */
+
+table.laby2 tr > td.laby3 {
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby2 {
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby1 {
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby0 {
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+/* Dernière ligne : bordure du bas forcée */
+table.laby2 tr:last-child > td {
+  border-bottom: solid thin;
+}
+
+/* Dernière colone : bordure de droite forcée */
+table.laby2 tr > td:last-child {
+  border-right: solid thin;
+}

@@ -17,8 +17,13 @@ O2.createClass('MW.Login', {
 		this.getElement('login').style.display = '';
 		// rapport de status à chercher en asynchrone (à mettre dans le div status)
 		var XHR = new O876.XHR();
-		XHR.get('/mwstatus/?h=1', (function(data) {
-			this.getElement('status').innerHTML = data;
+		XHR.get('/mwstatus/?h=1', (function(data, err) {
+			if (err == 404) {
+				this.getElement('status').innerHTML = '<h2>Sorry but the server is offline. The game won\'t run.</h2>';
+				this.getElement('login').style.display = 'none';
+			} else {
+				this.getElement('status').innerHTML = data;
+			}
 		}).bind(this));
 		// definir le toogle d'options
 		this.getElement('options_switch').addEventListener('click', this.toggleOptions.bind(this));
