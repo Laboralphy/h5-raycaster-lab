@@ -32,7 +32,7 @@ O2.parent = function() {
 	} else {
 		throw new Error('o2: no __inherited');
 	}
-}
+};
 
 /** Creation d'une nouvelle classe
  * @example NouvelleClasse = Function.createClass(function(param1) { this.data = param1; });
