@@ -11,4 +11,4 @@ if [ -f $sZIP_FILE ]
 then
 	rm $sZIP_FILE
 fi
-zip -rq $sZIP_FILE dynamics/ externals/ homepages/ modules/ index.html libraries/ sources/stub/ sources/mansion
+zip -rq $sZIP_FILE dynamics/ externals/ website/ modules/ index.php libraries/ sources/

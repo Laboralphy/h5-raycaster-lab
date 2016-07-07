@@ -15,6 +15,7 @@ projectBuild() {
 	fi
 	local sSourceDir="$sScriptDir/../sources"
 	local sProjectDir="$sSourceDir/$sProject"
+	local sModuleDir="$sScriptDir/../modules/$sProject"
 	local myPwd=`pwd`
 
 	if [ ! -d "$sProjectDir" ]
@@ -23,6 +24,9 @@ projectBuild() {
 	else
 		cd "$sProjectDir"
 		php -f $sProjectDir/cjs.php -- build
+		cd $sScriptDir/../dynamics/packer
+		echo "minimizing $sProject.js ..."
+		php -f pack.php -- $sModuleDir/$sProject.js
 		cd "$myPwd"
 	fi
 }

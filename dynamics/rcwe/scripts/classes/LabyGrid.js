@@ -89,23 +89,23 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		
 		var pCommand = this.cmd_command.bind(this);
 		
-		this.addCommand('↻', 'Reload the editor and start a new level', this.cmd_new.bind(this));
-		this.addCommand('', 'Open a file', this.cmd_load.bind(this));
-		this.addCommand('', 'Save current level file', this.cmd_save.bind(this));
+		this.addCommand('<span class="icon-spinner11"></span>', 'Reload the editor and start a new level', this.cmd_new.bind(this));
+		this.addCommand('<span class="icon-folder"></span>', 'Open a file', this.cmd_load.bind(this));
+		this.addCommand('<span class="icon-floppy-disk"></span>', 'Save current level file', this.cmd_save.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('▦+', 'Bigger level : increase the grid size', this.cmd_sizeInc.bind(this)); // ◰
-		this.addCommand('▦-', 'Smaller level : decrease the grid size', this.cmd_sizeDec.bind(this));
-		this.addCommand('◰+', 'Zoom in : increase the cells size', this.cmd_cellSizeInc.bind(this)); // ◰
-		this.addCommand('◰-', 'Zoom out : decrease the cells size', this.cmd_cellSizeDec.bind(this));
+		this.addCommand('<span class="icon-enlarge"></span>', 'Bigger level : increase the grid size', this.cmd_sizeInc.bind(this)); // ◰
+		this.addCommand('<span class="icon-shrink"></span>', 'Smaller level : decrease the grid size', this.cmd_sizeDec.bind(this));
+		this.addCommand('<span class="icon-zoom-in"></span>', 'Zoom in : increase the cells size', this.cmd_cellSizeInc.bind(this)); // ◰
+		this.addCommand('<span class="icon-zoom-out"></span>', 'Zoom out : decrease the cells size', this.cmd_cellSizeDec.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12"><rect x="4" y="4" width="8" height="8" fill="#AAA" stroke="black"/><rect x="0" y="0" width="8" height="8" fill="#CCC" stroke="black"/></svg>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this));
-		this.addCommand('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12"><rect x="0" y="2" width="10" height="12" fill="#888" stroke="black"/><rect x="2" y="0" width="6" height="4" fill="#CCC" stroke="black"/><rect x="2" y="6" width="10" height="6" fill="#FFF" stroke="black"/></svg>', 'Paste the clipboard data on the grid (both floors)', this.cmd_paste.bind(this));
-		this.addCommand('↶', 'Undo the last drawing operation on the grid', this.cmd_undo.bind(this));
+		this.addCommand('<span class="icon-copy"></span>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this));
+		this.addCommand('<span class="icon-paste"></span>', 'Paste the clipboard data on the grid (both floors)', this.cmd_paste.bind(this));
+		this.addCommand('<span class="icon-undo"></span>', 'Undo the last drawing operation on the grid', this.cmd_undo.bind(this));
 		this.addCommandSeparator();
 		
 		// selectable tools
-		var $default = this.addCommand('⬚', 'Region selector tool', pCommand, 'mapgrid_cmd_select').addClass('tool selected').data({'command': 'select', 'fill': 'rgba(0, 64, 192, 0.4)', 'stroke': 'rgb(0, 64, 192)'});
-		this.addCommand('✎', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw').addClass('tool').data({'command': 'draw', 'fill': 'rgba(0, 0, 192, 0.4)', 'stroke': 'rgb(0, 0, 192)'});
+		var $default = this.addCommand('<span class="icon-checkbox-unchecked"></span>', 'Region selector tool', pCommand, 'mapgrid_cmd_select').addClass('tool selected').data({'command': 'select', 'fill': 'rgba(0, 64, 192, 0.4)', 'stroke': 'rgb(0, 64, 192)'});
+		this.addCommand('<span class="icon-pencil2"></span>', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw').addClass('tool').data({'command': 'draw', 'fill': 'rgba(0, 0, 192, 0.4)', 'stroke': 'rgb(0, 0, 192)'});
 		this.addCommandSeparator();
 		
 		
@@ -119,18 +119,18 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommandSeparator();
 
 		this.addCommand('⌧', 'Eraser tool - Erase blocks on the selected floor', this.cmd_clear.bind(this));
-		this.addCommand('⚑', 'Set tag', this.cmd_setTag.bind(this));
+		this.addCommand('<span class="icon-price-tag"></span>', 'Set tag', this.cmd_setTag.bind(this));
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('◫', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
+		this.addCommand('<span class="icon-map"></span>', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
 		this.addCommand('♜', 'Add/Remove Things', this.cmd_viewThing.bind(this)).addClass('view');
-		this.addCommand('✜', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
-		this.addCommand('☀', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-location"></span>', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-image"></span>', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
 		this.addCommand('▶', '3D render', this.cmd_view3D.bind(this)).addClass('view');
 		this.addCommandSeparator();
-		this.addCommand('⇄', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
-		this.addCommand('⚠', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-tab"></span>', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-map"></span>', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
 		// ⚙ options
 		// ⚒ build
 		// ⚠ admin

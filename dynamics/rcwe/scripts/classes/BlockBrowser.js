@@ -15,11 +15,11 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 	build: function() {
 		__inherited('Block browser');
 		this.getContainer().addClass('BlockBrowser');
-		this.addCommand('<span style="color: #00A">✚</span> New', 'Create a new block', this.cmd_newBlock.bind(this));
-		this.addCommand(' Edit', 'Modify block properties', this.cmd_editBlock.bind(this));
-		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Remove the selected block', this.cmd_removeBlock.bind(this));
+		this.addCommand('<span class="icon-plus" style="color: #00A"></span> New', 'Create a new block', this.cmd_newBlock.bind(this));
+		this.addCommand('<span class="icon-pencil2"></span> Edit', 'Modify block properties', this.cmd_editBlock.bind(this));
+		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Remove the selected block', this.cmd_removeBlock.bind(this));
 		this.addCommandSeparator();
-		this.addCommand(' Template', 'Load a template of textures and blockset', this.cmd_loadTemplate.bind(this));
+		this.addCommand('<span class="icon-folder"></span> Template', 'Load a template of textures and blockset', this.cmd_loadTemplate.bind(this));
 		var $structure = $('<div class="sections"><div>');
 		this.getBody().append($structure);
 		this._oStructure = $structure;

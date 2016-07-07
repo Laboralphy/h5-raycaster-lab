@@ -10,7 +10,7 @@ if (defined('TITLE')) {
 }
 ?></title>
 	<link rel="stylesheet" type="text/css" href="styles/normalize.css"/>
-	<link rel="stylesheet" type="text/css" href="styles/icomoon.css"/>
+	<link rel="stylesheet" type="text/css" href="../externals/icomoon/icomoon.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/starter.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/custom.css"/>
 	<!--[if lt IE 9]>
@@ -27,12 +27,8 @@ if (defined('TITLE')) {
 	<div class="container">
 		<div class="row ph-bandeau">
 			<div class="col-lg-12">
-				<h1>O876 Raycaster
-<?php
-if (defined('TITLE')) {
-	print '<h3>' . TITLE . '</h3>';
-}
-?>
-				</h1>
+				<h1>O876 Raycaster</h1>
+				<h4>A Raycasting Framework for HTML 5 Games</h4>
+
 			</div>
 		</div>

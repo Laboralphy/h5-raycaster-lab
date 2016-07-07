@@ -81,13 +81,18 @@ figure figcaption {
 	font-size: 0.85em;
 }
 
-/*-----------------*/
-/* GRID LG SCREENS */
-/*-----------------*/
+/*--------------*/
+/* GRID SCREENS */
+/*--------------*/
 
 /* col-lg : large ; col-md : medium ; col-sm : small ; col-xs : extra small */
 
-[class*="col-lg"] {
+.row {
+	position: relative;
+}
+
+[class*="col-"] {
+	position: relative;
 	float: left;
 	padding-left: 1.4rem;
 	padding-right: 1.4rem;

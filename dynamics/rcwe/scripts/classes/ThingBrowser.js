@@ -12,11 +12,11 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 		this.getContainer().addClass('ThingBrowser');
 		var $structure = $('<div class="things"></div>');
 		this.getBody().append($structure);
-		this.addCommand('<span style="color: #00A">✚</span> New', 'Create a new thing blueprint', this.cmd_newThing.bind(this));
-		this.addCommand(' Edit', 'Modify blueprint properties', this.cmd_editThing.bind(this));
-		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Delete the selected thing blueprint', this.cmd_removeThing.bind(this));
+		this.addCommand('<span class="icon-plus" style="color: #00A"></span> New', 'Create a new thing blueprint', this.cmd_newThing.bind(this));
+		this.addCommand('<span class="icon-pencil2"></span> Edit', 'Modify blueprint properties', this.cmd_editThing.bind(this));
+		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Delete the selected thing blueprint', this.cmd_removeThing.bind(this));
 		this.addCommandSeparator();
-		this.addCommand(' Template', 'Load a template of blueprints', this.cmd_loadTemplate.bind(this));
+		this.addCommand('<span class="icon-folder"></span> Template', 'Load a template of blueprints', this.cmd_loadTemplate.bind(this));
 		this._oStructure = $structure;		
 		this.buildThingList();
 	},

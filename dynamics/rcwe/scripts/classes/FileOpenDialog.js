@@ -24,8 +24,9 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 		this.oScrollZone = $oScrollZone;
 		this.getBody().append($oScrollZone);
 		this.addCommand('<b>↵</b>', 'Close the file open dialog and return to the editor', this.cmd_close.bind(this));
-		this.addCommand(' Open', 'Load the selected file', this.cmd_open.bind(this));
-		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Delete the selected file', this.cmd_delete.bind(this));
+		//this.addCommand(' Open', 'Load the selected file', this.cmd_open.bind(this));
+		this.addCommand('<span class="icon-folder"></span> Open', 'Load the selected file', this.cmd_open.bind(this));
+		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Delete the selected file', this.cmd_delete.bind(this));
 	},
 
 	/**
