@@ -93,12 +93,12 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommand('<span class="icon-folder"></span>', 'Open a file', this.cmd_load.bind(this));
 		this.addCommand('<span class="icon-floppy-disk"></span>', 'Save current level file', this.cmd_save.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('<span class="icon-enlarge"></span>', 'Bigger level : increase the grid size', this.cmd_sizeInc.bind(this)); // ◰
-		this.addCommand('<span class="icon-shrink"></span>', 'Smaller level : decrease the grid size', this.cmd_sizeDec.bind(this));
+		this.addCommand('<span class="icon-table2">+</span>', 'Add a row and a column to the grid', this.cmd_sizeInc.bind(this)); // ◰
+		this.addCommand('<span class="icon-table2">-</span>', 'Remove a row and a colmun from the grid', this.cmd_sizeDec.bind(this));
 		this.addCommand('<span class="icon-zoom-in"></span>', 'Zoom in : increase the cells size', this.cmd_cellSizeInc.bind(this)); // ◰
 		this.addCommand('<span class="icon-zoom-out"></span>', 'Zoom out : decrease the cells size', this.cmd_cellSizeDec.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('<span class="icon-copy"></span>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this));
+		this.addCommand('<span class="icon-copy"></span>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this)).addClass('enabled-when-selection');
 		this.addCommand('<span class="icon-paste"></span>', 'Paste the clipboard data on the grid (both floors)', this.cmd_paste.bind(this));
 		this.addCommand('<span class="icon-undo"></span>', 'Undo the last drawing operation on the grid', this.cmd_undo.bind(this));
 		this.addCommandSeparator();
@@ -118,19 +118,19 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		//this.addCommand('Both', 'Draw on both floors', pCommand).addClass('floor').data('command', 'f12');
 		this.addCommandSeparator();
 
-		this.addCommand('⌧', 'Eraser tool - Erase blocks on the selected floor', this.cmd_clear.bind(this));
-		this.addCommand('<span class="icon-price-tag"></span>', 'Set tag', this.cmd_setTag.bind(this));
+		this.addCommand('⌧', 'Eraser tool - Erase blocks on the selected floor', this.cmd_clear.bind(this)).addClass('enabled-when-selection');
+		this.addCommand('<span class="icon-price-tag"></span>', 'Set tag', this.cmd_setTag.bind(this)).addClass('enabled-when-selection');
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('<span class="icon-map"></span>', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
+		this.addCommand('<span class="icon-map"></span>', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this), 'mapgrid_cmd_viewblock').addClass('view blockbrowser selected');
 		this.addCommand('♜', 'Add/Remove Things', this.cmd_viewThing.bind(this)).addClass('view');
 		this.addCommand('<span class="icon-location"></span>', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
 		this.addCommand('<span class="icon-image"></span>', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
 		this.addCommand('▶', '3D render', this.cmd_view3D.bind(this)).addClass('view');
 		this.addCommandSeparator();
 		this.addCommand('<span class="icon-tab"></span>', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
-		this.addCommand('<span class="icon-map"></span>', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-warning"></span>', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
 		// ⚙ options
 		// ⚒ build
 		// ⚠ admin
@@ -328,7 +328,9 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			cx.restore();
 		}
 		// drawing selected region
-		if (s.x1 !== null) {
+		if (s.x1 === null) {
+			$('.enabled-when-selection', this.getToolBar()).attr('disabled', 'disabled');
+		} else {
 			var x1 = Math.min(s.x1, s.x2);
 			var x2 = Math.max(s.x1, s.x2);
 			var y1 = Math.min(s.y1, s.y2);
@@ -338,6 +340,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			cx.strokeStyle = this.sSelectStrokeStyle;
 			cx.fillRect(wTile * x1 + 2, wTile * y1 + 2, wTile * (x2 - x1 + 1) - 4, wTile * (y2 - y1 + 1) - 4);
 			cx.strokeRect(wTile * x1 + 2, wTile * y1 + 2, wTile * (x2 - x1 + 1) - 4, wTile * (y2 - y1 + 1) - 4);
+			$('.enabled-when-selection', this.getToolBar()).removeAttr('disabled');
 		}
 		if (!bRegion && this.onDrawOver) {
 			this.onDrawOver(this.oContext);
@@ -534,7 +537,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			this.bStartDrag = false;
 		}
 	},
-	
+
 	/**
 	 * Start a new level (by reloading the page)
 	 */

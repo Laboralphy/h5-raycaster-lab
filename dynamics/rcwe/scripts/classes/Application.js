@@ -675,7 +675,7 @@ O2.createClass('RCWE.Application', {
 			case 1:
 				this.oMapGrid.clearFullBox();
 				break;
-				
+
 			case 2:
 				this.oMapGrid.clearUpperFullBox();
 				break;
@@ -710,6 +710,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_labygrid_viewblock: function() {
+		$('#mapgrid_cmd_draw').trigger('click');
 		this.showPanel('blockbrowser');
 	},
 	

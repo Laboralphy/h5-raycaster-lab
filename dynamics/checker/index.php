@@ -61,8 +61,8 @@ function main() {
 			$.get(f, function(data) {
 				JSHINT(data, {
 					curly: true,
-					undef: true,
-					unused: true
+					undef: false,
+					unused: false
 				}, {
 					Uint32Array: false,
 					window: false,

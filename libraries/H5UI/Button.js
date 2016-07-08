@@ -1,3 +1,4 @@
+/* globals O2, H5UI */
 /**
  * Ce composant est un bouton cliquable avec un caption de texte Le bouton
  * change de couleur lorsque la souris passe dessus Et il possède 2 état

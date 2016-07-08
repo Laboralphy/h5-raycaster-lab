@@ -40,11 +40,23 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 		this._set('_nBorderWidth', n);
 	},
 
+	/**
+	 * Triggered when the mouse overlaps the control
+	 * @param x mouse position x (pixels)
+	 * @param y mouse position y (pixels)
+	 * @param b clicked button mask
+	 */
 	onMouseIn : function(x, y, b) {
 		this._set('_sColorBorder', this._sColorBorderInside);
 		this._set('_sColor', this._sColorInside);
 	},
 
+	/**
+	 * Triggered when the mouse exits the control's bounding rect
+	 * @param x mouse position x (pixels)
+	 * @param y mouse position y (pixels)
+	 * @param b clicked button mask
+	 */
 	onMouseOut : function(x, y, b) {
 		this._set('_sColorBorder', this._sColorBorderOutside);
 		this._set('_sColor', this._sColorOutside);
