@@ -7,10 +7,10 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		__inherited('Advanced Pad');
 		this.getContainer().addClass('AdvancedPad');
 		
-		this.addCommand('', 'Shift map', this.cmd_viewshift.bind(this));
-		this.addCommand('▣', 'Block tools', this.cmd_blocktools.bind(this));
-		this.addCommand('⚒', 'Build game', this.cmd_buildgame.bind(this));
-		this.addCommand('⚙', 'Restart with plugins', this.cmd_viewplugins.bind(this));
+		this.addCommand('<span class="icon-arrow-left2"></span><span class="icon-arrow-up2"></span><span class="icon-arrow-down2"></span><span class="icon-arrow-right2"></span>', 'Shift map', this.cmd_viewshift.bind(this));
+		this.addCommand('<span class="icon-stop2"></span>', 'Block tools', this.cmd_blocktools.bind(this));
+		this.addCommand('<span class="icon-wrench"></span>', 'Build game', this.cmd_buildgame.bind(this));
+		//this.addCommand('⚙', 'Restart with plugins', this.cmd_viewplugins.bind(this));
 		
 		this.getBody().empty();
 		this.getBody().append('<p>This tab provide various tools for map displacement (useful when expanding map) or game build (useful to play your level in big screen).</p>');
