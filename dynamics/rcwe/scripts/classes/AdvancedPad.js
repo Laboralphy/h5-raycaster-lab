@@ -7,7 +7,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		__inherited('Advanced Pad');
 		this.getContainer().addClass('AdvancedPad');
 		
-		this.addCommand('<span class="icon-arrow-left2"></span><span class="icon-arrow-up2"></span><span class="icon-arrow-down2"></span><span class="icon-arrow-right2"></span>', 'Shift map', this.cmd_viewshift.bind(this));
+		this.addCommand('<span class="icon-enlarge" style="-webkit-transform: rotate(45deg); display: block; float:left"></span>&nbsp;', 'Shift map', this.cmd_viewshift.bind(this));
 		this.addCommand('<span class="icon-stop2"></span>', 'Block tools', this.cmd_blocktools.bind(this));
 		this.addCommand('<span class="icon-wrench"></span>', 'Build game', this.cmd_buildgame.bind(this));
 		//this.addCommand('⚙', 'Restart with plugins', this.cmd_viewplugins.bind(this));
@@ -18,6 +18,9 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	
 	cmd_selectOneCommand: function(oEvent) {
 		var $this = $(oEvent.target);
+		if ($this.get(0).tagName.toLowerCase() != 'button') {
+			$this = $this.parent('button');
+		}
 		$this.siblings().removeClass('selected');
 		$this.addClass('selected');
 	},
@@ -131,10 +134,10 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 			'<tr><td></td><td class="down"></td><td></td></tr>' +
 			'</tbody></table>');
 
-		$('td.up', $table).append('<button type="button" data-dir="up" data-n="10">⇈</button><br/><button type="button" data-dir="up" data-n="1">↑</button>');
-		$('td.down', $table).append('<button type="button" data-dir="down" data-n="1">↓</button><br/><button type="button" data-dir="down" data-n="10">⇊</button>');
-		$('td.left', $table).append('<button type="button" data-dir="left" data-n="10">⇇</button><button type="button" data-dir="left" data-n="1">←</button>');
-		$('td.right', $table).append('<button type="button" data-dir="right" data-n="1">→</button><button type="button" data-dir="right" data-n="10">⇉</button>');
+		$('td.up', $table)    .append('<button type="button" data-dir="up" data-n="10"><span class="icon-arrow-up"></span></button><br/><button type="button" data-dir="up" data-n="1"><span class="icon-arrow-up2"></span></button>');
+		$('td.down', $table)  .append('<button type="button" data-dir="down" data-n="1"><span class="icon-arrow-down2"></span></button><br/><button type="button" data-dir="down" data-n="10"><span class="icon-arrow-down"></span></button>');
+		$('td.left', $table)  .append('<button type="button" data-dir="left" data-n="10"><span class="icon-arrow-left"></span></button><button type="button" data-dir="left" data-n="1"><span class="icon-arrow-left2"></span></button>');
+		$('td.right', $table) .append('<button type="button" data-dir="right" data-n="1"><span class="icon-arrow-right2"></span></button><button type="button" data-dir="right" data-n="10"><span class="icon-arrow-right"></span></button>');
 
 		$('button', $table).on('click', (function(oEvent) {
 			var $b = $(oEvent.target);

@@ -113,8 +113,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.sSelectStrokeStyle = $default.data('stroke');
 
 		// selectable floors
-		this.addCommand('Lower', 'Draw on the lower floor', pCommand).addClass('floor selected').data('command', 'f1');
-		this.addCommand('Upper', 'Draw on the upper floor', pCommand).addClass('floor').data('command', 'f2');
+		this.addCommand('<span class="icon-box-add"></span> Lower', 'Draw on the lower floor', pCommand).addClass('floor selected').data('command', 'f1');
+		this.addCommand('<span class="icon-box-remove"></span> Upper', 'Draw on the upper floor', pCommand).addClass('floor').data('command', 'f2');
 		//this.addCommand('Both', 'Draw on both floors', pCommand).addClass('floor').data('command', 'f12');
 		this.addCommandSeparator();
 
@@ -653,13 +653,18 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	
 	cmd_command: function(oEvent) {
 		var $button = $(oEvent.target);
+		if ($button.get(0).tagName.toLowerCase() != 'button') {
+			$button = $button.parent('button');
+		}
 		var sCommand = $button.data('command');
+		if ($button.hasClass('view')) {
+			$('button.tool', this.getToolBar()).removeClass('selected');
+			$button.addClass('selected');
+		}
 		switch (sCommand) {
 			case 'select':
 			case 'draw':
 				this.unselect();
-				$('button.tool', this.getToolBar()).removeClass('selected');
-				$button.addClass('selected');
 				this.sSelectFillStyle = $button.data('fill');
 				this.sSelectStrokeStyle = $button.data('stroke');
 				break;
@@ -667,16 +672,18 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			case 'f1':
 			case 'f2':
 			case 'f12':
-				$('button.floor', this.getToolBar()).removeClass('selected');
-				$button.addClass('selected');
 				this.redraw();
 				break;
 		}
 	},
 	
 	cmd_selectViewButton: function(b) {
+		var $button = $(b);
+		if (b.tagName.toLowerCase() != 'button') {
+			$button = $button.parent('button');
+		}
 		$('button.view.selected').removeClass('selected');
-		$(b).addClass('selected');
+		$button.addClass('selected');
 	},
 	
 	cmd_viewBlock: function(oEvent) {
