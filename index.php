@@ -4,4 +4,4 @@ function redirect($url, $statusCode = 303) {
    die();
 }
 
-redirect('//' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . 'website/', 301);
+redirect('//' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '/dynamics/website/', 301);
