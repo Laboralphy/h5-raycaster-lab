@@ -20,9 +20,6 @@ O2.createClass('O876.SoundSystem', {
 	oMusicChan : null,
 	nChanIndex : -1,
 
-	nPlayed : 0,
-	
-	fMuteVolume: 0,
 	bMute: false,
 	bAllUsed: false,
 	
@@ -42,8 +39,7 @@ O2.createClass('O876.SoundSystem', {
 		this.oBase = document.body;
 		this.aChans = [];
 		this.aAmbient = [];
-		this.oMusicChan = this.createChan();
-		this.oMusicChan.loop = true;
+		this.oMusicChan = this._createChan();
 		if (this.oMusicChan.canPlayType('audio/ogg')) {
 			this.sFormat = 'ogg';
 		} else if (this.oMusicChan.canPlayType('audio/mp3')) {
@@ -54,14 +50,21 @@ O2.createClass('O876.SoundSystem', {
 		this.aChans = [];
 	},
 	
-	setChanSource: function(oChan, sSrc) {
-		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
-	},
 	
+	/****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ******/
+	/****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ******/
+	/****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ****** PUBLIC FUNCTIONS ******/
 	/**
-	 * returns true if the specified audio file is worth playing.
-	 * will return false if an audio file with the same name, volume
-	 * has already been played recently (same timestamp)
+	 * Returns true if the specified audio file is worth playing.
+	 * and false if it's not.
+	 *
+	 * A file is worth playing if it has not already started to play a few milliseconds ago.
+	 * his is why a "time" value is being passed among parameters
+	 * This prevents two similar sounds from being played at very small interval (which produce ugly sound experience)
+	 * 
+	 * The typical example :
+	 * When the player fires five missiles, each missile producing the same sound,
+	 * It's not a good idea to play five sounds !
 	 * @param nTime current timestamp (given by Date.now() for example)
 	 * @param sFile audio file name
 	 * @param fVolume
@@ -99,152 +102,47 @@ O2.createClass('O876.SoundSystem', {
 		}
 	},
 
-	
-	free : function() {
-		for ( var i = 0; i < this.aChans.length; i++) {
+	/**
+	 * Destroys all audio channels
+	 */
+	free: function() {
+		for (var i = 0, l = this.aChans.length; i < l; ++i) {
 			this.aChans[i].remove();
 		}
-		this.oMusicChan.remove();
+		if (this.oMusicChan) {
+			this.oMusicChan.remove();
+			this.oMusicChan = null;
+		}
 		this.aChans = [];
-	},
-	
-	createChan: function() {
-		var oChan = document.createElement('audio');
-		this.oBase.appendChild(oChan);
-		return oChan;
-	},
-
-	addChan : function() {
-		var oChan = this.createChan();
-		oChan.setAttribute('preload', 'auto');
-		oChan.setAttribute('autoplay', 'autoplay');
-		oChan.__file = '';
-		this.aChans.push(oChan);
-		this.bAllUsed = false;
-		return oChan;
-	},
-
-	addChans : function(n) {
-		for (var i = 0; i < n; i++) {
-			this.addChan();
-		}
-	},
-
-	isChanPlaying : function(nChan, sFile) {
-		if (nChan == this.CHAN_MUSIC) {
-			return !this.oMusicChan.ended;
-		}
-		if (nChan < 0) {
-			nChan = 0;
-		}
-		if (nChan >= this.aChans.length) {
-			nChan = this.aChans.length - 1;
-		}
-		var oChan = this.aChans[nChan];
-		if (sFile === undefined) {
-			return !oChan.ended;
-		} else {
-			return !(oChan.ended && ((sFile == oChan.__file) || (oChan.__file !== '')));
-		}
-	},
-
-	isChanFree : function(nChan, sFile) {
-		// case : music channel
-		if (nChan == this.CHAN_MUSIC) {
-			return this.oMusicChan.ended;
-		}
-		// check specified channel number validity
-		nChan = Math.max(0, Math.min(this.aChans.length - 1, nChan));
-		var oChan = this.aChans[nChan];
-		if (sFile === undefined) {
-			return oChan.ended;
-		} else {
-			var bEmpty = oChan.__file === '';
-			var bNotPlaying = oChan.ended;
-			var bAlreadyLoaded = sFile == oChan.__file;
-			return bEmpty || (bNotPlaying && bAlreadyLoaded);
-		}
-	},
-
-	getFreeChan : function(sFile) {
-		if (!this.hasChan()) {
-			return -1;
-		}
-		var iChan, nChanCount;
-		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
-			if (this.isChanFree(iChan, sFile)) {
-				return iChan;
-			}
-		}
-		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
-			if (this.isChanFree(iChan)) {
-				return iChan;
-			}
-		}
-		this.nChanIndex = (this.nChanIndex + 1) % this.aChans.length;
-		return this.nChanIndex;
-	},
-
-	hasChan : function() {
-		return this.aChans.length > 0;
-	},
-
-	play : function(sFile, nChan, fVolume) {
-		var oChan = null;
-		// check if we should cancel the play call
-		if (this.bMute || sFile === undefined) {
-			return -1;
-		}
-		// case : music channel -> redirect to playMusic
-		if (nChan == this.CHAN_MUSIC) {
-			this.playMusic(sFile);
-			return nChan;
-		} else if (this.hasChan()) { 
-			// checks channel availability
-			if (nChan === undefined) {
-				// get a free channel, if none specified
-				nChan = this.getFreeChan(sFile);
-			}
-			oChan = this.aChans[nChan];
-		} else {
-			// no free channel available
-			oChan = null;
-			return -1;
-		}
-		if (oChan !== null) {
-			// we got a channel
-			if (oChan.__file != sFile) {
-				// new file
-				this.setChanSource(oChan, sFile);
-				oChan.__file = sFile;
-				oChan.load();
-			} else if (oChan.readyState > this.HAVE_NOTHING) {
-				// same file, play again from start
-				oChan.currentTime = 0;
-				oChan.play();
-			}
-		} else {
-			// could not get a channel:
-			// exit in shame
-			return -1;
-		}
-		// set volume, if specified
-		if (fVolume !== undefined) {
-			oChan.volume = fVolume;
-		}
-		return nChan;
 	},
 
 	/**
-	 * Joue le prochain fichier musical dans la liste
+	 * Create several channels at once
+	 * @param n int number of channels
+	 */
+	addChans : function(n) {
+		for (var i = 0; i < n; i++) {
+			this._addChan();
+		}
+	},
+
+	/**
+	 * Play another music track, replacing, if needed, the previous music track.
+	 * Music tracks are play in a separated channel
+	 * @param sFile new file
 	 */
 	playMusic : function(sFile, bOverride) {
 		var oChan = this.oMusicChan;
-		this.setChanSource(oChan, sFile);
+		oChan.loop = true;
+		this._setChanSource(oChan, sFile);
 		oChan.load();
 		oChan.play();
 	},
-	
+
+	/**
+	 * Define the directory where sound files are stored
+	 * @param s string, path where sound files are stored
+	 */
 	setPath: function(s) {
 		this.sPath = s;
 	},
@@ -281,5 +179,154 @@ O2.createClass('O876.SoundSystem', {
 				}
 			}
 		}).bind(this), 100);
-	}
+	},
+
+	/**
+	 * Starts a sound file playback
+	 */
+	play : function(sFile, fVolume) {
+		var nChan = null;
+		var oChan = null;
+		// check if we should cancel the play call
+		if (this.bMute || sFile === undefined) {
+			return -1;
+		}
+		// case : music channel -> redirect to playMusic
+		if (nChan == this.CHAN_MUSIC) {
+			this.playMusic(sFile);
+			return nChan;
+		} else if (this._hasChan()) { 
+			// checks channel availability
+			if (nChan === null) {
+				// get a free channel, if none specified
+				nChan = this._getFreeChan(sFile);
+			}
+			oChan = this.aChans[nChan];
+		} else {
+			// no free channel available
+			oChan = null;
+			return -1;
+		}
+		if (oChan !== null) {
+			// we got a channel
+			if (oChan.__file != sFile) {
+				// new file
+				this._setChanSource(oChan, sFile);
+				oChan.__file = sFile;
+				oChan.load();
+			} else if (oChan.readyState > this.HAVE_NOTHING) {
+				// same file, play again from start
+				oChan.currentTime = 0;
+				oChan.play();
+			}
+		} else {
+			// could not get a channel:
+			// exit in shame
+			return -1;
+		}
+		// set volume, if specified
+		if (fVolume !== undefined) {
+			oChan.volume = fVolume;
+		}
+	},
+
+
+
+
+
+
+
+
+	/****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ******/
+	/****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ******/
+	/****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ****** PROTECTED FUNCTIONS ******/
+
+
+
+
+	/**
+	 * Sets a channel source
+	 * Uses default path and extension
+	 * This function is used internaly : use play()
+	 * @param oChan HTMLAudio Element
+	 * @param sSrc what file to play (neither path nor extension)
+	 */
+	_setChanSource: function(oChan, sSrc) {
+		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
+	},
+	
+	
+	/**
+	 * creates a new audio channel element
+	 * and appends it to the DOM
+	 * @return HTMLAudioElement
+	 */
+	_createChan: function() {
+		var oChan = document.createElement('audio');
+		this.oBase.appendChild(oChan);
+		return oChan;
+	},
+
+	/**
+	 * Adds and initializes a new Audio channel
+	 * @return HTMLAudioElement
+	 */
+	_addChan : function() {
+		var oChan = this._createChan();
+		oChan.setAttribute('preload', 'auto');
+		oChan.setAttribute('autoplay', 'autoplay');
+		oChan.__file = '';
+		this.aChans.push(oChan);
+		this.bAllUsed = false;
+		return oChan;
+	},
+
+	/**
+	 * returns true if the specified channel iis currently playing
+	 * the specified sound file
+	 * @param nChan int channel number
+	 * @param sFile string sound file name
+	 * @return boolean
+	 */
+	_isChanFree : function(nChan, sFile) {
+		// case : music channel
+		if (nChan == this.CHAN_MUSIC) {
+			return this.oMusicChan.ended;
+		}
+		// check specified channel number validity
+		nChan = Math.max(0, Math.min(this.aChans.length - 1, nChan));
+		var oChan = this.aChans[nChan];
+		if (sFile === undefined) {
+			return oChan.ended;
+		} else {
+			var bEmpty = oChan.__file === '';
+			var bNotPlaying = oChan.ended;
+			var bAlreadyLoaded = sFile == oChan.__file;
+			return bEmpty || (bNotPlaying && bAlreadyLoaded);
+		}
+	},
+
+	_getFreeChan : function(sFile) {
+		if (!this._hasChan()) {
+			return -1;
+		}
+		var iChan, nChanCount;
+		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
+			if (this._isChanFree(iChan, sFile)) {
+				return iChan;
+			}
+		}
+		for (iChan = 0, nChanCount = this.aChans.length; iChan < nChanCount; ++iChan) {
+			if (this._isChanFree(iChan)) {
+				return iChan;
+			}
+		}
+		this.nChanIndex = (this.nChanIndex + 1) % this.aChans.length;
+		return this.nChanIndex;
+	},
+
+	_hasChan : function() {
+		return this.aChans.length > 0;
+	},
+
 });

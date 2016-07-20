@@ -1161,7 +1161,6 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * @param y
 	 */
 	playSound : function(sFile, x, y) {
-		var nChan = this.oSoundSystem.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
 			var oPlayer = this.getPlayer();
@@ -1183,7 +1182,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		var nTime = this.getTime();
 		if (fVolume > 0.01) {
 			if (this.oSoundSystem.worthPlaying(nTime, sFile, fVolume)) {
-				this.oSoundSystem.play(sFile, nChan, fVolume);
+				this.oSoundSystem.play(sFile, fVolume);
 			}
 		}
 	},

@@ -670,7 +670,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param float y
 	 */
 	playSound : function(sFile, x, y) {
-		var nChan = this._oAudio.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
 			var oPlayer = this.getPlayer();
@@ -692,7 +691,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			fVolume = 1;
 		}
 		if (fVolume > 0.01) {
-			this._oAudio.play(sFile, nChan, fVolume);
+			this._oAudio.play(sFile, fVolume);
 		}
 	},
 

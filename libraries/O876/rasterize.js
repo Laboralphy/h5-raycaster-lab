@@ -1,5 +1,6 @@
 /**
- * Transforms an HTML document into a bitmap image inside a canvas
+ * Transforms an HTML element (and its content) into a bitmap image 
+ * inside a canvas.
  * @param xElement the DOM element to be rasterize
  * @param oCanvas the canvas on which will render the element
  * @param pDone a callback function called when it's done 
