@@ -29,7 +29,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	
 	initAudio: function() {
 		a = new O876.SoundSystem();
-		a.addChans(8);
+		a.setChannelCount(8);
 		a.setPath('resources/snd');
 		this._oAudio = a;
 	},

@@ -33,7 +33,9 @@ O2.createClass('O876.Philter', {
 			blue: true,
 			alpha: true,
 			channels: 'rgba',
-			command: ''
+			command: '',
+			sync: true,
+			delay: 256
 		});
 	},
 
@@ -192,7 +194,7 @@ O2.createClass('O876.Philter', {
 	 * @param sc shadow canvas
 	 * @param pFunc function to call
 	 */
-	pixelProcess: function(sc, pFunc) {
+	pixelProcess: function(sc, pFunc, oContext) {
 		var x, y, p = {}, r = {}, k;
 		var w = sc.width;
 		var h = sc.height;
@@ -203,8 +205,26 @@ O2.createClass('O876.Philter', {
 		var factor = this.config('factor');
 		var bias = this.config('bias');
 		var r = this.getRegion(sc);
-		for (y = r.ys; y <= r.ye; ++y) {
-			for (x = r.xs; x <= r.xe; ++x) {
+		var nStartTime = this.perf.now();
+		var perf = this.perf;
+		var nDelay = this.config('delay');
+		var bASync = !this.config('sync');
+		var rxs = r.xs;
+		var rys = r.ys;
+		var xFrom = rxs;
+		var yFrom = rys;
+		var rxe = r.xe;
+		var rye = r.ye;
+		if (oContext) {
+			xFrom = oContext.x;
+			yFrom = oContext.y;
+		} else {
+			this.trigger('progress', {value: 0});
+		}
+		var getPixel = this.getPixel;
+		var setPixel = this.setPixel;
+		for (y = yFrom; y <= rye; ++y) {
+			for (x = xFrom; x <= rxe; ++x) {
 				this.getPixel(sc, x, y, p);
 				for (k in p) {
 					r[k] = p[k];
@@ -224,6 +244,24 @@ O2.createClass('O876.Philter', {
 				}
 				this.setPixel(sc, x, y, r);
 			}
+			xFrom = rxs;
+			var pn = perf.now();
+			var nElapsedTime = pn - nStartTime;
+			if (bASync && nElapsedTime > nDelay) {
+				nStartTime = pn;
+				requestAnimationFrame((function() {
+					this.trigger('progress', { elapsed: nElapsedTime, value: (y - rys) / (rye - rys)});
+					this.pixelProcess(sc, pFunc, {
+						x: x,
+						y: y
+					});
+				}).bind(this));
+				return;
+			}
+		}
+		if (bASync) {
+			this.trigger('progress', {value: 1});
+			this.trigger('pixelprocess.end', {sc: sc});
 		}
 	},
 
@@ -258,13 +296,7 @@ O2.createClass('O876.Philter', {
 							p[k] += p2[k] * xyf;
 						}
 					}
-					if (x == 0 && y == 0) {
-						console.log(p, p2);
-					}
 				}
-			}
-			if (x == 0 && y == 0) {
-				console.log(p);
 			}
 		}).bind(this));
 	},
@@ -550,6 +582,10 @@ O2.createClass('O876.Philter', {
 		this.init(p1, p2);
 		var fStartTime = this.perf.now();
 		var sc = this.buildShadowCanvas(oCanvas);
+		this.one('pixelprocess.end', (function(oEvent) {
+			this.commitShadowCanvas(oEvent.sc);
+			this.trigger('complete', this.config());
+		}).bind(this));
 		switch (this.config('command')) {
 
 			case 'contrast': 
@@ -669,12 +705,15 @@ O2.createClass('O876.Philter', {
 			break;
 			
 		}
-		this.commitShadowCanvas(sc);
-		var fEndTime = this.perf.now();
-		this.data('duration', fEndTime - fStartTime);
+		if (this.config('sync')) {
+			this.commitShadowCanvas(sc);
+			var fEndTime = this.perf.now();
+			this.data('duration', fEndTime - fStartTime);
+		}
 	}
 
 
 });
 
 O2.mixin(O876.Philter, O876.Mixin.Data);
+O2.mixin(O876.Philter, O876.Mixin.Events);

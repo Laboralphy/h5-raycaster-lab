@@ -695,7 +695,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		// Sound system
 		this.oSoundSystem = new O876.SoundSystem();
 		this.oSoundSystem.setPath('resources/snd');
-		this.oSoundSystem.addChans(8);
+		this.oSoundSystem.setChannelCount(8);
 		this.oSoundSystem.bMute = !CONFIG.game.sound;
 
 		// client socket

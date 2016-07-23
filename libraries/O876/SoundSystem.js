@@ -39,15 +39,8 @@ O2.createClass('O876.SoundSystem', {
 		this.oBase = document.body;
 		this.aChans = [];
 		this.aAmbient = [];
-		this.oMusicChan = this._createChan();
-		if (this.oMusicChan.canPlayType('audio/ogg')) {
-			this.sFormat = 'ogg';
-		} else if (this.oMusicChan.canPlayType('audio/mp3')) {
-			this.sFormat = 'mp3';
-		} else {
-			throw new Error('neither ogg nor mp3 can be played back by this browser');
-		}
 		this.aChans = [];
+		this._createMusicChannel();
 	},
 	
 	
@@ -106,24 +99,33 @@ O2.createClass('O876.SoundSystem', {
 	 * Destroys all audio channels
 	 */
 	free: function() {
-		for (var i = 0, l = this.aChans.length; i < l; ++i) {
-			this.aChans[i].remove();
-		}
-		if (this.oMusicChan) {
-			this.oMusicChan.remove();
-			this.oMusicChan = null;
-		}
-		this.aChans = [];
+		this.setChannelCount(0);
+		this._freeMusicChannel();
 	},
 
 	/**
-	 * Create several channels at once
-	 * @param n int number of channels
+	 * Sets the number of maximum channels
+	 * If called more than one time, it will 
+	 * delete any previous created channel,
+	 * and will rebuild new fresh ones.
+	 * @param int n number if channels
 	 */
-	addChans : function(n) {
-		for (var i = 0; i < n; i++) {
+	setChannelCount: function(n) {
+		var c = this.aChans;
+		while (c.length > n) {
+			c.pop().remove();
+		}
+		while (c.length < n) {
 			this._addChan();
 		}
+	},
+
+	/**
+	 * returns the maximum number of useable channels
+	 * @return int
+	 */
+	getChannelCount: function() {
+		return this.aChans.length;
 	},
 
 	/**
@@ -329,4 +331,24 @@ O2.createClass('O876.SoundSystem', {
 		return this.aChans.length > 0;
 	},
 
+	_freeMusicChannel: function() {
+		if (this.oMusicChan) {
+			this.oMusicChan.remove();
+			this.oMusicChan = null;
+		}		
+	},
+
+	_createMusicChannel: function() {
+		this._freeMusicChannel();
+		this.oMusicChan = this._createChan();
+		if (this.oMusicChan.canPlayType('audio/ogg')) {
+			this.sFormat = 'ogg';
+		} else if (this.oMusicChan.canPlayType('audio/mp3')) {
+			this.sFormat = 'mp3';
+		} else {
+			throw new Error('neither ogg nor mp3 can be played back by this browser');
+		}
+	}
+
 });
+
