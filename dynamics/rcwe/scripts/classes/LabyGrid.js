@@ -104,8 +104,20 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.addCommandSeparator();
 		
 		// selectable tools
-		var $default = this.addCommand('<span class="icon-checkbox-unchecked"></span>', 'Region selector tool', pCommand, 'mapgrid_cmd_select').addClass('tool selected').data({'command': 'select', 'fill': 'rgba(0, 64, 192, 0.4)', 'stroke': 'rgb(0, 64, 192)'});
-		this.addCommand('<span class="icon-pencil2"></span>', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw').addClass('tool').data({'command': 'draw', 'fill': 'rgba(0, 0, 192, 0.4)', 'stroke': 'rgb(0, 0, 192)'});
+		var $default = this.addCommand('<span class="icon-checkbox-unchecked"></span>', 'Region selector tool', pCommand, 'mapgrid_cmd_select')
+			.addClass('tool selected')
+			.data({
+				'command': 'select', 
+				'fill': 'rgba(0, 64, 192, 0.4)', 
+				'stroke': 'rgb(0, 64, 192)'
+			});
+		this.addCommand('<span class="icon-pencil2"></span>', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw')
+			.addClass('tool')
+			.data({
+				'command': 'draw', 
+				'fill': 'rgba(0, 0, 192, 0.4)', 
+				'stroke': 'rgb(0, 0, 192)'
+			});
 		this.addCommandSeparator();
 		
 		
@@ -481,6 +493,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 					this.onClick(x, y);
 				}
 				break;
+
+			case 2: //middle button : copy block
+				this.doAction('copycellcode', this.getCell(xCell, yCell));
+				break;
 		}
 	},
 	
@@ -521,9 +537,13 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	cmd_mouseUp: function(oEvent) {
 		this.cmd_mouseMove(oEvent);
-		if (this.bSelectFlag) {
-			this.bStartDrag = false;
-			this.doAction($('button.tool.selected', this.getToolBar()).data('command'));
+		switch (oEvent.which) {
+			case 1: // only left button is handled
+				if (this.bSelectFlag) {
+					this.bStartDrag = false;
+					this.doAction($('button.tool.selected', this.getToolBar()).data('command'));
+				}
+				break;
 		}
 	},
 	
@@ -657,7 +677,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			$button = $button.parent('button');
 		}
 		var sCommand = $button.data('command');
-		if ($button.hasClass('view')) {
+		if ($button.hasClass('tool')) {
 			$('button.tool', this.getToolBar()).removeClass('selected');
 			$button.addClass('selected');
 		}
@@ -747,11 +767,14 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			};
 		} 
 		var sp = this.oStartingPoint;		
+		var xOld = sp.x;
+		var yOld = sp.y;
 		sp.x = x1;
 		sp.y = y1;
 		sp.angle = 0;
 		this.doAction('setstart', sp.x, sp.y, sp.angle);
-		this.redraw();
+		this.redraw(xOld, yOld, xOld, yOld);
+		this.redraw(sp.x, sp.y, sp.x, sp.y);
 	},
 	
 	cmd_setStartPointAngle: function(fAngle) {
@@ -765,7 +788,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		}
 		sp.angle = sp.angle % (Math.PI * 2);
 		this.doAction('setstart', sp.x, sp.y, sp.angle);
-		this.redraw();
+		this.redraw(sp.x, sp.y, sp.x, sp.y);
 	},
 	
 

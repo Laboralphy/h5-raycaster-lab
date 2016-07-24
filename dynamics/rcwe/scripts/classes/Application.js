@@ -784,6 +784,14 @@ O2.createClass('RCWE.Application', {
 	},
 	
 
+	cmd_labygrid_copycellcode: function(c) {
+		console.log('copycellcode');
+		if (this.isVisiblePanel('blockbrowser')) {
+			this.oBlockBrowser.selectBlockImage(c);
+			console.log(c);
+		}
+	},
+
 
 	// WORLD VIEWER
 	// WORLD VIEWER
