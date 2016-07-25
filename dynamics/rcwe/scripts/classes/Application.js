@@ -23,6 +23,8 @@ O2.createClass('RCWE.Application', {
 	
 	oMediator: null,
 	
+	
+	bThingSearched: false,
 	sMode: null, // last opened tab
 	oCurrentWindow: null,
 	
@@ -428,6 +430,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	redrawMap: function(x1, y1, x2, y2) {
+		this.bThingSearched = false;
 		this.oMapGrid.redraw(x1, y1, x2, y2);
 	},
 	
@@ -784,11 +787,40 @@ O2.createClass('RCWE.Application', {
 	},
 	
 
-	cmd_labygrid_copycellcode: function(c) {
-		console.log('copycellcode');
+	cmd_labygrid_middleclick: function(c, xCell, yCell, x, y) {
 		if (this.isVisiblePanel('blockbrowser')) {
-			this.oBlockBrowser.selectBlockImage(c);
-			console.log(c);
+			var nUpper = RCWE.Tools.getUpperCode(c);
+			var nLower = RCWE.Tools.getLowerCode(c);
+			switch (this.oMapGrid.sSelectedFloor) {
+				case 'f1':
+					this.oBlockBrowser.selectBlockImage(nLower);
+					break;
+				case 'f2':
+					this.oBlockBrowser.selectBlockImage(nUpper);
+					break;
+				default:
+					throw new Error('this case is not handled : both floors cannot be selected at the same time');
+			}
+		} else if (this.isVisiblePanel('thingbrowser')) {
+			if (this.bThingSearched) {
+				this.redrawMap();
+			} else {
+				var oThing = this.oThingBrowser.getSelectedThing();
+				var aThings = this.oThingGrid.locateThings(oThing.getData('id'));
+				if (aThings.length) {
+					var cx = this.oMapGrid.oContext;
+					cx.strokeStyle = '#F00';
+					this.bThingSearched = true;
+					aThings.forEach(function(t) {
+						cx.beginPath();
+						cx.moveTo(x, y);
+						cx.lineTo(t.x, t.y);
+						cx.stroke();
+					});
+				} else {
+					//this.error('No such thing on this map');
+				}
+			}
 		}
 	},
 
@@ -1285,8 +1317,14 @@ O2.createClass('RCWE.Application', {
 		var oExport = {
 			name: sName,
 			level: this.serialize(),
-			thumbnail: this.oWorldViewer.sScreenShot.substr(PNGSIGN.length)
 		};
+		if (this.oWorldViewer.sScreenShot.substr(0, PNGSIGN.length) == PNGSIGN) {
+			oExport.thumbnail = this.oWorldViewer.sScreenShot.substr(PNGSIGN.length);
+		} else {
+			oExport.thumbnail = '';
+		}
+		
+		
 		var sData = JSON.stringify(oExport);
 		$.post('services/?action=level.post', sData, (function(data) {
 			this.popup('Message', 'Export "' + sName + '" complete.');

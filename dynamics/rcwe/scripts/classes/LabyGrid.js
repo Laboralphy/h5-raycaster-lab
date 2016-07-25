@@ -43,6 +43,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	
 	bSelectFlag: true, // true = you can select / false = you cannot select regions
 	
+	sSelectedFloor: 'f1',
+	
 	/**
 	 * builds the DOM structure
 	 */
@@ -287,13 +289,11 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		var bRegion = xf !== undefined;
 		var xmin, xmax, ymin, ymax;
 		if (bRegion) {
-			//console.log('labygrid : redraw region', xf, yf, xt, yt);
 			xmin = Math.min(xf, xt);
 			xmax = Math.max(xf, xt);
 			ymin = Math.min(yf, yt);
 			ymax = Math.max(yf, yt);
 		} else {
-			//console.log('labygrid : redraw all');
 			xmin = 0;
 			xmax = w - 1; 
 			ymin = 0;
@@ -309,11 +309,15 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 				if (g[y]) {
 					for (x = xmin; x <= xmax; ++x) {
 						pDraw(g[y][x], cx, x * wTile , y * wTile, wTile, wTile);
-						sTag = Marker.getMarkXY(aTags, x, y);
-						if (sTag) {
-							cx.drawImage(this.oTagFactory.getFactorizedItem(sTag), x * wTile , y * wTile);
-						}
 					}
+				}
+			}
+		}
+		for (y = ymin; y <= ymax; ++y) {
+			for (x = xmin; x <= xmax; ++x) {
+				sTag = Marker.getMarkXY(aTags, x, y);
+				if (sTag) {
+					cx.drawImage(this.oTagFactory.getFactorizedItem(sTag), x * wTile , y * wTile);
 				}
 			}
 		}
@@ -399,8 +403,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @return int
 	 */
 	getSelectedFloor: function() {
-		var sFloor = $('button.floor.selected', this.getToolBar()).data('command');
-		switch (sFloor) {
+		switch (this.sSelectedFloor) {
 			case 'f1': return 1;
 			case 'f2': return 2;
 			case 'f12': return 3;
@@ -495,7 +498,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 				break;
 
 			case 2: //middle button : copy block
-				this.doAction('copycellcode', this.getCell(xCell, yCell));
+				this.doAction('middleclick', this.getCell(xCell, yCell), xCell, yCell, x, y);
 				break;
 		}
 	},
@@ -681,6 +684,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			$('button.tool', this.getToolBar()).removeClass('selected');
 			$button.addClass('selected');
 		}
+		if ($button.hasClass('floor')) {
+			$('button.floor', this.getToolBar()).removeClass('selected');
+			$button.addClass('selected');
+		}
 		switch (sCommand) {
 			case 'select':
 			case 'draw':
@@ -692,6 +699,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			case 'f1':
 			case 'f2':
 			case 'f12':
+				this.sSelectedFloor = sCommand;
 				this.redraw();
 				break;
 		}

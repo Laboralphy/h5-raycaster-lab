@@ -44,6 +44,9 @@ class ServiceTemplate {
 		}
 		file_put_contents($sFilePath . '/template.json', $sFileContent);
 		if ($sThumbnail) {
+			if (strlen($sThumbnail) < 200) {
+				file_put_contents($sFilePath . '/thumbnail.txt', $sThumbnail);
+			}
 			file_put_contents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
 		}
 		if (!file_exists($sFilePath . '/template.json')) {
