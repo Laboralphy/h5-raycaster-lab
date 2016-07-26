@@ -46,12 +46,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
 		this.on('itag.locator', this.tagEventLocator.bind(this));
+		this.on('itag.lock', this.tagEventLock.bind(this));
 
 		// activable
 		this.on('tag.msg', this.tagEventMessage.bind(this));
 		this.on('tag.script', this.tagEventScript.bind(this));
 		this.on('tag.zone', this.tagEventZone.bind(this));
 		this.on('tag.teleport', this.tagEventTeleport.bind(this));
+		this.on('tag.item', this.tagEventItem.bind(this));
+		this.on('tag.lock', this.tagEventUnlock.bind(this));
 
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('command2', this.gameEventCommand2.bind(this));
@@ -109,6 +112,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
 	gameEventBuild: function(data) {
+		this._sLevelIndex = 'm2-l0';
+		data = WORLD_DATA[this._sLevelIndex];
 		var s = '';
 		for (s in TILES_DATA) {
 			data.tiles[s] = TILES_DATA[s];
@@ -231,6 +236,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventActivate: function() {
+		
 		this.activateWall(this.getPlayer());
 	},
 
@@ -404,6 +410,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oLocators[sLocator] = {x: x, y: y};
 		oEvent.remove = true;
 	},
+	
+	/**
+	 * Gestionaire de porte verouillée
+	 */
+	tagEventLock: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		this.lockDoor(x, y);
+	},
 
 	/**
 	 * Gestionnaire de tag
@@ -426,17 +441,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var sProp;
 
 		switch (sType) {
-			case 'c':
+			case 'c': // ceiling only
 				rc.cloneFlat(x, y, 1, pLightFlatFunc);
 				sProp = 'top';
 			break;
 
-			case 'f':
+			case 'f': // floor only
 				rc.cloneFlat(x, y, 0, pLightFlatFunc);
 				sProp = 'bottom';
 			break;
 
-			case 'w':
+			case 'w': // floor and ceiling
 				rc.cloneFlat(x, y, 0, pLightFlatFunc);
 				rc.cloneFlat(x, y, 1, pLightFlatFunc);
 				sProp = 'middle';
@@ -527,7 +542,22 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		p.setXY(oLoc.x * 64 + 32, oLoc.y * 64 + 32);
 	},
 	
+	/**
+	 * Item accroché au mur
+	 */
+	tagEventItem: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		for (var i = 0; i < 4; ++i) {
+			this.oRaycaster.cloneWall(x, y, i, false);
+		}
+	},
 	
+	tagEventUnlock: function(oEvent) {
+		this.unlockDoor(oEvent.x, oEvent.y);
+	},
+
+
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
@@ -700,6 +730,29 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			s[sClass] = oInstance;
 		}
 		return oInstance;
+	},
+	
+	lockDoor: function(x, y) {
+		console.log('locking', x, y);
+		var rc = this.oRaycaster;
+		var p = rc.getMapPhys(x, y);
+		if (p >= 2 && p <= 9) {
+			this.addBlockTag(x, y, 'locked-phys-code', p);
+			rc.setMapPhys(x, y, p == rc.PHYS_SECRET_BLOCK ? rc.PHYS_WALL : rc.PHYS_OFFSET_BLOCK);
+			rc.setMapOffs(x, y, rc.nPlaneSpacing >> 1); 
+		}
+	},
+	
+	unlockDoor: function(x, y) {
+		console.log('unlocking', x, y);
+		var rc = this.oRaycaster;
+		var p = this.findBlockTag(x, y, 'locked-phys-code');
+		console.log(p);
+		if (p !== null) {
+			rc.setMapPhys(x, y, p);
+			rc.setMapOffs(x, y, 0); 
+			this.removeBlockTag(x, y, 'locked-phys-code');
+		}
 	},
 	
 	

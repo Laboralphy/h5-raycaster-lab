@@ -518,9 +518,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
-		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
-		pDrawingFunction(this, c, x, y, nSide);
-		this.shadeCloneWall(c, x, y, nSide);
+		if (pDrawingFunction === false) {
+			this.oXMap.removeClone(x, y, nSide);
+		} else {
+			var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
+			pDrawingFunction(this, c, x, y, nSide);
+			this.shadeCloneWall(c, x, y, nSide);
+		}
 	},
 
 	shadeCloneWall : function(oCanvas, x, y, nSide) {
@@ -530,6 +534,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 	
 	cloneFlat: function(x, y, nSide, pDrawingFunction) {
+		if (pDrawingFunction === false) {
+			this.oXMap.removeClone(x, y, nSide + 4);
+			return;
+		}
 		var iTexture = this.aWorld.flats.codes[this.getMapCode(x, y)][nSide];
 		if (iTexture < 0) {
 			return;
@@ -544,7 +552,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		b.imageData = oCtx.getImageData(0, 0, c.width, c.height);
 		b.imageData32 = new Uint32Array(b.imageData.data.buffer);
 	},
-
+	
 	/* Code map
 	 * Numéro de Tile (byte)
 	 * Propriété physique (byte)

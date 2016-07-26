@@ -94,4 +94,8 @@ O2.createClass('O876_Raycaster.XMap', {
 		oCanvas.getContext('2d').drawImage(oTextures, iTexture * w, 0, w, h, 0, 0, w, h);
 		return oCanvas;
 	},
+	
+	removeClone: function(x, y, nSide) {
+		this.get(x, y, nSide).surface = null;
+	}
 });

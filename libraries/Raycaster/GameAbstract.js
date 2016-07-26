@@ -317,6 +317,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				this.trigger(aEvent.join('.'), oData);
 				return !oData.remove;
 			}, this).join(';');
+			if (this.getBlockTag(x, y) != sTag) {
+				throw new Error('tag modification is not allowed during trigger phase... [x: ' +x + ', y: ' + y + ', tag: ' + this.getBlockTag(x, y) + ']');
+			}
 			this.setBlockTag(x, y, sNewTag);
 		}
 	},
@@ -362,11 +365,39 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	setBlockTag: function(x, y, sTag) {
 		var s = this.oRaycaster.nMapSize;
 		if (x >= 0 && y >= 0 && x < s && y < s) {
+			console.log('set tag', x, y, sTag);
 			Marker.markXY(this._oTagData, x, y, sTag);
 		} else {
 			return null;
 		}		
+	},
+	
+	addBlockTag: function(x, y) {
+		var aTag = Array.prototype.slice.call(arguments, 2);
+		var t = this.getBlockTag(x, y).split(';');
+		t.push(aTag.join(' '));
+		this.setBlockTag(x, y, t.join(';'));
+	},
+	
+	findBlockTag: function(x, y, sTag) {
+		var sFound = null;
+		this.getBlockTag(x, y).split(';').some(function(t) {
+			var a = t.split(' ');
+			if (a[0] == sTag) {
+				sFound = t;
+			}
+		});
+		return sFound;
+	},
+	
+	removeBlockTag: function(x, y, sTag) {
+		this.getBlockTag(x, y).split(';').filter(function(t) {
+			var a = t.split(' ');
+			return a[0] != sTag;
+		}).join(';');
 	}
+
+	
 });
 
 O2.mixin(O876_Raycaster.GameAbstract, O876.Mixin.Events);
