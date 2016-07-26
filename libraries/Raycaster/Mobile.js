@@ -40,7 +40,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
 	bWallCollision: false,
 
-	oData: null,
+	//oData: null,
 
 
 	getBlueprint: function(sXData) {
@@ -49,7 +49,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 				return this.oSprite.oBlueprint;
 			} else {
 				if (this.oSprite.oBlueprint) {
-					return this.oSprite.oBlueprint.getData(sXData);
+					return this.oSprite.oBlueprint.data(sXData);
 				} else {
 					return null;
 				}
@@ -76,34 +76,6 @@ O2.createClass('O876_Raycaster.Mobile', {
 		return this.nBlueprintType;
 	},
 
-	setData: function(sData, xValue) {
-		if (this.oData === null) {
-			this.oData = {};
-		}
-		if (xValue === undefined || xValue === null) {
-			delete this.oData[sData];
-		} else {
-			this.oData[sData] = xValue;
-		}
-	},
-
-	/** 
-	 * Permet de récupérer des données de l'objet local Data
-	 * ou de l'objet oXData du blueprint
-	 * (local en priorité)
-	 * @param sData nom de la donnée
-	 * @return valeur de la donnée
-	 */
-	getData: function(sData) {
-		if (this.oData === null) {
-			this.oData = {};
-		}
-		if (sData in this.oData) {
-			return this.oData[sData];
-		} else {
-			return this.getBlueprint(sData);
-		}
-	},
 
 	// évènements
 
@@ -352,3 +324,4 @@ O2.createClass('O876_Raycaster.Mobile', {
 	}
 });
 
+O2.mixin(O876_Raycaster.Mobile, O876.Mixin.Data);

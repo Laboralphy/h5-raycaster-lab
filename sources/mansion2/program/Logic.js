@@ -248,7 +248,7 @@ O2.createClass('MANSION.Logic', {
 			for (var i = 0, l = aMobs.length; i < l; ++i) {
 				mi = aMobs[i];
 				oGhost = mi[0];
-				if (!oGhost.getData('dead')) {
+				if (!oGhost.data('dead')) {
 					fAngle = mi[1];
 					fDistance = mi[2];
 					fEnergy = this.getEnergyDissipation(fAngle, fDistance);

@@ -11,6 +11,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	oPhone: null,
 	oLogic: null,
 
+
+	/**
+	 * Displays a debug line
+	 * @param n line number
+	 * @param s string displayed text 
+	 */
+	displayDebugLine: function(n, s) {
+		if (this.aDebugLines === null) {
+			this.aDebugLines = [];
+		}
+		this.aDebugLines[n] = s;
+	},
+
+
+	/****** INIT ****** INIT ****** INIT ******/
+	/****** INIT ****** INIT ****** INIT ******/
+	/****** INIT ****** INIT ****** INIT ******/
+
 	init: function() {
 		this._oLocators = {};
 		this.initLogic();
@@ -23,7 +41,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
 		
-		// initiable
+		// initialisable
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
@@ -53,20 +71,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.oLogic.setCameraCaptureRank(1);
 	},
 	
-	
-	
 	/**
-	 * Displays a debug line
-	 * @param n line number
-	 * @param s string displayed text 
+	 * Initializes audio system
 	 */
-	displayDebugLine: function(n, s) {
-		if (this.aDebugLines === null) {
-			this.aDebugLines = [];
-		}
-		this.aDebugLines[n] = s;
-	},
-
 	initAudio: function() {
 		a = new O876.SoundSystem();
 		a.setChannelCount(8);
@@ -87,6 +94,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		});
 	},
 	
+
+
+
+
+	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
+	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
+	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
+
+
 	/**
 	 * Evènement déclenché lorsque les données du niveau sont en cours
 	 * de rassemblage.
@@ -210,7 +226,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 	/**
-	 * Evènement déclenché par la commande 2 
+	 * Evènement déclenché par la pression de la barre espace
 	 * Bouton droit de la souris
 	 * Bring the camera up and down
 	 */
@@ -249,6 +265,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 	},
 	
+
+	/**
+	 * Event triggered when a key is pressed
+	 * @param oEvent {k : pressed key code }
+	 */
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
@@ -301,6 +322,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 	},
 	
+	/**
+	 * Event triggered for each frame being computed. 
+	 * @param oEvent {}
+	 */
 	gameEventDoomloop: function(oEvent) {
 		// discarded mobiles
 		var aDiscarded = this.oRaycaster.getDiscardedMobiles();
@@ -318,6 +343,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}*/
 	},
 	
+	/**
+	 * Event triggered for each frame being rendered (displayed on screen)
+	 * @param oEvent {}
+	 */
 	gameEventFrame: function(oEvent) {
 		var aLog = this.aDebugLines;
 		if (aLog !== null) {
@@ -332,9 +361,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 
-	////// TAG EVENTS ////// TAG EVENTS ////// TAG EVENTS //////
-	////// TAG EVENTS ////// TAG EVENTS ////// TAG EVENTS //////
-	////// TAG EVENTS ////// TAG EVENTS ////// TAG EVENTS //////
+	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/
+	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/
+	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/
 	
 	/**
 	 * Gestionnaire de tag
@@ -461,9 +490,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Déclenché lorsqu'on active un tag "zone"
 	 */
 	tagEventZone: function(oEvent) {
+		var sZone = oEvent.data;
 		// changement d'ambiance sonore
-		var sSoundFile = SOUNDS_DATA.bgm[oEvent.data];
-		this.playAmbience(sSoundFile);
+		if (Event.data in SOUNDS_DATA) {
+			this.playAmbience(SOUNDS_DATA.bgm[sZone]);
+		}
+		// Noter le tag comme étant visité
+		var p = this.getPlayer();
+		p.data('g-visited-zone-' + sZone, true);
 	},
 	
 	/**
@@ -494,8 +528,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	
-	////// GAME LIFE //////
+	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
+	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
+	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 
+	/**
+	 * will bind phone events
+	 * This is a kind of phone initialization, but will
+	 * occurs after each loaded level 
+	 * @param p Phone
+	 */
 	bindPhoneEvents: function(p) {
 		p.on('phone.startup.Camera', this.phoneAppCameraOn.bind(this));
 		p.on('phone.shutdown.Camera', this.phoneAppCameraOff.bind(this));
@@ -544,9 +586,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	spawnGhost: function(sBlueprint, x, y, a) {
 		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
 		oGhost.getThinker().reset();
-		oGhost.setData('hp', oGhost.getData('life'));
-		oGhost.setData('dead', false);
-		oGhost.getThinker().setSpeed(oGhost.getData('speed'));
+		oGhost.data('hp', oGhost.data('life'));
+		oGhost.data('dead', false);
+		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		this.playGhostAmbience(SOUNDS_DATA.bgm.ghost);
 	},
 	
@@ -557,7 +599,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var aMobs = this.oRaycaster.oHorde.aMobiles;
 		var n = 0;
 		for (var i = 0, l = aMobs.length; i < l; ++i) {
-			if (aMobs[i].getData('life')) {
+			if (aMobs[i].data('life')) {
 				++n;
 			}
 		}
@@ -575,7 +617,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var xm = nSize * Math.cos(a) + x;
 		var ym = nSize * Math.sin(a) + y;
 		var oMissile = this.spawnMobile('p_ecto', xm, ym, a);
-		oMissile.fSpeed = oMissile.getData('speed');
+		oMissile.fSpeed = oMissile.data('speed');
 		oMissile.getThinker().fire(oShooter);
 		return oMissile;
 	},
@@ -587,7 +629,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	spawnVisualEffect: function(sBlueprint, x, y) {
 		var oVFX = this.spawnMobile(sBlueprint, x, y, 0);
 		oVFX.getThinker().reset();
-		var oSounds = oVFX.getData('sounds');
+		var oSounds = oVFX.data('sounds');
 		if (oSounds && ('spawn' in oSounds)) {
 			this.playSound(SOUNDS_DATA.visualeffects[oSounds.spawn], x, y);
 		}
@@ -629,7 +671,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			throw new Error('no locator "' + sLocator + '" defined');
 		}
 	},
-	
+
 	/**
 	 * Renvoie l'instance du joueur
 	 * @return Player
@@ -637,7 +679,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	getPlayer: function() {
 		return this.oRaycaster.oCamera;
 	},
-	
+
 	/**
 	 * Renvoie l'objet script correspondant
 	 * @param sScript nom du script

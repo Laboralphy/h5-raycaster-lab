@@ -25,10 +25,12 @@ O2.createClass('O876.XHR', {
 		if (xhr.readyState == 4) {
 			var n = this.aQueue.shift();
 			this._bAjaxing = false;
-			if (xhr.status == 200) {
-				n.callback(xhr.responseText);
-			} else {
-				n.callback(null, xhr.status.toString());
+			if (n) {
+				if (xhr.status == 200) {
+					n.callback(xhr.responseText);
+				} else {
+					n.callback(null, xhr.status.toString());
+				}
 			}
 			this.runAjax();
 		}

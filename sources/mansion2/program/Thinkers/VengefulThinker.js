@@ -209,8 +209,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	
 	damage: function(nAmount, bCritical) {
-		var hp = this.oMobile.getData('hp');
-		this.oMobile.setData('hp', hp -= nAmount);
+		var hp = this.oMobile.data('hp');
+		this.oMobile.data('hp', hp -= nAmount);
 		if (hp <= 0) {
 			this.setThink('Die');
 			return;
@@ -486,7 +486,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	thinkDie_enter: function() {
 		this.oMobile.oSprite.playAnimationType(2);
-		this.oMobile.setData('dead', true);
+		this.oMobile.data('dead', true);
 		this.setExpireTime(30);
 		this.playSound('die');
 	},
@@ -502,7 +502,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		var g = this.oGame;
 		var m = this.oMobile;
 		var s = m.oSprite;
-		m.setData('hp', 0);
+		m.data('hp', 0);
 		g.spawnVisualEffect('o_flame', m.x, m.y);
 		s.nAlpha = 0;
 		s.bTranslucent = true;
