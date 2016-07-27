@@ -264,7 +264,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 */
 	popupMessage: function(sMessage, oVariables) {
 		var rc = this.oRaycaster;
-		var oMsg = new O876_Raycaster.GXMessage(rc);
 		var r;
 		if (oVariables !== undefined) {
 			for (var v in oVariables) {
@@ -272,8 +271,10 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				sMessage = sMessage.replace(r, oVariables[v]);
 			}
 		}
+		var oMsg = new O876_Raycaster.GXMessage(rc);
 		oMsg.setMessage(sMessage);
 		rc.oEffects.addEffect(oMsg);
+		this._sLastPopupMessage == sMessage;
 		return oMsg;
 	},
 	

@@ -1,12 +1,122 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8"/>
+	<script type="application/javascript" src="../../../../externals/jquery/jquery-2.1.1.min.js"></script>
 	<script type="application/javascript" src="../../../../libraries/O876/o2.js"></script>
 	<script type="application/javascript" src="../../../../libraries/O876/XHR.js"></script>
 	<script type="application/javascript">
+
+
+
+/**
+ * This class will resolve "src" attributes from <style> and <img> tags
+ * will replace src with the matching content, if needed, image content will be converted to base 64
+ */
+O2.createClass('MANSION.Planify', {
+
+	xhr: null,
+
+	__construct: function() {
+		this.xhr = new O876.XHR();
+	},
+
+	convertToBase64: function(img, cb) {
+		var cvs = document.createElement('canvas');
+		cvs.width = img.naturalWidth;
+		cvs.height = img.naturalHeight;
+		var ctx = cvs.getContext('2d');
+		ctx.drawImage(img, 0, 0);
+		var pEvent = function(oEvent) {
+			cb(oEvent);
+			oEvent.target.removeEventListener('load', pEvent);
+		};
+		img.addEventListener('load', pEvent);
+		img.setAttribute('src', cvs.toDataURL());
+	},
+
+
+	processImg: function(img, cb) {
+		if (img.complete) {
+			this.convertToBase64(img, cb);
+		} else {
+			var pEvent = (function(oEvent) {
+				this.convertToBase64(img, cb);
+				oEvent.target.removeEventListener('load', pEvent);
+			}).bind(this);
+			img.addEventListener('load', pEvent);
+		}
+	},
+
+	processStyle: function(style, cb) {
+		var sSrc = style.getAttribute('src');
+		if (!sSrc) {
+			cb();
+			return;
+		}
+		style.removeAttribute('src');
+		style.setAttribute('scoped', 'scoped');
+		style.setAttribute('type', 'text/css');
+		this.xhr.get(sSrc, function(data, err) {
+			style.innerHTML = data;
+			cb();
+		});
+	},
+
+
+	processQueue: function(q, cb) {
+		var x = q.shift();
+		if (x) {
+			switch (x[0]) {
+				case 'style':
+					this.processStyle(x[1], (function() {
+						this.processQueue(q, cb);
+					}).bind(this));
+				break;
+
+				case 'img':
+					this.processImg(x[1], (function() {
+						this.processQueue(q, cb);
+					}).bind(this));
+				break;
+			}
+		} else {
+			cb();
+		}
+	},
+
+
+	processHTML: function(oHTML, cb) {
+		var aQueue = [];
+		var aStyles = oHTML.getElementsByTagName('style');
+		var aImages = oHTML.getElementsByTagName('img');
+		var i, oStyle, oImage;
+		for (i = 0; i < aStyles.length; ++i) {
+			oStyle = aStyles[i];
+			aQueue.push(['style', oStyle]);
+		}
+		for (i = 0; i < aImages.length; ++i) {
+			oImage = aImages[i];
+			aQueue.push(['img', oImage]);
+		}
+		this.processQueue(aQueue, cb);
+	},
+
+	convert: function(sFile, oDest) {
+		this.xhr.get(sFile, (function(data) {
+			var oDoc = new DocumentFragment();
+			var oMain = document.createElement('main');
+			oMain.innerHTML = data;
+			this.processHTML(oMain, function() {
+				oDest.appendChild(oMain);
+			});
+		}).bind(this));
+	}
+});
+
+
 function main() {
-	var XHR = new O876.XHR();
-	XHR.get(location.search.substr(1) + '.html', document.getElementById('rasterized-body'));
+	var oPlan = new MANSION.Planify();
+	oPlan.convert(location.search.substr(1) + '.html', document.getElementById('rasterized-body'));
 }
 
 window.addEventListener('load', main);
@@ -25,9 +135,6 @@ div.rasterized-body {
 	font-family: monospace;
 	font-size: 8px;
 }
-
-
-
 			</style>
 			<div id="rasterized-body" class="rasterized-body" xmlns="http://www.w3.org/1999/xhtml">
 			</div>

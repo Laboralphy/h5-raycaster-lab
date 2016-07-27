@@ -6,11 +6,14 @@
 
 O2.createClass('O876.XHR', {
 	_oInstance : null,
-	aQueue: [],
+	aQueue: null,
 	_bAjaxing : false,
 	pCurrentCallback : null,
-	sCurrentURL : '',
 	
+	__construct: function() {
+		this.aQueue = [];
+	},
+
 	// Renvoie une instance XHR
 	getInstance : function() {
 		if (this._oInstance === null) {
@@ -22,9 +25,8 @@ O2.createClass('O876.XHR', {
 
 	_dataReceived : function(oEvent) {
 		var xhr = oEvent.target;
-		if (xhr.readyState == 4) {
+		if (xhr.readyState == XMLHttpRequest.DONE) {
 			var n = this.aQueue.shift();
-			this._bAjaxing = false;
 			if (n) {
 				if (xhr.status == 200) {
 					n.callback(xhr.responseText);
@@ -32,7 +34,11 @@ O2.createClass('O876.XHR', {
 					n.callback(null, xhr.status.toString());
 				}
 			}
-			this.runAjax();
+			if (this.aQueue.length) {
+				this.runAjax();
+			} else {
+				this._bAjaxing = false;
+			}
 		}
 	},
 
@@ -42,6 +48,7 @@ O2.createClass('O876.XHR', {
 		if (q.length) {
 			var n = q[0];
 			var xhr = this.getInstance();
+			console.log(n);
 			xhr.open(n.method, n.url, true);
 			xhr.send(n.data);
 		}
@@ -62,6 +69,9 @@ O2.createClass('O876.XHR', {
 	 * @return string
 	 */
 	get : function(sURL, pCallback) {
+		if (sURL === null) {
+			throw new Error('url is invalid');
+		}
 		this.aQueue.push({method: 'GET', data: null, url: sURL, callback: pCallback});
 		this.autoRunAjax();
 	},
