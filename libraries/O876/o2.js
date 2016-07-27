@@ -142,9 +142,9 @@ O2.createObject = function(sName, oObject) {
  * @param s string, nom de la classe
  * @return pointer vers la Classe
  */
-O2._loadObject = function(s) {
+O2._loadObject = function(s, oContext) {
 	var aClass = s.split('.');
-	var pBase = window;
+	var pBase = oContext || window;
 	while (aClass.length > 1) {
 		pBase = pBase[aClass.shift()];
 	}

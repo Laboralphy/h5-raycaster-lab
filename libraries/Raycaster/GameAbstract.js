@@ -6,6 +6,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sTag: '',
 	_xTagProcessing: 0,
 	_yTagProcessing: 0,
+	_oMapData: null,
 
 	/** 
 	 * Evènement apellé lors de l'initialisation du jeu
@@ -85,6 +86,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
+		this._oMapData = Marker.create();
 		this._oTagData = Marker.create();
 		for (iTag = 0; iTag < aTags.length; ++iTag) {
 			oTag = aTags[iTag];
@@ -251,16 +253,28 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.enterLevel();
 	},
 
+	getString: function(sKey) {
+
+	},
+
 	
 	/**
 	 * Affiche un message popup
 	 * @param string sMessage contenu du message
 	 */
-	popupMessage: function(sMessage) {
+	popupMessage: function(sMessage, oVariables) {
 		var rc = this.oRaycaster;
 		var oMsg = new O876_Raycaster.GXMessage(rc);
+		var r;
+		if (oVariables !== undefined) {
+			for (var v in oVariables) {
+				r = new RegExp('\\' + v, 'g');
+				sMessage = sMessage.replace(r, oVariables[v]);
+			}
+		}
 		oMsg.setMessage(sMessage);
 		rc.oEffects.addEffect(oMsg);
+		return oMsg;
 	},
 	
 	/**
@@ -334,11 +348,13 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var oBlock = m.getFrontCellXY();
 		var x = oBlock.x;
 		var y = oBlock.y;
-		this.triggerTag(x, y, this.getBlockTag(x, y));
-		var oEffect = this.openDoor(x, y);
-		if (oEffect) {
-			this.trigger('door', {x: x, y: y, door: oEffect});
+		if (this.isDoor(x, y)) {
+			var oEffect = this.openDoor(x, y);
+			if (oEffect) {
+				this.trigger('door', {x: x, y: y, door: oEffect});
+			}
 		}
+		this.triggerTag(x, y, this.getBlockTag(x, y));
 	},
 
 	/**
@@ -346,10 +362,28 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * @param int x
 	 * @param int y position du block qu'on interroge
 	 */
-	getBlockTag: function(x, y) {
+	getBlockTag: function(x, y, sSeek) {
 		var s = this.oRaycaster.nMapSize;
 		if (x >= 0 && y >= 0 && x < s && y < s) {
-			return Marker.getMarkXY(this._oTagData, x, y);
+			var sTag = Marker.getMarkXY(this._oTagData, x, y);
+			if (sTag === undefined) {
+				return '';
+			}
+			if (sSeek !== undefined) {
+				var sFound = null;
+				sTag.split(';').some(function(t) {
+					var a = t.split(' ');
+					var s = a.shift();
+					if (s == sSeek) {
+						sFound = a.join(' ');
+						return true;
+					}
+					return false;
+				});
+				return sFound;
+			} else {
+				return sTag;
+			}
 		} else {
 			return null;
 		}
@@ -365,39 +399,41 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	setBlockTag: function(x, y, sTag) {
 		var s = this.oRaycaster.nMapSize;
 		if (x >= 0 && y >= 0 && x < s && y < s) {
-			console.log('set tag', x, y, sTag);
 			Marker.markXY(this._oTagData, x, y, sTag);
 		} else {
 			return null;
 		}		
 	},
-	
-	addBlockTag: function(x, y) {
-		var aTag = Array.prototype.slice.call(arguments, 2);
-		var t = this.getBlockTag(x, y).split(';');
-		t.push(aTag.join(' '));
-		this.setBlockTag(x, y, t.join(';'));
-	},
-	
-	findBlockTag: function(x, y, sTag) {
-		var sFound = null;
-		this.getBlockTag(x, y).split(';').some(function(t) {
-			var a = t.split(' ');
-			if (a[0] == sTag) {
-				sFound = t;
-			}
-		});
-		return sFound;
-	},
-	
-	removeBlockTag: function(x, y, sTag) {
-		this.getBlockTag(x, y).split(';').filter(function(t) {
-			var a = t.split(' ');
-			return a[0] != sTag;
-		}).join(';');
-	}
 
-	
+	/**
+	 * sets or gets values from the map data array
+	 */
+	mapData: function(x, y, sVariable, xValue) {
+		var s = this.oRaycaster.nMapSize;
+		var md = this._oMapData;
+		var oVars, bDefined;
+		if (x >= 0 && y >= 0 && x < s && y < s) {
+			oVars = Marker.getMarkXY(md, x, y);
+			bDefined = typeof oVars === 'object';
+			if (xValue === undefined) {
+				// getting variable
+				if (bDefined) {
+					return oVars[sVariable];
+				} else {
+					return null;
+				}
+			} else {
+				// setting variable
+				if (bDefined) {
+					oVars[sVariable] = xValue;
+				} else {
+					oVars = {};
+					oVars[sVariable] = xValue;
+					Marker.markXY(md, x, y, oVars);
+				}
+			}
+		}
+	}
 });
 
 O2.mixin(O876_Raycaster.GameAbstract, O876.Mixin.Events);

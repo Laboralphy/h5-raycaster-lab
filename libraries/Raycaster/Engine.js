@@ -145,6 +145,18 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	},
 
 	/**
+	 * Returns true if the block at the specified coordinates
+	 * is a door or a secret passage
+	 * @param x
+	 * @param y coordinates
+	 * @return bool
+	 */
+	isDoor: function(x, y) {
+		var nPhys = this.oRaycaster.getMapPhys(x, y);
+		return nPhys >= 2 && nPhys <= 9;
+	},
+
+	/**
 	 * Active un effet d'ouverture de porte ou passage secret sur un block
 	 * donné. L'effet d'ouverture inclue la modification temporaire de la
 	 * propriété du block permettant ainsi le libre passage des mobiles le temps

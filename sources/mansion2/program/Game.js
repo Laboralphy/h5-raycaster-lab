@@ -236,7 +236,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventActivate: function() {
-		
 		this.activateWall(this.getPlayer());
 	},
 
@@ -548,13 +547,37 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	tagEventItem: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
-		for (var i = 0; i < 4; ++i) {
-			this.oRaycaster.cloneWall(x, y, i, false);
+		this.oRaycaster.cloneWall(x, y, false, false);
+		var sItem = this.getBlockTag(oEvent.x, oEvent.y, 'item');
+		var sItemStr = STRINGS_DATA.ITEMS[sItem];
+		this.getPlayer().data('item-' + sItem, true);
+		this.popupMessage(STRINGS_DATA.EVENTS.item, {
+			$item: sItemStr
+		});
+		var aItem = sItem.split('-');
+		var sSound = aItem.shift();
+		if (sSound in SOUNDS_DATA.pickup) {
+			this.playSound(SOUNDS_DATA.pickup[sSound]);
 		}
+		oEvent.remove = true;
 	},
 	
 	tagEventUnlock: function(oEvent) {
-		this.unlockDoor(oEvent.x, oEvent.y);
+		var sKey = this.getBlockTag(oEvent.x, oEvent.y, 'lock');
+		var sItemStr = STRINGS_DATA.ITEMS[sKey];
+		if (this.getPlayer().data('item-' + sKey)) {
+			this.unlockDoor(oEvent.x, oEvent.y);
+			this.popupMessage(STRINGS_DATA.EVENTS.unlock, {
+				$item: sItemStr
+			});
+			this.playSound(SOUNDS_DATA.events.doorunlock);
+			oEvent.remove = true;
+		} else {
+			this.popupMessage(STRINGS_DATA.EVENTS.locked, {
+				$item: sItemStr
+			});
+			this.playSound(SOUNDS_DATA.events.doorlocked);
+		}
 	},
 
 
@@ -733,26 +756,28 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	lockDoor: function(x, y) {
-		console.log('locking', x, y);
 		var rc = this.oRaycaster;
 		var p = rc.getMapPhys(x, y);
 		if (p >= 2 && p <= 9) {
-			this.addBlockTag(x, y, 'locked-phys-code', p);
+			this.mapData(x, y, 'locked-phys-code', p);
 			rc.setMapPhys(x, y, p == rc.PHYS_SECRET_BLOCK ? rc.PHYS_WALL : rc.PHYS_OFFSET_BLOCK);
-			rc.setMapOffs(x, y, rc.nPlaneSpacing >> 1); 
+			rc.setMapOffs(x, y, rc.nPlaneSpacing >> 1);
 		}
 	},
 	
 	unlockDoor: function(x, y) {
-		console.log('unlocking', x, y);
 		var rc = this.oRaycaster;
-		var p = this.findBlockTag(x, y, 'locked-phys-code');
-		console.log(p);
+		var p = this.mapData(x, y, 'locked-phys-code');
 		if (p !== null) {
 			rc.setMapPhys(x, y, p);
-			rc.setMapOffs(x, y, 0); 
-			this.removeBlockTag(x, y, 'locked-phys-code');
+			rc.setMapOffs(x, y, 0);
+			rc.cloneWall(x, y, false, false);
+			this.mapData(x, y, 'locked-phys-code', null);
 		}
+	},
+
+	isDoorLocked: function(x, y) {
+		return !!this.mapData(x, y, 'locked-phys-code');
 	},
 	
 	

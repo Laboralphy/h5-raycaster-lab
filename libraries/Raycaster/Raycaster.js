@@ -518,6 +518,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
+		if (nSide === false) {
+			for (var i = 0; i < 4; ++i) {
+				this.cloneWall(x, y, i, pDrawingFunction);
+			}
+			return;
+		}
 		if (pDrawingFunction === false) {
 			this.oXMap.removeClone(x, y, nSide);
 		} else {
@@ -534,6 +540,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 	
 	cloneFlat: function(x, y, nSide, pDrawingFunction) {
+		if (nSide === false) {
+			this.cloneFlat(x, y, 0, pDrawingFunction);
+			this.cloneFlat(x, y, 1, pDrawingFunction);
+			return;
+		}
 		if (pDrawingFunction === false) {
 			this.oXMap.removeClone(x, y, nSide + 4);
 			return;

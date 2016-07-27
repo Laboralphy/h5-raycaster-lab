@@ -20,5 +20,18 @@ O2.createObject('STRINGS_DATA', {
 	},
 
 	'tc-l1': {
+	},
+
+	EVENTS: {
+		item: "You acquired : $item",
+		locked: "This door is locked. You need : $item",
+		unlock: "You unlocked the door with : $item",
+	},
+
+	ITEMS: {
+		'key-cabin-s': 'Cabin key'
 	}
+
+
+
 });

@@ -23,15 +23,15 @@ O2.createClass('O876_Raycaster.XMap', {
 		var aBlock, aRow, x, y, nSide;
 		this.nWidth = w;
 		this.nHeight = h;
-		for (y = 0; y < h; y++) {
+		for (y = 0; y < h; ++y) {
 			aRow = [];
-			for (x = 0; x < w; x++) {
+			for (x = 0; x < w; ++x) {
 				aBlock = [];
-				for (nSide = 0; nSide < 6; nSide++) {
+				for (nSide = 0; nSide < 6; ++nSide) {
 					aBlock.push({
 						x : x,
 						y : y,
-						surface : null,
+						surface: null,
 						diffuse: 0
 					});
 				}
