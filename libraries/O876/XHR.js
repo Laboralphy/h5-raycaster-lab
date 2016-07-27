@@ -48,7 +48,6 @@ O2.createClass('O876.XHR', {
 		if (q.length) {
 			var n = q[0];
 			var xhr = this.getInstance();
-			console.log(n);
 			xhr.open(n.method, n.url, true);
 			xhr.send(n.data);
 		}

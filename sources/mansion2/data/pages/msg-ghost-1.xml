@@ -1,3 +1,4 @@
+<root>
 <style src="styles/messages.css">
 </style>
 <div class="header title">Messages</div>
@@ -5,4 +6,5 @@
 <h3>Ghost</h3>
 <hr class="breakfloat"/>
 <div class="message"><b>12 may : </b><span class="message"></span>By the <b>Dark Gods</b>, you shall offer your <b>head</b>.</div>
+</root>
 

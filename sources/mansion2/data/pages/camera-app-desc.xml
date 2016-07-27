@@ -1,3 +1,4 @@
+<root>
 <style src="styles/appstore.css">
 </style>
 <div class="header title">Application Store</div>
@@ -8,4 +9,5 @@
 <p class="bold breakfloat">There is an app for that !</p>
 <p>By installing this app, your smartphone will gain the ability to capture ghosts and get rid of those vengeful spirits that usually haunt old mansions.</p>
 <p>Try it today and go kick some spiritual asses !</p>
+</root>
 

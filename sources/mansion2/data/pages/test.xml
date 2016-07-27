@@ -1,3 +1,4 @@
+<root>
 <style src="styles/messages.css">
 </style>
 <div class="header title">Messages</div>
@@ -6,4 +7,4 @@
 <hr class="breakfloat"/>
 <div class="message"><b>[18:45] </b><span class="message"></span>Once you're inside the mansion, look for rare paintings and clues about what happened there.</div>
 <div class="message"><b>[18:49] </b><span class="message"></span>I mean : use a camera and take lots of pictures.</div>
-
+</root>
