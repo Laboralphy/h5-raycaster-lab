@@ -23,27 +23,55 @@ O2.createClass('O876.Rasterize', {
 
 	xhr: null,
 	BASEPATH: '',
+	bBusy: false,
+	oDomParser: null,
 
 	__construct: function() {
 		this.xhr = new O876.XHR();
+		this.oDomParser = new DOMParser();
 	},
 
 	_get: function(sFile, cb) {
 		this.xhr.get(this.BASEPATH + sFile, cb);
 	},
 
-
-	_renderToCanvas: function(xElement, oCanvas, pDone) {
-		var w = oCanvas.width;
-		var h = oCanvas.height;
-		var ctx = oCanvas.getContext('2d');
-		var xs = new XMLSerializer();
-		var sHTML = xs.serializeToString(xElement.documentElement);
-		var sSVG = ([
+	_computeMetrics: function(oObject, w, h) {
+		var oElement = document.createElement('div');
+		oElement.style.padding = '0px';
+		oElement.style.margin = '0px';
+		oElement.style.position = 'relative';
+		oElement.style.visibility = 'hidden';
+		oElement.style.width = w + 'px';
+		oElement.style.height = h + 'px';
+		oElement.appendChild(oObject);
+		document.body.appendChild(oElement);
+		var q = oElement.querySelectorAll('[id]');
+		var oResult = {}, e, id;
+		for (var i = 0; i < q.length; ++i) {
+			e = q[i];
+			id = e.getAttribute('id');
+			oResult[id] = {
+				width: e.offsetWidth,
+				height: e.offsetHeight,
+				left: e.offsetLeft,
+				top: e.offsetTop
+			};
+		}
+		oElement.remove();
+		console.log(oResult);
+		return oResult;
+	},
+	
+	_parseXMLString: function(sXML) {
+		return this.oDomParser.parseFromString(sXML, 'application/xml');		
+	},
+	
+	_renderSVGString: function(sXML, w, h) {
+		return ([
 	'	<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '">',
 	'		<foreignObject width="100%" height="100%">',
 	'			<style scoped="scoped">',
-	'div.rasterized-body {',
+	'root {',
 	'	width: 100%; ',
 	'	height: 100%; ',
 	'	overflow: hidden;',
@@ -54,20 +82,35 @@ O2.createClass('O876.Rasterize', {
 	'}',
 	'',
 	'			</style>',
-	'			<div class="rasterized-body" xmlns="http://www.w3.org/1999/xhtml">',
-	             sHTML,
-	           '</div>',
-	         '</foreignObject>',
-	       '</svg>'
+	'           <root xmlns="http://www.w3.org/1999/xhtml">',
+	            sXML,
+	'           </root>',
+	'      </foreignObject>',
+	'</svg>'
 	    ]).join('\n');
+	},
+
+	_renderToCanvas: function(xElement, oCanvas, pDone) {
+		var w = oCanvas.width;
+		var h = oCanvas.height;
+		var ctx = oCanvas.getContext('2d');
+		var xs = new XMLSerializer();
+		var sSVG = xs.serializeToString(xElement.documentElement);
+		// proved to be inadequate
+		this._computeMetrics(xElement.documentElement, oCanvas.width, oCanvas.height);
 		var img = new Image();
 		var svg = new Blob([sSVG], {type: 'image/svg+xml;charset=utf-8'});
 		var url = URL.createObjectURL(svg);
-		img.addEventListener('load', function() {
+		img.addEventListener('load', (function() {
 		    ctx.drawImage(img, 0, 0);
 		    URL.revokeObjectURL(url);
-		    pDone();
-		});
+		    if (pDone) {
+				this.trigger('render', {
+					canvas: oCanvas
+				});
+				pDone();
+			}
+		}).bind(this));
 		img.setAttribute('src', url);
 	},
 
@@ -88,7 +131,7 @@ O2.createClass('O876.Rasterize', {
 			cb();
 		}).bind(this);
 		oImage.addEventListener('load', pEvent);
-		oImage.src = img.getAttribute('src');
+		oImage.src = this.BASEPATH + img.getAttribute('src');
 	},
 
 	_processStyle: function(style, cb) {
@@ -128,10 +171,10 @@ O2.createClass('O876.Rasterize', {
 	},
 
 
-	_processHTML: function(oHTML, cb) {
+	_processXML: function(oXML, cb) {
 		var aQueue = [];
-		var aStyles = oHTML.getElementsByTagName('style');
-		var aImages = oHTML.getElementsByTagName('img');
+		var aStyles = oXML.getElementsByTagName('style');
+		var aImages = oXML.getElementsByTagName('img');
 		var i, oStyle, oImage;
 		for (i = 0; i < aStyles.length; ++i) {
 			oStyle = aStyles[i];
@@ -152,17 +195,19 @@ O2.createClass('O876.Rasterize', {
 	},
 
 	renderXML: function(data, oCanvas, pDone) {
-		var oParser = new DOMParser();
-		data = '<root>' + data + '</root>';
-		var oDoc = oParser.parseFromString(data, 'application/xml');
-		this._processHTML(oDoc.documentElement, (function() {
+		var sXML = this._renderSVGString(data, oCanvas.width, oCanvas.height);
+		var oDoc = this._parseXMLString(sXML);
+		this._processXML(oDoc.documentElement, (function() {
+			this.trigger('parse', {
+				element: oDoc
+			});
 			this._renderToCanvas(oDoc, oCanvas, pDone);
 		}).bind(this));
 	},
 
 	render: function(sFile, oCanvas, pDone) {
 		var aPath = sFile.split('/');
-		aPath.pop();
+		var sFile = aPath.pop();
 		this.BASEPATH = aPath.filter(function(x) {
 			return x !== '';
 		}).join('/');
@@ -174,3 +219,5 @@ O2.createClass('O876.Rasterize', {
 		}).bind(this));
 	}
 });
+
+O2.mixin(O876.Rasterize, O876.Mixin.Events);

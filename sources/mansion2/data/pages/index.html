@@ -3,6 +3,7 @@
 	<meta charset="utf-8"/>
 	<script type="application/javascript" src="../../../../externals/jquery/jquery-2.1.1.min.js"></script>
 	<script type="application/javascript" src="../../../../libraries/O876/o2.js"></script>
+	<script type="application/javascript" src="../../../../libraries/O876/Mixin/Events.js"></script>
 	<script type="application/javascript" src="../../../../libraries/O876/XHR.js"></script>
 	<script type="application/javascript" src="../../../../libraries/O876/Rasterize.js"></script>
 	<script type="application/javascript">
@@ -13,6 +14,10 @@
 function main() {
 	var oPlan = new O876.Rasterize();
 	console.time('rasterize');
+	oPlan.on('parse', function(data) {
+		//console.log(data.element.documentElement);
+		//document.body.appendChild(data.element.documentElement);
+	});
 	oPlan.render(location.search.substr(1) + '.xml', document.getElementById('rasterized-canvas'), function() {
 		console.timeEnd('rasterize');
 	});

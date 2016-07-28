@@ -41,3 +41,9 @@ div.message {
 	margin: 2px;
 }
 
+.btn {
+	display: inline;
+	padding: 8px;
+	background-color: #08F;
+	border-color: black;
+}

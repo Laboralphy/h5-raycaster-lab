@@ -14,10 +14,13 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 	nScreenWidth: 0,
 	nScreenHeight: 0,
 	
+	oRasterizer: null,
+	
 	
 	__construct: function() {
 		this.oStatusBar = new MANSION.PhoneApp.StatusBar();
 		this.aNotes = [];
+		this.oRasterize = new O876.Rasterize();
 	},
 	
 	update: function(oLogic) {
@@ -31,11 +34,8 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 		var oCvs = O876.CanvasFactory.getCanvas();
 		oCvs.width = nWidth;		
 		oCvs.height = nMaxHeight;
-		var XHR = new O876.XHR();
-		XHR.get('data/pages/' + sURL + '.html', (function(data) {
-			O876.rasterize(data, oCvs, (function() {
-				this.oNoteCvs = oCvs;
-			}).bind(this));
+		this.oRasterize.render('data/pages/' + sURL + '.xml', oCvs, (function() {
+			this.oNoteCvs = oCvs;
 		}).bind(this));
 	},
 	
