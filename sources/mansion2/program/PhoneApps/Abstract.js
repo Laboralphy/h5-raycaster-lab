@@ -10,5 +10,5 @@ O2.createClass('MANSION.PhoneApp.Abstract', {
 	},
 
 	render: function(oPhone) {
-	}	
+	}
 });

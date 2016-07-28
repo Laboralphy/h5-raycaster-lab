@@ -97,7 +97,7 @@ O2.createClass('O876.Rasterize', {
 		var xs = new XMLSerializer();
 		var sSVG = xs.serializeToString(xElement.documentElement);
 		// proved to be inadequate
-		this._computeMetrics(xElement.documentElement, oCanvas.width, oCanvas.height);
+		var oMetrics = this._computeMetrics(xElement.documentElement, oCanvas.width, oCanvas.height);
 		var img = new Image();
 		var svg = new Blob([sSVG], {type: 'image/svg+xml;charset=utf-8'});
 		var url = URL.createObjectURL(svg);
@@ -105,10 +105,12 @@ O2.createClass('O876.Rasterize', {
 		    ctx.drawImage(img, 0, 0);
 		    URL.revokeObjectURL(url);
 		    if (pDone) {
-				this.trigger('render', {
-					canvas: oCanvas
-				});
-				pDone();
+		    	var o = {
+					canvas: oCanvas,
+					metrics: oMetrics
+				};
+				this.trigger('render', o);
+				pDone(o);
 			}
 		}).bind(this));
 		img.setAttribute('src', url);

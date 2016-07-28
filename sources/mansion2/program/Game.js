@@ -40,6 +40,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
+		this.on('click', this.gameEventClick.bind(this));
 		
 		// initialisable
 		this.on('itag.light', this.tagEventLight.bind(this));
@@ -227,7 +228,35 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (!O876_Raycaster.PointerLock.locked()) {
 			return;
 		}
+		if (!O876_Raycaster.PointerLock.bEnabled) {
+			return;
+		}
 		this.toggleApplication('Camera');
+	},
+
+	/**
+	 * Evenement de click avec coordinnée par rapport au canvas
+	 */
+	gameEventClick: function(data) {
+		var x = data.x;
+		var y = data.y;
+		var p = this.oPhone;
+		var pc = this.oPhone.getCurrentPhone();
+		if (p.isActive('Notepad') && pc.isVisible()) {
+			var pi = pc.oPhone.oImage;
+			var xpc = pc.xPhone;
+			var ypc = pc.yPhone;
+			if (x < xpc || y < ypc || x >= (xpc + pi.width) || y >= (ypc + pi.height)) {
+				console.log('close');
+				this.toggleApplication('Notepad', true);
+			} else {
+				var ax = xpc + pc.SCREEN_X;
+				var ay = ypc + pc.SCREEN_Y;
+				var oNotepad = p.getCurrentApplication();
+				var id = oNotepad.peek(x - ax, y - ay);
+				console.log(id);
+			}
+		}
 	},
 
 	/**
@@ -284,8 +313,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F1:
 				//var pos = this.getPlayer().getFrontCellXY();
 				//this.spawnGhost('g_pat', pos.x, pos.y);
-
-				this.toggleApplication('Notepad');				
+				this.toggleApplication('Notepad', true);				
 			break;
 			
 			case KEYS.F2: 
@@ -620,11 +648,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * puts the camera obscura on and off
 	 */
-	toggleApplication: function(sApplication) {
+	toggleApplication: function(sApplication, bExitPointerLock) {
 		if (this.oPhone.isActive(sApplication)) {
 			this.oPhone.close();
+			if (bExitPointerLock) {
+				O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
+			}
 		} else {
 			this.oPhone.activate(sApplication);
+			if (bExitPointerLock) {
+				O876_Raycaster.PointerLock.disable();
+			}
 		}
 	},
 

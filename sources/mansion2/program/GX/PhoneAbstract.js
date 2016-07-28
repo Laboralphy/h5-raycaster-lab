@@ -30,6 +30,9 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	SCREEN_X: 0, // application screen position relative to the start of the image skin
 	SCREEN_Y: 0,
 
+	xPhone: -1,
+	yPhone: -1,
+
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
@@ -236,8 +239,8 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		var pw = p.width;
 		var ph = p.height;
 		
-		var xPhone = (rw -pw) >> 1;
-		var yPhone = ((rh - ph) >> 1) + ((1 - this.nRaise) * rh);
+		var xPhone = this.xPhone = (rw -pw) >> 1;
+		var yPhone = this.yPhone = ((rh - ph) >> 1) + ((1 - this.nRaise) * rh);
 		
 		var oScreen = this.oScreen;
 		var cw = oScreen.width;

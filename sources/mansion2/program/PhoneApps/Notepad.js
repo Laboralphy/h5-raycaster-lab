@@ -6,6 +6,7 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 	oStatusBar: null,
 	
 	oNoteCvs: null,
+	oMetrics: null,
 	aNotes: null,
 	nIndexNote: -1,
 
@@ -34,9 +35,32 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 		var oCvs = O876.CanvasFactory.getCanvas();
 		oCvs.width = nWidth;		
 		oCvs.height = nMaxHeight;
-		this.oRasterize.render('data/pages/' + sURL + '.xml', oCvs, (function() {
-			this.oNoteCvs = oCvs;
+		this.oRasterize.render('data/pages/' + sURL + '.xml', oCvs, (function(data) {
+			this.oNoteCvs = data.canvas;
+			this.oMetrics = data.metrics;
+			var n = this.oStatusBar.getHeight();
+			for (var i in this.oMetrics) {
+				this.oMetrics[i].top += n;
+			}
 		}).bind(this));
+	},
+
+	getMetrics: function() {
+		return this.oMetrics;
+	},
+
+	peek: function(x, y) {
+		if (this.oMetrics) {
+			var mi, m = this.oMetrics;
+			for (var i in m) {
+				mi = m[i];
+				if (x >= mi.left && x < (mi.left + mi.width)
+					&& y >= mi.top && y < (mi.top + mi.height)) {
+					return i;
+				}
+			}
+		}
+		return null;
 	},
 	
 	render: function(oPhone) {
