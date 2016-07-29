@@ -3,7 +3,7 @@ O2.createObject('MAIN', {
 	posCanvas: null,
 	sizeCanvas: null,
 
-	main: function() {
+	run: function() {
 		MAIN.screenResize();
 		window.addEventListener('resize', MAIN.screenResize);
 		window.G = new MANSION.Game();
@@ -98,4 +98,4 @@ O2.createObject('MAIN', {
 });
 
 
-window.addEventListener('load', MAIN.main);
+window.addEventListener('load', MAIN.run);

@@ -32,8 +32,11 @@ O2.createClass('MANSION.Phone', {
 	 * Violently kill currently running application
 	 */
 	clearApplication: function() {
-		this.getCurrentPhone().setApplication(null);
-		this.sCurrentPhone = '';
+		var p = this.getCurrentPhone();
+		if (p) {
+			this.getCurrentPhone().setApplication(null);
+			this.sCurrentPhone = '';
+		}
 	},
 
 	/**
@@ -41,18 +44,20 @@ O2.createClass('MANSION.Phone', {
 	 * returns true if there was an application to close
 	 */
 	close: function(sNext) {
-		var oApp = this.getCurrentApplication();
-		if (oApp) {
-			this.trigger('phone.shutdown.' + oApp.name);
-			this.hide((function() {
-				this.clearApplication();
-				if (sNext) {
-					this.activate(sNext);
-				}
-			}).bind(this));
-			return true;
-		} else {
-			return false;
+		if (this.getCurrentPhone() && this.getCurrentPhone().isVisible()) {
+			var oApp = this.getCurrentApplication();
+			if (oApp) {
+				this.trigger('phone.shutdown.' + oApp.name);
+				this.hide((function() {
+					this.clearApplication();
+					if (sNext) {
+						this.activate(sNext);
+					}
+				}).bind(this));
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 

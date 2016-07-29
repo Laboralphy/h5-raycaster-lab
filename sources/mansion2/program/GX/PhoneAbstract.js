@@ -84,6 +84,10 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		return this.nRaise === 1;
 	},	
 	
+	isHidden: function() {
+		return this.nRaise === 0;
+	},	
+	
 	/**
 	 * Hides the camera
 	 * No effect if the phone is already hidden

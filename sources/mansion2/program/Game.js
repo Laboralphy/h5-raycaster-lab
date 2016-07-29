@@ -231,7 +231,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (!O876_Raycaster.PointerLock.bEnabled) {
 			return;
 		}
-		this.toggleApplication('Camera');
+		this.toggleCamera();
 	},
 
 	/**
@@ -242,19 +242,20 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var y = data.y;
 		var p = this.oPhone;
 		var pc = this.oPhone.getCurrentPhone();
+		
+		// notepad click manager
 		if (p.isActive('Notepad') && pc.isVisible()) {
 			var pi = pc.oPhone.oImage;
 			var xpc = pc.xPhone;
 			var ypc = pc.yPhone;
 			if (x < xpc || y < ypc || x >= (xpc + pi.width) || y >= (ypc + pi.height)) {
-				console.log('close');
-				this.toggleApplication('Notepad', true);
+				this.closeApplication(true);
 			} else {
 				var ax = xpc + pc.SCREEN_X;
 				var ay = ypc + pc.SCREEN_Y;
 				var oNotepad = p.getCurrentApplication();
 				var id = oNotepad.peek(x - ax, y - ay);
-				console.log(id);
+				oNotepad.execCommand(id, this);
 			}
 		}
 	},
@@ -313,7 +314,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F1:
 				//var pos = this.getPlayer().getFrontCellXY();
 				//this.spawnGhost('g_pat', pos.x, pos.y);
-				this.toggleApplication('Notepad', true);				
+				if (this.oPhone.getCurrentApplication()) {
+					this.oPhone.close();
+					O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
+				} else {
+					this.oPhone.activate('Notepad');
+					O876_Raycaster.PointerLock.disable();
+					this.oPhone.getCurrentApplication().loadNote('home');
+				}
 			break;
 			
 			case KEYS.F2: 
@@ -642,23 +650,28 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 
 
-
+	/**
+	 * Close the current application
+	 */
+	closeApplication: function(bRestorePointerLock) {
+		this.oPhone.close();
+		if (bRestorePointerLock) {
+			O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
+		}
+	},
 
 	
 	/**
 	 * puts the camera obscura on and off
+	 * useful for application that open and close using the same button
+	 * like the camera
 	 */
-	toggleApplication: function(sApplication, bExitPointerLock) {
-		if (this.oPhone.isActive(sApplication)) {
-			this.oPhone.close();
-			if (bExitPointerLock) {
-				O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
-			}
+	toggleCamera: function() {
+		if (this.oPhone.isActive('Camera')) {
+			this.closeApplication();
 		} else {
-			this.oPhone.activate(sApplication);
-			if (bExitPointerLock) {
-				O876_Raycaster.PointerLock.disable();
-			}
+			this.oPhone.activate('Camera');
+			O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
 		}
 	},
 
@@ -741,7 +754,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			}, this);
 		}
 	},
-	
 	
 	
 	////// UTILITIES //////

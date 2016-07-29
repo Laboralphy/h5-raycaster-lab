@@ -58,7 +58,6 @@ O2.createClass('O876.Rasterize', {
 			};
 		}
 		oElement.remove();
-		console.log(oResult);
 		return oResult;
 	},
 	
@@ -104,12 +103,12 @@ O2.createClass('O876.Rasterize', {
 		img.addEventListener('load', (function() {
 		    ctx.drawImage(img, 0, 0);
 		    URL.revokeObjectURL(url);
+	    	var o = {
+				canvas: oCanvas,
+				metrics: oMetrics
+			};
+			this.trigger('render', o);
 		    if (pDone) {
-		    	var o = {
-					canvas: oCanvas,
-					metrics: oMetrics
-				};
-				this.trigger('render', o);
 				pDone(o);
 			}
 		}).bind(this));
@@ -199,9 +198,12 @@ O2.createClass('O876.Rasterize', {
 	renderXML: function(data, oCanvas, pDone) {
 		var sXML = this._renderSVGString(data, oCanvas.width, oCanvas.height);
 		var oDoc = this._parseXMLString(sXML);
+		this.trigger('load', {
+			element: oDoc.documentElement
+		});
 		this._processXML(oDoc.documentElement, (function() {
 			this.trigger('parse', {
-				element: oDoc
+				element: oDoc.documentElement
 			});
 			this._renderToCanvas(oDoc, oCanvas, pDone);
 		}).bind(this));

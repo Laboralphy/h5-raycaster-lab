@@ -16,13 +16,17 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	},
 
 	enable: function(oElement) {
-		O876_Raycaster.PointerLock.bEnabled = true;
-		O876_Raycaster.PointerLock.requestPointerLock(oElement);
+		if (!O876_Raycaster.PointerLock.bEnabled) {
+			O876_Raycaster.PointerLock.bEnabled = true;
+			O876_Raycaster.PointerLock.requestPointerLock(oElement);
+		}
 	},
 
 	disable: function() {
-		O876_Raycaster.PointerLock.bEnabled = false;
-		O876_Raycaster.PointerLock.exitPointerLock();
+		if (O876_Raycaster.PointerLock.bEnabled) {
+			O876_Raycaster.PointerLock.bEnabled = false;
+			O876_Raycaster.PointerLock.exitPointerLock();
+		}
 	},
 	
 	init: function() {
