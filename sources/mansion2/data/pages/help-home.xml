@@ -1,0 +1,11 @@
+<root>
+<style src="styles/base.css"></style>
+<style src="styles/help.css"></style>
+<div class="header title"><div class="return" id="home"></div><span>Help</span></div>
+<h2>Topics :</h2>
+<ul>
+	<li id="help-controls" class="link">Keyboard controls</li>
+	<li id="help-camera" class="link">Camera controls</li>
+	<li id="help-interact" class="link">Interaction with environment</li>
+</ul>
+</root>

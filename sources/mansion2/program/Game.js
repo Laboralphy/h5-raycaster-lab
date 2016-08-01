@@ -216,6 +216,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		if (this.oPhone.isActive('Camera')) {
 			this.cameraShoot();
+		} else {
+			this.activateWall(this.getPlayer());
 		}
 	},
 
@@ -243,8 +245,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var p = this.oPhone;
 		var pc = this.oPhone.getCurrentPhone();
 		
-		// notepad click manager
-		if (p.isActive('Notepad') && pc.isVisible()) {
+		// desktop click manager
+		if (p.isActive('Desktop') && pc.isVisible()) {
 			var pi = pc.oPhone.oImage;
 			var xpc = pc.xPhone;
 			var ypc = pc.yPhone;
@@ -253,9 +255,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			} else {
 				var ax = xpc + pc.SCREEN_X;
 				var ay = ypc + pc.SCREEN_Y;
-				var oNotepad = p.getCurrentApplication();
-				var id = oNotepad.peek(x - ax, y - ay);
-				oNotepad.execCommand(id, this);
+				var oDesktop = p.getCurrentApplication();
+				var id = oDesktop.peek(x - ax, y - ay);
+				oDesktop.execCommand(id, this);
 			}
 		}
 	},
@@ -266,7 +268,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventActivate: function() {
-		this.activateWall(this.getPlayer());
+		if (this.oPhone.getCurrentApplication()) {
+			this.oPhone.close();
+			O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
+		} else {
+			this.oPhone.activate('Desktop');
+			O876_Raycaster.PointerLock.disable();
+			this.oPhone.getCurrentApplication().loadNote('home');
+		}
 	},
 
 	/**
@@ -312,16 +321,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				
 			break;
 			case KEYS.F1:
-				//var pos = this.getPlayer().getFrontCellXY();
-				//this.spawnGhost('g_pat', pos.x, pos.y);
-				if (this.oPhone.getCurrentApplication()) {
-					this.oPhone.close();
-					O876_Raycaster.PointerLock.enable(this.oRaycaster.oCanvas);
-				} else {
-					this.oPhone.activate('Notepad');
-					O876_Raycaster.PointerLock.disable();
-					this.oPhone.getCurrentApplication().loadNote('home');
-				}
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_pat', pos.x, pos.y);
 			break;
 			
 			case KEYS.F2: 

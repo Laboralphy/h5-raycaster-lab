@@ -14,12 +14,14 @@
 function main() {
 	var oPlan = new O876.Rasterize();
 	console.time('rasterize');
+	var d;
 	oPlan.on('parse', function(data) {
-		//console.log(data.element.documentElement);
-		//document.body.appendChild(data.element.documentElement);
+		console.log(data);
+		d = data.element;
 	});
 	oPlan.render(location.search.substr(1) + '.xml', document.getElementById('rasterized-canvas'), function() {
 		console.timeEnd('rasterize');
+		document.body.appendChild(d);
 	});
 }
 

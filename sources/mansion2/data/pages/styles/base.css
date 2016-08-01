@@ -9,6 +9,20 @@ div.title {
 	font-weight: bold;
 }
 
+div.return {
+	width: 1.1em;
+	height: 1.1em;
+	background-color: rgba(255, 255, 255, 0.4);
+	float: left;
+	padding: 1px;
+	margin-right: 0.4em;
+	text-align: center;
+}
+
+div.return:before {
+	content: "<";
+}
+
 p {
 	margin-left: 0.5em;
 	margin-right: 0.5em;

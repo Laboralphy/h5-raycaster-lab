@@ -58,6 +58,7 @@ O2.createClass('O876.Rasterize', {
 			};
 		}
 		oElement.remove();
+		console.log(oResult);
 		return oResult;
 	},
 	

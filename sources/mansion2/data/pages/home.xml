@@ -2,25 +2,25 @@
 <style src="styles/base.css"></style>
 <style src="styles/desktop.css"></style>
 <div class="desktop">
-	<a href="menu-help"><figure class="icon" id="menu-help">
+	<figure class="icon" id="help-home">
 		<img src="images/icons/32/help-browser.png"/>
 		<figcaption>Help</figcaption>
-	</figure></a>
-	<a href="menu-notes"><figure class="icon" id="menu-notes">
+	</figure>
+	<figure class="icon" id="menu-notes">
 		<img src="images/icons/32/accessories-text-editor.png"/>
 		<figcaption>Journal</figcaption>
-	</figure></a>
-	<a href="menu-gallery"><figure class="icon" id="menu-gallery">
+	</figure>
+	<figure class="icon" id="menu-gallery">
 		<img src="images/icons/32/emblem-photos.png"/>
 		<figcaption>Gallery</figcaption>
-	</figure></a>
-	<a href="menu-camera"><figure class="icon" id="menu-camera">
+	</figure>
+	<figure class="icon" id="menu-camera">
 		<img src="images/icons/32/camera-photo.png"/>
 		<figcaption>Camera</figcaption>
-	</figure></a>
-	<a href="menu-messages"><figure class="icon" id="menu-messages">
+	</figure>
+	<figure class="icon" id="menu-messages">
 		<img src="images/icons/32/user-available.png"/>
 		<figcaption>Messages</figcaption>
-	</figure></a>
+	</figure>
 </div>
 </root>

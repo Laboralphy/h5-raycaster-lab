@@ -1,7 +1,7 @@
-O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
+O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 
 	sOrientation: 'port',
-	name: 'Notepad',
+	name: 'Desktop',
 	
 	oStatusBar: null,
 	
@@ -23,8 +23,8 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 		this.oStatusBar = new MANSION.PhoneApp.StatusBar();
 		this.aNotes = [];
 		this.oRasterize = new O876.Rasterize();
-		this.oRasterize.on('render', this.notepadRendered.bind(this));
-		this.oRasterize.on('load', this.notepadLoaded.bind(this));
+		this.oRasterize.on('render', this.desktopRendered.bind(this));
+		this.oRasterize.on('load', this.desktopLoaded.bind(this));
 	},
 	
 	update: function(oLogic) {
@@ -36,20 +36,20 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 	 * We must adapt the metrics (status bar height)
 	 * And we must keep track of the rendered canvas obviously
 	 */
-	notepadRendered: function(data) {
+	desktopRendered: function(data) {
 		this.oNoteCvs = data.canvas;
 		this.oMetrics = data.metrics;
 		var n = this.oStatusBar.getHeight();
 		for (var i in this.oMetrics) {
 			this.oMetrics[i].top += n;
 		}
-		console.log('notepad rendered');
+		console.log('Desktop rendered');
 	},
 	
 	/** 
 	 * When the notes content must be adapted before rendering....
 	 */
-	notepadLoaded: function(data) {
+	desktopLoaded: function(data) {
 		var oElement = data.element;
 	},
 	
@@ -129,8 +129,9 @@ O2.extendClass('MANSION.PhoneApp.Notepad', MANSION.PhoneApp.Abstract, {
 				oGame.toggleCamera();
 			break;
 			
-			case 'menu-help':
-				
+			default:
+				console.log('command:', sCommand);
+				this.loadNote(sCommand);
 			break;
 		}
 	}

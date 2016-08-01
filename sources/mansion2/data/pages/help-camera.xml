@@ -1,0 +1,17 @@
+<root>
+<style src="styles/base.css"></style>
+<style src="styles/help.css"></style>
+<div class="header title"><div class="return" id="help-home"></div><span>Help - Camera</span></div>
+<h2>Camera :</h2>
+<table class="control-camera">
+	<tbody>
+		<tr>
+			<th>Left-click</th><th>Right-click</th>
+		</tr><tr>
+			<td>Take a photo</td>
+			<td>Switch between normal and camera mode</td>
+		</tr>
+	</tbody>
+</table>
+<div class="remark">Taking photos of supernatural entities will affect them in various ways.</div>
+</root>
