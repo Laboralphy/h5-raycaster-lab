@@ -1073,6 +1073,7 @@ O2.createClass('RCWE.Application', {
 	cmd_advancedpad_shiftmap: function(sDir, n) {
 		try {
 			var dx, dy;
+			console.log(sDir, n);
 			switch (sDir) {
 				case 'up': 
 					dx = 0;

@@ -140,7 +140,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		$('td.right', $table) .append('<button type="button" data-dir="right" data-n="1"><span class="icon-arrow-right2"></span></button><button type="button" data-dir="right" data-n="10"><span class="icon-arrow-right"></span></button>');
 
 		$('button', $table).on('click', (function(oEvent) {
-			var $b = $(oEvent.target);
+			var $b = $(oEvent.target).parent('button');
 			var sDir = $b.data('dir');
 			var n = $b.data('n') | 0;
 			this.doAction('shiftmap', sDir, n);

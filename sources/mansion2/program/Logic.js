@@ -337,5 +337,4 @@ O2.createClass('MANSION.Logic', {
 	getClockTime: function() {
 		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
 	}
-	
 });
