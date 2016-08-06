@@ -113,7 +113,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
 	gameEventBuild: function(data) {
-		this._sLevelIndex = 'm2-l0';
 		data = WORLD_DATA[this._sLevelIndex];
 		var s = '';
 		for (s in TILES_DATA) {
@@ -162,17 +161,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oGXFade.fAlpha = 1.5;
 		oGXFade.oColor = { r: 0, g: 0, b: 0, a: 1 };
 		oGXFade.fAlphaFade = -0.05;
-		var oPlayer = this.getPlayer();
-		oPlayer.fSpeed = 3;
-		oPlayer.getThinker().on('button0.down', (function() { 
-			this.trigger('command0');
-		}).bind(this));
-		oPlayer.getThinker().on('button2.down', (function() { 
-			this.trigger('command2');
-		}).bind(this));
-		oPlayer.getThinker().on('use.down', (function() { 
-			this.trigger('activate');
-		}).bind(this));
+		this.configPlayerThinker();
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
 		this.bindPhoneEvents(this.oPhone);
@@ -631,6 +620,38 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	bindPhoneEvents: function(p) {
 		p.on('phone.startup.Camera', this.phoneAppCameraOn.bind(this));
 		p.on('phone.shutdown.Camera', this.phoneAppCameraOff.bind(this));
+	},
+	
+	/**
+	 * Will configure the player thinker according to what type of level it is now.
+	 * Will choose a playerThinnker for normal level
+	 * Will choose introThinker for the intro movie sequence
+	 */
+	configPlayerThinker: function() {
+		var oPlayer = this.getPlayer();
+		var ct;
+		switch (this._sLevelIndex) {
+			case 'm050-intro':
+				oPlayer.setThinker(new MANSION.IntroThinker());
+				ct = oPlayer.getThinker();
+			break;
+			
+			default:
+				oPlayer.setThinker(new MANSION.PlayerThinker());
+				oPlayer.fSpeed = 3;
+				ct = oPlayer.getThinker();
+				ct.on('button0.down', (function() { 
+					this.trigger('command0');
+				}).bind(this))
+				.on('button2.down', (function() { 
+					this.trigger('command2');
+				}).bind(this))
+				.on('use.down', (function() { 
+					this.trigger('activate');
+				}).bind(this));
+			break;
+		}
+		ct.oGame = this;
 	},
 
 

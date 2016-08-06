@@ -2,7 +2,7 @@
  * O876 Raycaster project
  * @date 2012-01-01
  * @author Raphaël Marandet 
- * Fait bouger lemobile de manière aléatoire
+ * Fait bouger le mobile de manière aléatoire
  */
 O2.extendClass('O876_Raycaster.WanderThinker', O876_Raycaster.Thinker, {
 	nTime: 0,

@@ -6,7 +6,8 @@ O2.createObject('SOUNDS_DATA', {
 		atrium: 'music/atrium',
 		mansion: 'music/inside',
 		cellar: 'music/manor',
-		ghost: 'music/combat'
+		ghost: 'music/combat',
+		cthulhu: 'music/cthulhu'
 	},
 	events: {
 		// mechanical events
@@ -35,5 +36,13 @@ O2.createObject('SOUNDS_DATA', {
 	},
 	visualeffects: {
 		bluefire: 'e-fire'
+	},
+	intro: {
+		stress1: 'intro/stress-1',
+		stress2: 'intro/stress-2',
+		stress3: 'intro/stress-3',
+		stress4: 'intro/stress-4',
+		stress5: 'intro/stress-5',
+		stressfinal: 'intro/stress-final'
 	}
 });

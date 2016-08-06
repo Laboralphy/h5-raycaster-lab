@@ -60,7 +60,7 @@ O2.createClass('O876_Raycaster.GXManager', {
 	 */
 	render : function() {
 		var nLen = this.aEffects.length;
-		for ( var i = nLen - 1; i >= 0; i--) {
+		for (var i = nLen - 1; i >= 0; i--) {
 			this.aEffects[i].render();
 		}
 	}

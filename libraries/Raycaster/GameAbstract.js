@@ -1,6 +1,7 @@
 /* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
+	_sNextLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
@@ -39,8 +40,15 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 */
 	onRequestLevelData: function() {
 		if ('WORLD_DATA' in window) {
-			var aWorldDataKeys = Object.keys(WORLD_DATA);
-			this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
+			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
+				return a > b;
+			});
+			if (this._sNextLevelIndex) {
+				this._sLevelIndex = this._sNextLevelIndex;
+				this._sNextLevelIndex = '';
+			} else {
+				this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
+			}
 			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
 			return WORLD_DATA[this._sLevelIndex];
 		} else {

@@ -278,7 +278,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * Retreive a tile
 	 */
 	getTile: function(sTile) {
-		return this.oHorde.oTiles[sTile];
+		var t = this.oHorde.oTiles;
+		if (sTile in t) {
+			return t[sTile];
+		} else {
+			throw new Error('this tile is not defined : "' + sTile + '"');
+		}
 	},
 	
 	/**
