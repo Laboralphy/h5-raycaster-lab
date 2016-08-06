@@ -14,7 +14,6 @@ O2.createClass('O876.Easing', {
 	nTime: 0,
 	iTime: 0,
 	fWeight: 1,
-	sFunction: 'smoothstep',
 	pFunction: null,
 	
 	from: function(x) {

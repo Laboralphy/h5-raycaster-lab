@@ -1,7 +1,10 @@
 O2.createObject('SOUNDS_DATA', {
+	ambiance: {
+		thunder: 'ambiance/thunder'
+	},
 	bgm: {
-		'm2-l0': 'music/forest',
-		'tc-l1': 'music/forest',
+		'm090-htp': 'music/forest',
+		'm100-ch1': 'music/forest',
 		woods: 'music/forest',
 		atrium: 'music/atrium',
 		mansion: 'music/inside',
@@ -44,5 +47,7 @@ O2.createObject('SOUNDS_DATA', {
 		stress4: 'intro/stress-4',
 		stress5: 'intro/stress-5',
 		stressfinal: 'intro/stress-final'
-	}
+	},
+	
+	
 });

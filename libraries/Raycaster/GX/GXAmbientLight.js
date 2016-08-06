@@ -17,23 +17,14 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 	},
 	
 	setLight: function(x, t) {
-		x = x | 0;
-		if (x) {
+		if (x > 0 && t > 0) {
 			var rc = this.oRaycaster;
-			if (t) {
-				this._bOver = false;
-				this._oEasing
-					.from(rc.nShadingFactor)
-					.to(x)
-					.during(t * rc.TIME_FACTOR / 1000 | 0)
-					.use('smoothstep');
-			} else {
-				var rc = this.oRaycaster;
-				rc.nShadingFactor = x;
-				if (rc.oUpper) {
-					rc.oUpper.nShadingFactor = x;
-				}
-			}
+			this._bOver = false;
+			this._oEasing
+				.from(rc.nShadingFactor)
+				.to(x)
+				.during(t * rc.TIME_FACTOR / 1000 | 0)
+				.use('smoothstep');
 		}
 		return this;
 	},
@@ -48,7 +39,15 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 	},
 
 	render: function() {
-		this.setLigth(e.x, 0);
+		x = this._oEasing.x;
+		if (x > 0) {
+			var rc = this.oRaycaster;
+			this._bOver = false;
+			rc.nShadingFactor = x | 0;
+			if (rc.oUpper) {
+				rc.oUpper.nShadingFactor = x | 0;
+			}
+		}
 	},
 
 	terminate: function() {

@@ -43,11 +43,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
 				return a > b;
 			});
-			if (this._sNextLevelIndex) {
-				this._sLevelIndex = this._sNextLevelIndex;
-				this._sNextLevelIndex = '';
-			} else {
-				this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
+			var wd;
+			if (!this._sLevelIndex) {
+				this._sLevelIndex = aWorldDataKeys[0];
 			}
 			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
 			return WORLD_DATA[this._sLevelIndex];
