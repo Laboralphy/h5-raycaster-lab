@@ -157,10 +157,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventEnterLevel: function() {
 		var rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
-		var oGXFade = rc.addGXEffect(O876_Raycaster.GXFade);
-		oGXFade.fAlpha = 1.5;
-		oGXFade.oColor = { r: 0, g: 0, b: 0, a: 1 };
-		oGXFade.fAlphaFade = -0.05;
+		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();
 		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
@@ -306,9 +303,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
-			case KEYS.ALPHANUM.E:
-				
+			case KEYS.ESCAPE:
 			break;
+
+			case KEYS.ALPHANUM.E:
+			break;
+
 			case KEYS.F1:
 				var pos = this.getPlayer().getFrontCellXY();
 				this.spawnGhost('g_pat', pos.x, pos.y);
@@ -561,9 +561,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oLoc = this.getLocator(sDest);
 		var p = this.getPlayer();
 		var rc = this.oRaycaster;
-		var oFade = rc.addGXEffect(O876_Raycaster.GXFade);
-		oFade.setColor(0, 0, 0, 1);
-		oFade.fadeOut(700);
+		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.7);
 		p.setXY(oLoc.x * 64 + 32, oLoc.y * 64 + 32);
 	},
 	

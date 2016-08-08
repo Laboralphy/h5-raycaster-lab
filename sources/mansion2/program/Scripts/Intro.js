@@ -36,6 +36,7 @@ O2.createClass('MANSION.Script.Intro', {
 		oText.text(aText, rcc.width >> 1, rcc.height >> 1);
 	},
 	
+	
 	thunder: function(tag) {
 		var rc = tag.game.oRaycaster;
 		var sf = rc.nShadingFactor;
@@ -125,15 +126,22 @@ O2.createClass('MANSION.Script.Intro', {
 			break;
 
 			case 'end':
+				var g = tag.game;
+				var rc = g.oRaycaster;
 				this._openDoor(tag, tag.x + 1, tag.y);
 				this._cameraAdvance(tag, 3, 1);
-				tag.game.playSound(SOUNDS_DATA.intro.stressfinal);
-				tag.game.oRaycaster.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(10, 1000);
+				g.playSound(SOUNDS_DATA.intro.stressfinal);
+				rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(10, 1000);
+				
 				setTimeout(function() {
-					tag.game.setLevel('m090-htp');
-				}, 2500);
+					rc.addGXEffect(O876_Raycaster.GXFade).fadeOut('#000', 1000).neverEnding();
+				}, 1500);
+				
+				setTimeout((function() {
+					g.setLevel('m090-htp');
+				}).bind(this), 2500);
 			break;
 		}
 		tag.remove = true;
-	}
+	},
 });

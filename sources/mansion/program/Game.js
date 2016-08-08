@@ -83,11 +83,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	gameEventLevel: function() {
 		this.getPlayer().fSpeed = 3;
 		this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
-		var oGXFade = new O876_Raycaster.GXFade(this.oRaycaster);
-		oGXFade.fAlpha = 1;
-		oGXFade.oColor = { r: 0, g: 0, b: 0, a: 0 };
-		oGXFade.fAlphaFade = -0.05;
-		this.oRaycaster.oEffects.addEffect(oGXFade);
+		this.oRaycaster.oEffects.addEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.6);
 	},
 	
 

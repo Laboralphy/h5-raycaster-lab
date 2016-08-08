@@ -13,51 +13,50 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	sClass : 'FadeOut',
 	oCanvas : null,
 	oContext : null,
-	nTime : 0,
-	fAlpha : 0,
-	fAlphaFade : 0,
 	oColor : null,
 	oRainbow: null,
+	oEasing: null,
+	bOver: false,
+	bNeverEnding: false,
 
 	__construct : function(oRaycaster) {
 		__inherited(oRaycaster);
-		this.oRainbow = oRaycaster.oRainbow;
+		this.oRainbow = new O876.Rainbow();
 		this.oCanvas = this.oRaycaster.oCanvas;
 		this.oContext = this.oCanvas.getContext('2d');
+		this.oEasing = new O876.Easing();
 	},
 	
-	setColor: function(r, g, b, a) {
-		this.oColor = {
-			r: r,
-			g: g,
-			b: b,
-			a: a
-		};
+	fade: function(sColor, fTime, fFrom, fTo) {
+		this.oColor = this.oRainbow.parse(sColor);
+		this.oEasing.from(fFrom).to(fTo).during(fTime / this.oRaycaster.TIME_FACTOR).use('smoothstep');
+		this.bOver = fFrom != fTo;
+		return this;
 	},
 	
-	fadeIn: function(fSpeed) {
-		this.fAlpha = 0;
-		this.fAlphaFade = this.oRaycaster.TIME_FACTOR / fSpeed;
+	neverEnding: function() {
+		this.bNeverEnding = true;
+	},
+
+	fadeIn: function(sColor, fTime) {
+		return this.fade(sColor, fTime, 1, 0);
 	},
 	
-	fadeOut: function(fSpeed) {
-		this.fAlpha = 1;
-		this.fAlphaFade = -this.oRaycaster.TIME_FACTOR / fSpeed;
+	fadeOut: function(sColor, fTime) {
+		return this.fade(sColor, fTime, 0, 1);
 	},
 	
 	isOver : function() {
-		return this.fAlphaFade > 0 ? this.fAlpha >= 1 : this.fAlpha <= 0;
+		if (!this.bNeverEnding) {
+			return this.bOver;
+		} else {
+			return false;
+		}
 	},
 
 	process : function() {
-		this.oColor.a = this.fAlpha;
-		if (this.oColor.a < 0) {
-			this.oColor.a = 0;
-		}
-		if (this.oColor.a > 1) {
-			this.oColor.a = 1;
-		}
-		this.fAlpha += this.fAlphaFade;
+		this.bOver = this.oEasing.f();
+		this.oColor.a = this.oEasing.x;
 	},
 
 	render : function() {
@@ -66,6 +65,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	terminate : function() {
-		this.fAlpha = this.fAlphaFade > 0 ? 1 : 0;
+		this.bNeverEnding = false;
+		this.bOver = true;
 	}
 });

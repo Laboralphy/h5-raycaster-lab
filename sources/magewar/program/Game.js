@@ -1192,6 +1192,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	// //// GRAPHIC EFFECTS ////// GRAPHIC EFFECTS ////// GRAPHIC EFFECTS //////
 
 	gxFade : function(sStyle, fAlpha, fSpeed) {
+		return;
 		var rc = this.oRaycaster;
 		var gx = new O876_Raycaster.GXFade(rc);
 		gx.oColor = this.oRainbow.parse(sStyle);
