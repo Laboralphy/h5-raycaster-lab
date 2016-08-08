@@ -29,7 +29,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	
 	fade: function(sColor, fTime, fFrom, fTo) {
 		this.oColor = this.oRainbow.parse(sColor);
-		this.oEasing.from(fFrom).to(fTo).during(fTime / this.oRaycaster.TIME_FACTOR).use('smoothstep');
+		this.oEasing.from(fFrom).to(fTo).during(fTime / this.oRaycaster.TIME_FACTOR | 0).use('smoothstep');
 		this.bOver = fFrom != fTo;
 		return this;
 	},

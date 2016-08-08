@@ -1,5 +1,6 @@
-O2.createObject('STRINGS_DATA', {
+O2.createObject('STRINGS_DATA_EN', {
 	
+	// Message display during load level
 	RC: {
 		l_lvl: 'loading : level geometry',
 		l_gfx: 'loading : graphic resources',
@@ -8,6 +9,7 @@ O2.createObject('STRINGS_DATA', {
 		l_end: 'done',
 	},
 	
+	// Message displayed during combat mode
 	SHOTS: {
 		core: 'Core shot',
 		close: 'Close shot',
@@ -19,19 +21,25 @@ O2.createObject('STRINGS_DATA', {
 		score: 'Score +'
 	},
 
-	'tc-l1': {
-	},
-
+	// something happened
 	EVENTS: {
 		item: "You acquired : $item",
 		locked: "This door is locked. You need : $item",
 		unlock: "You unlocked the door with : $item",
 	},
 
+	// The names of all items
 	ITEMS: {
 		'key-cabin-s': 'Cabin key'
-	}
+	},
 
-
+	INTRO: {
+		txforest: 'A cursed forest...',
+		txcult: 'An evil cult...',
+		txworsh: '...worshippers of Dark Gods...',
+		txmans: '...their dreadful mansion,\nhaunted by vengeful spirits.',
+		txheap: 'Heaps of powerful and dangerous\ntomes of black magic.',
+		txgetem: 'Recover them before it\'s too late !'
+	},
 
 });

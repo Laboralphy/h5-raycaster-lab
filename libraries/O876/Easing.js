@@ -77,7 +77,7 @@ O2.createClass('O876.Easing', {
 		}
 		var p = this.pFunction;
 		if (typeof p != 'function') {
-			throw new Error('easing function is invalid');
+			throw new Error('easing function is invalid : ' + p);
 		}
 		var v = p(t / this.nTime);
 		this.x = this.xEnd * v + (this.xStart * (1 - v));

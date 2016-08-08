@@ -178,9 +178,8 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	onTagTriggered: function(x, y, sTag) {
 		if (sTag) {
 			var rc = this.oRaycaster;
-			var oMsg = new O876_Raycaster.GXMessage(rc);
+			var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 			oMsg.setMessage(sTag);
-			rc.oEffects.addEffect(oMsg);
 		}
 	},
 	
@@ -277,9 +276,8 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				sMessage = sMessage.replace(r, oVariables[v]);
 			}
 		}
-		var oMsg = new O876_Raycaster.GXMessage(rc);
+		var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 		oMsg.setMessage(sMessage);
-		rc.oEffects.addEffect(oMsg);
 		this._sLastPopupMessage == sMessage;
 		return oMsg;
 	},

@@ -117,6 +117,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	bExterior : false,
 	nMeteo : 0,
 	fCameraBGOfs : 0,
+	fBGOfs: 0,
 	fDist : 1,
 	bSideWall : false,
 	nWallPanel : 1,
@@ -1257,7 +1258,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.aScanSectors = Marker.create();
 		this.aWallSectors = {};
 		if (this.oBackground) { // Calculer l'offset camera en cas de background
-			this.fCameraBGOfs = (PI + this.oCamera.fTheta)	* this.oBackground.width / PI;
+			this.fCameraBGOfs = (PI + this.oCamera.fTheta) * this.oBackground.width / PI;
 		}
 		Marker.markXY(this.aScanSectors, xCam8, yCam8);
 		var oContinueRay = this.oContinueRay;
@@ -1345,7 +1346,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			var oBG = this.oBackground;
 			var wBG = oBG.width;
 			var hBG = oBG.height;
-			var xBG = this.fCameraBGOfs % wBG | 0;
+			var xBG = (this.fBGOfs + this.fCameraBGOfs) % wBG | 0;
 			var yBG = this.yScrSize - (hBG >> 1);
 			hBG = hBG + yBG;
 			rctx.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);

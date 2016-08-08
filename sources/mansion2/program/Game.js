@@ -30,6 +30,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** INIT ****** INIT ****** INIT ******/
 
 	init: function() {
+		window.STRINGS_DATA = STRINGS_DATA_EN;
 		this._oLocators = {};
 		this.initLogic();
 		this.initAudio();

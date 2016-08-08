@@ -1236,7 +1236,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 				var oThinker = oMob.getThinker();
 				oThinker.start();
 				oMob.bEthereal = true;
-				var oSounds = oMob.getData('sounds');
+				var oSounds = oMob.getBlueprint().data('sounds');
 				if (oSounds && ('spawn' in oSounds)) {
 					this.playSound(oSounds.spawn, x, y);
 				}

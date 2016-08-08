@@ -35,7 +35,8 @@ O2.extendClass('SkullThinker', O876_Raycaster.Thinker, {
 
   thinkStart: function() {
     //this.oMobile.fTheta = this.aAngles[Math.random(0, this.aAngles.length - 1)];
-    this.oMobile.fSpeed = this.oMobile.getData('speed');
+    this.oMobile.fSpeed = this.oMobile.getBlueprint().data('speed');
+    this.oMobile.data('hitpoints', this.oMobile.getBlueprint().data('hitpoints'));
     this.oMobile.bEthereal = false;
     this.oMobile.oSprite.playAnimationType(1);
     this.think = this.thinkSearch;

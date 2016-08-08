@@ -41,10 +41,10 @@ O2.createClass('MANSION.Script.Intro', {
 		var rc = tag.game.oRaycaster;
 		var sf = rc.nShadingFactor;
 		rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(1000, 80);
-		var oFlash = rc.addGXEffect(O876_Raycaster.GXFlash).setFlash('#FFF', 0.7, 0, 5);
+		var oFlash = rc.addGXEffect(O876_Raycaster.GXFlash).setFlash('#FFF', 0.7, 2000);
 		tag.game.playSound(SOUNDS_DATA.ambiance.thunder);
 		setTimeout(function() {
-			rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(sf, 1000);
+			rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(sf, 800);
 		}, 160);
 	},
 	
@@ -52,14 +52,14 @@ O2.createClass('MANSION.Script.Intro', {
 		// 30 unités jusqu'a destination
 		tag.game.playAmbience(SOUNDS_DATA.bgm.cthulhu);
 		this._cameraAdvance(tag, 15, 20);
-		this._text(tag, ['A cursed forest...']);
+		this._text(tag, STRINGS_DATA.INTRO.txforest.split('\n'));
 	},
 	
 	phase: function(tag) {
 		var aTags = tag.data.split(' ');
-		var nPhase = aTags.pop();
+		var sPhase = aTags.pop();
 		var g = tag.game;
-		switch (nPhase) {
+		switch (sPhase) {
 			case 'doormansion':
 				this._openDoor(tag, tag.x + 1, tag.y);
 				this._cameraAdvance(tag, 12, 20);
@@ -105,24 +105,13 @@ O2.createClass('MANSION.Script.Intro', {
 					'intro_s4_cthulhu'			
 				], 'stress4');
 			break;
-			case 'txcult':
-				this._text(tag, ['An evil cult...']);
-			break;
-			
-			case 'txworsh':
-				this._text(tag, ['...worshippers of Dark Gods...']);
-			break;
 
+			case 'txcult':
+			case 'txworsh':
 			case 'txmans':
-				this._text(tag, ['...their dreadful mansion.']);
-			break;
-			
 			case 'txheap':
-				this._text(tag, ['Heaps of powerful and dangerous', 'tomes of black magic.']);
-			break;
-			
 			case 'txgetem':
-				this._text(tag, ['These manuscripts must be', 'retrieved before it\'s too late !']);
+				this._text(tag, STRINGS_DATA.INTRO[sPhase].split('\n'));
 			break;
 
 			case 'end':

@@ -173,7 +173,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 * 
 	 */
 	openDoor : function(x, y, bStayOpen) {
-		var nPhys = this.oRaycaster.getMapPhys(x, y);
+		var rc = this.oRaycaster;
+		var nPhys = rc.getMapPhys(x, y);
 		var o = null;
 		switch (nPhys) {
 			case 2: // Raycaster::PHYS_FIRST_DOOR
@@ -183,23 +184,21 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			case 6:
 			case 7:
 			case 8: // Raycaster::PHYS_LAST_DOOR
-				if (!Marker.getMarkXY(this.oRaycaster.oDoors, x, y)) {
-					o = new O876_Raycaster.GXDoor(this.oRaycaster);
+				if (!Marker.getMarkXY(rc.oDoors, x, y)) {
+					o = rc.addGXEffect(O876_Raycaster.GXDoor);
 					o.x = x;
 					o.y = y;
 					if (bStayOpen) {
 						o.setAutoClose(0);
 					}
-					this.oRaycaster.oEffects.addEffect(o);
 				}
 				break;
 	
 			case 9: // Raycaster::PHYS_SECRET_BLOCK
 				if (!Marker.getMarkXY(this.oRaycaster.oDoors, x, y)) {
-					o = new O876_Raycaster.GXSecret(this.oRaycaster);
+					o = rc.addGXEffect(O876_Raycaster.GXSecret);
 					o.x = x;
 					o.y = y;
-					this.oRaycaster.oEffects.addEffect(o);
 				}
 				break;
 		}
