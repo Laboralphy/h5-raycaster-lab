@@ -1,4 +1,4 @@
-O2.createObject('STRINGS_DATA_FR', {
+O2.createObject('MANSION.STRINGS_DATA_FR', {
 	
 	// Message display during load level
 	RC: {

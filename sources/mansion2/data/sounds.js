@@ -1,4 +1,4 @@
-O2.createObject('SOUNDS_DATA', {
+O2.createObject('MANSION.SOUNDS_DATA', {
 	ambiance: {
 		thunder: 'ambiance/thunder'
 	},

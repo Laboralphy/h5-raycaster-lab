@@ -51,9 +51,9 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 			var nDamage = lss.damage;
 			if (nDamage > 0) {
 				var aShotStr = ArrayTools.unique(lss.shots).map(function(s) {
-					return STRINGS_DATA.SHOTS[s];
+					return MANSION.STRINGS_DATA.SHOTS[s];
 				});
-				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
+				aShotStr.push(MANSION.STRINGS_DATA.SHOTS.score + nDamage.toString());
 				this.displayScore(aShotStr);
 			}		
 		}

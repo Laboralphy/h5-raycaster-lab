@@ -1,10 +1,10 @@
 /**
- * Warami
+ * Dementia
  * Chasse en zig zag (33%) ou en direct (33%)
  * Lorsqu'elle est assez pret elle va se téléporter au hasard et rusher
  * se téléporte a proximité de la cible en cas de perte de vue
  */
-O2.extendClass('MANSION.GDementiaThinker', MANSION.VengefulThinker, {
+O2.extendClass('MANSION.GZigZagTeleRusherThinker', MANSION.VengefulThinker, {
 
 	bRush: false,
 	

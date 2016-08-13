@@ -932,16 +932,14 @@ O2.createClass('RCWE.Application', {
 			return;
 		}
 		var oThing = this.oThingBrowser.getSelectedThing();
-		if (oThing) {
-			var wCell = this.oMapGrid.wCell;
-			var xTh = x * 3 / wCell | 0;
-			var yTh = y * 3 / wCell | 0;
-			if (this.oThingGrid.hasThing(xTh, yTh)) {
-				this.cmd_thingbrowser_hintbox(true);
-			} else {
-				this.oThingGrid.addThing(xTh, yTh, oThing.getData('id'));
-				this.redrawMap(x / wCell | 0, y / wCell | 0, x / wCell | 0, y / wCell | 0);
-			}
+		var wCell = this.oMapGrid.wCell;
+		var xTh = x * 3 / wCell | 0;
+		var yTh = y * 3 / wCell | 0;
+		if (this.oThingGrid.hasThing(xTh, yTh)) {
+			this.cmd_thingbrowser_hintbox(true);
+		} else if (oThing) {
+			this.oThingGrid.addThing(xTh, yTh, oThing.getData('id'));
+			this.redrawMap(x / wCell | 0, y / wCell | 0, x / wCell | 0, y / wCell | 0);
 		}
 	},
 	

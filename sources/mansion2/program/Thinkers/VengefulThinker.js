@@ -354,6 +354,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	/**
+	 * Shoot an ecto missile against the target
+	 */
+	shoot: function() {
+		if (this.getEntityAngle(this.getTarget()) !== false) {
+			this.walkToTarget(this._fSpeed);
+			this.oGame.spawnMissile('p_ecto', this.oMobile);
+		}
+	},
 
 	/**
 	 * Effectue une manoeuve d'évitement tout en tirant des missiles
@@ -365,11 +374,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 
 	thinkEvadeShoot: function() {
 		if (this.isTimeMultiple(40) && Math.random() < this._fFireProb) {
-			var a = this.getEntityAngle(this.getTarget());
-			if (a !== false) {
-				this.walkToTarget(this._fSpeed);
-				this.oGame.spawnMissile('p_ecto', this.oMobile);
-			}
+			this.shoot();
 		}
 		this.thinkEvade();
 	},

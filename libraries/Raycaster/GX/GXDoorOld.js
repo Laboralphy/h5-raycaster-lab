@@ -6,7 +6,7 @@
  * L'effet se sert de sa référence au raycaster pour déterminer la présence d'obstacle génant la fermeture de la porte
  * C'est la fonction de temporisation qui est exploitée ici, même si l'effet n'est pas visuel.
  */
-O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
+O2.extendClass('O876_Raycaster.GXDoorOld', O876_Raycaster.GXEffect, {
 	sClass : 'Door',
 	nPhase : 0, // Code de phase : les porte ont 4 phases : 0: fermée(init), 1: ouverture, 2: ouverte et en attente de fermeture, 3: en cours de fermeture, 4: fermée->0
 	oRaycaster : null, // Référence au raycaster        
@@ -22,11 +22,8 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 	nLimit : 0, // limite d'incrément de l'offset (reduit par 2 pour les porte double)
 	nCode : 0, // Code physique de la porte
 
-	oEasing: null,
-
 	__construct: function(r) {
 		__inherited(r);
-		this.oEasing = new O876.Easing();
 		this.setAutoClose(true);
 	},
 	
@@ -42,34 +39,30 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.nCode = r.getMapPhys(this.x, this.y);
 				switch (this.nCode) {
 					case r.PHYS_DOOR_SLIDING_DOUBLE:
-						this.fSpeed = 600 / r.TIME_FACTOR;
-						this.nLimit = r.nPlaneSpacing >> 1;
-						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
+						this.fSpeed = r.TIME_FACTOR * 60 / 1000;
+						this.nLimit = 32;
 						break;
 			
 					case r.PHYS_DOOR_SLIDING_LEFT:
 					case r.PHYS_DOOR_SLIDING_RIGHT:
-						this.fSpeed = 600 / r.TIME_FACTOR;
+						this.fSpeed = r.TIME_FACTOR * 120 / 1000;
 						this.nLimit = r.nPlaneSpacing;
-						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 			
 					default:
-						this.fSpeed = 800 / r.TIME_FACTOR;
-						this.nLimit = r.yTexture;
-						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
+						this.fSpeed = r.TIME_FACTOR * 120 / 1000;
+						this.nLimit = 96;
 						break;
 				}
 				this.nPhase++;	/** no break on the next line */
 
 			case 1: // la porte s'ouvre jusqu'a : offset > limite
-				if (this.oEasing.f()) {
+				this.fOffset += this.fSpeed;
+				if (this.fOffset >= this.nLimit) {
 					this.fOffset = this.nLimit - 1;
 					r.setMapPhys(this.x, this.y, 0);
 					this.nPhase++;
-					this.oEasing.from(this.fOffset).to(0).during(this.fSpeed);
 				}
-				this.fOffset = this.oEasing.x | 0;
 				break;
 
 			case 2: // la porte attend avant de se refermer   
@@ -86,10 +79,10 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				break;
 		
 			case 3: // la porte se referme
-				if (this.oEasing.f()) {
+				this.fOffset -= this.fSpeed;
+				if (this.fOffset < 0) {
 					this.terminate();
 				}
-				this.fOffset = this.oEasing.x;
 				break;
 		}
 		r.setMapOffs(this.x, this.y, this.fOffset | 0);

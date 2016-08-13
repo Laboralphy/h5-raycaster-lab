@@ -13,7 +13,7 @@ O2.createClass('MANSION.Script.Intro', {
 			return rc.getTile(p).oImage;
 		});
 		if (sSound) {
-			tag.game.playSound(SOUNDS_DATA.intro[sSound]);
+			tag.game.playSound(MANSION.SOUNDS_DATA.intro[sSound]);
 		}
 		gx.splash(aPhotos, 4);
 	},
@@ -26,7 +26,7 @@ O2.createClass('MANSION.Script.Intro', {
 		tag.game.openDoor(x, y, true);
 		var ps = tag.game.oRaycaster.nPlaneSpacing;
 		var ps2 = ps >> 1;
-		tag.game.playSound(SOUNDS_DATA.events.dooropen, x * ps + ps2, y * ps + ps2);
+		tag.game.playSound(MANSION.SOUNDS_DATA.events.dooropen, x * ps + ps2, y * ps + ps2);
 	},
 	
 	_text: function(tag, aText) {
@@ -42,7 +42,7 @@ O2.createClass('MANSION.Script.Intro', {
 		var sf = rc.nShadingFactor;
 		rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(1000, 80);
 		var oFlash = rc.addGXEffect(O876_Raycaster.GXFlash).setFlash('#FFF', 0.7, 2000);
-		tag.game.playSound(SOUNDS_DATA.ambiance.thunder);
+		tag.game.playSound(MANSION.SOUNDS_DATA.ambiance.thunder);
 		setTimeout(function() {
 			rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(sf, 800);
 		}, 160);
@@ -50,9 +50,9 @@ O2.createClass('MANSION.Script.Intro', {
 	
 	init: function(tag) {
 		// 30 unités jusqu'a destination
-		tag.game.playAmbience(SOUNDS_DATA.bgm.cthulhu);
+		tag.game.playAmbience(MANSION.SOUNDS_DATA.bgm.cthulhu);
 		this._cameraAdvance(tag, 15, 20);
-		this._text(tag, STRINGS_DATA.INTRO.txforest.split('\n'));
+		this._text(tag, MANSION.STRINGS_DATA.INTRO.txforest.split('\n'));
 	},
 	
 	phase: function(tag) {
@@ -111,7 +111,7 @@ O2.createClass('MANSION.Script.Intro', {
 			case 'txmans':
 			case 'txheap':
 			case 'txgetem':
-				this._text(tag, STRINGS_DATA.INTRO[sPhase].split('\n'));
+				this._text(tag, MANSION.STRINGS_DATA.INTRO[sPhase].split('\n'));
 			break;
 
 			case 'end':
@@ -119,7 +119,7 @@ O2.createClass('MANSION.Script.Intro', {
 				var rc = g.oRaycaster;
 				this._openDoor(tag, tag.x + 1, tag.y);
 				this._cameraAdvance(tag, 3, 1);
-				g.playSound(SOUNDS_DATA.intro.stressfinal);
+				g.playSound(MANSION.SOUNDS_DATA.intro.stressfinal);
 				rc.addGXEffect(O876_Raycaster.GXAmbientLight).setLight(10, 1000);
 				
 				setTimeout(function() {

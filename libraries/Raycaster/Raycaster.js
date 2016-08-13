@@ -130,7 +130,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	// sprites
 	oHorde : null,
 	aScanSectors : null,
-	aWallSectors : null,
 	oMobileSectors : null,
 	oThinkerManager : null,
 	aVisibleMobiles: null,
@@ -347,7 +346,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oHorde = null;
 		this.oEffects.clear();
 		this.aScanSectors = null;
-		this.aWallSectors = null;
 		this.oMobileSectors = null;
 		this.buildMap();
 		this.buildHorde();
@@ -412,7 +410,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				break;
 				
 			default:
-				throw new Error('setting detail is now deprecated. Use css resizing instead');
+				console.warning('setting detail is now deprecated. Use css resizing instead');
 		}
 	},
 
@@ -1256,7 +1254,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var i = 0;
 		this.aZBuffer = [];
 		this.aScanSectors = Marker.create();
-		this.aWallSectors = {};
 		if (this.oBackground) { // Calculer l'offset camera en cas de background
 			this.fCameraBGOfs = (PI + this.oCamera.fTheta) * this.oBackground.width / PI;
 		}

@@ -1,9 +1,9 @@
 /**
- * Aggressive :
- * Ce thinker tente de s'approcher de la cible,
+ * Rusher en Zigzag
+ * Ce thinker tente de s'approcher de la cible en zig zag,
  * Lorsqu"il est tout pret il se précipite pour surprendre sa cible 
  */
-O2.extendClass('MANSION.G_AggressiveThinker', MANSION.VengefulThinker, {
+O2.extendClass('MANSION.GZigZagRusherThinker', MANSION.VengefulThinker, {
 
 	MINIMUM_RUSH_DISTANCE: 192,
 

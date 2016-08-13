@@ -1,6 +1,6 @@
-O2.createObject('TILES_DATA', {
-	g_head1: {
-		src: 'resources/sprites/g_head1.png',
+O2.createObject('MANSION.TILES_DATA', {
+	g_aging_girl: {
+		src: 'resources/sprites/g_aging_girl.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -13,8 +13,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 	
-	g_head2: {
-		src: 'resources/sprites/g_head2.png',
+	g_bashed_boy: {
+		src: 'resources/sprites/g_bashed_boy.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -27,8 +27,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
-	g_head3: {
-		src: 'resources/sprites/g_head3.png',
+	g_blond_child: {
+		src: 'resources/sprites/g_blond_child.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -41,8 +41,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 	
-	g_head4: {
-		src: 'resources/sprites/g_head4.png',
+	g_dark_tears: {
+		src: 'resources/sprites/g_dark_tears.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -54,8 +54,8 @@ O2.createObject('TILES_DATA', {
 			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
 		]
 	},	
-	g_head5: {
-		src: 'resources/sprites/g_head5.png',
+	g_decaying: {
+		src: 'resources/sprites/g_decaying.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -68,8 +68,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
-	g_head6: {
-		src: 'resources/sprites/g_head6.png',
+	g_dementia: {
+		src: 'resources/sprites/g_dementia.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -82,8 +82,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
-	g_head7: {
-		src: 'resources/sprites/g_head7.png',
+	g_eyeball: {
+		src: 'resources/sprites/g_eyeball.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -96,8 +96,8 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
-	g_head8: {
-		src: 'resources/sprites/g_head8.png',
+	g_half_skull: {
+		src: 'resources/sprites/g_half_skull.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -110,8 +110,81 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
-	g_head9: {
-		src: 'resources/sprites/g_head9.png',
+	g_hardy: {
+		src: 'resources/sprites/g_hardy.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+	
+
+	g_old_ghoul: {
+		src: 'resources/sprites/g_old_ghoul.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+	
+
+	g_severed_jaw: {
+		src: 'resources/sprites/g_severed_jaw.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+	
+
+	g_spooky_doll: {
+		src: 'resources/sprites/g_spooky_doll.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+
+	g_triple: {
+		src: 'resources/sprites/g_triple.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+
+	g_white_teeth: {
+		src: 'resources/sprites/g_white_teeth.png',
 		frames: 9,
 		width: 192,
 		height: 192,
@@ -204,47 +277,5 @@ O2.createObject('TILES_DATA', {
 		animations: [
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
 		]
-	},
-
-	//////////////// INTRO TILES //////////////////
-	intro_s0_amulet: {
-		src: 'resources/intro/s0-amulet.png',
-		noshading: true
-	},
-
-	intro_s0_cult: {
-		src: 'resources/intro/s0-cult.png',
-		noshading: true
-	},
-
-	intro_s1_forest_hands: {
-		src: 'resources/intro/s1-forest-hands.png',
-		noshading: true
-	},
-
-	intro_s1_hell_skull: {
-		src: 'resources/intro/s1-hell-skull.png',
-		noshading: true
-	},
-
-	intro_s1_moon: {
-		src: 'resources/intro/s1-moon.png',
-		noshading: true
-	},
-
-	intro_s1_sacr_news: {
-		src: 'resources/intro/s1-sacr-news.png',
-		noshading: true
-	},
-
-	intro_ng_01: { src: 'resources/intro/ng-01.png', noshading: true },
-	intro_ng_05: { src: 'resources/intro/ng-05.png', noshading: true },
-	intro_ng_07: { src: 'resources/intro/ng-07.png', noshading: true },
-	intro_ng_09: { src: 'resources/intro/ng-09.png', noshading: true },
-	intro_ng_10: { src: 'resources/intro/ng-10.png', noshading: true },
-
-	intro_s4_shogot: { src: 'resources/intro/s4-shogot.png', noshading: true },
-	intro_s4_nyarlathothep: { src: 'resources/intro/s4-nyarlathothep.png', noshading: true },
-	intro_s4_cthulhu: { src: 'resources/intro/s4-cthulhu.png', noshading: true },
-
+	}
 });

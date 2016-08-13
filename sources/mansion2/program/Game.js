@@ -30,7 +30,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** INIT ****** INIT ****** INIT ******/
 
 	init: function() {
-		window.STRINGS_DATA = STRINGS_DATA_EN;
+		O2.createObject('MANSION.STRINGS_DATA', MANSION.STRINGS_DATA_EN);
 		this._oLocators = {};
 		this.initLogic();
 		this.initAudio();
@@ -116,11 +116,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventBuild: function(data) {
 		data = WORLD_DATA[this._sLevelIndex];
 		var s = '';
-		for (s in TILES_DATA) {
-			data.tiles[s] = TILES_DATA[s];
+		for (s in MANSION.TILES_DATA) {
+			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
-		for (s in BLUEPRINTS_DATA) {
-			data.blueprints[s] = BLUEPRINTS_DATA[s];
+		if (this._sLevelIndex === 'm050-intro') {
+			for (s in MANSION.TILES_INTRO_DATA) {
+				data.tiles[s] = MANSION.TILES_INTRO_DATA[s];
+			}
+		}
+		for (s in MANSION.BLUEPRINTS_DATA) {
+			data.blueprints[s] = MANSION.BLUEPRINTS_DATA[s];
 		}
 	},
 
@@ -138,7 +143,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oCanvas = this.oRaycaster.oCanvas;
 		var oContext = this.oRaycaster.oContext;
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
-		var sMsg = STRINGS_DATA.RC['l_' + s];
+		var sMsg = MANSION.STRINGS_DATA.RC['l_' + s];
 		var y = oCanvas.height >> 1;
 		var nPad = 96;
 		var xMax = oCanvas.width - (nPad << 1);
@@ -160,7 +165,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();
-		this.playAmbience(SOUNDS_DATA.bgm[this.getLevel()]);
+		this.playAmbience(MANSION.SOUNDS_DATA.bgm[this.getLevel()]);
 		this.oPhone = new MANSION.Phone(this.oRaycaster);
 		this.bindPhoneEvents(this.oPhone);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
@@ -179,14 +184,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oEffect = oEvent.door;
 		switch (oEffect.sClass) {
 			case 'Door':
-				this.playSound(SOUNDS_DATA.events.dooropen, x * ps + ps2, y * ps + ps2);
+				this.playSound(MANSION.SOUNDS_DATA.events.dooropen, x * ps + ps2, y * ps + ps2);
 				oEffect.done = (function() {
-					this.playSound(SOUNDS_DATA.events.doorclose, x * ps + ps2, y * ps + ps2);
+					this.playSound(MANSION.SOUNDS_DATA.events.doorclose, x * ps + ps2, y * ps + ps2);
 				}).bind(this);
 				break;
 				
 			case 'Secret':
-				this.playSound(SOUNDS_DATA.events.secret, x * ps + ps2, y * ps + ps2);
+				this.playSound(MANSION.SOUNDS_DATA.events.secret, x * ps + ps2, y * ps + ps2);
 				break;
 			
 		}
@@ -523,7 +528,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	tagEventMessage: function(oEvent) {
 		var sTag = oEvent.data;
-		this.popupMessage(STRINGS_DATA[this.getLevel()]['m_' + sTag]);
+		this.popupMessage(MANSION.STRINGS_DATA[this.getLevel()]['m_' + sTag]);
 		oEvent.remove = true;
 	},
 	
@@ -533,8 +538,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	tagEventZone: function(oEvent) {
 		var sZone = oEvent.data;
 		// changement d'ambiance sonore
-		if (Event.data in SOUNDS_DATA) {
-			this.playAmbience(SOUNDS_DATA.bgm[sZone]);
+		if (Event.data in MANSION.SOUNDS_DATA) {
+			this.playAmbience(MANSION.SOUNDS_DATA.bgm[sZone]);
 		}
 		// Noter le tag comme étant visité
 		var p = this.getPlayer();
@@ -574,34 +579,34 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var y = oEvent.y;
 		this.oRaycaster.cloneWall(x, y, false, false);
 		var sItem = this.getBlockTag(oEvent.x, oEvent.y, 'item');
-		var sItemStr = STRINGS_DATA.ITEMS[sItem];
+		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sItem];
 		this.getPlayer().data('item-' + sItem, true);
-		this.popupMessage(STRINGS_DATA.EVENTS.item, {
+		this.popupMessage(MANSION.STRINGS_DATA.EVENTS.item, {
 			$item: sItemStr
 		});
 		var aItem = sItem.split('-');
 		var sSound = aItem.shift();
-		if (sSound in SOUNDS_DATA.pickup) {
-			this.playSound(SOUNDS_DATA.pickup[sSound]);
+		if (sSound in MANSION.SOUNDS_DATA.pickup) {
+			this.playSound(MANSION.SOUNDS_DATA.pickup[sSound]);
 		}
 		oEvent.remove = true;
 	},
 	
 	tagEventUnlock: function(oEvent) {
 		var sKey = this.getBlockTag(oEvent.x, oEvent.y, 'lock');
-		var sItemStr = STRINGS_DATA.ITEMS[sKey];
+		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
 		if (this.getPlayer().data('item-' + sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
-			this.popupMessage(STRINGS_DATA.EVENTS.unlock, {
+			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
 			});
-			this.playSound(SOUNDS_DATA.events.doorunlock);
+			this.playSound(MANSION.SOUNDS_DATA.events.doorunlock);
 			oEvent.remove = true;
 		} else {
-			this.popupMessage(STRINGS_DATA.EVENTS.locked, {
+			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.locked, {
 				$item: sItemStr
 			});
-			this.playSound(SOUNDS_DATA.events.doorlocked);
+			this.playSound(MANSION.SOUNDS_DATA.events.doorlocked);
 		}
 	},
 
@@ -710,7 +715,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oGhost.data('hp', oGhost.data('life'));
 		oGhost.data('dead', false);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
-		this.playGhostAmbience(SOUNDS_DATA.bgm.ghost);
+		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
 	},
 	
 	/**
@@ -752,7 +757,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oVFX.getThinker().reset();
 		var oSounds = oVFX.data('sounds');
 		if (oSounds && ('spawn' in oSounds)) {
-			this.playSound(SOUNDS_DATA.visualeffects[oSounds.spawn], x, y);
+			this.playSound(MANSION.SOUNDS_DATA.visualeffects[oSounds.spawn], x, y);
 		}
 		return oVFX;
 	},
@@ -765,7 +770,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
 			gl.cameraShoot();
-			this.playSound(SOUNDS_DATA.events.camera);
+			this.playSound(MANSION.SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects
 			gl.getCapturedGhosts().forEach(function(g) {
 				var fDistance = g[2];
@@ -773,6 +778,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var oGhost = g[0];
 				this._oGhostScreamer.addGhost(oGhost);
 			}, this);
+			var b = this.getPlayer().getThinker().getFrontBlock();
+			if (b.x !== null && b.y !== null) {
+				var t = this.getBlockTag(b.x, b.y);
+				if (t) {
+					// Tag = t
+					// coord : b.x, b.y
+				} else {
+					// NO TAG
+					// coord : b.x, b.y
+				}
+			} else {
+				// NO BLOCK
+			}
 		}
 	},
 	

@@ -1,4 +1,4 @@
-var RC = {
+O2.createObject('RC', {
   OBJECT_TYPE_NONE: 0,
   OBJECT_TYPE_MOB: 1,			// Mobile object with Thinker procedure
   OBJECT_TYPE_PLAYER: 2,		// Player (non visible, user controlled mob)
@@ -14,5 +14,5 @@ var RC = {
   FX_ALPHA_25: 3 << 2,
   FX_ALPHA: [1, 0.75, 0.50, 0.25, 0],
   FX_DIM0: 0x10,				// indicateur dim 0 pour corriger un bug graphique d'optimisation
-};
+});
 
