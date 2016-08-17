@@ -17,6 +17,7 @@ div.return {
 	padding: 1px;
 	margin-right: 0.4em;
 	text-align: center;
+	border-radius: 20%;
 }
 
 div.return:before {

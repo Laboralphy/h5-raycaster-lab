@@ -5,9 +5,15 @@
 O2.extendClass('MANSION.WraithThinker', MANSION.GhostThinker, {
 	_bSwitchNotSeenYet: true,
 	_nLife: 0,
+
+	thinkSpawning: function() {
+		__inherited();
+		this.playSound('spawn');
+		this.setThink('Living');
+		his._bSwitchNotSeenYet = this.oMobile.data('boo');
+	},
 	
 	thinkLiving: function() {
-		__inherited();
 		var oTarget = this.getTarget();
 		if (this._bSwitchNotSeenYet) {
 			// not seen yet

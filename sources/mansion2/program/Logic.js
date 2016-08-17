@@ -1,4 +1,7 @@
 // Raycaster Mansion Game Logic
+/**
+ * Cette classe contient quelques règle métier concernant le téléphone et l'appareil photo, 
+ */
 
 O2.createClass('MANSION.Logic', {
 	
@@ -28,7 +31,8 @@ O2.createClass('MANSION.Logic', {
 	_aCapturedGhosts: null,
 	_aLastShotStats: null,
 	
-	
+	_nScore: 0,
+
 	_nPhoneBattery: 100,
 	_nPhoneNetwork: 100,
 	_nPhoneClockH: 0,
@@ -198,6 +202,7 @@ O2.createClass('MANSION.Logic', {
 		this._nCameraEnergy = 0;
 		this._bCameraFullCharge = false;
 		this._nCameraESNext = null;
+		this._nScore += nTotalDamage;
 		this._aLastShotStats = {
 			damage: nTotalDamage,
 			shots: aTags

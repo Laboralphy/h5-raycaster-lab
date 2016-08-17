@@ -2,23 +2,7 @@
 <style src="styles/base.css"></style>
 <style src="styles/help.css"></style>
 <div class="header title"><div class="return" id="help-home"></div><span>Help - Controls</span></div>
-<h2>Basics :</h2>
-<div>Use the mouse to change your point of view, and the keyboard to move.</div>
-<table class="control-keyboard">
-	<tbody>
-		<tr>
-			<th class="key">Key</th><th class="action">Action</th>
-		</tr><tr>
-			<td class="key">W/Z</td><td class="action">Move forward</td>
-		</tr><tr>
-			<td class="key">S</td><td class="action">Move backward</td>
-		</tr><tr>
-			<td class="key">A/Q</td><td class="action">Step left</td>
-		</tr><tr>
-			<td class="key">D</td><td class="action">Step right</td>
-		</tr><tr>
-			<td class="key">SPACE</td><td class="action">Open/Close smartphone menu</td>
-		</tr>
-	</tbody>
-</table>
+<img class="center" src="images/h-keyboard-0.png" />
+<p>The space bar is used to display/hide the smartphone menu.</p>
+<p class="link" id="help-camera-1">Next : Show/hide camera</p>
 </root>

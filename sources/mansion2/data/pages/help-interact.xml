@@ -2,6 +2,13 @@
 <style src="styles/base.css"></style>
 <style src="styles/help.css"></style>
 <div class="header title"><div class="return" id="help-home"></div><span>Help - Interactions</span></div>
-<h2>Interactions with environment :</h2>
-<p>To interact with environement, use <b>[Left-click]</b> mouse button. You must be in exploration mode, not in camera mode.</p>
+<p>While in exploration mode, click on <b>[Left mouse button]</b> to interact with environment.</p>
+<p>Interactions include :</p>
+<ul>
+	<li>Picking up items</li>
+	<li>Opening doors</li>
+	<li>Probing walls to find secrets</li>
+	<li>...</li>
+</ul>
+<p class="remark">You can't interact with environment while in camera mode because this mode is used to take photos.</p>
 </root>

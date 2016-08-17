@@ -25,9 +25,14 @@ table.control-camera td {
 	color: #333;
 }
 
-li.link {
+.link {
 	text-decoration: underline;
 	color: #004;
+}
+
+img.center {
+	margin: auto;
+	display: block;
 }
 
 li {

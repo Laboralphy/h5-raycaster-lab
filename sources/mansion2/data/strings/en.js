@@ -25,6 +25,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	EVENTS: {
 		item: "You acquired : $item",
 		locked: "This door is locked. You need : $item",
+		curselocked: "This door is blocked by a mysterious force.",
 		unlock: "You unlocked the door with : $item",
 	},
 

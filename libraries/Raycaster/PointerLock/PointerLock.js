@@ -18,7 +18,9 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	enable: function(oElement) {
 		if (!O876_Raycaster.PointerLock.bEnabled) {
 			O876_Raycaster.PointerLock.bEnabled = true;
-			O876_Raycaster.PointerLock.requestPointerLock(oElement);
+			if (oElement) {
+				O876_Raycaster.PointerLock.requestPointerLock(oElement);
+			}
 		}
 	},
 

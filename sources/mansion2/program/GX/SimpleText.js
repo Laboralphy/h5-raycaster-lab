@@ -27,7 +27,6 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 	},
 
 	text: function(aText, x, y) {
-		console.log('simple text', aText);
 		this.oEasingAlpha.from(0).to(1).during(this.FONT_ALPHA_TIME).use('smoothstep');
 		var cvs = this.oCanvas;
 		var ctx = cvs.getContext('2d');

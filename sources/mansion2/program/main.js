@@ -3,6 +3,15 @@ O2.createObject('MAIN', {
 	posCanvas: null,
 	sizeCanvas: null,
 
+	getCursorPosition: function(oScreen, xClient, yClient) {
+		if (!MAIN.posCanvas) {
+			MAIN.posCanvas = MAIN.getPosition(oScreen);
+		}
+		var x = MAIN.sizeCanvas.rWidth * (xClient - MAIN.posCanvas.left) | 0, 
+		y = MAIN.sizeCanvas.rHeight * (yClient - MAIN.posCanvas.top) | 0;
+		return {x: x, y: y};
+	},
+
 	run: function() {
 		MAIN.screenResize();
 		window.addEventListener('resize', MAIN.screenResize);
@@ -13,14 +22,15 @@ O2.createObject('MAIN', {
 			oScreen.addEventListener('click', function(oEvent) {
 				var oScreen = oEvent.target; 
 				if (!O876_Raycaster.PointerLock.bEnabled) {
-					if (!MAIN.posCanvas) {
-						MAIN.posCanvas = MAIN.getPosition(oScreen);
-					}
-						var x = MAIN.sizeCanvas.rWidth * (oEvent.clientX - MAIN.posCanvas.left) | 0, 
-						y = MAIN.sizeCanvas.rHeight * (oEvent.clientY - MAIN.posCanvas.top) | 0;
-					G.trigger('click', {x: x, y: y});
+					G.trigger('click', MAIN.getCursorPosition(oScreen, oEvent.clientX, oEvent.clientY));
 				} else {
 					MAIN.lockPointer(oEvent.target);
+				}
+			});
+			oScreen.addEventListener('mousemove', function(oEvent) {
+				var oScreen = oEvent.target; 
+				if (!O876_Raycaster.PointerLock.bEnabled) {
+					G.trigger('mousemove', MAIN.getCursorPosition(oScreen, oEvent.clientX, oEvent.clientY));
 				}
 			});
 		}
@@ -80,13 +90,13 @@ O2.createObject('MAIN', {
 		if (r < rBase) { // utiliser height
 			h -= nPadding;
 			hf = h;
-			wf = h * cw / ch | 0;
+			wf = h * cw / ch;
 		} else { // utiliser width
 			wf = w;
-			hf = w * ch / cw | 0;
+			hf = w * ch / cw;
 		}
-		oCanvas.style.width = wf.toString() + 'px';
-		oCanvas.style.height = hf.toString() + 'px';
+		oCanvas.style.width = (wf | 0).toString() + 'px';
+		oCanvas.style.height = (hf | 0).toString() + 'px';
 		MAIN.posCanvas = null;
 		MAIN.sizeCanvas = {
 			width: w,

@@ -15,7 +15,7 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 	nScreenWidth: 0,
 	nScreenHeight: 0,
 	
-	oRasterizer: null,
+	oRasterize: null,
 	sNoteURL: '',
 	
 	
@@ -130,8 +130,10 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 			break;
 			
 			default:
-				console.log('command:', sCommand);
-				this.loadNote(sCommand);
+				if (sCommand) {
+					console.log('command:', sCommand);
+					this.loadNote(sCommand);
+				}
 			break;
 		}
 	}

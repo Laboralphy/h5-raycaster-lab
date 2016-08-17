@@ -25,6 +25,7 @@ O2.createObject('MANSION.STRINGS_DATA_FR', {
 	EVENTS: {
 		item: "Vous obtenez : $item",
 		locked: "Porte verrouillée. Il faut : $item",
+		curselocked: "Cette porte est bloquée par une force mystérieuse.",
 		unlock: "Porte déverrouillée avec : $item",
 	},
 

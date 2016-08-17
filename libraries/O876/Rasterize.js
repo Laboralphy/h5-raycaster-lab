@@ -25,6 +25,7 @@ O2.createClass('O876.Rasterize', {
 	BASEPATH: '',
 	bBusy: false,
 	oDomParser: null,
+	bDebug: false,
 
 	__construct: function() {
 		this.xhr = new O876.XHR();
@@ -35,7 +36,7 @@ O2.createClass('O876.Rasterize', {
 		this.xhr.get(this.BASEPATH + sFile, cb);
 	},
 
-	_computeMetrics: function(oObject, w, h) {
+	_computeMetrics: function(oObject, w, h, pDone) {
 		var oElement = document.createElement('div');
 		oElement.style.padding = '0px';
 		oElement.style.margin = '0px';
@@ -44,22 +45,52 @@ O2.createClass('O876.Rasterize', {
 		oElement.style.width = w + 'px';
 		oElement.style.height = h + 'px';
 		oElement.appendChild(oObject);
-		document.body.appendChild(oElement);
-		var q = oElement.querySelectorAll('[id]');
-		var oResult = {}, e, id;
-		for (var i = 0; i < q.length; ++i) {
-			e = q[i];
-			id = e.getAttribute('id');
-			oResult[id] = {
-				width: e.offsetWidth,
-				height: e.offsetHeight,
-				left: e.offsetLeft,
-				top: e.offsetTop
-			};
+
+		/**
+		 * for a given element, checks if all images are loaded
+		 * a function is called back when every image is loaded.
+		 */
+		function waitUntilAllImagesLoaded(oDoc, pAllLoaded) {
+			// get all images
+			var aImages = oDoc.getElementsByTagName('img');
+			for (var i = 0, l = aImages.length; i < l; ++i) {
+				if (!aImages[i].complete) {
+					// uncomplete image : attach "load" event listener
+					aImages[i].addEventListener('load', function() {
+						// will recheck all images
+						waitUntilAllImagesLoaded(oDoc, pAllLoaded);
+					});
+					// no need to iterate further
+					return;
+				}
+			}
+			// all images seem complete : callback
+			if (pAllLoaded) {
+				pAllLoaded();
+			}
 		}
-		oElement.remove();
-		console.log(oResult);
-		return oResult;
+
+		function buildMetricStructure() {
+			var q = oElement.querySelectorAll('[id]');
+			var oResult = {}, e, id;
+			for (var i = 0; i < q.length; ++i) {
+				e = q[i];
+				id = e.getAttribute('id');
+				oResult[id] = {
+					width: e.offsetWidth,
+					height: e.offsetHeight,
+					left: e.offsetLeft,
+					top: e.offsetTop
+				};
+			}
+			oElement.remove();
+			return oResult;
+		}
+
+		document.body.appendChild(oElement);
+		waitUntilAllImagesLoaded(oElement, function() {
+			pDone(buildMetricStructure());
+		});
 	},
 	
 	_parseXMLString: function(sXML) {
@@ -90,6 +121,16 @@ O2.createClass('O876.Rasterize', {
 	    ]).join('\n');
 	},
 
+	_debugMetrics: function(m, c) {
+		var ctx = c.getContext('2d');
+		var mi;
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+		for (var i in m) {
+			mi = m[i];
+			ctx.fillRect(mi.left, mi.top, mi.width, mi.height);
+		}
+	},
+
 	_renderToCanvas: function(xElement, oCanvas, pDone) {
 		var w = oCanvas.width;
 		var h = oCanvas.height;
@@ -97,21 +138,30 @@ O2.createClass('O876.Rasterize', {
 		var xs = new XMLSerializer();
 		var sSVG = xs.serializeToString(xElement.documentElement);
 		// proved to be inadequate
-		var oMetrics = this._computeMetrics(xElement.documentElement, oCanvas.width, oCanvas.height);
 		var img = new Image();
 		var svg = new Blob([sSVG], {type: 'image/svg+xml;charset=utf-8'});
 		var url = URL.createObjectURL(svg);
 		img.addEventListener('load', (function() {
 		    ctx.drawImage(img, 0, 0);
 		    URL.revokeObjectURL(url);
-	    	var o = {
-				canvas: oCanvas,
-				metrics: oMetrics
-			};
-			this.trigger('render', o);
-		    if (pDone) {
-				pDone(o);
-			}
+			this._computeMetrics(
+				xElement.documentElement, 
+				oCanvas.width, 
+				oCanvas.height,
+				(function(oMetrics) {
+			    	var o = {
+						canvas: oCanvas,
+						metrics: oMetrics
+					};
+					if (this.bDebug) {
+						this._debugMetrics(o.metrics, o.canvas);
+					}
+					this.trigger('render', o);
+					if (pDone) {
+						pDone(o);
+					}
+				}).bind(this)
+			);
 		}).bind(this));
 		img.setAttribute('src', url);
 	},

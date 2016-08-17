@@ -4,7 +4,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbienceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	
+	_sLevelIndex: 'm090-htp',
 	_oLocators: null,
 	
 	aDebugLines: null,
@@ -42,6 +42,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
 		this.on('click', this.gameEventClick.bind(this));
+		this.on('mousemove', this.gameEventMouseMove.bind(this));
 		
 		// initialisable
 		this.on('itag.light', this.tagEventLight.bind(this));
@@ -81,7 +82,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	initAudio: function() {
 		a = new O876.SoundSystem();
-		a.setChannelCount(8);
+		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
 	},
@@ -249,7 +250,33 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var ay = ypc + pc.SCREEN_Y;
 				var oDesktop = p.getCurrentApplication();
 				var id = oDesktop.peek(x - ax, y - ay);
+				this.oRaycaster.oCanvas.style.cursor = '';
 				oDesktop.execCommand(id, this);
+			}
+		}
+	},
+
+	gameEventMouseMove: function(data) {
+		var x = data.x;
+		var y = data.y;
+		var p = this.oPhone;
+		var pc = this.oPhone.getCurrentPhone();
+		
+		// desktop mouse move manager
+		if (p.isActive('Desktop') && pc.isVisible()) {
+			var pi = pc.oPhone.oImage;
+			var xpc = pc.xPhone;
+			var ypc = pc.yPhone;
+			if (!(x < xpc || y < ypc || x >= (xpc + pi.width) || y >= (ypc + pi.height))) {
+				var ax = xpc + pc.SCREEN_X;
+				var ay = ypc + pc.SCREEN_Y;
+				var oDesktop = p.getCurrentApplication();
+				var id = oDesktop.peek(x - ax, y - ay);
+				if (id) {
+					this.oRaycaster.oCanvas.style.cursor = 'pointer';
+				} else {
+					this.oRaycaster.oCanvas.style.cursor = '';
+				}
 			}
 		}
 	},
@@ -309,6 +336,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
+			/*
 			case KEYS.ESCAPE:
 			break;
 
@@ -356,6 +384,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.F12: 
 //				oGhost.getThinker().TODO = oEvent.k - KEYS.F1 + 1;
 			break;
+			*/
 		}
 	},
 	
@@ -568,7 +597,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var p = this.getPlayer();
 		var rc = this.oRaycaster;
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.7);
-		p.setXY(oLoc.x * 64 + 32, oLoc.y * 64 + 32);
+		var ps = rc.nPlaneSpacing;
+		var ps2 = ps >> 1;
+		p.setXY(oLoc.x * ps + ps2, oLoc.y * ps + ps2);
 	},
 	
 	/**
@@ -594,6 +625,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	tagEventUnlock: function(oEvent) {
 		var sKey = this.getBlockTag(oEvent.x, oEvent.y, 'lock');
+		if (sKey === '') {
+			// unnamed key required
+			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.curselocked);
+			this.playSound(MANSION.SOUNDS_DATA.events.doorlocked);
+			return; // exit from here
+			// cursed lock are unlocked by photo
+		}
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
 		if (this.getPlayer().data('item-' + sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
@@ -638,11 +676,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case 'm050-intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
 				ct = oPlayer.getThinker();
+				O876_Raycaster.PointerLock.disable();
 			break;
 			
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
-				oPlayer.fSpeed = 3;
+				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
 				ct = oPlayer.getThinker();
 				ct.on('button0.down', (function() { 
 					this.trigger('command0');
@@ -653,6 +692,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				.on('use.down', (function() { 
 					this.trigger('activate');
 				}).bind(this));
+				O876_Raycaster.PointerLock.enable();
 			break;
 		}
 		ct.oGame = this;
@@ -666,12 +706,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oAppCamera.oParticles.setParticleCanvas(this.oRaycaster.getTile('l_particle').oImage);
 		var p = this.oPhone.getCurrentPhone();
 		oAppCamera.oParticles.setAttractor(0, p.SCREEN_H, 20480);
-		this.getPlayer().fSpeed = 2;
+		this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
 	},
 
 	phoneAppCameraOff: function() {
 		this.oLogic.cameraOff();
-		this.getPlayer().fSpeed = 3;
+		this.getPlayer().fSpeed = MANSION.CONST.SPEED_NORMAL;
 	},
 	
 
@@ -716,6 +756,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oGhost.data('dead', false);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
+	},
+
+	spawnWraith: function(sBlueprint, x, y, a) {
+		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
+		oGhost.getThinker().reset();
+		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 	},
 	
 	/**
@@ -808,6 +854,36 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		} else {
 			throw new Error('no locator "' + sLocator + '" defined');
 		}
+	},
+
+	/**
+	 * Ouvre une passage secret précédemmetn scellé
+	 * Fait tourner les éventuel décals
+	 */
+	unlockSecretPassage: function(sLocator) {
+		var oLoc = this.getLocator(sLocator);
+		var aLook = [
+			[0, -1],
+			[1, 0],
+			[0, 1],
+			[-1, 0]
+		];
+		var rc = this.oRaycaster;
+		var x = oLoc.x;
+		var y = oLoc.y;
+		aLook.some(function(pos) {
+			var dx = pos[0];
+			var dy = pos[1];
+			var sx = x + dx;
+			var sy = y + dy;
+			if (rc.getMapPhys(sx, sy) == rc.PHYS_SECRET_BLOCK) {
+				rc.setMapXY(x, y, rc.getMapXY(sx, sy));
+				return true;
+			} else {
+				return false;
+			}
+		});
+		rc.oXMap.rotateWallSurfaces(x, y);
 	},
 
 	/**

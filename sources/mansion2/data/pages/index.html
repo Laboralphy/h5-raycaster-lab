@@ -22,6 +22,17 @@ function main() {
 	oPlan.render(location.search.substr(1) + '.xml', document.getElementById('rasterized-canvas'), function() {
 		console.timeEnd('rasterize');
 		document.body.appendChild(d);
+		$('*[id]', d).css('cursor', 'pointer').each(function() {
+			var $this = $(this);
+			$this.on('click', function(oEvent) {
+				var $target = $(oEvent.target);
+				if (!$target.attr('id')) {
+					$target = $target.parent('[id]');
+				}
+				var id = $target.attr('id');
+				location.href = '?' + id;
+			});
+		});
 	});
 }
 

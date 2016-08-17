@@ -196,6 +196,132 @@ O2.createObject('MANSION.TILES_DATA', {
 			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
 		]
 	},
+
+
+
+	////////// APPARITIONS /////////
+	w_blind_cultist: {
+		src:'resources/sprites/w_blind_cultist.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_dark_scholar: {
+		src:'resources/sprites/w_dark_scholar.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_demented_girl: {
+		src:'resources/sprites/w_demented_girl.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_electricity_fairy: {
+		src:'resources/sprites/w_electricity_fairy.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_grim_clown: {
+		src:'resources/sprites/w_grim_clown.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_grim_reaper: {
+		src:'resources/sprites/w_grim_reaper.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_head_in_jar: {
+		src:'resources/sprites/w_head_in_jar.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_hpl: {
+		src:'resources/sprites/w_hpl.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_lost_girl: {
+		src:'resources/sprites/w_lost_girl.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_mad_folklorist: {
+		src:'resources/sprites/w_mad_folklorist.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_medusa: {
+		src:'resources/sprites/w_medusa.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_noble_cultist: {
+		src:'resources/sprites/w_noble_cultist.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_penitentia: {
+		src:'resources/sprites/w_penitentia.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_pole_of_skulls: {
+		src:'resources/sprites/w_pole_of_skulls.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_red_hood: {
+		src:'resources/sprites/w_red_hood.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_sadako: {
+		src:'resources/sprites/w_sadako.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_skull_monk: {
+		src:'resources/sprites/w_skull_monk.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_wicked_crone: {
+		src:'resources/sprites/w_wicked_crone.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_young_priestess: {
+		src:'resources/sprites/w_young_priestess.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+	w_young_witch: {
+		src:'resources/sprites/w_young_witch.png',
+		noshading: true,
+		scale: 0.5;
+	},
+
+
+	
 	
 	////////// MISSILES //////////
 	
