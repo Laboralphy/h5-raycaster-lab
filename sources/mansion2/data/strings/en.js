@@ -21,6 +21,13 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		score: 'Score +'
 	},
 
+	SUBJECTS: {
+		// paintings
+		p_skull_monk: 'Skull masked monk',
+		// book pages
+		b_nec_1: 'Necronomicon page 16',
+	},
+
 	// something happened
 	EVENTS: {
 		item: "You acquired : $item",
@@ -31,7 +38,10 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 
 	// The names of all items
 	ITEMS: {
-		'key-cabin-s': 'Cabin key'
+		'key-cabin-s': 'Cabin key',
+
+		// necronomicon pages
+		nec_1: 'Necronomicon page 1',
 	},
 
 	INTRO: {
@@ -42,5 +52,12 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		txheap: 'Heaps of powerful and dangerous\ntomes of black magic.',
 		txgetem: 'Recover them before it\'s too late !'
 	},
+
+	LEVELS: {
+		'm090-htp': {
+			hint_shoot_painting: 'You should take a picture of this painting',
+			hint_pickup_page: 'Your goal is to recover fragments of manuscript like this one.',
+		}
+	}
 
 });

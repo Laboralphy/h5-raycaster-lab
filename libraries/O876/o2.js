@@ -145,11 +145,22 @@ O2.createObject = function(sName, oObject) {
 O2._loadObject = function(s, oContext) {
 	var aClass = s.split('.');
 	var pBase = oContext || window;
+	var sSub, sAlready = '';
 	while (aClass.length > 1) {
-		pBase = pBase[aClass.shift()];
+		sSub = aClass.shift();
+		if (sSub in pBase) {
+			pBase = pBase[sSub];
+		} else {
+			throw new Error('could not find ' + sSub + ' in ' + sAlready.substr(1));
+		}
+		sAlready += '.' + sSub;
 	}
 	var sClass = aClass[0];
-	return pBase[sClass];
+	if (sClass in pBase) {
+		return pBase[sClass];
+	} else {
+		throw new Error('could not find ' + sClass + ' in ' + sAlready.substr(1));
+	}
 };
 
 /** Creation d'une classe avec support namespace

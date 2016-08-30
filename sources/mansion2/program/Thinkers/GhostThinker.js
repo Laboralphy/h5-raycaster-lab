@@ -63,7 +63,6 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	
 	thinkInit: function() {
 		var m = this.oMobile;
-		m.fTheta = 0;
 		var s = m.oSprite;
 		s.bTranslucent = true;
 		s.nAlpha = 3;

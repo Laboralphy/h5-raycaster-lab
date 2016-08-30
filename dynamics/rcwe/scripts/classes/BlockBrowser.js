@@ -136,7 +136,7 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 			this._oIdManager.remove(id);
 		}
 		this._aBlockCache[id] = b;
-		var $canvas = $('<canvas class="block"></canvas>');
+		var $canvas = $('<canvas class="block" title="id : #' + id + '"></canvas>');
 		$canvas.attr({
 			width: this.BLOCK_WIDTH,
 			height: this.BLOCK_HEIGHT

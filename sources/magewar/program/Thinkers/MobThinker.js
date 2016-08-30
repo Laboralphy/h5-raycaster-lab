@@ -13,7 +13,7 @@ O2.extendClass('MW.MobThinker', O876_Raycaster.CommandThinker, {
 		this.bDying = false;
 		var m = this.oMobile;
 		m.oSprite.playAnimationType(this.ANIMATION_STAND);
-		var oSounds = m.getBlueprint().data('sounds');
+		var oSounds = m.data('sounds');
 		if (oSounds && oSounds.spawn) {
 			this.oGame.playSound(oSounds.spawn, m.x, m.y);
 		}
@@ -27,7 +27,7 @@ O2.extendClass('MW.MobThinker', O876_Raycaster.CommandThinker, {
 		var m = this.oMobile;
 		m.bVisible = true;
 		m.oSprite.bTranslucent = false;
-		var oSounds = m.getBlueprint().data('sounds');
+		var oSounds = m.data('sounds');
 		if ('die' in oSounds) {
 			this.oGame.playSound(oSounds.die, m.x, m.y);
 		}

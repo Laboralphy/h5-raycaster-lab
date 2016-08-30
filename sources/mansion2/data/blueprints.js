@@ -7,6 +7,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Aging girl',
 			speed: 1,
 			life: 1000,
@@ -30,6 +31,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Bashed boy',
 			speed: 1,
 			life: 1000,
@@ -53,6 +55,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Blond child',
 			speed: 1,
 			life: 1000,
@@ -76,6 +79,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Dark tears',
 			speed: 1,
 			life: 1000,
@@ -99,6 +103,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Decaying',
 			speed: 1,
 			life: 1000,
@@ -122,6 +127,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Dementia',
 			speed: 1,
 			life: 1000,
@@ -145,6 +151,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Eyeball',
 			speed: 1,
 			life: 1000,
@@ -168,6 +175,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Half skull',
 			speed: 1,
 			life: 1000,
@@ -191,6 +199,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Hardy',
 			speed: 1,
 			life: 1000,
@@ -214,6 +223,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Old ghoul',
 			speed: 1,
 			life: 1000,
@@ -237,6 +247,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Severed jaw',
 			speed: 1,
 			life: 1000,
@@ -260,6 +271,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Spooky doll',
 			speed: 1,
 			life: 1000,
@@ -283,6 +295,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'Triplettes',
 			speed: 1,
 			life: 1000,
@@ -306,6 +319,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		thinker: 'MANSION.GChaser',
 		fx: 3,
 		data: {
+			subtype: 'ghost',
 			name: 'White teeth',
 			speed: 1,
 			life: 1000,
@@ -327,15 +341,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 
 	////////// APPARITIONS /////////
 	w_blind_cultist: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_blind_cultist',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -344,15 +358,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_dark_scholar: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_dark_scholar',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -361,15 +375,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_demented_girl: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_demented_girl',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -378,15 +392,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_electricity_fairy: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_electricity_fairy',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -395,15 +409,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_grim_clown: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_grim_clown',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -412,15 +426,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_grim_reaper: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_grim_reaper',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -429,15 +443,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_head_in_jar: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_head_in_jar',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -446,15 +460,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_hpl: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_hpl',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -463,15 +477,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_lost_girl: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_lost_girl',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -480,15 +494,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_mad_folklorist: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_mad_folklorist',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -497,15 +511,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_medusa: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_medusa',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -514,15 +528,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_noble_cultist: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_noble_cultist',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -531,15 +545,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_penitentia: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_penitentia',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -548,15 +562,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_pole_of_skulls: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_pole_of_skulls',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -565,15 +579,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_red_hood: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_red_hood',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -582,15 +596,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_sadako: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_sadako',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -599,16 +613,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_skull_monk: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_skull_monk',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
-			speed: 1,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: 'events/metal-stress',
 				seen: '',
@@ -617,15 +630,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_wicked_crone: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_wicked_crone',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -634,15 +647,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_young_priestess: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_young_priestess',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',
@@ -651,15 +664,15 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	},
 
 	w_young_witch: {
-		type: RC.OBJECT_TYPE_MOB;
+		type: RC.OBJECT_TYPE_MOB,
 		tile: 'w_young_witch',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
 		fx: 3,
 		data: {
-			lifespan: 0,
-			boo: false,
+			subtype: 'wraith',
+			rank: 1,
 			sounds: {
 				spawn: '',
 				seen: '',

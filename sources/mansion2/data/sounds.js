@@ -34,11 +34,11 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		mourn: 'e-mournful',
 	},
 	missiles: {
-		fire1: 'atk-fire',
-		impact1: 'hit-fire'
+		fire1: 'ghosts/generic/missile-fire',
+		impact1: 'ghosts/generic/missile-hit'
 	},
 	visualeffects: {
-		bluefire: 'e-fire'
+		bluefire: 'ghosts/generic/ghost-burn'
 	},
 	intro: {
 		stress1: 'intro/stress-1',

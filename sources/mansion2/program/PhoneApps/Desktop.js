@@ -43,7 +43,6 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 		for (var i in this.oMetrics) {
 			this.oMetrics[i].top += n;
 		}
-		console.log('Desktop rendered');
 	},
 	
 	/** 
@@ -131,7 +130,6 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 			
 			default:
 				if (sCommand) {
-					console.log('command:', sCommand);
 					this.loadNote(sCommand);
 				}
 			break;

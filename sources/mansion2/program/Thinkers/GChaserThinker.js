@@ -3,7 +3,7 @@
  * Ce thinker ne fait que poursuivre la cible, 
  * se téléporte a proximité de la cible en cas de perte de vue
  */
-O2.extendClass('MANSION.GPatThinker', MANSION.VengefulThinker, {
+O2.extendClass('MANSION.GChaserThinker', MANSION.VengefulThinker, {
 	thinkIdle: function() {
 		__inherited();
 		var oTarget = this.getTarget();

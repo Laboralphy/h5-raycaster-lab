@@ -109,8 +109,17 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.setAngle(this.fTheta + f);
 	},
 
+	setSpeed: function(f) {
+		this.fSpeed = f;
+	},
+
+	getSpeed: function(f) {
+		return this.fSpeed;
+	},
+
 	setAngle: function(f) {
-		this.fTheta = f;
+		this.fTheta = f % (PI * 2);
+		/*
 		var f2Pi = 2 * PI;
 		if (f > 0) {
 			while (this.fTheta >= PI) {
@@ -120,7 +129,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 			while (this.fTheta < -PI) {
 				this.fTheta += f2Pi;
 			}
-		}
+		}*/
 	},
 	
 	getAngle: function(f) {

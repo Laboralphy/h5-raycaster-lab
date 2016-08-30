@@ -15,7 +15,7 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 		var m = this.oMobile;
 		var fMe = m.getAngle();
 		while (fTarget < 0) {
-			fTargetf += 2 * PI;
+			fTarget += 2 * PI;
 			fMe += 2 * PI;
 		}
 		var fTurn = fMe - fTarget;
@@ -85,7 +85,7 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	 * Les block walkable ne comptent pas.
 	 */
 	getFrontBlock: function() {
-		var fDist = 4 * this.oGame.oRaycaster.nPlaneSpacing;
+		var fDist = 2.5 * this.oGame.oRaycaster.nPlaneSpacing;
 		var m = this.oMobile;
 		var fTheta = m.fTheta;
 		var xOri = m.x;

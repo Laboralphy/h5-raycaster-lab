@@ -18,7 +18,7 @@ O2.extendClass('Mansion.WraithThinker', Mansion.GhostThinker, {
 			}
 		} else {
 			// already seen
-			var nLifeSpan = this.oMobile.getBlueprint().data('lifespan');
+			var nLifeSpan = this.oMobile.data('lifespan');
 			if (nLifeSpan) {
 				this._nLife = this.oGame.getTime() + nLifeSpan;
 				this.think = this.thinkLivingShort;

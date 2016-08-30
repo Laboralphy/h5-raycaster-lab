@@ -177,6 +177,12 @@ O2.createClass('O876.Rasterize', {
 
 
 	_processImg: function(img, cb) {
+		var sSrc = img.getAttribute('src');
+		var sSign = 'data:image/';
+		if (sSrc.substr(0, sSign.length) == sSign) {
+			setTimeout(cb, 0);
+			return;
+		}
 		var oImage = new Image();
 		var pEvent = (function(oEvent) {
 			this._convertToBase64(oImage, img);
@@ -189,7 +195,7 @@ O2.createClass('O876.Rasterize', {
 	_processStyle: function(style, cb) {
 		var sSrc = style.getAttribute('src');
 		if (!sSrc) {
-			cb();
+			setTimeout(cb, 0);
 			return;
 		}
 		style.removeAttribute('src');

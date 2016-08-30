@@ -50,11 +50,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
 		this.on('itag.locator', this.tagEventLocator.bind(this));
 		this.on('itag.lock', this.tagEventLock.bind(this));
+		this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
+		this.on('itag.subject', this.tagEventSubject.bind(this));
 
 		// activable
-		this.on('tag.msg', this.tagEventMessage.bind(this));
+		this.on('tag.message', this.tagEventMessage.bind(this));
 		this.on('tag.script', this.tagEventScript.bind(this));
-		this.on('tag.zone', this.tagEventZone.bind(this));
+		this.on('tag.bgm', this.tagEventBgm.bind(this));
 		this.on('tag.teleport', this.tagEventTeleport.bind(this));
 		this.on('tag.item', this.tagEventItem.bind(this));
 		this.on('tag.lock', this.tagEventUnlock.bind(this));
@@ -336,55 +338,60 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
-			/*
-			case KEYS.ESCAPE:
-			break;
-
-			case KEYS.ALPHANUM.E:
-			break;
-
 			case KEYS.F1:
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_pat', pos.x, pos.y);
+				this.spawnGhost('g_aging_girl', pos.x, pos.y);
 			break;
 			
 			case KEYS.F2: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_warami', pos.x, pos.y);
+				this.spawnGhost('g_bashed_boy', pos.x, pos.y);
 			break;
 			
 			case KEYS.F3: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_dementia', pos.x, pos.y);
+				this.spawnGhost('g_blond_child', pos.x, pos.y);
 			break;		
 			
 			case KEYS.F4: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_angryman', pos.x, pos.y);
+				this.spawnGhost('g_dark_tears', pos.x, pos.y);
 			break;
 			
 			case KEYS.F5: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_bloodia', pos.x, pos.y);
+				this.spawnGhost('g_decaying', pos.x, pos.y);
 			break;
 			
 			case KEYS.F6: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_edwound', pos.x, pos.y);
+				this.spawnGhost('g_dementia', pos.x, pos.y);
 			break;
 			
 			case KEYS.F7: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_eyeball', pos.x, pos.y);
+			break;
 			case KEYS.F8: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_half_skull', pos.x, pos.y);
+			break;
 			case KEYS.F9: 
 				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_doll', pos.x, pos.y);
+				this.spawnGhost('g_hardy', pos.x, pos.y);
 			break;
 			case KEYS.F10: 
-			case KEYS.F11: 
-			case KEYS.F12: 
-//				oGhost.getThinker().TODO = oEvent.k - KEYS.F1 + 1;
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_old_ghoul', pos.x, pos.y);
 			break;
-			*/
+			case KEYS.F11: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_severed_jaw', pos.x, pos.y);
+			break;
+			case KEYS.F12: 
+				var pos = this.getPlayer().getFrontCellXY();
+				this.spawnGhost('g_spooky_doll', pos.x, pos.y);
+			break;
 		}
 	},
 	
@@ -481,6 +488,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 	/**
+	 * Gestion des block photographiable
+	 * La variable photo-script est explotée par cameraShoot
+	 */
+	tagEventPhotoScript: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		this.mapData(x, y, 'photo-script', oEvent.data);
+		oEvent.remove = true;
+	},
+
+	/**
 	 * Gestionnaire de tag
 	 * tag : light
 	 * Ce tag génère de la lumière statique lors du chargement du niveau
@@ -557,22 +575,25 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	tagEventMessage: function(oEvent) {
 		var sTag = oEvent.data;
-		this.popupMessage(MANSION.STRINGS_DATA[this.getLevel()]['m_' + sTag]);
+		var sLevel = this.getLevel();
+		var lm = MANSION.STRINGS_DATA.LEVELS;
+		if ((sLevel in lm) && (sTag in lm[sLevel])) {
+			this.popupMessage(lm[sLevel][sTag]);
+		} else {
+			this.popupMessage('unknown string ref : ' + sTag);
+		}
 		oEvent.remove = true;
 	},
 	
 	/**
 	 * Déclenché lorsqu'on active un tag "zone"
 	 */
-	tagEventZone: function(oEvent) {
+	tagEventBgm: function(oEvent) {
 		var sZone = oEvent.data;
 		// changement d'ambiance sonore
-		if (Event.data in MANSION.SOUNDS_DATA) {
+		if (sZone in MANSION.SOUNDS_DATA.bgm) {
 			this.playAmbience(MANSION.SOUNDS_DATA.bgm[sZone]);
 		}
-		// Noter le tag comme étant visité
-		var p = this.getPlayer();
-		p.data('g-visited-zone-' + sZone, true);
 	},
 	
 	/**
@@ -646,6 +667,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			});
 			this.playSound(MANSION.SOUNDS_DATA.events.doorlocked);
 		}
+	},
+
+	/**
+	 * Memorize les variables indiquant que le block est un sujet à photographier
+	 */
+	tagEventSubject: function(oEvent) {
+		this.mapData(oEvent.x, oEvent.y, 'subject', oEvent.data);
+		oEvent.remove = true;
 	},
 
 
@@ -750,18 +779,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @return Mobile
 	 */
 	spawnGhost: function(sBlueprint, x, y, a) {
-		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
-		oGhost.getThinker().reset();
+		var oGhost = this.spawnWraith(sBlueprint, x, y, a);
+		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		oGhost.data('hp', oGhost.data('life'));
 		oGhost.data('dead', false);
-		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
+		return oGhost;
 	},
 
 	spawnWraith: function(sBlueprint, x, y, a) {
 		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
 		oGhost.getThinker().reset();
-		oGhost.getThinker().setSpeed(oGhost.data('speed'));
+		return oGhost;
 	},
 	
 	/**
@@ -771,7 +800,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var aMobs = this.oRaycaster.oHorde.aMobiles;
 		var n = 0;
 		for (var i = 0, l = aMobs.length; i < l; ++i) {
-			if (aMobs[i].data('life')) {
+			if (aMobs[i].data('hp')) {
 				++n;
 			}
 		}
@@ -811,10 +840,44 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 	/**
 	 * Take a picture from the camera obscura
+	 * if a block tagged "photoscript" is targetted, the corresponding script is run
 	 */
 	cameraShoot: function() {
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
+			var b = this.getPlayer().getThinker().getFrontBlock();
+			if (b.x !== null && b.y !== null) {
+				var sPhotoScript = this.mapData(b.x, b.y, 'photo-script');
+				if (sPhotoScript) {
+					var aPhotoScript = sPhotoScript.split(' ');
+					var sScript = aPhotoScript.shift();
+					var sAction = aPhotoScript.shift();
+					var oInstance = this.getScript(sScript);
+					var oEvent = {
+						data: aPhotoScript.join(' '),
+						game: this,
+						x: b.x,
+						y: b.y,
+						remove: false
+					};
+					oInstance[sAction](oEvent);
+					if (oEvent.remove) {
+						this.mapData(b.x, b.y, 'photo-script', null);
+					}		
+				}
+				var sPhotoSubject = this.mapData(b.x, b.y, 'subject');
+				if (sPhotoSubject) {
+					var aSubject = sPhotoSubject.split(' ');
+					var sName = aSubject.shift();
+					var nScore = aSubject.shift() | 0;
+					this.oLogic.setPhotoSubject(
+						MANSION.STRINGS_DATA.SUBJECTS[sName], 
+						nScore, 
+						this.oRaycaster.getRenderCanvas()
+					);
+					this.mapData(b.x, b.y, 'subject', null);
+				}
+			}
 			gl.cameraShoot();
 			this.playSound(MANSION.SOUNDS_DATA.events.camera);
 			// draw the ghost screaming effects
@@ -824,19 +887,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var oGhost = g[0];
 				this._oGhostScreamer.addGhost(oGhost);
 			}, this);
-			var b = this.getPlayer().getThinker().getFrontBlock();
-			if (b.x !== null && b.y !== null) {
-				var t = this.getBlockTag(b.x, b.y);
-				if (t) {
-					// Tag = t
-					// coord : b.x, b.y
-				} else {
-					// NO TAG
-					// coord : b.x, b.y
-				}
-			} else {
-				// NO BLOCK
-			}
 		}
 	},
 	
@@ -860,7 +910,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Ouvre une passage secret précédemmetn scellé
 	 * Fait tourner les éventuel décals
 	 */
-	unlockSecretPassage: function(sLocator) {
+	unlockSecretBlock: function(sLocator) {
 		var oLoc = this.getLocator(sLocator);
 		var aLook = [
 			[0, -1],

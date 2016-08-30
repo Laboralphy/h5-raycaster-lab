@@ -204,7 +204,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
   spawnMissile: function(oMobile, sType) {
     var oMissile = this.oRaycaster.oHorde.spawnMobile(sType, oMobile.x, oMobile.y, oMobile.fTheta);
     oMissile.oThinker.fire(oMobile);
-    oMissile.fSpeed = oMissile.getBlueprint().data('speed');
+    oMissile.fSpeed = oMissile.data('speed');
     return oMissile;
   },
 
@@ -241,7 +241,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     if ('thinkDie' in oMobile.oThinker) {
       oMobile.oThinker.think = oMobile.oThinker.thinkDie;
     }
-    var nPoints = oMobile.getBlueprint().data('score');
+    var nPoints = oMobile.data('score');
     if (nPoints) {
       this.increaseScore(oKiller, nPoints);
     }
