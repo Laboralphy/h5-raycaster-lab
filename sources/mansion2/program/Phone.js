@@ -47,6 +47,7 @@ O2.createClass('MANSION.Phone', {
 		if (this.getCurrentPhone() && this.getCurrentPhone().isVisible()) {
 			var oApp = this.getCurrentApplication();
 			if (oApp) {
+				oApp.close();
 				this.trigger('phone.shutdown.' + oApp.name);
 				this.hide((function() {
 					this.clearApplication();
@@ -69,14 +70,20 @@ O2.createClass('MANSION.Phone', {
 	 * @param sApplication application name
 	 */
 	activate: function(sApplication) {
-		if (this.close(sApplication)) {
-			return;
-		}
+		var oApp;
 		if (sApplication in this.aApplications) {
 			oApp = this.aApplications[sApplication];
 		} else {
 			oApp = this.openApplication(sApplication);
 		}
+		var oCurrApp = this.getCurrentApplication();
+		if (oCurrApp) {
+			if (oCurrApp.getOrientation() != oApp.getOrientation())
+			if (this.close(sApplication)) {
+				return;
+			}
+		}
+
 		var oNewPhone;
 		if (this.sCurrentPhone === oApp.getOrientation()) {
 			oNewPhone = this._oPhone[oApp.getOrientation()];
@@ -92,6 +99,7 @@ O2.createClass('MANSION.Phone', {
 			});
 		}
 		this.trigger('phone.startup.' + sApplication, {application: oApp});
+		oApp.open();
 		return oApp;
 	},
 	

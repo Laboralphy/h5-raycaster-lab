@@ -333,8 +333,15 @@ O2.createClass('MANSION.Logic', {
 		this._aAlbum.push({
 			ref: sRef,
 			score: nScore,
-			data: oPhotoCanvas.toDataUrl()
+			data: oPhotoCanvas.toDataURL()
 		});
+	},
+
+	/**
+	 * retrevie all the photo in the album
+	 */
+	getAlbum: function() {
+		return this._aAlbum;
 	},
 
 	/**

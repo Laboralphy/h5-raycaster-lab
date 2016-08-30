@@ -241,7 +241,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var pc = this.oPhone.getCurrentPhone();
 		
 		// desktop click manager
-		if (p.isActive('Desktop') && pc.isVisible()) {
+		if ((p.isActive('Desktop') || p.isActive('Album')) && pc.isVisible()) {
 			var pi = pc.oPhone.oImage;
 			var xpc = pc.xPhone;
 			var ypc = pc.yPhone;
@@ -265,7 +265,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var pc = this.oPhone.getCurrentPhone();
 		
 		// desktop mouse move manager
-		if (p.isActive('Desktop') && pc.isVisible()) {
+		if ((p.isActive('Desktop') || p.isActive('Album')) && pc.isVisible()) {
 			var pi = pc.oPhone.oImage;
 			var xpc = pc.xPhone;
 			var ypc = pc.yPhone;
@@ -600,6 +600,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Exécute un script
 	 */
 	tagEventScript: function(oEvent) {
+		console.log(oEvent.data);
 		var sTag = oEvent.data;
 		var aTag = sTag.split(' ');
 		var sScript = aTag.shift();
@@ -651,7 +652,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.curselocked);
 			this.playSound(MANSION.SOUNDS_DATA.events.doorlocked);
 			return; // exit from here
-			// cursed lock are unlocked by photo
+			// cursed lock are unlocked by photo or ghost destruction
 		}
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
 		if (this.getPlayer().data('item-' + sKey)) {
@@ -870,10 +871,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					var aSubject = sPhotoSubject.split(' ');
 					var sName = aSubject.shift();
 					var nScore = aSubject.shift() | 0;
+					var oPhoto = O876.CanvasFactory.cloneCanvas(this.oRaycaster.getRenderCanvas());
+					var oEvent = {
+						subject: sName,
+						score: nScore,
+						photo: oPhoto
+					};
+					this.getPlayer().data('subject-' + sName, true);
+					this.trigger('photo.subject', oEvent);
 					this.oLogic.setPhotoSubject(
 						MANSION.STRINGS_DATA.SUBJECTS[sName], 
-						nScore, 
-						this.oRaycaster.getRenderCanvas()
+						nScore,
+						oEvent.photo
 					);
 					this.mapData(b.x, b.y, 'subject', null);
 				}

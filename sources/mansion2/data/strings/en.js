@@ -24,6 +24,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	SUBJECTS: {
 		// paintings
 		p_skull_monk: 'Skull masked monk',
+		p_blood_moon: 'Blood moon',
 		// book pages
 		b_nec_1: 'Necronomicon page 16',
 	},

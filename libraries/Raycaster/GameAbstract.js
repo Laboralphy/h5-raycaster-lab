@@ -231,9 +231,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
 		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag);
-			this._sTag = sTag;
+			sTag = this.triggerTag(x, y, sTag);
 		}
+		this._sTag = sTag;
 	},
 	
 
@@ -340,6 +340,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				throw new Error('tag modification is not allowed during trigger phase... [x: ' +x + ', y: ' + y + ', tag: ' + this.getBlockTag(x, y) + ']');
 			}
 			this.setBlockTag(x, y, sNewTag);
+			return sNewTag;
+		} else {
+			return sTag;
 		}
 	},
 

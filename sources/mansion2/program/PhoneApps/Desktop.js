@@ -24,7 +24,6 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 		this.aNotes = [];
 		this.oRasterize = new O876.Rasterize();
 		this.oRasterize.on('render', this.desktopRendered.bind(this));
-		this.oRasterize.on('load', this.desktopLoaded.bind(this));
 	},
 	
 	update: function(oLogic) {
@@ -44,14 +43,6 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 			this.oMetrics[i].top += n;
 		}
 	},
-	
-	/** 
-	 * When the notes content must be adapted before rendering....
-	 */
-	desktopLoaded: function(data) {
-		var oElement = data.element;
-	},
-	
 	
 	renderNote: function(sURL) {
 		var nWidth = this.nScreenWidth;
@@ -73,6 +64,13 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 		return this.oMetrics;
 	},
 
+	/**
+	 * Will return the identifer of the element pointed by
+	 * the specified position
+	 * @param x cursor position
+	 * @param y
+	 * @return string
+	 */
 	peek: function(x, y) {
 		if (this.oMetrics) {
 			var mi, m = this.oMetrics;
@@ -122,10 +120,20 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 		this.oStatusBar.render(oPhone);
 	},
 	
+	/**
+	 * Will be called by game when player clicks on an identified element
+	 * of the application surface
+	 * @param sCommand command
+	 * @param oGame instance of the game
+	 */
 	execCommand: function(sCommand, oGame) {
 		switch (sCommand) {
 			case 'menu-camera':
 				oGame.toggleCamera();
+			break;
+			
+			case 'menu-gallery':
+				oGame.oPhone.activate('Album');
 			break;
 			
 			default:
