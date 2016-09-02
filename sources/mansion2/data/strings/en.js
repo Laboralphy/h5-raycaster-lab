@@ -25,8 +25,6 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		// paintings
 		p_skull_monk: 'Skull masked monk',
 		p_blood_moon: 'Blood moon',
-		// book pages
-		b_nec_1: 'Necronomicon page 16',
 	},
 
 	// something happened
@@ -39,10 +37,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 
 	// The names of all items
 	ITEMS: {
-		'key-cabin-s': 'Cabin key',
+		// keys
+		key_cabin_s: 'Cabin key',
 
-		// necronomicon pages
-		nec_1: 'Necronomicon page 1',
+		// book
+		book_sigils: 'Tome of Sigils',
 	},
 
 	INTRO: {

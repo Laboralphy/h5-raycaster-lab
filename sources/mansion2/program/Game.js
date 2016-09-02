@@ -600,7 +600,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Exécute un script
 	 */
 	tagEventScript: function(oEvent) {
-		console.log(oEvent.data);
 		var sTag = oEvent.data;
 		var aTag = sTag.split(' ');
 		var sScript = aTag.shift();
@@ -637,7 +636,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.popupMessage(MANSION.STRINGS_DATA.EVENTS.item, {
 			$item: sItemStr
 		});
-		var aItem = sItem.split('-');
+		var aItem = sItem.split('_');
 		var sSound = aItem.shift();
 		if (sSound in MANSION.SOUNDS_DATA.pickup) {
 			this.playSound(MANSION.SOUNDS_DATA.pickup[sSound]);
@@ -654,19 +653,20 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return; // exit from here
 			// cursed lock are unlocked by photo or ghost destruction
 		}
+		var sKeyType = this.getItemType(sKey);
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
 		if (this.getPlayer().data('item-' + sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
 			});
-			this.playSound(MANSION.SOUNDS_DATA.events.doorunlock);
+			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType == 'key' ? 'doorunlock' : 'sigilunlock']);
 			oEvent.remove = true;
 		} else {
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.locked, {
 				$item: sItemStr
 			});
-			this.playSound(MANSION.SOUNDS_DATA.events.doorlocked);
+			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType == 'key' ? 'doorlocked' : 'sigillocked']);
 		}
 	},
 
@@ -951,6 +951,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	getPlayer: function() {
 		return this.oRaycaster.oCamera;
+	},
+	
+	/**
+	 * Renvoie le type d'objet
+	 * key, book, scroll
+	 * se base sur l'identifiant...
+	 */
+	getItemType: function(sItem) {
+		return sItem.split('_').shift();
 	},
 
 	/**

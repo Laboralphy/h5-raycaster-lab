@@ -18,13 +18,17 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		doorclose: 'mechanisms/door-close-2',
 		doorlocked: 'mechanisms/door-locked',
 		doorunlock: 'mechanisms/door-unlock',
+		sigillocked: 'magic/magic-chime-low',
+		sigilunlock: 'magic/magic-chime',
 		secret: 'mechanisms/push-stone',
 		camera: 'mechanisms/camera-trigger',
 		charge: 'mechanisms/camera-charge',
 		fullcharge: 'mechanisms/camera-full-charge',
 	},
 	pickup: {
-		key: 'pickup/key'
+		key: 'pickup/key',
+		book: 'pickup/book',
+		scroll: 'pickup/scroll'
 	},
 	ghosts: {
 		// supernatural events
