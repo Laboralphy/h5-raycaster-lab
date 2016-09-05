@@ -103,7 +103,7 @@ O2.createObject('MAIN', {
 			height: h,
 			rWidth: cw / wf,
 			rHeight: ch / hf
-		}
+		};
 	}
 });
 

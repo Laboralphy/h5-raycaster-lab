@@ -8,6 +8,7 @@ O2.extendClass('MANSION.PhoneApp.Album', MANSION.PhoneApp.Abstract, {
 	aPhotos: null,
 	oPhotoCvs: null,
 	oSubjectCvs: null,
+	oNoSubjectCvs: null,
 	sPhotoSubject: '',
 	nIndex: 0,
 
@@ -132,7 +133,7 @@ O2.extendClass('MANSION.PhoneApp.Album', MANSION.PhoneApp.Abstract, {
 		var cw = oScreen.width;
 		var ch = oScreen.height;
 		this.nScreenWidth = cw;
-		var ctx;
+		var c, ctx;
 		if (!this.oBG) {
 			var bg = O876.CanvasFactory.getCanvas(cw, ch, true);
 			ctx = bg.getContext('2d');
@@ -165,7 +166,6 @@ O2.extendClass('MANSION.PhoneApp.Album', MANSION.PhoneApp.Abstract, {
 				ctx.fillText(this.sPhotoSubject, cw >> 1, 0);
 				ctx.fillStyle = 'rgb(192, 192, 192)';
 				ctx.fillText((this.nIndex + 1).toString() + '/' + this.aPhotos.length, cw >> 1, 16);
-
 			}
 			oScreenCtx.drawImage(this.oSubjectCvs, 0, 4 + ph + this.oStatusBar.SB_HEIGHT);
 			// Arrows
@@ -179,6 +179,18 @@ O2.extendClass('MANSION.PhoneApp.Album', MANSION.PhoneApp.Abstract, {
 					oScreenCtx.drawImage(this.oArrowNext, cw - this.oArrowNext.width, ph2);
 					break;
 			}
+		} else {
+			if (!this.oNoSubjectCvs) {
+				c = O876.CanvasFactory.getCanvas(cw, 64, true);
+				ctx = c.getContext("2d");
+				ctx.font = '10px monospace';
+				ctx.textBaseline = 'top';
+				ctx.textAlign = 'center';
+				ctx.fillStyle = 'white';
+				ctx.fillText('(' + MANSION.STRINGS_DATA.UI.empty_album + ')', c.width >> 1, c.height >> 1);
+				this.oNoSubjectCvs = c;
+			}
+			oScreenCtx.drawImage(this.oNoSubjectCvs, 0, this.oStatusBar.SB_HEIGHT);
 		}
 
 		this.oStatusBar.render(oPhone);

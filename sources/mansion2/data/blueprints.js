@@ -604,9 +604,9 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		fx: 3,
 		data: {
 			subtype: 'wraith',
-			rank: 1,
+			rank: 2,
 			sounds: {
-				spawn: '',
+				spawn: 'events/creepy-siren',
 				seen: '',
 			},
 		},

@@ -29,6 +29,43 @@ O2.createClass('O876_Raycaster.GXManager', {
 		this.aEffects.push(oEffect);
 		return oEffect;
 	},
+	
+	/**
+	 * Suppression d'un effet GX
+	 */
+	removeEffect: function(xEffect) {
+		var oEffect, iEffect;
+		var sType = O876.typeMap([xEffect], 'short');
+		console.log(sType);
+		switch (sType) {
+			case 'f': 
+				this.removeEffect(this.aEffects.filter(xEffect));
+				break;
+				
+			case 'a':
+				xEffect.forEach(function(e) {
+					this.removeEffect(e);
+				}, this);
+				break;
+				
+			case 'o':
+				iEffect = this.aEffects.indexOf(xEffect);
+				if (iEffect >= 0) {
+					this.removeEffect(iEffect);
+				}
+				break;
+
+			case 'n':
+				iEffect = xEffect;
+				oEffect = this.aEffects[iEffect];
+				oEffect.terminate();
+				oEffect.done();
+				console.log('remove effect', iEffect);
+				this.aEffects.splice(iEffect, 1);
+				break;
+		}
+	},
+
 
 	/** Supprime tous les effet actuels
 	 * Lance la methode terminate de chacun d'eux

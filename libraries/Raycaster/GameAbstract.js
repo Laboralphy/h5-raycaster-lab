@@ -276,6 +276,12 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				sMessage = sMessage.replace(r, oVariables[v]);
 			}
 		}
+		// suppression des ancien messages;
+		console.log('removing older gxmessage');
+		rc.oEffects.removeEffect(function(e) {
+			console.log('testing', e.sClass);
+			return e.sClass === 'Message';
+		});
 		var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 		oMsg.setMessage(sMessage);
 		this._sLastPopupMessage == sMessage;

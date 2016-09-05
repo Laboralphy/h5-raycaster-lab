@@ -286,7 +286,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
         this.aTagMap[y][x] = 0;
         this.increaseScore(oMobile, 2);
         o = rc.addGXEffect(O876_Raycaster.GXFlash);
-        o.setFlash('#FC0', 0.75, 800)
+        o.setFlash('#FC0', 0.75, 800);
         if (oMobile.getData('maxhitpoints') && oMobile.getData('maxhitpoints') > oMobile.getData('hitpoints')) {
           this.healMobile(oMobile, 8);
         } else {

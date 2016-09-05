@@ -51,7 +51,7 @@ O2.extendClass('MANSION.PhoneApp.Desktop', MANSION.PhoneApp.Abstract, {
 		var oCvs = O876.CanvasFactory.getCanvas();
 		oCvs.width = nWidth;		
 		oCvs.height = nMaxHeight;
-		this.oRasterize.render('data/pages/' + sURL + '.xml', oCvs);
+		this.oRasterize.render('resources/pages/' + sURL + '.xml', oCvs);
 	},
 	
 	loadNote: function(sURL) {
