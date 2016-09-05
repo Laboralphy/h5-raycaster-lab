@@ -521,7 +521,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 			subtype: 'wraith',
 			rank: 1,
 			sounds: {
-				spawn: '',
+				spawn: 'apparitions/far-scream',
 				seen: '',
 			},
 		},

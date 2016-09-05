@@ -40,7 +40,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 		var p = g.getLocator('w-exit-boo'); // w_sadako
 		var ps = g.oRaycaster.nPlaneSpacing;
 		var ps2 = ps >> 1;
-		var oGhost = g.spawnWraith('w_sadako', p.x * ps + ps2, p.y * ps + ps2, 0);
+		var oGhost = g.spawnWraith('w_medusa', p.x * ps + ps2, p.y * ps + ps2, 0);
 		var gt = oGhost.getThinker();
 		gt.setLifespan(2000);
 		oEvent.remove = true;
