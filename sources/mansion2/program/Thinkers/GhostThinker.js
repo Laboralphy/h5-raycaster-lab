@@ -133,6 +133,6 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 		if (sProcEnter in this) {
 			this[sProcEnter].apply(this, aArgs);
 		}
-	},
+	}
 	
 });

@@ -9,7 +9,10 @@ O2.createClass('MANSION.Script.LevHtp', {
 		if (oPlayer.data('item-book_sigils')) {
 			oEvent.remove = true;
 			var pos = oPlayer.getFrontCellXY();
-			g.spawnGhost('g_bashed_boy', pos.x, pos.y);			
+			var oGhost = g.spawnGhost('g_bashed_boy', pos.x, pos.y);
+			var oDoor = g.getLocator('door_ghost');
+			oGhost.data('hold-door', 'door_ghost');
+			g.lockDoor(oDoor.x, oDoor.y);		
 		}
 	},
 

@@ -985,9 +985,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	lockDoor: function(x, y) {
+		if (this.isDoorLocked(x, y)) {
+			return;
+		}
 		var rc = this.oRaycaster;
 		var p = rc.getMapPhys(x, y);
 		if (p >= 2 && p <= 9) {
+			rc.oXMap.rotateWallSurfaces(x, y);
 			this.mapData(x, y, 'locked-phys-code', p);
 			rc.setMapPhys(x, y, p == rc.PHYS_SECRET_BLOCK ? rc.PHYS_WALL : rc.PHYS_OFFSET_BLOCK);
 			rc.setMapOffs(x, y, rc.nPlaneSpacing >> 1);
@@ -1000,7 +1004,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (p !== null) {
 			rc.setMapPhys(x, y, p);
 			rc.setMapOffs(x, y, 0);
-			rc.cloneWall(x, y, false, false);
+			rc.oXMap.rotateWallSurfaces(x, y, true);
+			//rc.cloneWall(x, y, false, false);
 			this.mapData(x, y, 'locked-phys-code', null);
 		}
 	},
