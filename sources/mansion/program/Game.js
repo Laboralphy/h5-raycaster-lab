@@ -29,7 +29,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	
 	initAudio: function() {
 		a = new O876.SoundSystem();
-		a.addChans(8);
+		a.setChannelCount(8);
 		a.setPath('resources/snd');
 		this._oAudio = a;
 	},
@@ -83,11 +83,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	gameEventLevel: function() {
 		this.getPlayer().fSpeed = 3;
 		this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
-		var oGXFade = new O876_Raycaster.GXFade(this.oRaycaster);
-		oGXFade.fAlpha = 1;
-		oGXFade.oColor = { r: 0, g: 0, b: 0, a: 0 };
-		oGXFade.fAlphaFade = -0.05;
-		this.oRaycaster.oEffects.addEffect(oGXFade);
+		this.oRaycaster.oEffects.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.6);
 	},
 	
 
@@ -246,7 +242,6 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	 * @param float y
 	 */
 	playSound : function(sFile, x, y) {
-		var nChan = this._oAudio.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
 			var oPlayer = this.getPlayer();
@@ -268,7 +263,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			fVolume = 1;
 		}
 		if (fVolume > 0.01) {
-			this._oAudio.play(sFile, nChan, fVolume);
+			this._oAudio.play(sFile, fVolume);
 		}
 	},
 	

@@ -43,6 +43,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	
 	bSelectFlag: true, // true = you can select / false = you cannot select regions
 	
+	sSelectedFloor: 'f1',
+	
 	/**
 	 * builds the DOM structure
 	 */
@@ -89,23 +91,35 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		
 		var pCommand = this.cmd_command.bind(this);
 		
-		this.addCommand('↻', 'Reload the editor and start a new level', this.cmd_new.bind(this));
-		this.addCommand('', 'Open a file', this.cmd_load.bind(this));
-		this.addCommand('', 'Save current level file', this.cmd_save.bind(this));
+		this.addCommand('<span class="icon-spinner11"></span>', 'Reload the editor and start a new level', this.cmd_new.bind(this));
+		this.addCommand('<span class="icon-folder"></span>', 'Open a file', this.cmd_load.bind(this));
+		this.addCommand('<span class="icon-floppy-disk"></span>', 'Save current level file', this.cmd_save.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('▦+', 'Bigger level : increase the grid size', this.cmd_sizeInc.bind(this)); // ◰
-		this.addCommand('▦-', 'Smaller level : decrease the grid size', this.cmd_sizeDec.bind(this));
-		this.addCommand('◰+', 'Zoom in : increase the cells size', this.cmd_cellSizeInc.bind(this)); // ◰
-		this.addCommand('◰-', 'Zoom out : decrease the cells size', this.cmd_cellSizeDec.bind(this));
+		this.addCommand('<span class="icon-table2">+</span>', 'Add a row and a column to the grid', this.cmd_sizeInc.bind(this)); // ◰
+		this.addCommand('<span class="icon-table2">-</span>', 'Remove a row and a colmun from the grid', this.cmd_sizeDec.bind(this));
+		this.addCommand('<span class="icon-zoom-in"></span>', 'Zoom in : increase the cells size', this.cmd_cellSizeInc.bind(this)); // ◰
+		this.addCommand('<span class="icon-zoom-out"></span>', 'Zoom out : decrease the cells size', this.cmd_cellSizeDec.bind(this));
 		this.addCommandSeparator();
-		this.addCommand('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12"><rect x="4" y="4" width="8" height="8" fill="#AAA" stroke="black"/><rect x="0" y="0" width="8" height="8" fill="#CCC" stroke="black"/></svg>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this));
-		this.addCommand('<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12"><rect x="0" y="2" width="10" height="12" fill="#888" stroke="black"/><rect x="2" y="0" width="6" height="4" fill="#CCC" stroke="black"/><rect x="2" y="6" width="10" height="6" fill="#FFF" stroke="black"/></svg>', 'Paste the clipboard data on the grid (both floors)', this.cmd_paste.bind(this));
-		this.addCommand('↶', 'Undo the last drawing operation on the grid', this.cmd_undo.bind(this));
+		this.addCommand('<span class="icon-copy"></span>', 'Copy the selected region into the clipboard (both floors)', this.cmd_copy.bind(this)).addClass('enabled-when-selection');
+		this.addCommand('<span class="icon-paste"></span>', 'Paste the clipboard data on the grid (both floors)', this.cmd_paste.bind(this));
+		this.addCommand('<span class="icon-undo"></span>', 'Undo the last drawing operation on the grid', this.cmd_undo.bind(this));
 		this.addCommandSeparator();
 		
 		// selectable tools
-		var $default = this.addCommand('⬚', 'Region selector tool', pCommand, 'mapgrid_cmd_select').addClass('tool selected').data({'command': 'select', 'fill': 'rgba(0, 64, 192, 0.4)', 'stroke': 'rgb(0, 64, 192)'});
-		this.addCommand('✎', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw').addClass('tool').data({'command': 'draw', 'fill': 'rgba(0, 0, 192, 0.4)', 'stroke': 'rgb(0, 0, 192)'});
+		var $default = this.addCommand('<span class="icon-checkbox-unchecked"></span>', 'Region selector tool', pCommand, 'mapgrid_cmd_select')
+			.addClass('tool selected')
+			.data({
+				'command': 'select', 
+				'fill': 'rgba(0, 64, 192, 0.4)', 
+				'stroke': 'rgb(0, 64, 192)'
+			});
+		this.addCommand('<span class="icon-pencil2"></span>', 'Drawing tool - Paint on the grid (on the selected floor) with the selected block', pCommand, 'mapgrid_cmd_draw')
+			.addClass('tool')
+			.data({
+				'command': 'draw', 
+				'fill': 'rgba(0, 0, 192, 0.4)', 
+				'stroke': 'rgb(0, 0, 192)'
+			});
 		this.addCommandSeparator();
 		
 		
@@ -113,24 +127,24 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.sSelectStrokeStyle = $default.data('stroke');
 
 		// selectable floors
-		this.addCommand('Lower', 'Draw on the lower floor', pCommand).addClass('floor selected').data('command', 'f1');
-		this.addCommand('Upper', 'Draw on the upper floor', pCommand).addClass('floor').data('command', 'f2');
+		this.addCommand('<span class="icon-box-add"></span> Lower', 'Draw on the lower floor', pCommand).addClass('floor selected').data('command', 'f1');
+		this.addCommand('<span class="icon-box-remove"></span> Upper', 'Draw on the upper floor', pCommand).addClass('floor').data('command', 'f2');
 		//this.addCommand('Both', 'Draw on both floors', pCommand).addClass('floor').data('command', 'f12');
 		this.addCommandSeparator();
 
-		this.addCommand('⌧', 'Eraser tool - Erase blocks on the selected floor', this.cmd_clear.bind(this));
-		this.addCommand('⚑', 'Set tag', this.cmd_setTag.bind(this));
+		this.addCommand('⌧', 'Eraser tool - Erase blocks on the selected floor', this.cmd_clear.bind(this)).addClass('enabled-when-selection');
+		this.addCommand('<span class="icon-price-tag"></span>', 'Set tag', this.cmd_setTag.bind(this)).addClass('enabled-when-selection');
 		this.addCommandSeparator();
 
 		// view selector
-		this.addCommand('◫', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this)).addClass('view blockbrowser selected');
+		this.addCommand('<span class="icon-map"></span>', 'Create/Modify Blocks', this.cmd_viewBlock.bind(this), 'mapgrid_cmd_viewblock').addClass('view blockbrowser selected');
 		this.addCommand('♜', 'Add/Remove Things', this.cmd_viewThing.bind(this)).addClass('view');
-		this.addCommand('✜', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
-		this.addCommand('☀', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-location"></span>', 'Place the Starting point', this.cmd_viewStartPoint.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-image"></span>', 'Change Sky and background', this.cmd_viewSky.bind(this)).addClass('view');
 		this.addCommand('▶', '3D render', this.cmd_view3D.bind(this)).addClass('view');
 		this.addCommandSeparator();
-		this.addCommand('⇄', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
-		this.addCommand('⚠', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-tab"></span>', 'Level import/export', this.cmd_viewImpexp.bind(this)).addClass('view');
+		this.addCommand('<span class="icon-warning"></span>', 'Advanced commands', this.cmd_viewAdvanced.bind(this)).addClass('view');
 		// ⚙ options
 		// ⚒ build
 		// ⚠ admin
@@ -275,13 +289,11 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		var bRegion = xf !== undefined;
 		var xmin, xmax, ymin, ymax;
 		if (bRegion) {
-			//console.log('labygrid : redraw region', xf, yf, xt, yt);
 			xmin = Math.min(xf, xt);
 			xmax = Math.max(xf, xt);
 			ymin = Math.min(yf, yt);
 			ymax = Math.max(yf, yt);
 		} else {
-			//console.log('labygrid : redraw all');
 			xmin = 0;
 			xmax = w - 1; 
 			ymin = 0;
@@ -297,11 +309,15 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 				if (g[y]) {
 					for (x = xmin; x <= xmax; ++x) {
 						pDraw(g[y][x], cx, x * wTile , y * wTile, wTile, wTile);
-						sTag = Marker.getMarkXY(aTags, x, y);
-						if (sTag) {
-							cx.drawImage(this.oTagFactory.getFactorizedItem(sTag), x * wTile , y * wTile);
-						}
 					}
+				}
+			}
+		}
+		for (y = ymin; y <= ymax; ++y) {
+			for (x = xmin; x <= xmax; ++x) {
+				sTag = Marker.getMarkXY(aTags, x, y);
+				if (sTag) {
+					cx.drawImage(this.oTagFactory.getFactorizedItem(sTag), x * wTile , y * wTile);
 				}
 			}
 		}
@@ -328,7 +344,9 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			cx.restore();
 		}
 		// drawing selected region
-		if (s.x1 !== null) {
+		if (s.x1 === null) {
+			$('.enabled-when-selection', this.getToolBar()).attr('disabled', 'disabled');
+		} else {
 			var x1 = Math.min(s.x1, s.x2);
 			var x2 = Math.max(s.x1, s.x2);
 			var y1 = Math.min(s.y1, s.y2);
@@ -338,6 +356,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			cx.strokeStyle = this.sSelectStrokeStyle;
 			cx.fillRect(wTile * x1 + 2, wTile * y1 + 2, wTile * (x2 - x1 + 1) - 4, wTile * (y2 - y1 + 1) - 4);
 			cx.strokeRect(wTile * x1 + 2, wTile * y1 + 2, wTile * (x2 - x1 + 1) - 4, wTile * (y2 - y1 + 1) - 4);
+			$('.enabled-when-selection', this.getToolBar()).removeAttr('disabled');
 		}
 		if (!bRegion && this.onDrawOver) {
 			this.onDrawOver(this.oContext);
@@ -384,8 +403,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * @return int
 	 */
 	getSelectedFloor: function() {
-		var sFloor = $('button.floor.selected', this.getToolBar()).data('command');
-		switch (sFloor) {
+		switch (this.sSelectedFloor) {
 			case 'f1': return 1;
 			case 'f2': return 2;
 			case 'f12': return 3;
@@ -478,6 +496,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 					this.onClick(x, y);
 				}
 				break;
+
+			case 2: //middle button : copy block
+				this.doAction('middleclick', this.getCell(xCell, yCell), xCell, yCell, x, y);
+				break;
 		}
 	},
 	
@@ -518,9 +540,13 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 */
 	cmd_mouseUp: function(oEvent) {
 		this.cmd_mouseMove(oEvent);
-		if (this.bSelectFlag) {
-			this.bStartDrag = false;
-			this.doAction($('button.tool.selected', this.getToolBar()).data('command'));
+		switch (oEvent.which) {
+			case 1: // only left button is handled
+				if (this.bSelectFlag) {
+					this.bStartDrag = false;
+					this.doAction($('button.tool.selected', this.getToolBar()).data('command'));
+				}
+				break;
 		}
 	},
 	
@@ -534,7 +560,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			this.bStartDrag = false;
 		}
 	},
-	
+
 	/**
 	 * Start a new level (by reloading the page)
 	 */
@@ -650,13 +676,22 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	
 	cmd_command: function(oEvent) {
 		var $button = $(oEvent.target);
+		if ($button.get(0).tagName.toLowerCase() != 'button') {
+			$button = $button.parent('button');
+		}
 		var sCommand = $button.data('command');
+		if ($button.hasClass('tool')) {
+			$('button.tool', this.getToolBar()).removeClass('selected');
+			$button.addClass('selected');
+		}
+		if ($button.hasClass('floor')) {
+			$('button.floor', this.getToolBar()).removeClass('selected');
+			$button.addClass('selected');
+		}
 		switch (sCommand) {
 			case 'select':
 			case 'draw':
 				this.unselect();
-				$('button.tool', this.getToolBar()).removeClass('selected');
-				$button.addClass('selected');
 				this.sSelectFillStyle = $button.data('fill');
 				this.sSelectStrokeStyle = $button.data('stroke');
 				break;
@@ -664,16 +699,19 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			case 'f1':
 			case 'f2':
 			case 'f12':
-				$('button.floor', this.getToolBar()).removeClass('selected');
-				$button.addClass('selected');
+				this.sSelectedFloor = sCommand;
 				this.redraw();
 				break;
 		}
 	},
 	
 	cmd_selectViewButton: function(b) {
+		var $button = $(b);
+		if (b.tagName.toLowerCase() != 'button') {
+			$button = $button.parent('button');
+		}
 		$('button.view.selected').removeClass('selected');
-		$(b).addClass('selected');
+		$button.addClass('selected');
 	},
 	
 	cmd_viewBlock: function(oEvent) {
@@ -737,11 +775,14 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			};
 		} 
 		var sp = this.oStartingPoint;		
+		var xOld = sp.x;
+		var yOld = sp.y;
 		sp.x = x1;
 		sp.y = y1;
 		sp.angle = 0;
 		this.doAction('setstart', sp.x, sp.y, sp.angle);
-		this.redraw();
+		this.redraw(xOld, yOld, xOld, yOld);
+		this.redraw(sp.x, sp.y, sp.x, sp.y);
 	},
 	
 	cmd_setStartPointAngle: function(fAngle) {
@@ -755,7 +796,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		}
 		sp.angle = sp.angle % (Math.PI * 2);
 		this.doAction('setstart', sp.x, sp.y, sp.angle);
-		this.redraw();
+		this.redraw(sp.x, sp.y, sp.x, sp.y);
 	},
 	
 

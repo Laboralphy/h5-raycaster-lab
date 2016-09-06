@@ -3,7 +3,7 @@
  * 2012-01-01 Raphaël Marandet
  */
 
-var PI = 3.14159;
+var PI = Math.PI;
 var MathTools = {
 	aQuadrans : [ -PI / 2, -PI / 4, 0, PI / 4, PI / 2 ],
 	fToDeg : 180 / PI,

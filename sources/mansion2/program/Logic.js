@@ -1,4 +1,7 @@
 // Raycaster Mansion Game Logic
+/**
+ * Cette classe contient quelques règle métier concernant le téléphone et l'appareil photo, 
+ */
 
 O2.createClass('MANSION.Logic', {
 	
@@ -19,6 +22,9 @@ O2.createClass('MANSION.Logic', {
 	_bCameraCharging: false,
 	_bCameraFullCharge: false,
 	_bCameraFlash: false,
+	_aCameraSubjects: null,
+
+	_aCapturedSubjects: null,  // list of all gathered evidences
 	
 	
 	_nTime: 0, 
@@ -28,11 +34,14 @@ O2.createClass('MANSION.Logic', {
 	_aCapturedGhosts: null,
 	_aLastShotStats: null,
 	
-	
+	_nScore: 0,
+
 	_nPhoneBattery: 100,
 	_nPhoneNetwork: 100,
 	_nPhoneClockH: 0,
 	_nPhoneClockM: 0,
+
+	_aAlbum: null,
 	
 
 	/**
@@ -139,10 +148,18 @@ O2.createClass('MANSION.Logic', {
 		this._bCameraFlash = false;
 		return b;
 	},
-	
+
 	/**
 	 * We have taken photo
 	 * updating energy gauges
+	 * damage formula :
+	 * damage = e * (1 - a / ca) * (1 - d / cd)
+	 * a : angle between ghost and target point
+	 * ca : capture circle angle
+	 * d : distance between camera and ghost
+	 * cd : maximum distance 
+	 * e : stored energy (from 0 to 1000)
+	 * (a full energy got bonus * 1.5)
 	 */
 	cameraShoot: function() {
 		this._bCameraFlash = true;
@@ -152,30 +169,47 @@ O2.createClass('MANSION.Logic', {
 		if (bFullEnergy) {
 			fEnergy = fEnergy * this._fCameraFullEnergyBonus | 0;
 		}
-		var nTotalDamage = 0;
+		var nTotalScore = 0;
 		var nTotalShots = 0;
 		var aTags = [];
+		var aSubjects;
+		if (this._aCameraSubjects) {
+			aSubjects = this._aCameraSubjects.map(function(s) {
+				nTotalScore += s.score * MANSION.CONST.SCORE_PER_RANK;
+				return s.ref;
+			});
+			this._aCameraSubjects = [];
+		}
 		this._aCapturedGhosts.forEach((function(g) {
 			var fDistance = g[2];
 			var fAngle = g[1];
 			var oGhost = g[0];
-			var e = fEnergy * this.getEnergyDissipation(fAngle, fDistance) | 0;
-			if (e) {
-				if (fDistance < 64) {
-					aTags.push('close');
-				}
-				if (fAngle < 0.01) {
-					aTags.push('core');
-				}
-				if (oGhost.getThinker().isShutterChance()) {
-					aTags.push('fatal');
-				}
-				if (bFullEnergy) {
-					aTags.push('zero');
-				}
-				oGhost.getThinker().damage(e, bFullEnergy);
-				nTotalDamage += e;
-				++nTotalShots;
+			switch (oGhost.data('subtype')) {
+				case 'ghost':
+					var e = fEnergy * this.getEnergyDissipation(fAngle, fDistance) | 0;
+					if (e) {
+						if (fDistance < 64) {
+							aTags.push('close');
+						}
+						if (fAngle < 0.01) {
+							aTags.push('core');
+						}
+						if (oGhost.getThinker().isShutterChance()) {
+							aTags.push('fatal');
+						}
+						if (bFullEnergy) {
+							aTags.push('zero');
+						}
+						oGhost.getThinker().damage(e, bFullEnergy);
+						nTotalScore += e;
+						++nTotalShots;
+					}
+					break;
+
+				case 'wraith':
+					nTotalScore += oGhost.data('rank') * MANSION.CONST.SCORE_PER_RANK;
+					oGhost.getThinker().vanish();
+					break;
 			}
 		}).bind(this));
 		switch (nTotalShots) {
@@ -198,9 +232,11 @@ O2.createClass('MANSION.Logic', {
 		this._nCameraEnergy = 0;
 		this._bCameraFullCharge = false;
 		this._nCameraESNext = null;
+		this._nScore += nTotalScore;
 		this._aLastShotStats = {
-			damage: nTotalDamage,
-			shots: aTags
+			score: nTotalScore,
+			shots: aTags,
+			subjects: aSubjects
 		};
 	},
 	
@@ -214,7 +250,10 @@ O2.createClass('MANSION.Logic', {
 	},
 	
 	/**
-	 * Given angle and distance, returns
+	 * Given angle and distance, returns the energy multiplicator
+	 * 
+	 * energy = (1 - angle / captureAngle) * (1 - distance / captureDistance)
+	 *
 	 */
 	getEnergyDissipation: function(fAngle, fDistance) {
 		var fCaptureAngle = this.getCameraCaptureAngle();
@@ -228,7 +267,7 @@ O2.createClass('MANSION.Logic', {
 				fEnergy = 0;
 			}
 		}
-		return fEnergy;
+		return fEnergy * fEnergy;
 	},
 
 	/**
@@ -245,14 +284,18 @@ O2.createClass('MANSION.Logic', {
 			var fAngle;
 			var fDistance;
 			var oGhost;
+			var sSubType;
 			for (var i = 0, l = aMobs.length; i < l; ++i) {
 				mi = aMobs[i];
 				oGhost = mi[0];
-				if (!oGhost.getData('dead')) {
+				if (!oGhost.data('dead')) {
 					fAngle = mi[1];
 					fDistance = mi[2];
 					fEnergy = this.getEnergyDissipation(fAngle, fDistance);
 					if (fEnergy > 0) {
+						if (oGhost.data('subtype') === 'wraith') {
+							fEnergy = 0;
+						}
 						aCaptured.push(mi);
 						fTotalEnergy += fEnergy;
 					}
@@ -267,7 +310,40 @@ O2.createClass('MANSION.Logic', {
 		this._bCameraCharging = fTotalEnergy > 0;
 		this._aCapturedGhosts = aCaptured;
 	},
-	
+
+	/**
+	 * A photo of the specified subject is taken
+	 */
+	setPhotoSubject: function(sRef, nScore,oPhotoCanvas) {
+		if (!this._aCameraSubjects) {
+			this._aCameraSubjects = [];
+		}
+		if (!this._aTakenSubjects) {
+			this._aTakenSubjects = [];
+		}
+		this._aCameraSubjects.push({
+			ref: sRef,
+			score: nScore
+		});
+		this._aTakenSubjects.push(sRef);
+		// post the photo in the album
+		if (!this._aAlbum) {
+			this._aAlbum = [];
+		}
+		this._aAlbum.push({
+			ref: sRef,
+			score: nScore,
+			data: oPhotoCanvas.toDataURL()
+		});
+	},
+
+	/**
+	 * retrevie all the photo in the album
+	 */
+	getAlbum: function() {
+		return this._aAlbum;
+	},
+
 	/**
 	 * Return true if the camera is being charged and making noise
 	 */
@@ -336,5 +412,5 @@ O2.createClass('MANSION.Logic', {
 	 */
 	getClockTime: function() {
 		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
-	},
+	}
 });

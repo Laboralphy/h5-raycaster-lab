@@ -1,11 +1,13 @@
 /* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
+	_sNextLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
 	_xTagProcessing: 0,
 	_yTagProcessing: 0,
+	_oMapData: null,
 
 	/** 
 	 * Evènement apellé lors de l'initialisation du jeu
@@ -38,8 +40,13 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 */
 	onRequestLevelData: function() {
 		if ('WORLD_DATA' in window) {
-			var aWorldDataKeys = Object.keys(WORLD_DATA);
-			this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
+			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
+				return a > b;
+			});
+			var wd;
+			if (!this._sLevelIndex) {
+				this._sLevelIndex = aWorldDataKeys[0];
+			}
 			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
 			return WORLD_DATA[this._sLevelIndex];
 		} else {
@@ -85,6 +92,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
+		this._oMapData = Marker.create();
 		this._oTagData = Marker.create();
 		for (iTag = 0; iTag < aTags.length; ++iTag) {
 			oTag = aTags[iTag];
@@ -170,9 +178,8 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	onTagTriggered: function(x, y, sTag) {
 		if (sTag) {
 			var rc = this.oRaycaster;
-			var oMsg = new O876_Raycaster.GXMessage(rc);
+			var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 			oMsg.setMessage(sTag);
-			rc.oEffects.addEffect(oMsg);
 		}
 	},
 	
@@ -224,9 +231,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
 		if (sTag && sTag != this._sTag) {
-			this.triggerTag(x, y, sTag);
-			this._sTag = sTag;
+			sTag = this.triggerTag(x, y, sTag);
 		}
+		this._sTag = sTag;
 	},
 	
 
@@ -251,16 +258,34 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.enterLevel();
 	},
 
+	getString: function(sKey) {
+
+	},
+
 	
 	/**
 	 * Affiche un message popup
 	 * @param string sMessage contenu du message
 	 */
-	popupMessage: function(sMessage) {
+	popupMessage: function(sMessage, oVariables) {
 		var rc = this.oRaycaster;
-		var oMsg = new O876_Raycaster.GXMessage(rc);
+		var r;
+		if (oVariables !== undefined) {
+			for (var v in oVariables) {
+				r = new RegExp('\\' + v, 'g');
+				sMessage = sMessage.replace(r, oVariables[v]);
+			}
+		}
+		// suppression des ancien messages;
+		console.log('removing older gxmessage');
+		rc.oEffects.removeEffect(function(e) {
+			console.log('testing', e.sClass);
+			return e.sClass === 'Message';
+		});
+		var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 		oMsg.setMessage(sMessage);
-		rc.oEffects.addEffect(oMsg);
+		this._sLastPopupMessage == sMessage;
+		return oMsg;
 	},
 	
 	/**
@@ -317,7 +342,13 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				this.trigger(aEvent.join('.'), oData);
 				return !oData.remove;
 			}, this).join(';');
+			if (this.getBlockTag(x, y) != sTag) {
+				throw new Error('tag modification is not allowed during trigger phase... [x: ' +x + ', y: ' + y + ', tag: ' + this.getBlockTag(x, y) + ']');
+			}
 			this.setBlockTag(x, y, sNewTag);
+			return sNewTag;
+		} else {
+			return sTag;
 		}
 	},
 
@@ -331,11 +362,13 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var oBlock = m.getFrontCellXY();
 		var x = oBlock.x;
 		var y = oBlock.y;
-		this.triggerTag(x, y, this.getBlockTag(x, y));
-		var oEffect = this.openDoor(x, y);
-		if (oEffect) {
-			this.trigger('door', {x: x, y: y, door: oEffect});
+		if (this.isDoor(x, y)) {
+			var oEffect = this.openDoor(x, y);
+			if (oEffect) {
+				this.trigger('door', {x: x, y: y, door: oEffect});
+			}
 		}
+		this.triggerTag(x, y, this.getBlockTag(x, y));
 	},
 
 	/**
@@ -343,10 +376,28 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * @param int x
 	 * @param int y position du block qu'on interroge
 	 */
-	getBlockTag: function(x, y) {
+	getBlockTag: function(x, y, sSeek) {
 		var s = this.oRaycaster.nMapSize;
 		if (x >= 0 && y >= 0 && x < s && y < s) {
-			return Marker.getMarkXY(this._oTagData, x, y);
+			var sTag = Marker.getMarkXY(this._oTagData, x, y);
+			if (sTag === undefined) {
+				return '';
+			}
+			if (sSeek !== undefined) {
+				var sFound = null;
+				sTag.split(';').some(function(t) {
+					var a = t.split(' ');
+					var s = a.shift();
+					if (s == sSeek) {
+						sFound = a.join(' ');
+						return true;
+					}
+					return false;
+				});
+				return sFound;
+			} else {
+				return sTag;
+			}
 		} else {
 			return null;
 		}
@@ -366,6 +417,36 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		} else {
 			return null;
 		}		
+	},
+
+	/**
+	 * sets or gets values from the map data array
+	 */
+	mapData: function(x, y, sVariable, xValue) {
+		var s = this.oRaycaster.nMapSize;
+		var md = this._oMapData;
+		var oVars, bDefined;
+		if (x >= 0 && y >= 0 && x < s && y < s) {
+			oVars = Marker.getMarkXY(md, x, y);
+			bDefined = typeof oVars === 'object';
+			if (xValue === undefined) {
+				// getting variable
+				if (bDefined) {
+					return oVars[sVariable];
+				} else {
+					return null;
+				}
+			} else {
+				// setting variable
+				if (bDefined) {
+					oVars[sVariable] = xValue;
+				} else {
+					oVars = {};
+					oVars[sVariable] = xValue;
+					Marker.markXY(md, x, y, oVars);
+				}
+			}
+		}
 	}
 });
 

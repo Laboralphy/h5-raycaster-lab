@@ -128,11 +128,7 @@ O2.extendClass('PlayerKeyboardThinker', EntityKeyboardThinker, {
     this.oMobile.bEthereal = true;
     this.think = this.thinkDying;
     this.nDeadTime = 18;
-    var oFadeOut = new O876_Raycaster.GXFade(this.oGame.oRaycaster);
-    oFadeOut.oColor = {r: 0, g: 0, b: 0};
-    oFadeOut.fAlpha = 0;
-    oFadeOut.fAlphaFade = 0.05;
-    this.oGame.oRaycaster.oEffects.addEffect(oFadeOut);
+    this.oGame.oRaycaster.oEffects.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.5);
   },
 
   thinkDying: function() {

@@ -209,8 +209,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	
 	damage: function(nAmount, bCritical) {
-		var hp = this.oMobile.getData('hp');
-		this.oMobile.setData('hp', hp -= nAmount);
+		var hp = this.oMobile.data('hp');
+		this.oMobile.data('hp', hp -= nAmount);
 		if (hp <= 0) {
 			this.setThink('Die');
 			return;
@@ -354,6 +354,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	/**
+	 * Shoot an ecto missile against the target
+	 */
+	shoot: function() {
+		if (this.getEntityAngle(this.getTarget()) !== false) {
+			this.walkToTarget(this._fSpeed);
+			this.oGame.spawnMissile('p_ecto', this.oMobile);
+		}
+	},
 
 	/**
 	 * Effectue une manoeuve d'évitement tout en tirant des missiles
@@ -365,11 +374,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 
 	thinkEvadeShoot: function() {
 		if (this.isTimeMultiple(40) && Math.random() < this._fFireProb) {
-			var a = this.getEntityAngle(this.getTarget());
-			if (a !== false) {
-				this.walkToTarget(this._fSpeed);
-				this.oGame.spawnMissile('p_ecto', this.oMobile);
-			}
+			this.shoot();
 		}
 		this.thinkEvade();
 	},
@@ -486,7 +491,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	
 	thinkDie_enter: function() {
 		this.oMobile.oSprite.playAnimationType(2);
-		this.oMobile.setData('dead', true);
+		this.oMobile.data('dead', true);
 		this.setExpireTime(30);
 		this.playSound('die');
 	},
@@ -502,7 +507,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		var g = this.oGame;
 		var m = this.oMobile;
 		var s = m.oSprite;
-		m.setData('hp', 0);
+		m.data('hp', 0);
 		g.spawnVisualEffect('o_flame', m.x, m.y);
 		s.nAlpha = 0;
 		s.bTranslucent = true;
@@ -517,6 +522,16 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			s.nAlpha = 0;
 			s.bTranslucent = false;
 			m.bActive = false;
+			// unlocking door blocked by the spirit
+			var sHD = this.oMobile.data('hold-door');
+			if (sHD) {
+				sHD.split(' ').forEach(function(sDoorLocator) {
+					var oDoor = this.oGame.getLocator(sDoorLocator);
+					if (oDoor) {
+						this.oGame.unlockDoor(oDoor.x, oDoor.y);
+					}
+				}, this);
+			}
 		}
 	}
 });

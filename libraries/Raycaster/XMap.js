@@ -23,15 +23,15 @@ O2.createClass('O876_Raycaster.XMap', {
 		var aBlock, aRow, x, y, nSide;
 		this.nWidth = w;
 		this.nHeight = h;
-		for (y = 0; y < h; y++) {
+		for (y = 0; y < h; ++y) {
 			aRow = [];
-			for (x = 0; x < w; x++) {
+			for (x = 0; x < w; ++x) {
 				aBlock = [];
-				for (nSide = 0; nSide < 6; nSide++) {
+				for (nSide = 0; nSide < 6; ++nSide) {
 					aBlock.push({
 						x : x,
 						y : y,
-						surface : null,
+						surface: null,
 						diffuse: 0
 					});
 				}
@@ -50,6 +50,33 @@ O2.createClass('O876_Raycaster.XMap', {
 
 	set : function(x, y, nSide, xValue) {
 		this.aMap[y][x][nSide] = xValue;
+	},
+
+	/**
+	 * Permet de faire tourner les textures additionnel générée avec cloneTexture
+	 * Cela permet d'avoir 4 états de textures aditionnelle
+	 * Par exemple on peut créer une texture additionnelle et la camoufler par 
+	 * rotation puis la faire réapparaitre.
+	 * Cette opération est plus rapide que de tout redessiner
+	 * @param x coordonnée bloc à tourner
+	 * @param y
+	 * @param n sens de rotation true ou false
+	 * true : 0 devient 3, 1 devient 0...
+	 * false : 0 devient 1, 1 devient 2, 2 devient 3, 3 devient 0
+	 */
+	rotateWallSurfaces: function(x, y, n) {
+		var mxy = this.aMap[y][x];
+		var a = mxy.slice(0, 4).map(function(m) {
+			return m.surface;
+		});
+		if (n) {
+			a.push(a.shift());
+		} else {
+			a.unshift(a.pop());
+		}
+		a.forEach(function(m, i) {
+			mxy[i].surface = m;
+		});
 	},
 
 	setBlockSize: function(w, h) {
@@ -94,4 +121,8 @@ O2.createClass('O876_Raycaster.XMap', {
 		oCanvas.getContext('2d').drawImage(oTextures, iTexture * w, 0, w, h, 0, 0, w, h);
 		return oCanvas;
 	},
+	
+	removeClone: function(x, y, nSide) {
+		this.get(x, y, nSide).surface = null;
+	}
 });

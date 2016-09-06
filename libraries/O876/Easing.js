@@ -14,7 +14,6 @@ O2.createClass('O876.Easing', {
 	nTime: 0,
 	iTime: 0,
 	fWeight: 1,
-	sFunction: 'smoothstep',
 	pFunction: null,
 	
 	from: function(x) {
@@ -77,6 +76,9 @@ O2.createClass('O876.Easing', {
 			this.iTime = t;
 		}
 		var p = this.pFunction;
+		if (typeof p != 'function') {
+			throw new Error('easing function is invalid : ' + p);
+		}
 		var v = p(t / this.nTime);
 		this.x = this.xEnd * v + (this.xStart * (1 - v));
 		return t >= this.nTime;

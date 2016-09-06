@@ -122,13 +122,14 @@ O2.createClass('O876.Astar.Grid', {
 	},
 
 	distance : function(x1, y1, x2, y2) {
-		var r = {distance: null};
+		var d = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+		var r = {
+			distance: d,
+			from: {x: x1, y: y1},
+			to: {x: x2, y: y2}
+		};
 		this.trigger('distance', r);
-		if (r.distance === null) {
-			return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-		} else {
-			return r.distance;
-		}
+		return r.distance;
 	},
 
 	setCell : function(x, y, n) {
@@ -159,13 +160,16 @@ O2.createClass('O876.Astar.Grid', {
 	},
 
 	isCellWalkable : function(x, y) {
-		var r = {walkable: null};
-		this.trigger('walkable', r);
-		if (r.walkable !== null) {
-			return !!r.walkable;
-		}
 		try {
-			return this.getCell(x, y) == this.GRID_BLOCK_WALKABLE;
+			var r = {
+				walkable: this.getCell(x, y) == this.GRID_BLOCK_WALKABLE,
+				cell: {
+					x: x, 
+					y: y
+				}
+			};
+			this.trigger('walkable', r);
+			return r.walkable;
 		} catch (e) {
 			return false;
 		}

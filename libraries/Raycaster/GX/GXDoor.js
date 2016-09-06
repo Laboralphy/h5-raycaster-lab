@@ -22,8 +22,11 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 	nLimit : 0, // limite d'incrément de l'offset (reduit par 2 pour les porte double)
 	nCode : 0, // Code physique de la porte
 
+	oEasing: null,
+
 	__construct: function(r) {
 		__inherited(r);
+		this.oEasing = new O876.Easing();
 		this.setAutoClose(true);
 	},
 	
@@ -39,30 +42,34 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.nCode = r.getMapPhys(this.x, this.y);
 				switch (this.nCode) {
 					case r.PHYS_DOOR_SLIDING_DOUBLE:
-						this.fSpeed = r.TIME_FACTOR * 60 / 1000;
-						this.nLimit = 32;
+						this.fSpeed = 600 / r.TIME_FACTOR;
+						this.nLimit = r.nPlaneSpacing >> 1;
+						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 			
 					case r.PHYS_DOOR_SLIDING_LEFT:
 					case r.PHYS_DOOR_SLIDING_RIGHT:
-						this.fSpeed = r.TIME_FACTOR * 120 / 1000;
+						this.fSpeed = 600 / r.TIME_FACTOR;
 						this.nLimit = r.nPlaneSpacing;
+						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 			
 					default:
-						this.fSpeed = r.TIME_FACTOR * 120 / 1000;
-						this.nLimit = 96;
+						this.fSpeed = 800 / r.TIME_FACTOR;
+						this.nLimit = r.yTexture;
+						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 				}
 				this.nPhase++;	/** no break on the next line */
 
 			case 1: // la porte s'ouvre jusqu'a : offset > limite
-				this.fOffset += this.fSpeed;
-				if (this.fOffset >= this.nLimit) {
+				if (this.oEasing.f()) {
 					this.fOffset = this.nLimit - 1;
 					r.setMapPhys(this.x, this.y, 0);
 					this.nPhase++;
+					this.oEasing.from(this.fOffset).to(0).during(this.fSpeed);
 				}
+				this.fOffset = this.oEasing.x | 0;
 				break;
 
 			case 2: // la porte attend avant de se refermer   
@@ -79,10 +86,10 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				break;
 		
 			case 3: // la porte se referme
-				this.fOffset -= this.fSpeed;
-				if (this.fOffset < 0) {
+				if (this.oEasing.f()) {
 					this.terminate();
 				}
+				this.fOffset = this.oEasing.x;
 				break;
 		}
 		r.setMapOffs(this.x, this.y, this.fOffset | 0);

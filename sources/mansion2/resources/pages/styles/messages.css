@@ -1,0 +1,49 @@
+img.icon {
+	margin: 4px;
+	float: left;
+}
+
+.breakfloat {
+	clear: both;
+}
+
+p {
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+p.bold {
+	font-weight: bold;
+}
+
+div.header {
+	padding: 3px;
+	background-color: #04F;
+	color: white;
+}
+
+div.title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.icon-left {
+	float: left;
+	margin: 2px;
+	margin-right: 4px;
+}
+
+div.message {
+	border: solid thin #555;
+	border-radius: 2px;
+	background-color: #CCC;
+	padding: 3px;
+	margin: 2px;
+}
+
+.btn {
+	display: inline;
+	padding: 8px;
+	background-color: #08F;
+	border-color: black;
+}
