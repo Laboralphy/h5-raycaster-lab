@@ -61,5 +61,12 @@ O2.createClass('MANSION.Script.LevHtp', {
 				document.body.innerHTML = data;
 			});
 		}, 1700);
+	},
+	
+	raiseYourPhone: function(oEvent) {
+		var g = oEvent.game;
+		g.playSound(MANSION.SOUNDS_DATA.events.ring);
+		O876_Raycaster.PointerLock.disable();
+		g.oPhone.activate('Desktop').loadNote('help-home');
 	}
 });

@@ -36,7 +36,6 @@ O2.createClass('O876_Raycaster.GXManager', {
 	removeEffect: function(xEffect) {
 		var oEffect, iEffect;
 		var sType = O876.typeMap([xEffect], 'short');
-		console.log(sType);
 		switch (sType) {
 			case 'f': 
 				this.removeEffect(this.aEffects.filter(xEffect));
@@ -60,7 +59,6 @@ O2.createClass('O876_Raycaster.GXManager', {
 				oEffect = this.aEffects[iEffect];
 				oEffect.terminate();
 				oEffect.done();
-				console.log('remove effect', iEffect);
 				this.aEffects.splice(iEffect, 1);
 				break;
 		}

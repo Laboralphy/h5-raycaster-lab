@@ -59,8 +59,9 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			hint_pickup_page: 'Your goal is to recover fragments of manuscript like this one.',
 			hint_ghost_incoming: "You have attracted a vengeful spirit's attention.",
 			hint_exit: "Left-click to exit level.",
-			hint_left_click: "Left-click is used to open doors, and pick up items",
-			hint_see_exit: "You found the exit !"
+			hint_left_click: "Left-click is used to open doors, and pick up items.",
+			hint_see_exit: "You found the exit !",
+			hint_pickup: "Left-click to pick up this item."
 		}
 	},
 	
