@@ -68,8 +68,8 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     if (this.oPlayerData) {
       this.oRaycaster.oCamera.setData('score', this.oPlayerData.score);
     }
-    this.oRaycaster.oCamera.setData('hitpoints', GEN_DATA.player.maxhitpoints);
-    this.oRaycaster.oCamera.setData('maxhitpoints', GEN_DATA.player.maxhitpoints);
+    this.oRaycaster.oCamera.data('hitpoints', GEN_DATA.player.maxhitpoints);
+    this.oRaycaster.oCamera.data('maxhitpoints', GEN_DATA.player.maxhitpoints);
     this.setDoomloop('stateLoadComplete');
   },
 
@@ -103,8 +103,8 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
       };
     }
     var oPlayer = this.oRaycaster.oCamera;
-    var nHP = oPlayer.getData('hitpoints');
-    var nScore = oPlayer.getData('score') || 0;
+    var nHP = oPlayer.data('hitpoints');
+    var nScore = oPlayer.data('score') || 0;
     var bUpdate = nHP != this.oHUDData.hp || nScore != this.oHUDData.score;
     if (bUpdate) {
       this.oHUDData.hp = nHP;
@@ -204,7 +204,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
   spawnMissile: function(oMobile, sType) {
     var oMissile = this.oRaycaster.oHorde.spawnMobile(sType, oMobile.x, oMobile.y, oMobile.fTheta);
     oMissile.oThinker.fire(oMobile);
-    oMissile.fSpeed = oMissile.getData('speed');
+    oMissile.fSpeed = oMissile.data('speed');
     return oMissile;
   },
 
@@ -214,17 +214,12 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
   damageMobile: function(oMobile, nDamage, oDamager) {
     var oFlash;
     if (oMobile == this.oRaycaster.oCamera) { // cas spécial de la caméra
-      oFlash = new O876_Raycaster.GXFlash(this.oRaycaster);
-      oFlash.fAlpha = 0.5;
-      oFlash.fAlphaFade = 0.05;
-      oFlash.oColor = {r: 255, g: 0, b: 0};
-      this.oRaycaster.oEffects.addEffect(oFlash);
+      oFlash = this.oRaycaster.addGXEffect(O876_Raycaster.GXFlash);
+      oFlash.setFlash('#F00', 0.5, 600);
     }
-    if (oMobile.getData('hitpoints') != null) {
-      oMobile.setData('hitpoints', oMobile.getData('hitpoints') - nDamage);
-      if (oMobile.getData('hitpoints') <= 0) {
-        this.killMobile(oMobile, oDamager);
-      }
+    oMobile.data('hitpoints', oMobile.data('hitpoints') - nDamage);
+    if (oMobile.data('hitpoints') <= 0) {
+      this.killMobile(oMobile, oDamager);
     }
   },
 
@@ -232,9 +227,9 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
    * Le soin ne peut pas dépasser le nombre de points de vie max
    */
   healMobile: function(oMobile, nHeal) {
-    var nMaxHP = oMobile.getData('maxhitpoints');
-    if (nMaxHP && oMobile.getData('hitpoints') != null) {
-      oMobile.setData('hitpoints', Math.min(nMaxHP, oMobile.getData('hitpoints') + nHeal));
+    var nMaxHP = oMobile.data('maxhitpoints');
+    if (nMaxHP && oMobile.data('hitpoints') != null) {
+      oMobile.data('hitpoints', Math.min(nMaxHP, oMobile.data('hitpoints') + nHeal));
     }
   },
 
@@ -242,11 +237,11 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
    * Le score du mobile détruit est ajouté au score du mobile destructeur
    */
   killMobile: function(oMobile, oKiller) {
-    oMobile.setData('hitpoints', 0);
+    oMobile.data('hitpoints', 0);
     if ('thinkDie' in oMobile.oThinker) {
       oMobile.oThinker.think = oMobile.oThinker.thinkDie;
     }
-    var nPoints = oMobile.getData('score');
+    var nPoints = oMobile.data('score');
     if (nPoints) {
       this.increaseScore(oKiller, nPoints);
     }
@@ -255,7 +250,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
   /** Augmente le score
    */
   increaseScore: function(oMobile, nPoints) {
-    var nScore = oMobile.getData('score');
+    var nScore = oMobile.data('score');
     if (nScore == null) {
       nScore = 0;
     }
@@ -290,11 +285,8 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
         rc.setMapCode(x, y, 12);
         this.aTagMap[y][x] = 0;
         this.increaseScore(oMobile, 2);
-        o = new O876_Raycaster.GXFlash(rc);
-        o.oColor = {r: 255, g: 224, b: 0};
-        o.fAlpha = 0.75;
-        o.fAlphaFade = 0.075;
-        rc.oEffects.addEffect(o);
+        o = rc.addGXEffect(O876_Raycaster.GXFlash);
+        o.setFlash('#FC0', 0.75, 800);
         if (oMobile.getData('maxhitpoints') && oMobile.getData('maxhitpoints') > oMobile.getData('hitpoints')) {
           this.healMobile(oMobile, 8);
         } else {

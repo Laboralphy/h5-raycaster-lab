@@ -15,19 +15,25 @@ O2.createClass('O876.Bresenham', {
 	 * @param y0 starting point y
 	 * @param x1 ending point x
 	 * @param y1 ending point y
-	 * @param pCallback a plot function of type function(x, y) { return bool; }
+	 * @param pCallback a plot function of type function(x, y, n) { return bool; }
+	 * avec x, y les coordonnée du point et n le numéro duj point
 	 * @returns {Boolean} false if the fonction has been canceled
 	 */
 	line: function(x0, y0, x1, y1, pCallback) {
+		x0 |= 0;
+		y0 |= 0;
+		x1 |= 0;
+		y1 |= 0;
 		var dx = Math.abs(x1 - x0);
 		var dy = Math.abs(y1 - y0);
 		var sx = (x0 < x1) ? 1 : -1;
 		var sy = (y0 < y1) ? 1 : -1;
 		var err = dx - dy;
 		var e2;
+		var n = 0;
 		while (true) {
 			if (pCallback) {
-				if (pCallback(x0, y0) === false) {
+				if (pCallback(x0, y0, n) === false) {
 					return false;
 				}
 			}
@@ -43,6 +49,7 @@ O2.createClass('O876.Bresenham', {
 				err += dx;
 				y0 += sy;
 			}
+			++n;
 		}
 		return true;
 	}

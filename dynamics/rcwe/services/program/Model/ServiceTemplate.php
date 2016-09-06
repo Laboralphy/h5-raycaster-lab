@@ -43,12 +43,14 @@ class ServiceTemplate {
 			mkdir($sFilePath, 0777, true);
 		}
 		file_put_contents($sFilePath . '/template.json', $sFileContent);
-		file_put_contents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
+		if ($sThumbnail) {
+			if (strlen($sThumbnail) < 200) {
+				file_put_contents($sFilePath . '/thumbnail.txt', $sThumbnail);
+			}
+			file_put_contents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
+		}
 		if (!file_exists($sFilePath . '/template.json')) {
 			throw new Exception('could not write template file');
-		}
-		if (!file_exists($sFilePath . '/thumbnail.png')) {
-			throw new Exception('could not write thumbnail image');
 		}
 	}
 	

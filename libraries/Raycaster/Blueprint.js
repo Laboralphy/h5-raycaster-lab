@@ -25,20 +25,10 @@ O2.createClass('O876_Raycaster.Blueprint', {
       this.nFx = oData.fx;
       this.nType = oData.type;
       if ('data' in oData) {
-        this.oXData = oData.data;
-      } else {
-        this.oXData = {};
+        this.data(oData.data);
       }
-    }
-  },
-
-  getData: function(sData) {
-    if (this.oXData && (sData in this.oXData)) {
-      return this.oXData[sData];
-    } else {
-      return null;
     }
   }
 });
 
-
+O2.mixin(O876_Raycaster.Blueprint, O876.Mixin.Data);

@@ -3,6 +3,7 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	_id: 'thingbrowser',
 	_oStructure: null,
 	_oIdManager: null,
+	oSelectedThing: null,
 	
 	CANVAS_WIDTH: 48,
 	CANVAS_HEIGHT: 48,
@@ -23,7 +24,7 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	
 	show: function() {
 		__inherited();
-		if (this.getSelectedThingImage().length == 0) {
+		if (this.getSelectedThingImage() == 0) {
 			var $canvas = $('canvas.thing', this._oStructure);
 			if ($canvas.length) {
 				this.selectThingImage($canvas.eq(0));
@@ -49,20 +50,27 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	selectThingImage: function($canvas) {
 		$('canvas.thing.selected', this._oStructure).removeClass('selected');
 		$canvas.addClass('selected');
+		this.oSelectedThing = $canvas;
 		this.doAction('selectthing');
 	},
 	
 	unselectThingImage: function() {
 		$('canvas.thing.selected', this._oStructure).removeClass('selected');
+		this.oSelectedThing = null;
 		this.doAction('selectthing');
 	},
 	
 	getSelectedThingImage: function() {
-		return $('canvas.thing.selected', this._oStructure);
+		return this.oSelectedThing;
 	},
 	
 	getSelectedThing: function() {
-		return this.getSelectedThingImage().data('thing');
+		var $t = this.getSelectedThingImage();
+		if ($t) {
+			return $t.data('thing');
+		} else {
+			return null;
+		}
 	},
 	
 	getThing: function(id) {
@@ -112,7 +120,7 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	},
 
 	cmd_editThing: function() {
-		if (this.getSelectedThingImage().length) {
+		if (this.getSelectedThingImage()) {
 			this.doAction('editthing');
 		}
 	},

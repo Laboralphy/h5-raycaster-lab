@@ -23,22 +23,22 @@ O2.extendClass('MANSION.PhoneApp.StatusBar', MANSION.PhoneApp.Abstract, {
 
 	setTime: function(h, m) {
 		var sTime = ((h | 0) + 100).toString().substr(1) + ':' + ((m | 0) + 100).toString().substr(1);
-		if (sTime != this.getData('time')) {
-			this.setData('time', sTime);
+		if (sTime != this.data('time')) {
+			this.data('time', sTime);
 			this.invalidate();
 		};
 	},
 	
 	setBattery: function(n) {
-		if (n != this.getData('battery')) {
-			this.setData('battery', n);
+		if (n != this.data('battery')) {
+			this.data('battery', n);
 			this.invalidate();
 		}
 	},
 	
 	setNetwork: function(n) {
-		if (n != this.getData('network')) {
-			this.setData('network', n);
+		if (n != this.data('network')) {
+			this.data('network', n);
 			this.invalidate();
 		}
 	},
@@ -63,7 +63,7 @@ O2.extendClass('MANSION.PhoneApp.StatusBar', MANSION.PhoneApp.Abstract, {
 		
 		// battery background
 		x = w - 40;
-		var nBat = this.getData('battery');
+		var nBat = this.data('battery');
 		c.fillStyle = clBlue;
 		c.fillText(nBat + '%', w - 42, 1);
 		c.fillRect(x, 1, 6, 9);
@@ -76,7 +76,7 @@ O2.extendClass('MANSION.PhoneApp.StatusBar', MANSION.PhoneApp.Abstract, {
 
 		// network background
 		x = w - 64 - 9;
-		var nNet = this.getData('network');
+		var nNet = this.data('network');
 		c.fillStyle = clBlue;
 		if (nNet < 20) {
 			c.fillStyle = clGray;
@@ -97,7 +97,7 @@ O2.extendClass('MANSION.PhoneApp.StatusBar', MANSION.PhoneApp.Abstract, {
 		
 		// time
 		c.fillStyle = clBlue;
-		c.fillText(this.getData('time'), w - 2, 1);
+		c.fillText(this.data('time'), w - 2, 1);
 	},
 
 	render: function(oPhone) {

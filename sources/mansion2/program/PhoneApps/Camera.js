@@ -33,7 +33,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		this.oEasing = new O876.Easing();
 		this.oParticles = new MANSION.PhoneApps.Particles();
 		this.oScoreCanvas = O876.CanvasFactory.getCanvas();
-		this.oScoreCanvas.width = 160;
+		this.oScoreCanvas.width = 320;
 		this.oScoreCanvas.height = 160;
 		var ctx = this.oScoreCanvas.getContext('2d');
 		ctx.fillStyle = 'rgb(255, 255, 255)';
@@ -48,12 +48,17 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 		if (oLogic.cameraFlashTriggered()) {
 			this.flash();
 			var lss = oLogic.getLastShotStats();
-			var nDamage = lss.damage;
-			if (nDamage > 0) {
+			var nScore = lss.score;
+			if (nScore > 0) {
 				var aShotStr = ArrayTools.unique(lss.shots).map(function(s) {
-					return STRINGS_DATA.SHOTS[s];
+					return MANSION.STRINGS_DATA.SHOTS[s];
 				});
-				aShotStr.push(STRINGS_DATA.SHOTS.score + nDamage.toString());
+				if (lss.subjects && Array.isArray(lss.subjects)) {
+					lss.subjects.forEach(function(s) {
+						aShotStr.unshift(s);
+					});
+				}
+				aShotStr.push(MANSION.STRINGS_DATA.SHOTS.score + nScore.toString());
 				this.displayScore(aShotStr);
 			}		
 		}
@@ -92,7 +97,7 @@ O2.extendClass('MANSION.PhoneApp.Camera', MANSION.PhoneApp.Abstract, {
 				c1.g = 60 + 32 * fSin | 0;
 				c1.a = fEnergy / 2;
 				c2.r = 150 + 32 * fSin | 0;
-				c2.r = 150 + 64 * fSin | 0;
+				c2.g = 150 + 64 * fSin | 0;
 				c2.a = fEnergy / 2 + 0.5;
 				oScreenCtx.strokeStyle = this.oRainbow.rgba(c1);
 				oScreenCtx.lineWidth = 5;

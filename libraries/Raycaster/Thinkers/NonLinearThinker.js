@@ -7,56 +7,28 @@
  * L'option lineaire est tout de même proposée.
  */
 O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
-	nTime : 0,
-	nCurrentTime: 0,
+	_oEasingX: null,
+	_oEasingY: null,
+
+	_aStart: 0,
 	
-	xStart: 0,
-	yStart: 0,
-	aStart: 0,
-	
-	xEnd: 0,
-	yEnd: 0,
-	
-	fWeight: 1,
-	
-	sFunction: 'smoothstepX2',
-	
-	__construct : function() {
-		this.nTime = 0;
-	},
-	
-	processTime: function() {
-		this.nCurrentTime++;
-		if (this.nCurrentTime > this.nTime) {
-			this.think = this.thinkStop;
+	setMove: function(x, y, a, dx, dy, t, s) {
+		if (x === null || x === undefined) {
+			x = this.oMobile.x;
 		}
-	},
-	
-	setMove: function(x, y, a, dx, dy, t) {
-		if (x !== null && x !== undefined) {
-			this.xStart = x;
-		} else {
-			this.xStart = this.oMobile.x;
+		if (y === null || y === undefined) {
+			y = this.oMobile.y;
 		}
-		if (y !== null && y !== undefined) {
-			this.yStart = y;
-		} else {
-			this.yStart = this.oMobile.y;
-		}
+		this._oEasingX = this._oEasingX || new O876.Easing();
+		this._oEasingY = this._oEasingY || new O876.Easing();
 		if (a !== null && a !== undefined) {
-			this.aStart = a;
+			this._aStart = a;
 		} else {
-			this.aStart = this.oMobile.fTheta;
+			this._aStart = this.oMobile.fTheta;
 		}
-		if (dx !== null && dx !== undefined) {
-			this.xEnd = dx;
-		}
-		if (dy !== null && dy !== undefined) {
-			this.yEnd = dy;
-		}
-		if (t !== null && t !== undefined) {
-			this.nTime = t;
-		}
+		var tf = this.oGame.oRaycaster.TIME_FACTOR;
+		this._oEasingX.from(x).to(x + dx).during(t / tf | 0).use(s || 'smoothstep');
+		this._oEasingY.from(y).to(y + dy).during(t / tf | 0).use(s || 'smoothstep');
 	},
 
 	think : function() {
@@ -65,69 +37,20 @@ O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 
 	// Déplacement à la position de départ
 	thinkInit : function() {
-		this.oMobile.setXY(this.xStart, this.yStart);
-		this.oMobile.setAngle(this.aStart);
-		this.nCurrentTime = 0;
 		this.think = this.thinkMove;
 	},
 	
 	thinkMove: function() {
-		var x, y;
-		
-		var v = this[this.sFunction](this.nCurrentTime / this.nTime);
-		
-		x = this.xEnd * v + (this.xStart * (1 - v));
-		y = this.yEnd * v + (this.yStart * (1 - v));
-		
-		this.oMobile.setXY(x, y);
-		this.processTime();
-	},
-	
-	linear: function(v) {
-		return v;
-	},
-	
-	smoothstep: function(v) {
-		return v * v * (3 - 2 * v);
-	},
-	
-	smoothstepX2: function(v) {
-		v = v * v * (3 - 2 * v);
-		return v * v * (3 - 2 * v);
-	},
-	
-	smoothstepX3: function(v) {
-		v = v * v * (3 - 2 * v);
-		v = v * v * (3 - 2 * v);
-		return v * v * (3 - 2 * v);
-	},
-	
-	squareAccel: function(v) {
-		return v * v;
-	},
-	
-	squareDeccel: function(v) {
-		return 1 - (1 - v) * (1 - v);
-	},
-	
-	cubeAccel: function(v) {
-		return v * v * v;
-	},
-	
-	cubeDeccel: function(v) {
-		return 1 - (1 - v) * (1 - v) * (1 - v);
-	},
-	
-	sine: function(v) {
-		return Math.sin(v * 3.14159265 / 2);
-	},
-	
-	cosine: function(v) {
-		return 0.5 - Math.cos(-v * 3.14159265) * 0.5;
-	},
-	
-	weightAverage: function(v) {
-		return ((v * (this.nTime - 1)) + this.fWeight) / this.nTime;
+		if (this._oEasingX && this._oEasingY) {
+			var bx = this._oEasingX.f();
+			var by = this._oEasingY.f();
+			var x = this._oEasingX.x;
+			var y = this._oEasingY.x;		
+			this.oMobile.setXY(x, y);
+			if (bx && by) {
+				this.think = this.thinkStop;
+			}
+		}
 	},
 	
 	thinkStop: function() {

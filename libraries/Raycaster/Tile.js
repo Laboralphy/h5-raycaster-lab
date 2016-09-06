@@ -17,7 +17,7 @@ O2.createClass('O876_Raycaster.Tile',  {
 	__construct : function(oData) {
 		if (oData !== undefined) {
 			this.sSource = oData.src;
-			this.nFrames = oData.frames;
+			this.nFrames = oData.frames || 1;
 			this.nWidth = oData.width;
 			this.nHeight = oData.height;
 			this.bShading = true;

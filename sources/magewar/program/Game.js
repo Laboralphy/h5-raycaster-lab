@@ -695,7 +695,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		// Sound system
 		this.oSoundSystem = new O876.SoundSystem();
 		this.oSoundSystem.setPath('resources/snd');
-		this.oSoundSystem.addChans(8);
+		this.oSoundSystem.setChannelCount(8);
 		this.oSoundSystem.bMute = !CONFIG.game.sound;
 
 		// client socket
@@ -1161,7 +1161,6 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * @param y
 	 */
 	playSound : function(sFile, x, y) {
-		var nChan = this.oSoundSystem.getFreeChan(sFile);
 		var fDist = 0;
 		if (x !== undefined) {
 			var oPlayer = this.getPlayer();
@@ -1183,7 +1182,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		var nTime = this.getTime();
 		if (fVolume > 0.01) {
 			if (this.oSoundSystem.worthPlaying(nTime, sFile, fVolume)) {
-				this.oSoundSystem.play(sFile, nChan, fVolume);
+				this.oSoundSystem.play(sFile, fVolume);
 			}
 		}
 	},
@@ -1193,6 +1192,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	// //// GRAPHIC EFFECTS ////// GRAPHIC EFFECTS ////// GRAPHIC EFFECTS //////
 
 	gxFade : function(sStyle, fAlpha, fSpeed) {
+		return;
 		var rc = this.oRaycaster;
 		var gx = new O876_Raycaster.GXFade(rc);
 		gx.oColor = this.oRainbow.parse(sStyle);
@@ -1236,7 +1236,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 				var oThinker = oMob.getThinker();
 				oThinker.start();
 				oMob.bEthereal = true;
-				var oSounds = oMob.getData('sounds');
+				var oSounds = oMob.data('sounds');
 				if (oSounds && ('spawn' in oSounds)) {
 					this.playSound(oSounds.spawn, x, y);
 				}

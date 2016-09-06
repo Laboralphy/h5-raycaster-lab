@@ -104,6 +104,25 @@ O2.createClass('RCWE.ThingGrid', {
 	},
 	
 	/**
+	 * search all things of select id, from x, y location
+	 */
+	locateThings: function(idSearch) {
+		var a = [];
+		var aPos = this._aPositions;
+		var w = this._wCell;
+		Marker.iterate(this._aThings, function(x, y, id) {
+			if (id === idSearch) {
+				a.push({
+					x: w * (x / 3 | 0) + aPos[x % 3], 
+					y: w * (y / 3 | 0) + aPos[y % 3],
+					id: id
+				});
+			}
+		});
+		return a;
+	},
+	
+	/**
 	 * Moves every thing 
 	 */
 	shiftThingPosition: function(sDir, n) {
