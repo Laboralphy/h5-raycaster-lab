@@ -23,6 +23,7 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		secret: 'mechanisms/push-stone',
 		camera: 'mechanisms/camera-trigger',
 		charge: 'mechanisms/camera-charge',
+		ring: 'events/phone-ringtone',
 		fullcharge: 'mechanisms/camera-full-charge',
 	},
 	pickup: {
