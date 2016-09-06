@@ -259,9 +259,9 @@ O2.createClass('RCWE.RCDataBuilder', {
 			// checking if the object is on a visible cell or inside a solid wall
 			var nCode = RCWE.Tools.getLowerCode(oData.grid.map[yCell][xCell]);
 			var oBlock = aBlockData[nCode];
-
 			var BT = RCWE.CONST.BLOCK_TYPE;
-			switch (oBlock.type) {
+			var sBlockType = !!oBlock ? oBlock.type : BT.WALKABLE;
+			switch (sBlockType) {
 				case BT.SOLID:
 				case BT.TRANSPARENT:
 				case BT.DOOR:
@@ -340,7 +340,8 @@ O2.createClass('RCWE.RCDataBuilder', {
 			var nCode = RCWE.Tools.getLowerCode(oData.grid.map[yCell][xCell]);
 			var oBlock = aBlockData[nCode];
 			var BT = RCWE.CONST.BLOCK_TYPE;
-			switch (oBlock.type) {
+			var sBlockType = !!oBlock ? oBlock.type : BT.WALKABLE;
+			switch (sBlockType) {
 				case BT.SOLID:
 				case BT.TRANSPARENT:
 				case BT.DOOR:

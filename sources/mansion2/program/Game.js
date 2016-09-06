@@ -456,7 +456,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (var nSide = 0; nSide < 6; ++nSide) {
 			b = rc.getBlockData(x, y, nSide);
 			b.diffuse = rc.nShadingThreshold * nDiffuse / 100 | 0;
-			console.log(x, y, b.diffuse);
 		}
 		oEvent.remove = true;
 	},
