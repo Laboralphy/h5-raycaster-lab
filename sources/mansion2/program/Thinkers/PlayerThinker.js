@@ -1,6 +1,12 @@
 O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	
 	oEasingAngle: null,
+	oBresenham: null,
+
+	__construct: function() {
+		__inherited();
+		this.oBresenham = new O876.Bresenham();
+	},
 	
 	damage: function(oAggressor) {
 	},
@@ -72,6 +78,41 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 		return aMobiles;
 	},
 
+
+
+	/** 
+	 * Renvoie le block non-walkable qui se trouve a distance d'objectif
+	 * Les block walkable ne comptent pas.
+	 */
+	getFrontBlock: function() {
+		var fDist = 2.5 * this.oGame.oRaycaster.nPlaneSpacing;
+		var m = this.oMobile;
+		var fTheta = m.fTheta;
+		var xOri = m.x;
+		var yOri = m.y;
+		var xFin = fDist * Math.cos(fTheta) + xOri;
+		var yFin = fDist * Math.sin(fTheta) + yOri;
+		var b = this.oBresenham;
+		var res = {x: null, y: null};
+		b.line(xOri, yOri, xFin, yFin, (function(x, y, n) {
+			if ((n & 3) == 0) {
+				var rc = this.oGame.oRaycaster;
+				var ps = rc.nPlaneSpacing;
+				var b = rc.getMapPhys(x / ps | 0, y / ps | 0) === rc.PHYS_NONE;
+				if (b) {
+					return true;
+				} else {
+					res.x = x / ps | 0;
+					res.y = y / ps | 0;
+					return false;
+				}
+			} else {
+				return true;
+			}
+		}).bind(this));
+		return res;
+	},
+
 	/**
 	 * Un fantome menace.
 	 * Tourner l'angle de vue vers le fantome
@@ -97,11 +138,11 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 			gl.setVisibleMobiles(aMobs);
 			if (gl.isCameraBuzzing()) {
 				this.oGame.oPhone.getCurrentApplication().charge();
-				this.oGame.playSound(SOUNDS_DATA.events.charge);
+				this.oGame.playSound(MANSION.SOUNDS_DATA.events.charge);
 			}
 			if (gl.hasCameraReachedFullCharge()) {
 				this.oGame.oPhone.getCurrentApplication().charge();
-				this.oGame.playSound(SOUNDS_DATA.events.fullcharge);
+				this.oGame.playSound(MANSION.SOUNDS_DATA.events.fullcharge);
 			}
 		}
 	},

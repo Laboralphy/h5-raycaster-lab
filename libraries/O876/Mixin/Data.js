@@ -24,21 +24,18 @@
 			if (v === undefined) { // get data
 				if (s === undefined) {
 					return D; // getting all data
-				} else {
-					if (s in D) { // getting one key
-						return D[s]; // found !
-					} else {
-						return null; // not found
-					}
-				}
-			} else { // set data
-				if (typeof s === 'object') {
+				} else if (typeof s === 'object') {
 					for (var x in s) { // setting many pairs of key values
 						D[x] = s[x];
 					}
-				} else { // setting one pair on key value
-					D[s] = v;
+				} else if (s in D) { // getting one key
+					return D[s]; // found !
+				} else {
+					return null; // not found
 				}
+			} else { // set data
+				// setting one pair on key value
+				D[s] = v;
 			}
 			return this;
 		}

@@ -23,6 +23,8 @@ O2.createClass('RCWE.Application', {
 	
 	oMediator: null,
 	
+	
+	bThingSearched: false,
 	sMode: null, // last opened tab
 	oCurrentWindow: null,
 	
@@ -428,6 +430,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	redrawMap: function(x1, y1, x2, y2) {
+		this.bThingSearched = false;
 		this.oMapGrid.redraw(x1, y1, x2, y2);
 	},
 	
@@ -675,7 +678,7 @@ O2.createClass('RCWE.Application', {
 			case 1:
 				this.oMapGrid.clearFullBox();
 				break;
-				
+
 			case 2:
 				this.oMapGrid.clearUpperFullBox();
 				break;
@@ -710,6 +713,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_labygrid_viewblock: function() {
+		$('#mapgrid_cmd_draw').trigger('click');
 		this.showPanel('blockbrowser');
 	},
 	
@@ -782,6 +786,43 @@ O2.createClass('RCWE.Application', {
 		this.showPanel('advancedpad');
 	},
 	
+
+	cmd_labygrid_middleclick: function(c, xCell, yCell, x, y) {
+		if (this.isVisiblePanel('blockbrowser')) {
+			var nUpper = RCWE.Tools.getUpperCode(c);
+			var nLower = RCWE.Tools.getLowerCode(c);
+			switch (this.oMapGrid.sSelectedFloor) {
+				case 'f1':
+					this.oBlockBrowser.selectBlockImage(nLower);
+					break;
+				case 'f2':
+					this.oBlockBrowser.selectBlockImage(nUpper);
+					break;
+				default:
+					throw new Error('this case is not handled : both floors cannot be selected at the same time');
+			}
+		} else if (this.isVisiblePanel('thingbrowser')) {
+			if (this.bThingSearched) {
+				this.redrawMap();
+			} else {
+				var oThing = this.oThingBrowser.getSelectedThing();
+				var aThings = this.oThingGrid.locateThings(oThing.getData('id'));
+				if (aThings.length) {
+					var cx = this.oMapGrid.oContext;
+					cx.strokeStyle = '#F00';
+					this.bThingSearched = true;
+					aThings.forEach(function(t) {
+						cx.beginPath();
+						cx.moveTo(x, y);
+						cx.lineTo(t.x, t.y);
+						cx.stroke();
+					});
+				} else {
+					//this.error('No such thing on this map');
+				}
+			}
+		}
+	},
 
 
 	// WORLD VIEWER
@@ -891,16 +932,14 @@ O2.createClass('RCWE.Application', {
 			return;
 		}
 		var oThing = this.oThingBrowser.getSelectedThing();
-		if (oThing) {
-			var wCell = this.oMapGrid.wCell;
-			var xTh = x * 3 / wCell | 0;
-			var yTh = y * 3 / wCell | 0;
-			if (this.oThingGrid.hasThing(xTh, yTh)) {
-				this.cmd_thingbrowser_hintbox(true);
-			} else {
-				this.oThingGrid.addThing(xTh, yTh, oThing.getData('id'));
-				this.redrawMap(x / wCell | 0, y / wCell | 0, x / wCell | 0, y / wCell | 0);
-			}
+		var wCell = this.oMapGrid.wCell;
+		var xTh = x * 3 / wCell | 0;
+		var yTh = y * 3 / wCell | 0;
+		if (this.oThingGrid.hasThing(xTh, yTh)) {
+			this.cmd_thingbrowser_hintbox(true);
+		} else if (oThing) {
+			this.oThingGrid.addThing(xTh, yTh, oThing.getData('id'));
+			this.redrawMap(x / wCell | 0, y / wCell | 0, x / wCell | 0, y / wCell | 0);
 		}
 	},
 	
@@ -1032,6 +1071,7 @@ O2.createClass('RCWE.Application', {
 	cmd_advancedpad_shiftmap: function(sDir, n) {
 		try {
 			var dx, dy;
+			console.log(sDir, n);
 			switch (sDir) {
 				case 'up': 
 					dx = 0;
@@ -1276,8 +1316,14 @@ O2.createClass('RCWE.Application', {
 		var oExport = {
 			name: sName,
 			level: this.serialize(),
-			thumbnail: this.oWorldViewer.sScreenShot.substr(PNGSIGN.length)
 		};
+		if (this.oWorldViewer.sScreenShot.substr(0, PNGSIGN.length) == PNGSIGN) {
+			oExport.thumbnail = this.oWorldViewer.sScreenShot.substr(PNGSIGN.length);
+		} else {
+			oExport.thumbnail = '';
+		}
+		
+		
 		var sData = JSON.stringify(oExport);
 		$.post('services/?action=level.post', sData, (function(data) {
 			this.popup('Message', 'Export "' + sName + '" complete.');

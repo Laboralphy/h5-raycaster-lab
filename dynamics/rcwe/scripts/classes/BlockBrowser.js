@@ -15,11 +15,11 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 	build: function() {
 		__inherited('Block browser');
 		this.getContainer().addClass('BlockBrowser');
-		this.addCommand('<span style="color: #00A">✚</span> New', 'Create a new block', this.cmd_newBlock.bind(this));
-		this.addCommand(' Edit', 'Modify block properties', this.cmd_editBlock.bind(this));
-		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Remove the selected block', this.cmd_removeBlock.bind(this));
+		this.addCommand('<span class="icon-plus" style="color: #00A"></span> New', 'Create a new block', this.cmd_newBlock.bind(this));
+		this.addCommand('<span class="icon-pencil2"></span> Edit', 'Modify block properties', this.cmd_editBlock.bind(this));
+		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Remove the selected block', this.cmd_removeBlock.bind(this));
 		this.addCommandSeparator();
-		this.addCommand(' Template', 'Load a template of textures and blockset', this.cmd_loadTemplate.bind(this));
+		this.addCommand('<span class="icon-folder"></span> Template', 'Load a template of textures and blockset', this.cmd_loadTemplate.bind(this));
 		var $structure = $('<div class="sections"><div>');
 		this.getBody().append($structure);
 		this._oStructure = $structure;
@@ -136,7 +136,7 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 			this._oIdManager.remove(id);
 		}
 		this._aBlockCache[id] = b;
-		var $canvas = $('<canvas class="block"></canvas>');
+		var $canvas = $('<canvas class="block" title="id : #' + id + '"></canvas>');
 		$canvas.attr({
 			width: this.BLOCK_WIDTH,
 			height: this.BLOCK_HEIGHT
@@ -150,6 +150,9 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 	 * Select a block, unselect any other block
 	 */
 	selectBlockImage: function(oBlock) {
+		if (typeof oBlock === 'number') {
+			oBlock = this.getBlockImage(oBlock);
+		}
 		$('canvas.block.selected', this._oStructure).removeClass('selected');
 		$(oBlock).addClass('selected');
 	},
@@ -164,6 +167,19 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 	
 	getBlock: function(nCode) {
 		return this._aBlockCache[nCode];
+	},
+
+	getBlockImage: function(id) {
+		var oResult = null;
+		$('canvas.block', this._oStructure).each(function() {
+			$b = $(this);
+			if ($b.data('block').getData('id') == id) {
+				oResult = this;
+				this.scrollIntoView();
+				return false;
+			}
+		});
+		return oResult;
 	},
 	
 	getHighestBlockId: function() {

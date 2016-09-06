@@ -20,8 +20,13 @@
 		},
 
 		one: function(sEvent, pCallback) {
-			pCallback._WeirdEventHandlersFlagOnce = true;
-			return this.on(sEvent, pCallback);
+			var pCallbackOnce;
+			pCallbackOnce = (function() {
+				pCallback.apply(this, Array.prototype.slice.call(arguments, 0));
+				this.off(sEvent, pCallbackOnce);
+				pCallbackOnce = null;
+			}).bind(this);
+			return this.on(sEvent, pCallbackOnce);
 		},
 
 		off: function(sEvent, pCallback) {
@@ -59,10 +64,6 @@
 			}
 			var aArgs = Array.prototype.slice.call(arguments, 1);
 			weh[sEvent].forEach(function(pCallback) {
-				if (('_WeirdEventHandlersFlagOnce' in pCallback) && (pCallback._WeirdEventHandlersFlagOnce)) {
-					delete pCallback._WeirdEventHandlersFlagOnce;
-					this.off(sEvent, pCallback);
-				}
 				pCallback.apply(this, aArgs);
 			}, this);
 			return this;

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8"/>
+	<script type="application/javascript" src="../../../../externals/jquery/jquery-2.1.1.min.js"></script>
+	<script type="application/javascript" src="../../../../libraries/O876/o2.js"></script>
+	<script type="application/javascript" src="../../../../libraries/O876/Mixin/Events.js"></script>
+	<script type="application/javascript" src="../../../../libraries/O876/XHR.js"></script>
+	<script type="application/javascript" src="../../../../libraries/O876/Rasterize.js"></script>
+	<script type="application/javascript">
+
+
+
+
+function main() {
+	var oPlan = new O876.Rasterize();
+	console.time('rasterize');
+	var d;
+	oPlan.on('parse', function(data) {
+		console.log(data);
+		d = data.element;
+	});
+	oPlan.render(location.search.substr(1) + '.xml', document.getElementById('rasterized-canvas'), function() {
+		console.timeEnd('rasterize');
+		document.body.appendChild(d);
+		$('*[id]', d).css('cursor', 'pointer').each(function() {
+			var $this = $(this);
+			$this.on('click', function(oEvent) {
+				var $target = $(oEvent.target);
+				if (!$target.attr('id')) {
+					$target = $target.parent('[id]');
+				}
+				var id = $target.attr('id');
+				location.href = '?' + id;
+			});
+		});
+	});
+}
+
+window.addEventListener('load', main);
+	</script>
+</head>
+<html>
+	<canvas id="rasterized-canvas" width="190" height="210"></canvas>
+</html>

@@ -23,9 +23,9 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 		});
 		this.oScrollZone = $oScrollZone;
 		this.getBody().append($oScrollZone);
-		this.addCommand(' Import', 'Imports the selected level into the editor (overwrites the editor current content)', this.cmd_import.bind(this));
-		this.addCommand('⚓✎ Overwrite', 'Exports the editor current level into the selected project, replacing the selected level entry', this.cmd_export.bind(this));
-		this.addCommand('⚓✚ Export new...', 'Exports the editor current level into the selected project. Will prompt for a new level name', this.cmd_exportnew.bind(this));
+		this.addCommand('<span class="icon-download"></span> Import', 'Imports the selected level into the editor (overwrites the editor current content)', this.cmd_import.bind(this));
+		this.addCommand('<span class="icon-upload"></span> Overwrite', 'Exports the editor current level into the selected project, replacing the selected level entry', this.cmd_export.bind(this));
+		this.addCommand('<span class="icon-upload"></span> Export new...', 'Exports the editor current level into the selected project. Will prompt for a new level name', this.cmd_exportnew.bind(this));
 	},
 	
 	cmd_import: function() {

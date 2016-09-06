@@ -61,8 +61,8 @@ function main() {
 			$.get(f, function(data) {
 				JSHINT(data, {
 					curly: true,
-					undef: true,
-					unused: true
+					undef: false,
+					unused: false
 				}, {
 					Uint32Array: false,
 					window: false,
@@ -71,6 +71,8 @@ function main() {
 				});
 				var aTr = JSHINT.errors.filter(function(r2) {
 					return !!r2;
+				}).filter(function(r2) {
+					return r2.code === 'W033';
 				}).map(function(r2) {
 					return '<tr class="event"><td>' + r2.code + '</td><td>' + r2.line + '</td><td>' + r2.character + '</td><td>' + r2.reason + '</td></tr>';
 				});
@@ -140,7 +142,8 @@ function checkDirectory($aDir) {
 function main() {
 	//checkDirectory(array('libraries', 'sources', 'dynamics'));
 	//checkDirectory(array('dynamics/rcwe/server.storage/exports/work/tc-l1'));
-	checkDirectory(array('libraries'));
+	//checkDirectory(array('libraries'));
+	checkDirectory(array('libraries', 'sources'));
 }
 
 main();

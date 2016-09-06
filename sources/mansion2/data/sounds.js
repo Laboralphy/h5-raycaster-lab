@@ -1,20 +1,34 @@
-O2.createObject('SOUNDS_DATA', {
+O2.createObject('MANSION.SOUNDS_DATA', {
+	ambiance: {
+		thunder: 'ambiance/thunder'
+	},
 	bgm: {
-		'tc-l1': 'amb-forest',
-		woods: 'amb-forest',
-		atrium: 'amb-atrium',
-		mansion: 'amb-inside',
-		cellar: 'amb-manor',
-		ghost: 'amb-ghost'
+		'm090-htp': 'music/forest',
+		'm100-ch1': 'music/forest',
+		woods: 'music/forest',
+		atrium: 'music/atrium',
+		mansion: 'music/inside',
+		cellar: 'music/manor',
+		ghost: 'music/combat',
+		cthulhu: 'music/cthulhu'
 	},
 	events: {
 		// mechanical events
-		dooropen: 'a-dooropen',
-		doorclose: 'a-doorclose',
-		secret: 'a-pushston',
-		camera: 'a-camera',
-		charge: 'a-charge',
-		fullcharge: 'a-fullcharge'
+		dooropen: 'mechanisms/door-open-2',
+		doorclose: 'mechanisms/door-close-2',
+		doorlocked: 'mechanisms/door-locked',
+		doorunlock: 'mechanisms/door-unlock',
+		sigillocked: 'magic/magic-chime-low',
+		sigilunlock: 'magic/magic-chime',
+		secret: 'mechanisms/push-stone',
+		camera: 'mechanisms/camera-trigger',
+		charge: 'mechanisms/camera-charge',
+		fullcharge: 'mechanisms/camera-full-charge',
+	},
+	pickup: {
+		key: 'pickup/key',
+		book: 'pickup/book',
+		scroll: 'pickup/scroll'
 	},
 	ghosts: {
 		// supernatural events
@@ -24,10 +38,20 @@ O2.createObject('SOUNDS_DATA', {
 		mourn: 'e-mournful',
 	},
 	missiles: {
-		fire1: 'atk-fire',
-		impact1: 'hit-fire'
+		fire1: 'ghosts/generic/missile-fire',
+		impact1: 'ghosts/generic/missile-hit'
 	},
 	visualeffects: {
-		bluefire: 'e-fire'
-	}
+		bluefire: 'ghosts/generic/ghost-burn'
+	},
+	intro: {
+		stress1: 'intro/stress-1',
+		stress2: 'intro/stress-2',
+		stress3: 'intro/stress-3',
+		stress4: 'intro/stress-4',
+		stress5: 'intro/stress-5',
+		stressfinal: 'intro/stress-final'
+	},
+	
+	
 });

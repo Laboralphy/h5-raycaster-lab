@@ -1,0 +1,9 @@
+<root>
+<style src="styles/base.css"></style>
+<style src="styles/help.css"></style>
+<div class="header title"><div class="return" id="help-home"></div><span>Help - Taking photos</span></div>
+<img class="center" src="images/h-mouse-l.png" />
+<p>In camera mode, press <b>[Left mouse button]</b> to take photos.</p> 
+<p class="remark">Taking photos of supernatural entities will affect them in various ways.</p>
+<p class="link" id="help-interact">Next : Environment interaction</p>
+</root>

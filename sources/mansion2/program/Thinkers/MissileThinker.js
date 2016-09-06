@@ -10,7 +10,7 @@ O2.extendClass('MANSION.MissileThinker', O876_Raycaster.MissileThinker, {
 			t: this.oLastHitMobile,
 			m: m
 		};
-		this.oGame.playSound(SOUNDS_DATA.missiles[m.getData('sounds').explode], m.x, m.y);
+		this.oGame.playSound(MANSION.SOUNDS_DATA.missiles[m.data('sounds').explode], m.x, m.y);
 		this.oGame.trigger('hit', oEvent);
 	},
 
@@ -19,7 +19,7 @@ O2.extendClass('MANSION.MissileThinker', O876_Raycaster.MissileThinker, {
 		var m = this.oMobile;
 		m.oSprite.nAlpha = 3;
 		m.oSprite.bTranslucent = true;
-		this.oGame.playSound(SOUNDS_DATA.missiles[m.getData('sounds').fire], m.x, m.y);
+		this.oGame.playSound(MANSION.SOUNDS_DATA.missiles[m.data('sounds').fire], m.x, m.y);
 	},
 	
 	thinkGo: function() {

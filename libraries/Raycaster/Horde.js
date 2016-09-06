@@ -124,10 +124,12 @@ O2.createClass('O876_Raycaster.Horde',  {
 		var oMobile = new O876_Raycaster.Mobile();
 		oMobile.oRaycaster = this.oRaycaster;
 		oMobile.oSprite = this.defineSprite(aData);
+		var bp = oMobile.getBlueprint();
 		var oThinker = null;
-		if (oMobile.oSprite.oBlueprint.sThinker !== null) {
-			oThinker = this.oThinkerManager.createThinker(oMobile.oSprite.oBlueprint.sThinker);
+		if (bp.sThinker !== null) {
+			oThinker = this.oThinkerManager.createThinker(bp.sThinker);
 		}
+		oMobile.data(bp.data());
 		oMobile.setThinker(oThinker);
 		oMobile.fTheta = aData.angle;
 		oMobile.nSize = oMobile.oSprite.oBlueprint.nPhysWidth >> 1;
@@ -160,13 +162,13 @@ O2.createClass('O876_Raycaster.Horde',  {
 				y : y,
 				angle : fTheta
 			};
-			return this.defineMobile(aData);
+			oMobile = this.defineMobile(aData);
 		} else {
 			this.linkMobile(oMobile);
 			oMobile.fTheta = fTheta;
 			oMobile.setXY(x, y);
-			return oMobile;
 		}
+		return oMobile;
 	},
 
 

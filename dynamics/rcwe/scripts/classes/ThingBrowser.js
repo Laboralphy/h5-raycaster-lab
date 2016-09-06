@@ -3,6 +3,7 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	_id: 'thingbrowser',
 	_oStructure: null,
 	_oIdManager: null,
+	oSelectedThing: null,
 	
 	CANVAS_WIDTH: 48,
 	CANVAS_HEIGHT: 48,
@@ -12,18 +13,18 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 		this.getContainer().addClass('ThingBrowser');
 		var $structure = $('<div class="things"></div>');
 		this.getBody().append($structure);
-		this.addCommand('<span style="color: #00A">✚</span> New', 'Create a new thing blueprint', this.cmd_newThing.bind(this));
-		this.addCommand(' Edit', 'Modify blueprint properties', this.cmd_editThing.bind(this));
-		this.addCommand('<span style="color: #A00">✖</span> Delete', 'Delete the selected thing blueprint', this.cmd_removeThing.bind(this));
+		this.addCommand('<span class="icon-plus" style="color: #00A"></span> New', 'Create a new thing blueprint', this.cmd_newThing.bind(this));
+		this.addCommand('<span class="icon-pencil2"></span> Edit', 'Modify blueprint properties', this.cmd_editThing.bind(this));
+		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Delete the selected thing blueprint', this.cmd_removeThing.bind(this));
 		this.addCommandSeparator();
-		this.addCommand(' Template', 'Load a template of blueprints', this.cmd_loadTemplate.bind(this));
+		this.addCommand('<span class="icon-folder"></span> Template', 'Load a template of blueprints', this.cmd_loadTemplate.bind(this));
 		this._oStructure = $structure;		
 		this.buildThingList();
 	},
 	
 	show: function() {
 		__inherited();
-		if (this.getSelectedThingImage().length == 0) {
+		if (this.getSelectedThingImage() == 0) {
 			var $canvas = $('canvas.thing', this._oStructure);
 			if ($canvas.length) {
 				this.selectThingImage($canvas.eq(0));
@@ -49,20 +50,27 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	selectThingImage: function($canvas) {
 		$('canvas.thing.selected', this._oStructure).removeClass('selected');
 		$canvas.addClass('selected');
+		this.oSelectedThing = $canvas;
 		this.doAction('selectthing');
 	},
 	
 	unselectThingImage: function() {
 		$('canvas.thing.selected', this._oStructure).removeClass('selected');
+		this.oSelectedThing = null;
 		this.doAction('selectthing');
 	},
 	
 	getSelectedThingImage: function() {
-		return $('canvas.thing.selected', this._oStructure);
+		return this.oSelectedThing;
 	},
 	
 	getSelectedThing: function() {
-		return this.getSelectedThingImage().data('thing');
+		var $t = this.getSelectedThingImage();
+		if ($t) {
+			return $t.data('thing');
+		} else {
+			return null;
+		}
 	},
 	
 	getThing: function(id) {
@@ -112,7 +120,7 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 	},
 
 	cmd_editThing: function() {
-		if (this.getSelectedThingImage().length) {
+		if (this.getSelectedThingImage()) {
 			this.doAction('editthing');
 		}
 	},

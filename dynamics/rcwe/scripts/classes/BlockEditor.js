@@ -60,14 +60,15 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		
 		this.getBody().append($structure);
 		this._oStructure = $structure;
-		this._addTilesCommand('◧', 'View wall tiles', this.cmd_wallTilesClick.bind(this)).addClass('command wall');
-		this._addTilesCommand('⬒', 'View flat tiles', this.cmd_flatTilesClick.bind(this)).addClass('command flat');
+		this._addTilesCommand('<span class="icon-map2"></span> Walls', 'View wall tiles', this.cmd_wallTilesClick.bind(this)).addClass('command wall');
+		this._addTilesCommand('<span class="icon-delicious"></span> Flats', 'View flat tiles', this.cmd_flatTilesClick.bind(this)).addClass('command flat');
 		
 		this._getTilesToolbar().imageLoader({
 			load: this.cmd_load.bind(this),
-			loadHTML: '<button type="button" title="Load image"><span style="color: #00A">✚</span> Add</button>'
+			loadHTML: '<button type="button" title="Load image"><span class="icon-plus" style="color: #00A"></span> Add</button>'
 		});
-		this._addTilesCommand('<span style="color: #A00">✖</span> Del.', 'Delete the selected tile', this.cmd_deleteTile.bind(this));
+		this._addTilesCommand('<span class="icon-cross" style="color: #A00"></span> Del.', 'Delete the selected tile', this.cmd_deleteTile.bind(this));
+		this._addTilesCommand('<span class="icon-cogs"></span> Generate', 'Generate new wall of flat tiles', this.cmd_generateTiles.bind(this));
 		this._showTilesContainer('wall');
 		
 		var oTileDropZone = $('<table class="tiledropzones">' + 
@@ -762,6 +763,10 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			this.showEdit();
 			$('select[name="blocktype"]', this._oForm).val(nBuildType).trigger('change');
 		}
+	},
+
+	cmd_generateTiles: function(oEvent) {
+		
 	},
 
 

@@ -117,6 +117,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	bExterior : false,
 	nMeteo : 0,
 	fCameraBGOfs : 0,
+	fBGOfs: 0,
 	fDist : 1,
 	bSideWall : false,
 	nWallPanel : 1,
@@ -129,7 +130,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	// sprites
 	oHorde : null,
 	aScanSectors : null,
-	aWallSectors : null,
 	oMobileSectors : null,
 	oThinkerManager : null,
 	aVisibleMobiles: null,
@@ -278,7 +278,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * Retreive a tile
 	 */
 	getTile: function(sTile) {
-		return this.oHorde.oTiles[sTile];
+		var t = this.oHorde.oTiles;
+		if (sTile in t) {
+			return t[sTile];
+		} else {
+			throw new Error('this tile is not defined : "' + sTile + '"');
+		}
 	},
 	
 	/**
@@ -341,7 +346,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oHorde = null;
 		this.oEffects.clear();
 		this.aScanSectors = null;
-		this.aWallSectors = null;
 		this.oMobileSectors = null;
 		this.buildMap();
 		this.buildHorde();
@@ -406,7 +410,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				break;
 				
 			default:
-				throw new Error('setting detail is now deprecated. Use css resizing instead');
+				console.warning('setting detail is now deprecated. Use css resizing instead');
 		}
 	},
 
@@ -518,9 +522,19 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * - param5 : coté du mur concerné
 	 */
 	cloneWall : function(x, y, nSide, pDrawingFunction) {
-		var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
-		pDrawingFunction(this, c, x, y, nSide);
-		this.shadeCloneWall(c, x, y, nSide);
+		if (nSide === false) {
+			for (var i = 0; i < 4; ++i) {
+				this.cloneWall(x, y, i, pDrawingFunction);
+			}
+			return;
+		}
+		if (pDrawingFunction === false) {
+			this.oXMap.removeClone(x, y, nSide);
+		} else {
+			var c = this.oXMap.cloneTexture(this.oWall.image, this.aWorld.walls.codes[this.getMapCode(x, y)][nSide], x, y, nSide);
+			pDrawingFunction(this, c, x, y, nSide);
+			this.shadeCloneWall(c, x, y, nSide);
+		}
 	},
 
 	shadeCloneWall : function(oCanvas, x, y, nSide) {
@@ -530,6 +544,15 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 	
 	cloneFlat: function(x, y, nSide, pDrawingFunction) {
+		if (nSide === false) {
+			this.cloneFlat(x, y, 0, pDrawingFunction);
+			this.cloneFlat(x, y, 1, pDrawingFunction);
+			return;
+		}
+		if (pDrawingFunction === false) {
+			this.oXMap.removeClone(x, y, nSide + 4);
+			return;
+		}
 		var iTexture = this.aWorld.flats.codes[this.getMapCode(x, y)][nSide];
 		if (iTexture < 0) {
 			return;
@@ -544,7 +567,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		b.imageData = oCtx.getImageData(0, 0, c.width, c.height);
 		b.imageData32 = new Uint32Array(b.imageData.data.buffer);
 	},
-
+	
 	/* Code map
 	 * Numéro de Tile (byte)
 	 * Propriété physique (byte)
@@ -1231,9 +1254,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var i = 0;
 		this.aZBuffer = [];
 		this.aScanSectors = Marker.create();
-		this.aWallSectors = {};
 		if (this.oBackground) { // Calculer l'offset camera en cas de background
-			this.fCameraBGOfs = (PI + this.oCamera.fTheta)	* this.oBackground.width / PI;
+			this.fCameraBGOfs = (PI + this.oCamera.fTheta) * this.oBackground.width / PI;
 		}
 		Marker.markXY(this.aScanSectors, xCam8, yCam8);
 		var oContinueRay = this.oContinueRay;
@@ -1321,7 +1343,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			var oBG = this.oBackground;
 			var wBG = oBG.width;
 			var hBG = oBG.height;
-			var xBG = this.fCameraBGOfs % wBG | 0;
+			var xBG = (this.fBGOfs + this.fCameraBGOfs) % wBG | 0;
 			var yBG = this.yScrSize - (hBG >> 1);
 			hBG = hBG + yBG;
 			rctx.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);
