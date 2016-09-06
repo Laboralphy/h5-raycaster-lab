@@ -71,6 +71,8 @@ function main() {
 				});
 				var aTr = JSHINT.errors.filter(function(r2) {
 					return !!r2;
+				}).filter(function(r2) {
+					return r2.code === 'W033';
 				}).map(function(r2) {
 					return '<tr class="event"><td>' + r2.code + '</td><td>' + r2.line + '</td><td>' + r2.character + '</td><td>' + r2.reason + '</td></tr>';
 				});

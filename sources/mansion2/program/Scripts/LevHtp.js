@@ -48,17 +48,18 @@ O2.createClass('MANSION.Script.LevHtp', {
 	
 	endOfLevel: function(oEvent) {
 		var g = oEvent.game;
-		g._oAudio.free();
-		g._halt();
-		O876_Raycaster.PointerLock.disable();
-		// ugly script is following
-		var oCanvas = document.getElementById('screen');
-		oCanvas.remove();
-		var oImageEnd = new Image();
-		oImageEnd.style.margin = "auto";
-		oImageEnd.style.height = "100vh";
-		oImageEnd.style['image-rendering'] = 'initial';
-		oImageEnd.src = 'resources/ui/screens/end-title.png';
-		document.body.appendChild(oImageEnd);
+		var rc = g.oRaycaster;
+		var oFade = rc.addGXEffect(O876_Raycaster.GXFade);
+		oFade.fadeOut('#000', 1500).neverEnding();
+		g.popupMessage('Exiting demonstration level... ... ...');
+		setTimeout(function() {
+			g.playAmbience('music/manor');
+			g._halt();
+			O876_Raycaster.PointerLock.disable();
+			var xhr = new O876.XHR();
+			xhr.get('resources/ui/screens/end.xml', function(data) {
+				document.body.innerHTML = data;
+			});
+		}, 1700);
 	}
 });
