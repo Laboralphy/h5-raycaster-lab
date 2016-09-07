@@ -32,7 +32,7 @@ class DbModel {
 	public function __construct() {
 		$oApp = Application::getInstance ();
 		$this->_oAdapter = $oApp->openDbConnection ();
-		$aDbConfig = $oApp->getConfig ()->getDbConfig ();
+		$aDbConfig = $oApp->getConfig ()->getDatabaseConfig ();
 		$this->setQueryPath ( $oApp->getApplicationPath () . '/' . $aDbConfig ['queries'] );
 	}
 	

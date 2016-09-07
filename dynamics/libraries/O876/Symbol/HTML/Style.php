@@ -17,7 +17,7 @@ class Style extends Symbol {
 	
 	public function __construct() {
 		parent::__construct ( 'style' );
-		$this->_css = $this->link(new Comment());
+		$this->_css = $this->append(new Comment());
 		$this->type = 'text/css';
 	}
 	

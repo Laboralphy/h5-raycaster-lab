@@ -10,21 +10,13 @@ class ScriptCollection extends Symbol {
     $this->setRenderer('Null');
   }
 
-  public function linkScript($sFile) {
+  public function appendScript($sFile) {
     if (!in_array($sFile, $this->_aScripts)) {
       $this->_aScripts[] = $sFile;
-      $oLink = $this->link(new Symbol('script'));
+      $oLink = $this->append(new Symbol('script'));
       $oLink->src = $sFile;
       $oLink->type = 'application/javascript';
       $oLink->setRenderer('HTMLScript');
-    }
-  }
-
-  public function linkScriptFolder($sFolder) {
-    foreach (scandir($sFolder) as $sFile) {
-      if (preg_match('/\\.js/i', $sFile)) {
-        $this->linkScript($sFolder . '/' . $sFile);
-      }
     }
   }
 }

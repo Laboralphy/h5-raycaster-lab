@@ -57,7 +57,7 @@ class Section extends TableSection {
   }
 
   function split($sSection, $aSections, $nOrientation) {
-    $oSection = $this->getSection($sSection)->link(new self());
+    $oSection = $this->getSection($sSection)->append(new self());
     $oSection->defineSections($aSections, $nOrientation);
     return $oSection;
   }

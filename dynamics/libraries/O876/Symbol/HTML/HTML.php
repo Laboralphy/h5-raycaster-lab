@@ -14,31 +14,41 @@ class HTML extends Symbol {
   
   public function __construct() {
     parent::__construct('html');
-    $this->_oHead = $this->link(new Symbol('head'));
+    $this->_oHead = $this->append(new Symbol('head'));
     $this->getMeta()->setMeta('charset', 'UTF-8');
-    $this->_oTitle = $this->_oHead->link(new Symbol('title'));
-    $this->_oCSSCollection = $this->_oHead->link(CSSCollection::getInstance());
-    $this->_oBody = $this->link(new Symbol('body'));
+    $this->_oTitle = $this->_oHead->append(new Symbol('title'));
+    $this->_oCSSCollection = $this->_oHead->append(CSSCollection::getInstance());
+    $this->_oBody = $this->append(new Symbol('body'));
     $this->setRoot($this->_oBody);
-    $this->_oScriptCollection = $this->_oHead->link(new ScriptCollection());
+    $this->_oScriptCollection = $this->_oHead->append(new ScriptCollection());
   }
   
-  public function setTitle($sTitle) {
-    $this->_oTitle->removeAllSymbols();
-    $this->_oTitle->link($sTitle);
-  }
+	public function setTitle($sTitle) {
+		$this->_oTitle->removeAllSymbols();
+		$this->_oTitle->append($sTitle);
+	}
 
-  public function linkCSSFile($sFile) {
-    $this->_oCSSCollection->addFile($sFile);
-  }
+	public function appendStyleSheet($sFile) {
+		if (is_array($sFile)) {
+			foreach ($sFile as $f) {
+				$this->appendStyleSheet($f);
+			}
+			return;
+		} else {
+			$this->_oCSSCollection->appendStyleSheet($sFile);
+		}
+	}
 
-  public function linkScriptFile($sFile) {
-    $this->_oScriptCollection->linkScript($sFile);
-  }
-
-  public function linkScriptFolder($sFile) {
-    $this->_oScriptCollection->linkScriptFolder($sFile);
-  }
+	public function appendScript($sFile) {
+		if (is_array($sFile)) {
+			foreach ($sFile as $f) {
+				$this->appendScript($f);
+			}
+			return;
+		} else {
+			$this->_oScriptCollection->appendScript($sFile);
+		}
+	}
 
   public function getBody() {
     return $this->_oBody;
@@ -50,7 +60,7 @@ class HTML extends Symbol {
   
   public function getMeta() {
     if (is_null($this->_oMetaCollection)) {
-      $this->_oMetaCollection = $this->_oHead->link(new MetaCollection());
+      $this->_oMetaCollection = $this->_oHead->append(new MetaCollection());
     }
     return $this->_oMetaCollection;
   }

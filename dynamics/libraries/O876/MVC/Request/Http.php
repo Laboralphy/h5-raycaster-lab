@@ -35,7 +35,7 @@ class Http implements Intf {
 		foreach ( $this->_aSessionVars as $sVariable => $xValue ) {
 			$this->_aParams [$sVariable] = $xValue;
 		}
-		$this->getPostData();
+		$this->getPostData ();
 	}
 	
 	/**

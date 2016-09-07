@@ -29,7 +29,7 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 	const PARAM_DATA = 'data';             // chaine CDATA du symbole
 	const PARAM_RENDERER = 'renderer';     // Instance du renderer
 	const PARAM_ROOT = 'root';             // Root du link
-	const PARAM_PARENT = 'parent';             // Parent du symbol
+	const PARAM_PARENT = 'parent';         // Parent du symbol
 	const PARAM_LINE = 'line';				// ligne source dans le XML
 	const PARAM_COLUMN = 'column';			// colone source dans le XML
   
@@ -160,7 +160,7 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 
 	public function offsetUnset($sOffset) {
 		if (is_numeric($sOffset)) {
-			$this->removeSymbol($sOffset);
+			$this->_removeSymbol($sOffset);
 		}
 	}
 	
@@ -231,27 +231,27 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
   /******* PROTECTED *********/
   /******* PROTECTED *********/
 
-  protected function _getRendererInstance($sRenderer) {
-    return $this->_oRendererFactory->getRenderer($sRenderer);
-  }
+	protected function _getRendererInstance($sRenderer) {
+		return $this->_oRendererFactory->getRenderer($sRenderer);
+	}
 
-  protected function _render($oRenderer = null) {
-  	$xRenderer = $this->getRenderer();
-    if ($xRenderer instanceof Renderer\Intf) {
-      $oRenderer = $xRenderer;
-    } elseif (is_string($xRenderer)) {
-      $oRenderer = $this->_getRendererInstance($xRenderer);
-    }
-    if (is_null($oRenderer)) {
-      $oRenderer = $this->_getRendererInstance('HTMLCompact');
-    }
-    $a = $oRenderer->preRender($this);
-    foreach ($this as $oSymbol) {
-      $a .= $oSymbol->_render($oRenderer);
-    }
-    $a .= $oRenderer->postRender($this);
-    return $a;
-  }
+	protected function _render($oRenderer = null) {
+		$xRenderer = $this->getRenderer();
+		if ($xRenderer instanceof Renderer\Intf) {
+			$oRenderer = $xRenderer;
+		} elseif (is_string($xRenderer)) {
+			$oRenderer = $this->_getRendererInstance($xRenderer);
+		}
+		if (is_null($oRenderer)) {
+			$oRenderer = $this->_getRendererInstance('HTMLCompact');
+		}
+		$a = $oRenderer->preRender($this);
+		foreach ($this as $oSymbol) {
+			$a .= $oSymbol->_render($oRenderer);
+		}
+		$a .= $oRenderer->postRender($this);
+		return $a;
+	}
 
   /** Construction et ajout d'un TextNode
    * @param $sText String contenue du texte 
@@ -264,6 +264,20 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 		return $oTextNode;
 	}
 
+	/**
+	 * Suppression du symbol spécifié (par son offset)
+	 * @param $sOffset du Symbol 
+	 */
+	protected function _removeSymbol($sOffset) {
+		if (isset($this->_aSymbols[$sOffset])) {
+			$nOffset = (int) $sOffset;
+			$oSymbol = $this->_aSymbols[$sOffset];
+			$oSymbol->setParent(null);
+			array_splice($this->_aSymbols, $nOffset, 1);
+			$this->_aSymbols = array_values($this->_aSymbols);
+		}
+	}
+
   /******* SYMBOL API ****/
   /******* SYMBOL API ****/
   /******* SYMBOL API ****/
@@ -274,13 +288,13 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 	public function remove() {
 		$p = $this->getParent();
 		if ($p) {
-			$p->removeSymbol($this->getIndex());
+			$p->_removeSymbol($this->getIndex());
 		} else {
 			throw new Exception('could not remove a symbol with no parent');
 		}
 	}
 	
-	public function removeAllSymbols() {
+	public function clear() {
 		foreach ($this->_aSymbols as $s) {
 			$oSymbol = $this->_aSymbols[$sOffset];
 			$oSymbol->setParent(null);
@@ -288,22 +302,12 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 		$this->_aSymbols = array();
 	}
 	
-	public function removeSymbol($sOffset) {
-		if (isset($this->_aSymbols[$sOffset])) {
-			$nOffset = (int) $sOffset;
-			$oSymbol = $this->_aSymbols[$sOffset];
-			$oSymbol->setParent(null);
-			array_splice($this->_aSymbols, $nOffset, 1);
-			$this->_aSymbols = array_values($this->_aSymbols);
-		}
-	}
-
-	public function link($xSymbol) {
-		return $this->insert($xSymbol);
-	}
-
 	public function append($xSymbol) {
 		return $this->insert($xSymbol);
+	}
+
+	public function prepend($xSymbol) {
+		return $this->insert($xSymbol, 0);
 	}
   
   /** Insertion d'un symbol à la position spécifiée parmis les enfants
@@ -313,7 +317,7 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
    */
 	public function insert($xSymbol, $n = null) {
 		if (is_null($xSymbol)) {
-			$this->removeSymbol($n);
+			$this->_removeSymbol($n);
 			return;
 		}
 		if (is_string($xSymbol)) {
@@ -358,7 +362,7 @@ class Symbol implements \Countable, \ArrayAccess, \RecursiveIterator {
 			$this->_aParameters[self::PARAM_DATA] = $sData;
 		} else {
 			$this->removeAllSymbols();
-			$this->link($sData);
+			$this->append($sData);
 		}
 	}
 	

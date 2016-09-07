@@ -98,7 +98,7 @@ class XMLParser {
     }
     else {
       $this->xh_PushCursor($this->oCursor);
-      $oSymbol = $this->oCursor->link(new Symbol($sTag));
+      $oSymbol = $this->oCursor->append(new Symbol($sTag));
       $oSymbol->setLine(xml_get_current_line_number($this->oXml));
       $oSymbol->setColumn(xml_get_current_column_number($this->oXml));
       $this->oCursor = $oSymbol;
@@ -112,7 +112,7 @@ class XMLParser {
   public function xh_cdata($oParser, $sCData) {
     if ($this->getParamValue('textnodes')) {
       if (trim($sCData)) {
-      	$this->oCursor->link($sCData);
+      	$this->oCursor->append($sCData);
       }
     }
   }

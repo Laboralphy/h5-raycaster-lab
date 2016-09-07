@@ -1,6 +1,5 @@
 <?php
 require_once('Symbol.php');
-require_once('Searcher/CSSSearcher.php');
 
 use O876\Symbol\Symbol as Symbol;
 use O876\Symbol\Searcher\CSSSearcher as CSSSearcher;
@@ -16,7 +15,7 @@ class SymbolTest extends PHPUnit_Framework_TestCase {
 		$b = new Symbol('b');
 		$c = new Symbol('c');
 		$d = new Symbol('d');
-		$a->link($b);
+		$a->append($b);
 		$this->assertEquals(1, count($a));
 		$this->assertEquals($b, $a[0]);
 		$this->assertNull($a->getParent());
@@ -26,9 +25,9 @@ class SymbolTest extends PHPUnit_Framework_TestCase {
 		$a[0] = null;
 		$this->assertNull($b->getParent());
 		
-		$a->link($b);
-		$a->link($c);
-		$a->link($d);
+		$a->append($b);
+		$a->append($c);
+		$a->append($d);
 		$this->assertEquals(3, count($a));
 
 		$this->assertEquals($b, $a[0]);
@@ -293,7 +292,7 @@ class SymbolTest extends PHPUnit_Framework_TestCase {
 			</div>
 		</div>');
 		$oFound = $s1->query('#i1')[0];
-		$oFound->link('<span id="newspan">toto</span>');
+		$oFound->append('<span id="newspan">toto</span>');
 		$oFound->insert('<span id="newspan2">toto22</span>', 0);
 		$oNewSpan = $s1->query('#newspan')[0];
 		$this->assertEquals('toto', $oNewSpan->getData());
@@ -302,14 +301,14 @@ class SymbolTest extends PHPUnit_Framework_TestCase {
 	public function testCData() {
 		$s = new Symbol('<div>test1</div>');
 		$this->assertEquals('test1', $s->getData());
-		$s->link('test2');
+		$s->append('test2');
 		$this->assertEquals('test1test2', $s->getData());
 		$this->assertEquals(2, count($s));
 		$this->assertEquals('', $s[0]->getTag());
 		$this->assertEquals('', $s[1]->getTag());
 		$this->assertEquals('test1', $s[0]->getData());
 		$this->assertEquals('test2', $s[1]->getData());
-		$s->link('<div>test3</div>');
+		$s->append('<div>test3</div>');
 		$this->assertEquals(3, count($s));
 		$this->assertEquals('test1test2', $s->getData());
 		$this->assertEquals('test3', $s[2]->getData());

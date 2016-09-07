@@ -29,5 +29,5 @@ interface Intf {
    * Le tableau renvoyer doit contenuir une entrée 'adapter' pour indiquer quel adapter est utilisé dans l'application
    * @return Array (vide ou null si on n'a pas besoin de base de donnée)
    */
-  public function getDbConfig();
+  public function getDatabaseConfig();
 }

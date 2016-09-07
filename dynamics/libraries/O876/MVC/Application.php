@@ -147,7 +147,7 @@ class Application {
 	 * @return NULL|multitype:|unknown
 	 */
 	public function openDbConnection() {
-		$aDbConfig = $this->_oConfig->getDbConfig ();
+		$aDbConfig = $this->_oConfig->getDatabaseConfig ();
 		if (! array_key_exists ( 'adapter', $aDbConfig )) {
 			return null;
 		}

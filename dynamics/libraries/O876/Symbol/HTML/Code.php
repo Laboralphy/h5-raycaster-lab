@@ -19,7 +19,7 @@ class Code extends Div {
   protected $oCode;
   public function __construct() {
     parent::__construct('pre');
-    $this->oCode = $this->link(new Symbol('code'));
+    $this->oCode = $this->append(new Symbol('code'));
   }
   
   /** Colorise un chaine représentant du code php

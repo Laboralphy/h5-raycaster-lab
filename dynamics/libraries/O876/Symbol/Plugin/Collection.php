@@ -1,6 +1,7 @@
 <?php namespace O876\Symbol\Plugin;
 
 use O876\Symbol\Symbol as Symbol;
+use O876\Symbol\Exception as SymbolException;
 
 class Collection {
 
@@ -29,6 +30,8 @@ class Collection {
     if (isset($this->_aPlugins[$name])) {
       $oPlugin = $this->_aPlugins[$name];
       call_user_func_array(array($oPlugin, 'run'), $arguments);
-    }
+    } else {
+		throw new SymbolException('unknown symbol method : ' . $name);
+	}
   }
 }

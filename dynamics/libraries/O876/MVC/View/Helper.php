@@ -30,4 +30,5 @@ class Helper {
 	public function getView() {
 		return $this->_oView;
 	}
+
 }

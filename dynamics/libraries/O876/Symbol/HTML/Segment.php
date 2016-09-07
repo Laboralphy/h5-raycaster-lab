@@ -27,7 +27,7 @@ abstract class Segment extends Symbol {
   public function setItemCount($n) {
     if ($n > count($this)) {
       for ($i = count($this); $i < $n; $i++) {
-        $this->link(new $this->_sSubItemClass());
+        $this->append(new $this->_sSubItemClass());
       }
     } elseif ($n < count($this)) {
       for ($i = count($this) - 1; $i >= $n; $i--) {

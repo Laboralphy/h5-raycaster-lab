@@ -23,8 +23,8 @@ class CSSCollection extends Symbol {
     return self::$oInstance;
   }
 
-  public function addFile($sFile, $sMedia = 'screen') {
-    $oLink = $this->link(new Symbol('link'));
+  public function appendStyleSheet($sFile, $sMedia = 'screen') {
+    $oLink = $this->append(new Symbol('link'));
     $oLink->rel = "stylesheet";
     $oLink->type = "text/css";
     $oLink->href = $sFile;

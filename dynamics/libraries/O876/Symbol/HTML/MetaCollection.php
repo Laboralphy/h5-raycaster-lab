@@ -27,18 +27,18 @@ class MetaCollection extends Symbol {
 
   protected function _render($oRenderer = null) {
     foreach ($this->aMeta as $sVar => $xVal) {
-      $oLink = $this->link(new Symbol('meta'));
+      $oLink = $this->append(new Symbol('meta'));
       $oLink->$sVar = $xVal;
       $oLink->setRenderer('HTML');
     }
     foreach ($this->aVariables as $sVar => $xVal) {
-      $oLink = $this->link(new Symbol('meta'));
+      $oLink = $this->append(new Symbol('meta'));
       $oLink->name = $sVar;
       $oLink->content = $xVal;
       $oLink->setRenderer('HTML');
     }
     foreach ($this->aHttpEquiv as $sVar => $xVal) {
-      $oLink = $this->link(new Symbol('meta'));
+      $oLink = $this->append(new Symbol('meta'));
       $oLink->__set('http-equiv', $sVar);
       $oLink->content = $xVal;
       $oLink->setRenderer('HTML');

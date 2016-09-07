@@ -25,9 +25,9 @@ class Table extends Symbol {
 			if (is_numeric($aSectionData[0])) {
 				$oSection = new TableSection($sSection, $aSectionData);
 				$oSection->setSize($aSectionData[0], $aSectionData[1]);
-				$this->_aSections[$sSection] = $this->link($oSection);
+				$this->_aSections[$sSection] = $this->append($oSection);
 			} else {
-				$this->_aSections[$sSection] = $this->link(
+				$this->_aSections[$sSection] = $this->append(
 					new TableSection($sSection, $aSectionData)
 				);
 			}
