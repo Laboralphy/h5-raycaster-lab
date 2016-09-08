@@ -1,0 +1,8 @@
+(document
+	(card
+		"Demos and Work in progress"
+		"<p>Here is a list of demos and Works in progress. Click on any link below to play the corresponding game.</p>"
+		(demo)
+	)
+)
+			

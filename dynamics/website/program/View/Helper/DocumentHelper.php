@@ -3,7 +3,10 @@ use O876\Symbol\Symbol as Symbol;
 use O876\Symbol\HTML as H;
 
 class DocumentHelper extends O876\MVC\View\Helper {
-	public function Document() {
+	public function Document($aArgs) {
+		if (!(func_num_args() === 1 && is_array(func_get_arg(0)))) {
+			return $this->Document(func_get_args());
+		}
 		$oHTML = new H\HTML();
 		$oHTML->appendStyleSheet(array(
 			"styles/normalize.css",
@@ -32,19 +35,26 @@ class DocumentHelper extends O876\MVC\View\Helper {
 </body>'
 );
 		$container = $oHTML->query('.container');
-		$container->append($this->getView()->Menu(array(
-			array('href' => './', 'icon' => 'home', 'label' => 'Home'),
-			array('href' => './', 'icon' => 'info', 'label' => 'About'),
-			array('href' => './', 'icon' => 'list', 'label' => 'Features'),
-			array('href' => './', 'icon' => 'pacman', 'label' => 'Demos'),
-			array('href' => './', 'icon' => 'table2', 'label' => 'Level editor'),
-			array('href' => './', 'icon' => 'github', 'label' => 'GitHub'),
-			array('href' => './', 'icon' => 'youtube', 'label' => 'YouTube')
-		)));
+		$oMenu = $this->getView()->Menu(
+			'./?p=index',		'home',		'Home',
+			'./?p=about',		'info',		'About',
+			'./?p=feats',		'list',		'Features',
+			'./?p=demos', 		'pacman',	'Demos',
+			'../rcwe/', 		'table2',	'Level editor',
+			'./?p=github',		'github',	'GitHub',
+			'./?p=youtube',		'youtube',	'YouTube'
+		);
+		$oMenu->addClass('ph-mainmenu');
+		$container->append($oMenu);
 		$container->append('<div class="row">
 			<section class="body col-lg-12">
 			</section>
 		</div>');
+
+		$md = $container->query('section.body');
+		foreach ($aArgs as $sArg) {
+			$md->append($sArg);
+		}
 		return $oHTML;
 	}
 }

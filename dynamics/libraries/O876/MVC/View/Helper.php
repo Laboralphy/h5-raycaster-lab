@@ -31,4 +31,7 @@ class Helper {
 		return $this->_oView;
 	}
 
+	public function __call($name, $args) {
+		return call_user_method_array($name, $this->getView(), $args);
+	}
 }
