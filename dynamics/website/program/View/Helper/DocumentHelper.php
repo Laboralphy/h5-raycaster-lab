@@ -22,35 +22,22 @@ class DocumentHelper extends O876\MVC\View\Helper {
 			"scripts/buildTheme.js",
 			"scripts/main.js"
 		));
-		$oHTML->append(
-'<body>
-	<div class="container">
-		<div class="row ph-bandeau">
-			<div class="col-lg-12">
-				<h1>O876 Raycaster</h1>
-				<h4>A Raycasting Framework for HTML 5 Games</h4>
-			</div>
-		</div>
-	</div>
-</body>'
-);
-		$container = $oHTML->query('.container');
-		$oMenu = $this->getView()->Menu(
-			'./?p=index',		'home',		'Home',
-			'./?p=about',		'info',		'About',
-			'./?p=feats',		'list',		'Features',
-			'./?p=demos', 		'pacman',	'Demos',
-			'../rcwe/', 		'table2',	'Level editor',
-			'./?p=github',		'github',	'GitHub',
-			'./?p=youtube',		'youtube',	'YouTube'
-		);
-		$oMenu->addClass('ph-mainmenu');
-		$container->append($oMenu);
-		$container->append('<div class="row">
-			<section class="body col-lg-12">
-			</section>
-		</div>');
+		$oHTML->append('<div class="container"></div>');
 
+		$oBandeau = $this->getView()->Lysp($this->getView()->head);
+		$oBandeau->addClass('ph-bandeau');
+		$oMenu = $this->getView()->Lysp($this->getView()->menu);
+		$oMenu->addClass('ph-mainmenu');
+		$container = $oHTML->query('.container');
+		$container->append($oBandeau);
+		$container->append($oMenu);
+		$container->append(
+			'<div class="row">
+				<section class="body col-lg-12">
+				</section>
+			</div>');
+
+		$oHTML->setTitle(array_shift($aArgs));
 		$md = $container->query('section.body');
 		foreach ($aArgs as $sArg) {
 			$md->append($sArg);

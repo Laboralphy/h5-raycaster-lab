@@ -1,4 +1,5 @@
 (document
+	Index
 	(card
 		"Welcome to the Raycaster Javascript Framework website."
 		"<b>What I usually do here : </b>"

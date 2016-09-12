@@ -8,11 +8,12 @@ class ColHelper extends O876\MVC\View\Helper {
 			return $this->Col(func_get_args());
 		}
 		$col = new Symbol('<div></div>');
+		$a = explode(' ', array_shift($aArgs));
+		foreach ($a as $a2) {
+			$col->addClass("col-$a2");
+		}
 		foreach ($aArgs as $c) {
-			$a = explode(' ', $c);
-			foreach ($a as $a2) {
-				$col->addClass("col-$a2");
-			}
+			$col->append($c);
 		}
 		return $col;
 	}

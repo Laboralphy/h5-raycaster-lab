@@ -1,4 +1,5 @@
 (document
+	Features
 	(card
 		"Basic raycasting"
 		"<p>The primary task of a Raycasting Engine is to render 3D simplified environnement. Some would say that Raycasting is a 2.5D algorithm because the 3D environnement is extremly basic : only perpendicular walls only flat floor and ceiling, and so on...</p>"

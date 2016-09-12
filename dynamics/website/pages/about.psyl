@@ -1,4 +1,5 @@
 (document
+	About
 	(card
 		"What is Raycasting ?"
 		"A set of algorithms aimed at rendering simple 3D environements."
