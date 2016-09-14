@@ -96,6 +96,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oRenderCanvas : null,
 	oRenderContext : null,
 	
+	b3d: false, // active l'option 3D
+	i3dFrame: 0, // what frame is being rendered
+	x3dOfs: 0, // offset 3D
+	y3dOfs: 0, // offset 3D
+	n3dGap: 4, // ecar entre deux camera
+	xLimitL: 0, // x limite à gauche
+	xLimitR: 400, // x limite à droite
 	bUseVideoBuffer : true, // true: semble plus rapide sur chromium
 	bGradient: true, // dessine des gradients
 	bFloor : true,	// utilise le rendu du sol (automatiquement positionné selon le world def)
@@ -155,6 +162,24 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		} else {
 			for (var i in oConfig) {
 				this.oConfig[i] = oConfig[i];
+			}
+		}
+	},
+	
+	set3d: function(b) {
+		if (b) {
+			this.b3d = true;
+			this.xLimitL = this.xScrSize * 0.25 | 0;
+			this.xLimitR = this.xScrSize * 0.75 | 0;
+			if (this.oUpper) {
+				this.oUpper.b3d = true;
+				this.oUpper.xLimitL = this.xScrSize * 0.25 | 0;
+				this.oUpper.xLimitR = this.xScrSize * 0.75 | 0;
+			}
+		} else {
+			this.b3d = false;
+			if (this.oUpper) {
+				this.oUpper.b3d = false;
 			}
 		}
 	},
@@ -270,8 +295,39 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	frameRender : function() {
-		this.drawScreen();
-		this.oEffects.render();
+		if (this.b3d) {
+			var c = this.oCamera; // camera
+			var a = c.fTheta; // angle camera
+			var cx = c.x; // position x camera centrale
+			var cy = c.y; // position y camera centrale
+			var r = this.n3dGap; // demi distance entre 2 yeux
+			var al = a - PI / 2; // angle à adopter à gauche
+			var ar = a + PI / 2; // angle à adopter à droite
+			var fSinL = Math.sin(al);
+			var fCosL = Math.cos(al);
+			var fSinR = Math.sin(ar);
+			var fCosR = Math.cos(ar);
+			var cxl = r * fCosL + cx; 
+			var cyl = r * fSinL + cy; 
+			var cxr = r * fCosR + cx; 
+			var cyr = r * fSinR + cy;
+			c.x = cxl;
+			c.y = cyl;
+			this.i3dFrame = 0;
+			this.drawScreen();
+			this.oEffects.render();
+			this.i3dFrame = 1;
+			c.x = cxr;
+			c.y = cyr;
+			this.i3dFrame = 1;
+			this.drawScreen();
+			this.oEffects.render();
+			c.x = cx;
+			c.y = cy;
+		} else {
+			this.drawScreen();
+			this.oEffects.render();
+		}
 	},
 	
 	/**
@@ -1261,9 +1317,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var oContinueRay = this.oContinueRay;
 		var xScrSize = this.xScrSize;
 		var aScanSectors = this.aScanSectors;
+		var xl = this.b3d ? this.xLimitL : 0;
+		var xr = this.b3d ? this.xLimitR : xScrSize;
 		for (i = 0; i < xScrSize; ++i) {
-			oContinueRay.bContinue = false;
-			this.castRay(this, xCam, yCam, fBx, fBy, i, aScanSectors);
+			if (i >= xl && i <= xr) { 
+				oContinueRay.bContinue = false;
+				this.castRay(this, xCam, yCam, fBx, fBy, i, aScanSectors);
+			}
 			fBx += dx;
 			fBy += dy;
 		}
@@ -1380,7 +1440,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		this.drawWeapon();
 		if (this.bUseVideoBuffer) {
-			this.oContext.drawImage(this.oRenderCanvas, 0, 0);
+			if (this.b3d) {
+				var rcw2 = this.oRenderCanvas.width >> 1;
+				this.oContext.drawImage(
+					this.oRenderCanvas, 
+					this.xLimitL,
+					0, 
+					rcw2, 
+					this.oRenderCanvas.height, 
+					this.i3dFrame * rcw2, 
+					0, 
+					rcw2, 
+					this.oRenderCanvas.height
+				);
+			} else {
+				this.oContext.drawImage(this.oRenderCanvas, 0, 0);
+			}
 		}
 	},
 
@@ -1407,12 +1482,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var w2 = this.oCanvas.width >> 1;
 
 		// Animation
-		var fAngle1 = oMobile.fTheta + (PI / 8) - fTarget;
-		if (fAngle1 < 0) {
-			fAngle1 = 2 * PI + fAngle1;
+		if (!this.b3d || (this.b3d && this.i3dFrame === 0)) {
+			var fAngle1 = oMobile.fTheta + (PI / 8) - fTarget;
+			if (fAngle1 < 0) {
+				fAngle1 = 2 * PI + fAngle1;
+			}
+			oSprite.setDirection(((8 * fAngle1 / (2 * PI)) | 0) & 7);
+			oSprite.animate(this.TIME_FACTOR);
 		}
-		oSprite.setDirection(((8 * fAngle1 / (2 * PI)) | 0) & 7);
-		oSprite.animate(this.TIME_FACTOR);
 
 		if (Math.abs(fAlpha) <= (this.fViewAngle * 1.5)) {
 			var x = (Math.tan(fAlpha) * w2 + w2) | 0;
@@ -1536,7 +1613,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	drawFloor_zoom1: function() {
 		var bCeil = this.bCeil;
 		var oFloor = this.oFloor;
-		var x, y, w = this.xScrSize, h = this.yScrSize;
+		var x, 
+			y,
+			xStart = this.b3d ? this.xLimitL : 0, 
+			xEnd = this.b3d ? this.xLimitR : this.xScrSize,
+			w = this.xScrSize, 
+			h = this.yScrSize;
 		if (oFloor.imageData === null) {
 			var oFlat = O876.CanvasFactory.getCanvas();
 			oFlat.width = oFloor.image.width;
@@ -1617,7 +1699,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				ofsDstCeil = wyCeil + x;
 				fy64 = fy / ps | 0; // sector
 				fx64 = fx / ps | 0;
-				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
+				if (x >= xStart && x <= xEnd && fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
 					nXDrawn = 0;
 					oXBlock = oXMap.get(fx64, fy64, 4);
 					oXBlockCeil = oXMap.get(fx64, fy64, 5);
@@ -1670,7 +1752,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 */
 	drawFloorAndCeil_zoom1: function() {
 		var oFloor = this.oFloor;
-		var x, y, w = this.xScrSize, h = this.yScrSize;
+		var x, 
+			y,
+			xStart = this.b3d ? this.xLimitL : 0, 
+			xEnd = this.b3d ? this.xLimitR : this.xScrSize,
+			w = this.xScrSize, 
+			h = this.yScrSize;
 		if (oFloor.imageData === null) {
 			var oFlat = O876.CanvasFactory.getCanvas();
 			oFlat.width = oFloor.image.width;
@@ -1770,7 +1857,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				ofsDstCeil = wyCeil + x;
 				fy64 = fy / ps | 0;
 				fx64 = fx / ps | 0;
-				if (fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
+				if (x >= xStart && x <= xEnd && fx >= 0 && fy >= 0 && fx < xyMax && fy < xyMax) {
 					oXBlock = oXMap.get(fx64, fy64, 4);
 					if (oXBlock.imageData32) {
 						oXBlockImage = oXBlock.imageData32;
