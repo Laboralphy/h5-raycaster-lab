@@ -16,7 +16,7 @@ O2.extendClass('MW.GXUnderwater', O876_Raycaster.GXEffect, {
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
-		this.oCanvas = this.oRaycaster.oCanvas;
+		this.oCanvas = this.oRaycaster.getScreenCanvas();
 		this.oContext = this.oCanvas.getContext('2d'); 
 
 		this.oDistCanvas = O876.CanvasFactory.getCanvas();

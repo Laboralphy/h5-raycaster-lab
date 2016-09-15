@@ -19,6 +19,9 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.on('tag.script', this.tagEventScript.bind(this));
 		this.on('tag.zone', this.tagEventZone.bind(this));
 		this.on('tag.pic', this.tagEventPicture.bind(this));
+		// initialisable
+		this.on('itag.light', this.tagEventLight.bind(this));
+		this.on('itag.shadow', this.tagEventShadow.bind(this));
 
 
 		this.on('build', this.gameEventBuild.bind(this));	
@@ -64,8 +67,8 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		var s = data.phase;
 		var n = data.progress;
 		var nMax = data.max;
-		var oCanvas = this.oRaycaster.oCanvas;
-		var oContext = this.oRaycaster.oContext;
+		var oCanvas = this.oRaycaster.getScreenCanvas();
+		var oContext = this.oRaycaster.getScreenContext();
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
 		var sMsg = MESSAGES_DATA.RC['l_' + s];
 		var y = oCanvas.height >> 1;
@@ -83,7 +86,8 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	gameEventLevel: function() {
 		this.getPlayer().fSpeed = 3;
 		this.playAmbience(SOUNDS_DATA.ambience[this.getLevel()]);
-		this.oRaycaster.oEffects.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.6);
+		this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.6);
+		this._oDarkHaze = this.oRaycaster.addGXEffect(MANSION.GX.DarkHaze);
 	},
 	
 
@@ -117,6 +121,80 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			this[sScript].apply(this, [oEvent.x, oEvent.y, aTags]);
 			oEvent.remove = true;
 		}
+	},
+	
+	/**
+	 * Gestionnaire de tag
+	 * tag : light
+	 * Ce tag génère de la lumière statique lors du chargement du niveau
+	 * light c|f|w pour indiquer une lumière venant du plafon (c) ou du
+	 * sol (f) ou des murs (w)
+	 */
+	tagEventLight: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var sType = oEvent.data;
+		var rc = this.oRaycaster;
+		var nPhys;
+		var aDir = [[1, 0],	[0, -1], [-1, 0], [0, 1]];		
+		var pLightFunc = GfxTools.drawCircularHaze;
+		var pLightFlatFunc = function(rc, oCanvas, x, y, nSide) {
+			pLightFunc(oCanvas, 'middle');
+		};
+		var sProp;
+
+		switch (sType) {
+			case 'c': // ceiling only
+				rc.cloneFlat(x, y, 1, pLightFlatFunc);
+				sProp = 'top';
+			break;
+
+			case 'f': // floor only
+				rc.cloneFlat(x, y, 0, pLightFlatFunc);
+				sProp = 'bottom';
+			break;
+
+			case 'w': // floor and ceiling
+				rc.cloneFlat(x, y, 0, pLightFlatFunc);
+				rc.cloneFlat(x, y, 1, pLightFlatFunc);
+				sProp = 'middle';
+			break;
+		}
+		
+		var pDrawFunc = function(rc, oCanvas, x, y, nSide) {
+			pLightFunc(oCanvas, sProp);
+		};
+		
+		aDir.forEach(function(a, ia) {
+			var xd = x + a[0], yd = y + a[1];
+			nPhys = rc.getMapPhys(xd, yd);
+			if (nPhys != rc.PHYS_NONE && nPhys != rc.PHYS_INVISIBLE) {
+				rc.cloneWall(xd, yd, ia, pDrawFunc);
+			}
+		});
+		oEvent.remove = true;
+	},
+	
+	/**
+	 * Gestionnaire de tag
+	 * tag : shadow
+	 * Ce tag génère une ombre au sol
+	 */
+	tagEventShadow: function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		this.oRaycaster.cloneFlat(x, y, 0, function(rc, oCanvas, x, y, nSide) {
+			var ctx = oCanvas.getContext('2d');
+			var w = oCanvas.width;
+			var w2 = w >> 1;
+			var w4 = w >> 2;
+			var oGrad = ctx.createRadialGradient(w2, w2, w4, w2, w2, w2);
+			oGrad.addColorStop(0, 'rgba(0, 0, 0, 0.5)');
+			oGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+			ctx.fillStyle = oGrad;
+			ctx.fillRect(0, 0, w, w);
+		});
+		oEvent.remove = true;
 	},
 	
 	gameEventDoor: function(data) {

@@ -20,7 +20,7 @@ O2.extendClass('MW.GXIconPad', O876_Raycaster.GXEffect, {
 
 	__construct : function(oRaycaster) {
 		__inherited(oRaycaster);
-		this.oCanvas = this.oRaycaster.oCanvas;
+		this.oCanvas = this.oRaycaster.getScreenCanvas();
 		this.oContext = this.oCanvas.getContext('2d');
 		this.oRenderCanvas = O876.CanvasFactory.getCanvas();
 		this.oRenderCanvas.width = this.oCanvas.width - this.PAD_X - this.PAD_X;

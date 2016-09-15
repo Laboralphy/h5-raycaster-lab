@@ -134,7 +134,7 @@ O2.createClass('O876_Raycaster.Minimap',  {
 				}
 			}
 		}
-		rc.oRenderContext.drawImage(this.oCanvas, 2, 2);
+		rc.getRenderContext().drawImage(this.oCanvas, 2, 2);
 	}
 	
 });

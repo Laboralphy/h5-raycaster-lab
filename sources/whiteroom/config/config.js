@@ -1,6 +1,6 @@
 var CONFIG = {
   game: {
-    interval: 50,         /* timer interval (ms) */
+    interval: 40,         /* timer interval (ms) */
     doomloop: 'interval', /* values : 'interval' | 'raf' */
     urlLaby: '../../dynamics/laby/laby.php?g=whiteroom&s='   /* laby generation request locator */
   },
