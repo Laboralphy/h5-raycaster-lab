@@ -250,7 +250,7 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		var ch = oScreen.height;
 		var xim = xPhone + this.SCREEN_X;
 		var yim = yPhone + this.SCREEN_Y;
-		
+
 		var f = rccc.globalAlpha;
 		rccc.globalAlpha = this.nRaise;
 		rccc.drawImage(p, xPhone, yPhone);
@@ -258,4 +258,3 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		rccc.globalAlpha = f;
 	}
 });
-

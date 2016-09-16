@@ -1,6 +1,7 @@
 O2.extendClass('Game', O876_Raycaster.Transistate, {
   oRaycaster: null,
   oKbdDevice: null,
+  oMotionDevice: null,
 
   aLevels: null,
   nLevel: 0,
@@ -24,11 +25,15 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
     this.nInterval = CONFIG.game.interval;
     this.sDoomloopType = CONFIG.game.doomloop;
     this.oRaycaster = new O876_Raycaster.Raycaster();
-    if (this.oKeyboardDevice == null) {
+    if (this.oKbdDevice == null) {
       this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
       this.oKbdDevice.plugEvents();
     }
-
+    if (this.oMotionDevice == null) {
+      this.oMotionDevice = new O876_Raycaster.MotionDevice();
+      this.oMotionDevice.plugEvents();
+    }
+	
     this.oRaycaster.setConfig(CONFIG.raycaster);
     this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
 
