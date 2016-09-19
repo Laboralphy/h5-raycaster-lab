@@ -4,87 +4,107 @@ O2.createClass('O876_Raycaster.MotionDevice', {
 
 	boundHandleMotion: null,
 
-	aAlphaRange: null,
-	aBetaRange: null,
-	aGammaRange: null,
-	
-	oCommands: null,
+	aRanges: null,
+	oOutput: null,
+	oEventAngles: null,
+	sMode: 'Acceleration',
 	
 	__construct: function() {
-		this.aAlphaRange = [0, 0, 0, 0];
-		this.aBetaRange = [0, 0, 0, 0];
-		this.aGammaRange = [0, 0, 0, 0];
-		this.oCommands = {
-			alpha0: 0,
-			alpha1: 0,
-			beta0: 0,
-			beta1: 0,
-			gamma0: 0,
-			gamma1: 0
+		this.oOutput = {
+			alpha: 0,
+			beta: 0,
+			gamma: 0
 		};
+		this.createAngleRange('alpha', 0);
+		this.createAngleRange('alpha', 1);
+		this.createAngleRange('beta', 0);
+		this.createAngleRange('beta', 1);
+		this.createAngleRange('gamma', 0);
+		this.createAngleRange('gamma', 1);
 	},
 	
-	setAlphaRange: function(x0, x1, x2, x3) {
-		this.aAlphaRange = [
-			parseFloat(x0),
-			parseFloat(x1),
-			parseFloat(x2),
-			parseFloat(x3)
-		];
+	createAngleRange: function(sAngle, n) {
+		if (!this.aRanges) {
+			this.aRanges = {};
+		}
+		if (!(sAngle in this.aRanges)) {
+			this.aRanges[sAngle] = [];
+		}
+		var a = new O876_Raycaster.MotionDeviceRange();
+		this.aRanges[sAngle][n] = a;
 	},
 	
-	setBetaRange: function(x0, x1, x2, x3) {
-		this.aBetaRange = [
-			parseFloat(x0),
-			parseFloat(x1),
-			parseFloat(x2),
-			parseFloat(x3)
-		];
+	getAngleRange: function(sAngle, n) {
+		return this.aRanges[sAngle][n];
 	},
 	
-	setGammaRange: function(x0, x1, x2, x3) {
-		this.aGammaRange = [
-			parseFloat(x0),
-			parseFloat(x1),
-			parseFloat(x2),
-			parseFloat(x3)
-		];
+	compute: function(f) {
+		this.oEventAngles = f;
+		var i, l, r, R = this.aRanges;
+		var oOutput = {}, aOutput;
+		var sAngle;
+		for (sAngle in R) {
+			r = R[sAngle];
+			l = r.length;
+			aOutput = [];
+			for (i = 0; i < l; ++i) {
+				aOutput[i] = r[i].compute(f[sAngle]);
+			}
+			oOutput[sAngle] = aOutput;
+		}
+		for (sAngle in oOutput) {
+			r = oOutput[sAngle];
+			if (r[0] != 0) {
+				this.oOutput[sAngle] = -r[0];
+			} else {
+				this.oOutput[sAngle] = r[1];
+			}
+		}
+		return this.oOutput;
 	},
 	
-	compute: function(fAlpha, fBeta, fGamma) {
-		// Alpha
-		this.oCommands.alpha0 = this.prorata(fAlpha, this.aAlphaRange[0], this.aAlphaRange[1]);
-		this.oCommands.alpha1 = this.prorata(fAlpha, this.aAlphaRange[2], this.aAlphaRange[3]);
-		this.oCommands.beta0 = this.prorata(fBeta, this.aBetaRange[0], this.aBetaRange[1]);
-		this.oCommands.beta1 = this.prorata(fBeta, this.aBetaRange[2], this.aBetaRange[3]);
-		this.oCommands.gamma0 = this.prorata(fGamma, this.aGammaRange[0], this.aGammaRange[1]);
-		this.oCommands.gamma1 = this.prorata(fGamma, this.aGammaRange[2], this.aGammaRange[3]);
-	},
-	
-	
-	handleMotion: function(oEvent) {
-		var rr = oEvent.rotationRate;
-		this.compute(rr.alpha, rr.beta, rr.gamma);
-	},	
-
-	prorata: function(v, m1, m2) {
-		var vMin = Math.min(m1, m2);
-		var vMax = Math.max(m1, m2);
-		if (v >= vMin && v <= vMax) {
-			var vLen = vMax - vMin;
-			var vNorm = v - vMin;
-			return Math.min(1, vNorm / vLen);
+	getAngleValue: function(sAngle) {
+		if (this.oOutput) {
+			return this.oOutput[sAngle];
 		} else {
 			return 0;
 		}
 	},
 	
+	setMotionCaptureMethod: function(s) {
+		var sAllowed = 'Acceleration Rotation';
+		var aAllowed = sAllowed.split(' ');
+		if (aAllowed.indexOf(s) >= 0) {
+			this.sMode = s;
+		} else {
+			throw new Error('Device motion capture method unknown : "' + s + '". Allowed values are "' + sAllowed + '"');
+		}
+	},
+	
+	handleMotionRotation: function(oEvent) {
+		var rr = oEvent.rotationRate;
+		this.compute({
+			alpha: rr.alpha,
+			beta: rr.beta,
+			gamma: rr.gamma
+		});
+	},
+	
+	handleMotionAcceleration: function(oEvent) {
+		var aig = oEvent.accelerationIncludingGravity;
+		this.compute({
+			alpha: aig.x,
+			beta: aig.y,
+			gamma: aig.z
+		});
+	},	
+
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
 	plugEvents: function(oElement) {
-		this.boundHandleMotion = this.handleMotion.bind(this);
-		window.addEventListener('devicemotion', this.boundHandleMotion, true);
+		this.boundHandleMotion = this['handleMotion' + this.sMode].bind(this);
+		window.addEventListener('devicemotion', this.boundHandleMotion, false);
 	},
 	
 	unplugEvents: function() {
@@ -92,3 +112,47 @@ O2.createClass('O876_Raycaster.MotionDevice', {
 	},
 });
 
+O2.createClass('O876_Raycaster.MotionDeviceRange', {
+	min: 0,
+	max: 0,
+	value: 0,
+	bInvert: false,
+	
+	setRange: function(min, max, bInvert) {
+		this.min = parseFloat(min);
+		this.max = parseFloat(max);
+		this.bInvert = !!bInvert;
+	},
+	
+	compute: function(v) {
+		return this.value = this.prorata(v, this.min, this.max);
+	},
+	
+	prorata: function(v, m1, m2) {
+		if (m1 == 0 && m2 == 0) {
+			return 0;
+		}
+		var vLen, vNorm, vMin, vMax, bInvert = this.bInvert;
+		if (!bInvert) {
+			vMin = Math.min(m1, m2);
+			vMax = Math.max(m1, m2);
+			if (v >= vMin) {
+				vLen = vMax - vMin;
+				vNorm = v - vMin;
+				return Math.min(1, vNorm / vLen);
+			} else {
+				return 0;
+			}
+		} else {
+			vMin = Math.max(m1, m2);
+			vMax = Math.min(m1, m2);
+			if (v <= vMin) {
+				vLen = vMax - vMin;
+				vNorm = v - vMin;
+				return Math.min(1, vNorm / vLen);
+			} else {
+				return 0;
+			}
+		}
+	}
+});

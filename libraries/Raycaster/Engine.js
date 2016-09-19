@@ -6,6 +6,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	oRaycaster : null,
 	oKbdDevice : null,
 	oMouseDevice : null,
+	oMotionDevice: null,
 	oThinkerManager : null,
 	
 	// protected
@@ -110,6 +111,14 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			this.oMouseDevice.plugEvents(oElement);
 		}
 		return this.oMouseDevice;
+	},
+	
+	getMotionDevice: function() {
+		if (this.oMotionDevice === null) {
+			this.oMotionDevice = new O876_Raycaster.MotionDevice();
+			this.oMotionDevice.plugEvents();
+		}
+		return this.oMotionDevice;
 	},
 	
 	/**

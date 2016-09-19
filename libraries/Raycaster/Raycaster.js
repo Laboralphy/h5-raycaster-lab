@@ -230,6 +230,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.oConfig.shades) {
 			this.nShadingThreshold = this.oConfig.shades;
 		}
+		if (this.oConfig.stereo) {
+			this.set3d(true);
+		}
 		
 		switch (this.nShadingThreshold) {
 			case 0:

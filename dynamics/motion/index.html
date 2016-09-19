@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>motion device test</title>
+	<script src="../../libraries/O876/o2.js"></script>
+	<script src="../../externals/jquery/jquery-2.1.1.min"></script>
+	<script src="../../libraries/Raycaster/Devices/MotionDevice.js"></script>
+	<script>
+
+
+O2.createClass('MOTION.Application', {
+	md: null,
+	
+	main: function() {
+		this.md = new O876_Raycaster.MotionDevice();
+		this.md.plugEvents();
+	}
+	
+	
+});
+
+/*
+function defineValues() {
+	MD.setAlphaRange(gete('alpha
+}
+
+function compute() {
+	var bForce = gete('force').checked;
+	var alpha, beta, gamma;
+	if (bForce) {
+		alpha = gete('alphaX').value;
+		beta = gete('betaX').value;
+		gamma = gete('gammaX').value;
+	} else {
+
+	}
+}*/
+
+var A; // need global variable for debug purpose
+
+$(window).on('load', function() {
+	A = new MOTION.Application();
+	A.main();
+});
+
+	</script>
+</head>
+<body>
+	<h1>motion device test</h1>
+	<table>
+		<tr>
+			<th>angle</th>
+			<th>min</th>
+			<th>max</th>
+			<th><input type="checkbox" id="force"/><label for="force">force</label></th>
+			<th>output 0</th>
+			<th>output 1</th>
+		</tr>
+		<tr>
+			<td>&alpha;</td>
+			<td><input type="number" step="10" id="alpha0"/></td>
+			<td><input type="number" step="10" id="alpha1"/></td>
+			<td><input type="number" step="10" id="alphaX"/></td>
+			<td id="alphaout0"></td>
+			<td id="alphaout1"></td>
+		</tr>
+		<tr>
+			<td>&beta;</td>
+			<td><input type="number" step="10" id="beta0"/></td>
+			<td><input type="number" step="10" id="beta1"/></td>
+			<td><input type="number" step="10" id="betaX"/></td>
+			<td id="betaout0"></td>
+			<td id="betaout1"></td>
+		</tr>
+		<tr>
+			<td>&gamma;</td>
+			<td><input type="number" step="10" id="gamma0"/></td>
+			<td><input type="number" step="10" id="gamma1"/></td>
+			<td><input type="number" step="10" id="gammaX"/></td>
+			<td id="gammaout0"></td>
+			<td id="gammaout1"></td>
+		</tr>
+	</table>
+	<button type="button" onclick="defineValue()">Define</button>
+</body>
+</html>
+
