@@ -8,7 +8,7 @@ O2.extendClass('O876_Raycaster.MotionThinker', O876_Raycaster.Thinker,
 	
 	__construct : function() {
 		var md = new O876_Raycaster.MotionDevice();
-		var nMin = 2;
+		var nMin = 1;
 		var nMax = 4;
 		md.getAngleRange('alpha', 0).setRange(-nMin, -nMax, true);
 		md.getAngleRange('alpha', 1).setRange(nMin, nMax, false);
@@ -46,7 +46,7 @@ O2.extendClass('O876_Raycaster.MotionThinker', O876_Raycaster.Thinker,
 					this.checkCollision();
 				}
 			} else {
-				this.oMobile.rotate(beta / 10);
+				this.oMobile.rotate(beta / 20);
 			}
 		}
 	},

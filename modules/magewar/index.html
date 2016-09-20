@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html> 
+	<head> 
+		<meta charset="UTF-8"/>
+		<title>Blight Magic Network - Raycaster Game</title>
+		<link href="resources/styles/styles.css" rel="stylesheet" media="screen" />
+		<script type="application/javascript" src='/socket.io/socket.io.js'></script>
+		<script type="text/javascript" src="magewar.js"></script>
+	</head>
+	<body bgcolor="black">
+		<!-- LOGO -->
+		<div style="display: none" id="logo">
+			<div class="title" align="center"><br /><br />
+				<span class="blight">Blight</span>
+				<span class="magic">Magic</span><br /> 
+				<span class="network">Network 2.0</span>
+				<div id="status"></div>
+			</div>
+		</div>
+		<!-- LOGIN WINDOW -->
+		<div style="display: none" id="login" class="miniWindow">
+			<p>Enter your nickname, and click on <b>Connect</b>.</p>
+			<input id="nickname" type="text" title="Must be at least 2 character length"/><button id="connect" type="button" title="Click here to connect and join the game">Connect</button>
+			<div id="nickname_error" class="error">&nbsp;</div>
+			<div>
+				<span id="options_switch" class="command">Show options</span> | 
+				<span id="htp_switch" class="command">How to play</span> | 
+				<span id="labo_switch" class="command"><a href="http://www.laboralphy.org/blightmagic/">laboralphy.org</a></span>
+				<div id="options">
+					<table>
+						<tbody><tr>
+							<td>
+								<input name="opt_hires" id="opt_hires" type="checkbox"/>
+							</td><td>
+								<label for="opt_hires" title="Looks nicer but needs a faster computer. The game will turn back to normal detail mode if framerate is too low.">
+									Play in high detail mode.
+								</label>
+							</td></tr><tr><td>
+								<input name="opt_nosnd" id="opt_nosnd" type="checkbox"/>
+							</td><td>
+								<label for="opt_nosnd" title="Disable sound.">
+									Disable sound.
+								</label>
+							</td><td>
+								
+							</td>
+						</tr></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- CANVAS -->
+		<canvas oncontextmenu="return false;" id="screen" width="400" height="250" moz-opaque="moz-opaque"></canvas>
+    	<!-- ERROR MESSAGE -->
+    	<div id="error_message" style="display: none">
+			<div class="title">ERROR</div>
+			<div id="error_message_body"class="body"></div>
+    	</div> 
+    	<!-- MANUAL -->
+    	<div id="page" style="display: none"></div>
+    </body> 
+</html> 
