@@ -96,6 +96,11 @@ function deploy($aArgOpt) {
 	}
 	// writing output HTML file
 	file_put_contents(MODULE_PATH . $sProject . '/index.html', implode('', $aOutputHTML));
+	
+	// copy the thumbnail
+	if (file_exists(PROJECT_PATH . '/thumbnail.png')) {
+		copy(PROJECT_PATH . '/thumbnail.png', MODULE_PATH . $sProject . '/thumbnail.png');
+	}
 }
 
 function cjs() {
