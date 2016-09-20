@@ -1,4 +1,13 @@
 function start() {
+	var oOptions = O876.parseSearch();
+	if (oOptions["3d"]) {
+		CONFIG.raycaster.stereo = true;
+	} 
+	if (oOptions["mob"]) {
+		CONFIG.game.controlthinker = 'O876_Raycaster.MotionThinker';
+		CONFIG.game.fullscreen = true;
+		CONFIG.game.fpscontrol = false;
+	} 
 	document.getElementById('info').style.display = 'none';
 	var oCanvas = document.getElementById('screen');
 	oCanvas.style.display = 'block';
