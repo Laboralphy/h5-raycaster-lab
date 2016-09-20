@@ -38,9 +38,6 @@ div.checkpad table.report tr.event td {
 		<script type="text/javascript" src="../../externals/jshint/jshint.js"></script>
 		<script type="text/javascript">
 
-
-
-
 function main() {
 	var $files = $('div.file');
 	var aFiles = [];
@@ -140,9 +137,6 @@ function checkDirectory($aDir) {
 
 
 function main() {
-	//checkDirectory(array('libraries', 'sources', 'dynamics'));
-	//checkDirectory(array('dynamics/rcwe/server.storage/exports/work/tc-l1'));
-	//checkDirectory(array('libraries'));
 	checkDirectory(array('libraries', 'sources'));
 }
 

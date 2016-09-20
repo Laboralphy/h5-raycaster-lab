@@ -6,12 +6,3 @@ modules/*
 
 # all log files
 *.log
-
-# magewar compiled client program and active plugins
-servers/mw/www/mw/
-servers/mw/mwplugins/*
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 46f0779f063387e6464266fdfa2c986a0bf3756f
