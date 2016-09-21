@@ -1,6 +1,9 @@
 function start(oOptions) {
 	var oOptions = oOptions || {};
+	var oCanvas = document.getElementById('screen');
+	oCanvas.height = 250;
 	if (oOptions["stereo"]) {
+		oCanvas.height = 210;
 		CONFIG.raycaster.stereo = true;
 	} 
 	if (oOptions["mob"]) {
@@ -9,7 +12,6 @@ function start(oOptions) {
 		CONFIG.game.fpscontrol = false;
 	} 
 	document.getElementById('info').style.display = 'none';
-	var oCanvas = document.getElementById('screen');
 	oCanvas.style.display = 'block';
 	screenResize();
 	window.addEventListener('resize', screenResize);

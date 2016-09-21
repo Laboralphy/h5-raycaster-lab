@@ -32,7 +32,7 @@ canvas, img {
 	background-repeat: no-repeat;
 	background-position: center;
 	height: 500px;
-	padding: 16px;
+	padding: 0px;
 }
 
 #info a, #info a:visited  {
@@ -73,8 +73,7 @@ canvas, img {
 }
 
 
-@media only screen and (min-device-width : 320px) 
-and (max-device-width : 480px) {
+@media only screen and (max-device-width: 768px) {
 	#info .desktop {
 		display: none;
 	}
@@ -92,8 +91,9 @@ and (max-device-width : 480px) {
   <body bgcolor="black">
 	<div id="info">
 	  <div class="desktop">
+		<br/>
 		<h1>Raycasting Technical Demo</h1>
-		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël xxx Marandet</a></p>
+		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël Marandet</a></p>
 		<img src="resources/tiles/images/controls.png" /><br />
 		<p>When the game starts, click inside the screen to take control.<br />
 		Use your keyboard and mouse to move and look around.<br />
@@ -103,13 +103,13 @@ and (max-device-width : 480px) {
 	  </div>
 	  <div class="handler">
 		<h1>Raycasting Technical Demo</h1>
-		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël xxx Marandet</a></p>
+		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël Marandet</a></p>
 		<p>
 			<button type="button" onclick="start({mob: true})">START - NORMAL</button>
 			<button type="button" onclick="start({mob: true, stereo: true})">START - 3D GLASSES</button>
 		</p>
 	  </div>
 	</div>
-    <canvas style="display: none" id="screen" width="400" height="210" moz-opaque="moz-opaque"></canvas>
+    <canvas style="display: none" id="screen" width="400" height="250" moz-opaque="moz-opaque"></canvas>
   </body> 
 </html> 
