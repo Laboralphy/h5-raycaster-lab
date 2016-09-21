@@ -1,6 +1,6 @@
-function start() {
-	var oOptions = O876.parseSearch();
-	if (oOptions["3d"]) {
+function start(oOptions) {
+	var oOptions = oOptions || {};
+	if (oOptions["stereo"]) {
 		CONFIG.raycaster.stereo = true;
 	} 
 	if (oOptions["mob"]) {
