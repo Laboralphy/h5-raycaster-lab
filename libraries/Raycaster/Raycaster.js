@@ -166,7 +166,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 	
-	set3d: function(b) {
+	setVR: function(b) {
 		if (b) {
 			this.b3d = true;
 			this.xLimitL = this.xScrSize * 0.25 | 0;
@@ -230,8 +230,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.oConfig.shades) {
 			this.nShadingThreshold = this.oConfig.shades;
 		}
-		if (this.oConfig.stereo) {
-			this.set3d(true);
+		if (this.oConfig.vr) {
+			this.setVR(true);
 		}
 		
 		switch (this.nShadingThreshold) {

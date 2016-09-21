@@ -2,9 +2,9 @@ function start(oOptions) {
 	var oOptions = oOptions || {};
 	var oCanvas = document.getElementById('screen');
 	oCanvas.height = 250;
-	if (oOptions["stereo"]) {
+	if (oOptions["vr"]) {
 		oCanvas.height = 210;
-		CONFIG.raycaster.stereo = true;
+		CONFIG.raycaster.vr = true;
 	} 
 	if (oOptions["mob"]) {
 		CONFIG.game.controlthinker = 'O876_Raycaster.MotionThinker';
