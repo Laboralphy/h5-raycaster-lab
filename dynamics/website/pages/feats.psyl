@@ -83,5 +83,20 @@
 		"Audio system"
 		"It can't be heared here but the embedded audio handles distances (close sounds are louder than distant ones). And it handles crossfade background soundtrack."
 	)
+	(card
+		"Using VR Glasses"
+		"<p>The framework has a unique ability to switch between normal rendering and <b>VR Rendering</b>.</p>"
+		"<p>You should try it out with <a href=\"https://www.google.fr/search?q=vr+glasses+cardboard\">this kind of cardboard glasses</a>.</p>"
+		(imgrow
+			"lg-6 lg-offset-3 sm-8 sm-offset-2 xs-12 xs-offset-0"
+			"images/feats/vr/vr-glasses.jpg" "VR Glasses"
+		)
+		(imgrow
+			"images/feats/vr/city-vr-scr-0.png" "city : normal"
+			"images/feats/vr/city-vr-scr-1.png" "city : vr-rendering"
+			"images/feats/vr/mans-vr-scr-0.png" "mansion : normal"
+			"images/feats/vr/mans-vr-scr-1.png" "mansion : vr-rendering"
+		)
+	)
 )
-			
+

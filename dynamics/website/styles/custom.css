@@ -7,6 +7,10 @@
 	box-shadow: 0.1em 0.1em 0.4em rgba(0, 0, 0, 0.5);
 }
 
+.card p {
+	line-height: 1.5em;
+}
+
 dt {
 	font-size: 1.1em;
 	font-weight: bold;

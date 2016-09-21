@@ -2,7 +2,9 @@
 	About
 	(card
 		"What is Raycasting ?"
-		"A set of algorithms aimed at rendering simple 3D environements."
+		"<p>Raycasting is a 3D rendering method using extremly simple computations in order to render 3D environments.
+		Raycasting was mainly used in older 90's games like <b>Wolfenstein 3D</b> and <b>Doom</b>. These games run on old 386 PC.</p>"
+		"<p>Games based on this rendering method share the same simplicity. Designing levels of such games is quite simple.</p>"
 	)
 	(card
 		"What can you do with this framework ?"
@@ -12,6 +14,7 @@
 			"Supports any real HTML 5 Browsers like Firefox, Google Chrome and Chromium."
 			"Fair performances : games will run at around 25 fps on older architectures like Intel Core2 Duo."
 			"Full screen, Pointer lock, and Audio support (mp3 and ogg)."
+			"An <b>HTML 5 Level Editor</b> is available online - Design levels is extremly simple and fast. "
 		)
 	)
 	(card
@@ -32,4 +35,3 @@
 		)
 	)
 )
-			

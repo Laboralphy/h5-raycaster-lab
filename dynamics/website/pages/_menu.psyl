@@ -1,6 +1,5 @@
 (menu
 	"./?p=index"		"home"		"Home"
-	"./?p=about"		"info"		"About"
 	"./?p=feats"		"list"		"Features"
 	"./?p=demos" 		"pacman"	"Demos"
 	"../rcwe/" 			"table2"	"Level editor"
