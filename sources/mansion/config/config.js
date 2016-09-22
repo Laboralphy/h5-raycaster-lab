@@ -11,6 +11,6 @@ var CONFIG = {
     drawMap: false,
     smoothTextures: false,
     zoom: 1,
-    stereo: false
+    vr: false
   }
 };
