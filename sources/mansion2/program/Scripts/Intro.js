@@ -31,7 +31,7 @@ O2.createClass('MANSION.Script.Intro', {
 	
 	_text: function(tag, aText) {
 		var rc = tag.game.oRaycaster;
-		var rcc = rc.oCanvas;
+		var rcc = rc.getScreenCanvas();
 		var oText = tag.game.oRaycaster.addGXEffect(MANSION.GX.SimpleText);
 		oText.text(aText, rcc.width >> 1, rcc.height >> 1);
 	},

@@ -5749,10 +5749,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			urc.bGradient = false;
 			urc.oCamera = this.oCamera;
 			urc.oWall = this.oWall;
-			//urc.oCanvas = this.oCanvas;
-			//urc.oContext = this.oContext;
-			urc.oRenderCanvas = this.oRenderCanvas;
-			urc.oRenderContext = this.oRenderContext;
+			urc.oRenderCanvas = this.getRenderCanvas();
+			urc.oRenderContext = this.getRenderContext();
 			this.oUpper = urc;
 		}
 	},

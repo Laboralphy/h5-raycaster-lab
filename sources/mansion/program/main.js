@@ -1,6 +1,17 @@
-function start() {
-	document.getElementById('info').style.display = 'none';
+function start(oOptions) {
+	var oOptions = oOptions || {};
 	var oCanvas = document.getElementById('screen');
+	oCanvas.height = 250;
+	if (oOptions["vr"]) {
+		oCanvas.height = 210;
+		CONFIG.raycaster.vr = true;
+	} 
+	if (oOptions["mob"]) {
+		CONFIG.game.controlthinker = 'O876_Raycaster.MotionThinker';
+		CONFIG.game.fullscreen = true;
+		CONFIG.game.fpscontrol = false;
+	} 
+	document.getElementById('info').style.display = 'none';
 	oCanvas.style.display = 'block';
 	screenResize();
 	window.addEventListener('resize', screenResize);

@@ -69,7 +69,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * Permet l'initialisation des objet nouvellement créés (comme la caméra)
 	 */
 	onEnterLevel: function() {
-		this.getMouseDevice(this.oRaycaster.oCanvas);
+		this.getMouseDevice(this.oRaycaster.getScreenCanvas());
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		this.oRaycaster.nPlaneSpacing = 64;
@@ -321,7 +321,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		oCanvas.width = w;
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
-		oContext.drawImage(this.oRaycaster.oCanvas, 0, 0, wr, hr, 0, 0, w, h);
+		oContext.drawImage(this.oRaycaster.getScreenCanvas(), 0, 0, wr, hr, 0, 0, w, h);
 		return this._oScreenShot = oCanvas;
 	},
 

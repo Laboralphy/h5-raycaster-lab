@@ -18,7 +18,7 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
-		var rcc = oRaycaster.oCanvas;
+		var rcc = oRaycaster.getRenderCanvas();
 		var oCanvas = O876.CanvasFactory.getCanvas();
 		oCanvas.width = rcc.width;
 		oCanvas.height = rcc.height;
@@ -86,10 +86,10 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 	*/
 	render: function() {
 		var cvs = this.oCanvas;
-		var ctx = this.oRaycaster.oContext;
+		var ctx = this.oRaycaster.getRenderContext();
 		var fAlpha = ctx.globalAlpha;
 		ctx.globalAlpha = this.oEasingAlpha.x;
-		this.oRaycaster.oContext.drawImage(cvs, 0, 0);
+		this.oRaycaster.getScreenContext().drawImage(cvs, 0, 0);
 		ctx.globalAlpha = fAlpha;
 	},
 

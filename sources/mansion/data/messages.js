@@ -4,6 +4,7 @@ O2.createObject('MESSAGES_DATA', {
 		l_lvl: 'loading : level geometry',
 		l_gfx: 'loading : graphic resources',
 		l_shd: 'shading : textures and sprites',
+		l_tag: 'tagging : processing tags',
 		l_end: 'done'
 	},
 	

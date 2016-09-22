@@ -2,7 +2,7 @@ var CONFIG = {
   game: {
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */
-    fullscreen: false,
+    fullscreen: true,
     fpscontrol: true
   },
   raycaster: {
@@ -10,6 +10,7 @@ var CONFIG = {
     ghostVision: 0,
     drawMap: false,
     smoothTextures: false,
-    zoom: 1
+    zoom: 1,
+    vr: false
   }
 };

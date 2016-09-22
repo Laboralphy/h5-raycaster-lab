@@ -64,8 +64,8 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 				this.sFontFamily = sFontProp;
 			}
 		}).bind(this));
-		this.oCanvas = this.oRaycaster.oCanvas;
-		this.oContext = this.oCanvas.getContext('2d');
+		this.oCanvas = this.oRaycaster.getRenderCanvas();
+		this.oContext = this.oRaycaster.getRenderContext();
 		this.oMessageCanvas = O876.CanvasFactory.getCanvas();
 		this.oMessageCanvas.width = this.wSize; 
 		this.oMessageCanvas.height = this.hSize;

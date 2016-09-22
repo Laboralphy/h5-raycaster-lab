@@ -12,8 +12,11 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	nSecurityDelay: 0,
 	oElement: null,
 	
+	oHandlers: null,
+	
 	__construct: function() {
 		this.aEvents = [];
+		this.oHandlers = {};
 	},
 	
 	clearBuffer: function() {
@@ -22,20 +25,18 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 
 	eventMouseUp: function(e) {
 		var oEvent = window.event ? window.event : e;
-		var oDev = window.__mouseDevice;
-		oDev.nButtons = oEvent.buttons;
-		if (oDev.bUseBuffer && oDev.aEvents.length < oDev.nKeyBufferSize) {
-			oDev.aEvents.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		this.nButtons = oEvent.buttons;
+		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
+			this.aEvents.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
 		}
 		return false;
 	},
 
 	eventMouseDown: function(e) {
 		var oEvent = window.event ? window.event : e;
-		var oDev = window.__mouseDevice;
-		oDev.nButtons = oEvent.buttons;
-		if (oDev.bUseBuffer && oDev.aEvents.length < oDev.nKeyBufferSize) {
-			oDev.aEvents.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		this.nButtons = oEvent.buttons;
+		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
+			this.aEvents.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
 		}
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
@@ -78,45 +79,61 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	
 	mouseWheel: function(e) {
 		var oEvent = window.event ? window.event : e;
-		var oDev = window.__mouseDevice;
 		var nDelta = 0;
 		if (oEvent.wheelDelta) {
 			nDelta = oEvent.wheelDelta; 
 		} else {
 			nDelta = -40 * oEvent.detail;
 		}
-		if (oDev.bUseBuffer && oDev.aEvents.length < oDev.nKeyBufferSize) {
+		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
 			if (e.wheelDelta) {
 				nDelta = oEvent.wheelDelta > 0 ? 3 : -3; 
-				oDev.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEvents.push([nDelta, 0, 0, 3]);
 			} else {
 				nDelta = oEvent.detail > 0 ? -3 : 3;
-				oDev.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEvents.push([nDelta, 0, 0, 3]);
 			}
 		}
 	},
 
+	/**
+	 * Will add event listener and keep track of it for future remove
+	 * @param sEvent DOM Event name
+	 * @param pHandler event handler function
+	 */
+	plugEvent: function(sEvent, pHandler) {
+		var p = pHandler.bind(this);
+		this.oHandlers[sEvent] = p;
+		this.oElement.addEventListener(sEvent, p, false);
+	},
+
+	/**
+	 * Will remove previously added event handler
+	 * Will do nothing if handler has not been previously added
+	 * @param sEvent DOM event name
+	 */
+	unplugEvent: function(sEvent) {
+		if (sEvent in this.oHandlers) {
+			var p = this.oHandlers[sEvent];
+			this.oElement.removeEventListener(sEvent, p);
+			delete this.oHandlers[sEvent];
+		}
+	},
 
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
 	plugEvents: function(oElement) {
-		window.__mouseDevice = this;
-		oElement.addEventListener('mousedown', this.eventMouseDown, false);
-		oElement.addEventListener('click', this.eventMouseClick, false);
-		oElement.addEventListener('mouseup', this.eventMouseUp, false);
-		oElement.addEventListener('mousewheel', this.mouseWheel, false);
-		oElement.addEventListener('DOMMouseScroll', this.mouseWheel, false);
 		this.oElement = oElement;
+		this.plugEvent('mousedown', this.eventMouseDown);
+		this.plugEvent('click', this.eventMouseClick);
+		this.plugEvent('mouseup', this.eventMouseUp);
+		this.plugEvent('mousewheel', this.mouseWheel);
+		this.plugEvent('DOMMouseScroll', this.mouseWheel);
 	},
 	
 	unplugEvents: function() {
-		var oElement = this.oElement;
-		oElement.removeEventListener('mousedown', this.eventMouseDown, false);
-		oElement.removeEventListener('click', this.eventMouseClick, false);
-		oElement.removeEventListener('mouseup', this.eventMouseUp, false);
-		oElement.removeEventListener('mousewheel', this.mouseWheel, false);
-		oElement.removeEventListener('DOMMouseScroll', this.mouseWheel, false);
+		('mousedown click mouseup mousewheel DOMMouseScroll').split(' ').forEach(this.unplugEvent.bind(this));
 	},
 	
 	clearEvents: function() {
