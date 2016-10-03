@@ -75,7 +75,7 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 		this.oRaycaster.bFlatSky = true;
 		this.oRaycaster.nPlaneSpacing = 64;
 		var oCT = new O876_Raycaster.CameraKeyboardThinker();
-		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.getScreenCanvas());
 		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);
@@ -200,7 +200,7 @@ O2.extendClass('RCWE.Game', O876_Raycaster.Engine, {
 		oCanvas.width = w;
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
-		oContext.drawImage(this.oRaycaster.oCanvas, 0, 0, wr, hr, 0, 0, w, h);
+		oContext.drawImage(this.oRaycaster.getScreenCanvas(), 0, 0, wr, hr, 0, 0, w, h);
 		this._oScreenShot = oCanvas;
 	},
 
