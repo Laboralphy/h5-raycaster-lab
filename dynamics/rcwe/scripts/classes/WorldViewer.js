@@ -78,10 +78,10 @@ O2.extendClass('RCWE.WorldViewer', RCWE.Window, {
 		var g = new RCWE.Game(oLevelData);
 		var hWork, wWork;
 		var pResizeEvent = this.resizeProc;
-		g.onError = (function(sError) {
+		g.on('error', (function(sError) {
 			this.doAction('error', sError);
-		}).bind(this);
-		g.onStart = (function() {
+		}).bind(this));
+		g.on('enter', (function() {
 			$progress.hide();
 			$screen.show();
 			if (this.xStart !== null) {
@@ -90,15 +90,15 @@ O2.extendClass('RCWE.WorldViewer', RCWE.Window, {
 				rc.y = this.yStart;
 				rc.fTheta = this.aStart;
 			}
-		}).bind(this);
+		}).bind(this));
 		$(window).on('resize', pResizeEvent);
-		g.onStop = (function() {
+		g.on('stop', (function() {
 			$(window).off('resize', pResizeEvent);
 			var rc = g.oRaycaster.oCamera;
 			this.xStart = rc.x;
 			this.yStart = rc.y;
 			this.aStart = rc.fTheta;
-		}).bind(this);
+		}).bind(this));
 		$(window).trigger('resize');
 		window.G = g;
 	},

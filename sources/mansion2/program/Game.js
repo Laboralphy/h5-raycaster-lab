@@ -37,7 +37,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initPopup();
 		this.on('build', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
-		this.on('level', this.gameEventEnterLevel.bind(this));
+		this.on('enter', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
@@ -116,8 +116,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * de rassemblage.
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
-	gameEventBuild: function(data) {
-		data = WORLD_DATA[this._sLevelIndex];
+	gameEventBuild: function(wd) {
+		var data = WORLD_DATA[this._sLevelIndex];
+		var wd.data = data;
 		var s = '';
 		for (s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];

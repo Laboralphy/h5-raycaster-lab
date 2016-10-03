@@ -20,6 +20,13 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		}
 	},
 	
+	_halt: function(sError, oError) {
+		__inherited(sError, oError);
+		if (sError) {
+			this.trigger('error', {message: sError, data: oError});
+		}
+	},
+	
 	/**
 	 * Cette évènement doit renvoyer TRUE pour pouvoir passer à l'étape suivante
 	 * @return bool
@@ -39,21 +46,18 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
+		var wd = {data: {}};
 		if ('WORLD_DATA' in window) {
 			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
 				return a > b;
 			});
-			var wd;
 			if (!this._sLevelIndex) {
 				this._sLevelIndex = aWorldDataKeys[0];
 			}
-			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
-			return WORLD_DATA[this._sLevelIndex];
-		} else {
-			var wd = {};
-			this.trigger('build', wd);
-			return wd;
+			wd.data = WORLD_DATA[this._sLevelIndex];
 		}
+		this.trigger('build', wd);
+		return wd.data;
 	},
 	
 	/**
@@ -125,7 +129,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			});
 		}
 		this.oRaycaster.oCamera.fSpeed = 6;
-		this.trigger('enter');
 		this.setDoomloop('stateTagProcessing');
 	},
 
@@ -153,7 +156,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			x = 0;
 		}
 		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
-		this.trigger('level');
+		this.trigger('enter');
 	},
 
 

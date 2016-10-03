@@ -22,9 +22,11 @@
 			$.getJSON(sURL, function(data) {
 				pComplete(data);
 				goAjax();
-			}).fail(function(err) {
+			}).fail(function(ajax, err) {
 				pError(err);
 				goAjax();
+			}).progress(function(x, y, z) {
+				console.log(x, y, z);
 			});
 		}
 		

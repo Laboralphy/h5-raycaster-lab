@@ -785,7 +785,8 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * 
 	 * @return object
 	 */
-	levelBuilding : function(data) {
+	levelBuilding : function(wd) {
+		var data = wd.data;
 		for (var i in this.oData) {
 			data[i] = this.oData[i];
 		}

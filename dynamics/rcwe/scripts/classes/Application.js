@@ -537,6 +537,7 @@ O2.createClass('RCWE.Application', {
 	
 	cmd_blockbrowser_newblock: function() {
 		var be = this.oBlockEditor;
+		be.resetDropZones();
 		var bb = this.oBlockBrowser;
 		var oBlock = bb.getSelectedBlock();
 		be.importBlock(oBlock);
@@ -1071,7 +1072,6 @@ O2.createClass('RCWE.Application', {
 	cmd_advancedpad_shiftmap: function(sDir, n) {
 		try {
 			var dx, dy;
-			console.log(sDir, n);
 			switch (sDir) {
 				case 'up': 
 					dx = 0;
@@ -1239,9 +1239,14 @@ O2.createClass('RCWE.Application', {
 			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
 			this.hidePopup();
 		}).bind(this);
+		
+		var pError = (function(err) {
+			this.error('An error occurred while loading "' + sName + '"');
+			console.error(err);
+		}).bind(this);
 			
 		var pLoad = function() {
-			$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived);
+			$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived, pError);
 		};
 		
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
@@ -1397,7 +1402,6 @@ O2.createClass('RCWE.Application', {
 	
 	importLevel: function(sProject, sMap) {
 		var pDataReceived = (function(data) {
-			console.log(data);
 			this.unserialize(data);
 			//this.oWorldViewer.sScreenShot = RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/thumbnail.png';
 			this.cmd_clickOnBlockBrowser(); //this.showPanel('blockBrowser');
