@@ -35,7 +35,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
-		this.on('build', this.gameEventBuild.bind(this));
+		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));

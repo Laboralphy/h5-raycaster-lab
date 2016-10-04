@@ -714,7 +714,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		this.sendSignal = ps.sendPluginSignal.bind(ps);
 		
 		this.on('menuloop', this.menuLooping.bind(this));
-		this.on('build', this.levelBuilding.bind(this));
+		this.on('leveldata', this.levelBuilding.bind(this));
 		this.on('load', this.levelLoading.bind(this));
 		this.on('enter', this.levelEntering.bind(this));
 		this.on('doomloop', this.doomLooping.bind(this));

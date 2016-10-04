@@ -156,6 +156,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	
 	oUpper: null,
 	
+	/**
+	 * Set Raycaster Configuration
+	 * 	{
+			shades: integer (default: 15) shading levels. The more, the most resource expensive.
+			vr: boolean (default: false) if true, activates VR mode at startup.
+			canvas: string|object reference to the canvas being used for display.
+			smoothTextures: boolean (default: false) if true, the wall textures will be smoothed.
+			drawMap: boolean (default: false) if true, will draw a mini map during game phase.
+			planeSpacing: integer (défaut: 64 pixels) modify the size of a square grid.
+			wallHeight: integer (défaut: 96 pixels) modify the height of all walls.
+		}
+	 */
 	setConfig : function(oConfig) {
 		if (this.oConfig === null) {
 			this.oConfig = oConfig;

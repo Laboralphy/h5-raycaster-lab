@@ -24,7 +24,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 
 
-		this.on('build', this.gameEventBuild.bind(this));	
+		this.on('leveldata', this.gameEventBuild.bind(this));	
 		this.on('enter', this.gameEventLevel.bind(this));	
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
@@ -48,7 +48,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	gameEventBuild: function(wd) {
-		var data = wd.data;
+		var data = WORLD_DATA.level1;
 		var i = '';
 		for (i in TILES_DATA) {
 			data.tiles[i] = TILES_DATA[i];
@@ -62,6 +62,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			oTagIndex[t.tag] = [t.x, t.y];
 		});
 		this.oTagIndex = oTagIndex;
+		wd.data = data;
 	},
 	
 	gameEventLoad: function(data) {

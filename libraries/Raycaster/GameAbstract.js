@@ -47,16 +47,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 */
 	onRequestLevelData: function() {
 		var wd = {data: {}};
-		if ('WORLD_DATA' in window) {
-			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
-				return a > b;
-			});
-			if (!this._sLevelIndex) {
-				this._sLevelIndex = aWorldDataKeys[0];
-			}
-			wd.data = WORLD_DATA[this._sLevelIndex];
-		}
-		this.trigger('build', wd);
+		this.trigger('leveldata', wd);
 		return wd.data;
 	},
 	
@@ -76,7 +67,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.getMouseDevice(this.oRaycaster.getScreenCanvas());
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
-		this.oRaycaster.nPlaneSpacing = 64;
 		var oCT;
 		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
 			var ControlThinkerClass = O2._loadObject(CONFIG.game.controlthinker);

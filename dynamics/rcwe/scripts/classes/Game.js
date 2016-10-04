@@ -2,7 +2,7 @@ O2.extendClass('RCWE.Game', O876_Raycaster.GameAbstract, {
 	__construct: function(oData) {
 		__inherited();
 		this._sLevelIndex = 'level';
-		this.on('build', function(wd) {
+		this.on('leveldata', function(wd) {
 			wd.data = oData;
 		});
 		this.on('load', function(p) {
