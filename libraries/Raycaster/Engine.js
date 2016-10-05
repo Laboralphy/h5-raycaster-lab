@@ -14,6 +14,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_nTimeStamp : 0,
 	_nShadedTiles : 0,
 	_nShadedTileCount : 0,
+	_oConfig: null,
 	
 	__construct : function() {
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
@@ -21,6 +22,13 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		}
 		__inherited('stateInitialize');
 		this.resume();
+	},
+
+	/**
+	 * Définition du fichier de configuration
+	 */
+	setConfig: function(c) {
+		this._oConfig = c;
 	},
 
 	initRequestAnimationFrame : function() {
@@ -275,10 +283,9 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	stateInitialize : function() {
 		// Evènement initialization
 		this._callGameEvent('onInitialize');
-
-		this.TIME_FACTOR = this.nInterval = CONFIG.game.interval;
-
-		switch (CONFIG.game.doomloop) {
+		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
+		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
+		switch (this._oConfig.game.doomloop) {
 			case 'interval':
 				this.stateRunning = this.stateRunningInt;
 				break;
@@ -287,7 +294,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				if (this.initRequestAnimationFrame()) {
 					this.stateRunning = this.stateRunningRAF;
 				} else {
-					CONFIG.game.doomloop = 'interval';
+					this._oConfig.game.doomloop = 'interval';
 					this.stateRunning = this.stateRunningInt;
 				}
 				break;
@@ -317,7 +324,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			this.oRaycaster = new O876_Raycaster.Raycaster();
 			this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
 		}
-		this.oRaycaster.setConfig(CONFIG.raycaster);
+		this.oRaycaster.setConfig(this._oConfig.raycaster);
 		this.oRaycaster.initialize();
 		this.oThinkerManager = this.oRaycaster.oThinkerManager;
 		this.oThinkerManager.oGameInstance = this;
@@ -378,7 +385,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		}
 		// this._callGameEvent('onLoading', 'shd', 1, 1);
 		this._oFrameCounter = new O876_Raycaster.FrameCounter();
-		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
+		this.setDoomloop('stateRunning', this._oConfig.game.doomloop);
 		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
 	},

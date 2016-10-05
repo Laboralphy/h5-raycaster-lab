@@ -748,7 +748,7 @@ O2.createClass('RCWE.Application', {
 			this.bRendering = true;
 			
 			// config du game engine et du raycaster
-			window.CONFIG = {
+			var oConfig = {
 			  game: {
 				interval: 40,         /* timer interval (ms)                */
 				doomloop: 'interval', /* doomloop type "raf" or "interval"  */
@@ -770,7 +770,7 @@ O2.createClass('RCWE.Application', {
 			//oWorld.oScript.html(JSON.stringify(oLevelData, null, '  '));
 			console.timeEnd('printing script');
 			console.time('starting game');
-			oWorld.startGame(oLevelData);
+			oWorld.startGame(oLevelData, oConfig);
 			console.timeEnd('starting game');
 			console.groupEnd('view3d');
 		} catch (e) {

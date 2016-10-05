@@ -69,13 +69,14 @@ O2.extendClass('RCWE.WorldViewer', RCWE.Window, {
 		}
 	},
 	
-	startGame: function(oLevelData) {
+	startGame: function(oLevelData, oConfig) {
 		var $screen = $('#screen');
 		var $screenContainer = $screen.parent();
 		var $progress = $('div.progress', this.getBody());
 		$screen.hide();
 		$progress.show();
 		var g = new RCWE.Game(oLevelData);
+		g.setConfig(oConfig);
 		var hWork, wWork;
 		var pResizeEvent = this.resizeProc;
 		g.on('error', (function(sError) {

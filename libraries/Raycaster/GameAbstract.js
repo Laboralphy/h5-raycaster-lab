@@ -19,6 +19,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			this.init();
 		}
 	},
+
 	
 	_halt: function(sError, oError) {
 		__inherited(sError, oError);
@@ -68,11 +69,11 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		var oCT;
-		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
-			var ControlThinkerClass = O2._loadObject(CONFIG.game.controlthinker);
+		if (('controlthinker' in this._oConfig.game) && (this._oConfig.game.controlthinker)) {
+			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlthinker);
 			oCT = new ControlThinkerClass();
 		} else {
-			if (CONFIG.game.fpscontrol) {
+			if (this._oConfig.game.fpscontrol) {
 				oCT = new O876_Raycaster.FirstPersonThinker();
 			} else {
 				oCT = new O876_Raycaster.CameraKeyboardThinker();
@@ -145,7 +146,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			++y;
 			x = 0;
 		}
-		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
+		this.setDoomloop('stateRunning', this._oConfig.game.doomloop);
 		this.trigger('enter');
 	},
 
@@ -254,6 +255,38 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	getString: function(sKey) {
 
 	},
+	
+	/**
+	 * Entre en mode pointerlock
+	 * @param oElement
+	 * @returns {Boolean}
+	 */
+	lockPointer: function() {
+		var rc = this.oRaycaster;
+		var oElement = rc.getScreenCanvas();
+		var rcc = rc.oCamera;
+		var rcct = rcc.oThinker;
+		if (!rcc || !rcct) {
+			return false;
+		}
+		if (O876_Raycaster.PointerLock.locked()) {
+			return false;
+		}
+		if (this._oConfig.game.fullscreen) {
+			O876_Raycaster.FullScreen.changeEvent = (function(e) {
+				if (O876_Raycaster.FullScreen.isFullScreen()) {
+					O876_Raycaster.PointerLock.requestPointerLock(oElement);
+					O876_Raycaster.PointerLock.setHook(this.oRaycaster.oCamera.oThinker.readMouseMovement, this.oRaycaster.oCamera.oThinker);
+				}
+			}).bind(this);
+			O876_Raycaster.FullScreen.enter(oElement);
+		} else {
+			O876_Raycaster.PointerLock.requestPointerLock(oElement);
+			O876_Raycaster.PointerLock.setHook(rcct.readMouseMovement, rcct);
+		}
+		return true;
+	},
+
 
 	
 	/**

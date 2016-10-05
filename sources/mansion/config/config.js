@@ -1,4 +1,4 @@
-var CONFIG = {
+O2.createObject('MAIN.CONFIG', {
   game: {
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */
@@ -13,4 +13,4 @@ var CONFIG = {
     zoom: 1,
     vr: false
   }
-};
+});
