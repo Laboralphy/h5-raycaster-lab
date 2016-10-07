@@ -1,4 +1,4 @@
-O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
+O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	_oAudio: null,
 	
@@ -6,6 +6,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 	
 	oGameScriptData: null,
 	oTagIndex: null,
+	bStart: false,
 	
 	init: function() {
 		this.initAudio();
@@ -24,6 +25,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 
 
+		this.on('menuloop', this.gameEventMenu.bind(this));	
 		this.on('leveldata', this.gameEventBuild.bind(this));	
 		this.on('enter', this.gameEventLevel.bind(this));	
 		this.on('door', this.gameEventDoor.bind(this));
@@ -45,6 +47,16 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			speed: 120,
 			position: 8
 		});
+	},
+	
+	start: function(oOptions) {
+		this.bStart = true;
+		document.getElementById('info').style.display = 'none';
+		document.getElementById('screen').style.display = '';
+	},
+	
+	gameEventMenu: function() {
+		return !document.getElementById('screen').style.display = '';
 	},
 	
 	gameEventBuild: function(wd) {

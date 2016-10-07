@@ -1,5 +1,6 @@
 O2.createObject('MAIN.CONFIG', {
   game: {
+	namespace: 'MANSION',
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */
     fullscreen: true,

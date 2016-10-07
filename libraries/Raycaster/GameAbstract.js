@@ -256,36 +256,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 
 	},
 	
-	/**
-	 * Entre en mode pointerlock
-	 * @param oElement
-	 * @returns {Boolean}
-	 */
-	lockPointer: function() {
-		var rc = this.oRaycaster;
-		var oElement = rc.getScreenCanvas();
-		var rcc = rc.oCamera;
-		var rcct = rcc.oThinker;
-		if (!rcc || !rcct) {
-			return false;
-		}
-		if (O876_Raycaster.PointerLock.locked()) {
-			return false;
-		}
-		if (this._oConfig.game.fullscreen) {
-			O876_Raycaster.FullScreen.changeEvent = (function(e) {
-				if (O876_Raycaster.FullScreen.isFullScreen()) {
-					O876_Raycaster.PointerLock.requestPointerLock(oElement);
-					O876_Raycaster.PointerLock.setHook(this.oRaycaster.oCamera.oThinker.readMouseMovement, this.oRaycaster.oCamera.oThinker);
-				}
-			}).bind(this);
-			O876_Raycaster.FullScreen.enter(oElement);
-		} else {
-			O876_Raycaster.PointerLock.requestPointerLock(oElement);
-			O876_Raycaster.PointerLock.setHook(rcct.readMouseMovement, rcct);
-		}
-		return true;
-	},
 
 
 	

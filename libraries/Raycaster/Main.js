@@ -1,36 +1,77 @@
 /**
  * The MAIN object
  */
-O2.createClass('O876_Raycaster.Main', {
+O2.createObject('MAIN', {
 	
 	game: null,
 	screen: null,
+	LEVEL_DATA: null,
 	
 	/**
 	 * Will start a game
 	 */
 	run: function() {
 		var oConfig = MAIN.CONFIG;
-		this.screen = document.getElementById(oConfig.raycaster.canvas);
-		this.screenResize();
-		window.addEventListener('resize', this.screenResize.bind(this));
+		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
+		MAIN.screenResize();
+		window.addEventListener('resize', MAIN.screenResize);
 		var sNamespace = oConfig.game.namespace;
 		var P = window[sNamespace];
-		this.game = new P.Game();
-		this.game.setConfig(oConfig);
+		MAIN.game = new P.Game();
+		MAIN.game.setConfig(oConfig);
 		if (oConfig.game.fpscontrol && O876_Raycaster.PointerLock.init()) {
-			this.screen.addEventListener('click', (function(oEvent) {
-				this.game.lockPointer();
-			}).bind(this));
+			MAIN.screen.addEventListener('click', function(oEvent) {
+				MAIN.lockPointer();
+			});
 		}
 	},
+	
+	level: function(sLevel, oData) {
+		if (!MAIN.LEVEL_DATA) {
+			MAIN.LEVEL_DATA = {};
+		}
+		MAIN.LEVEL_DATA[sLevel] = oData;
+	},
+	
+	/**
+	 * Entre en mode pointerlock
+	 * @param oElement
+	 * @returns {Boolean}
+	 */
+	lockPointer: function() {
+		var G = MAIN.game;
+		var rc = G.oRaycaster;
+		var oElement = rc.getScreenCanvas();
+		var rcc = rc.oCamera;
+		var rcct = rcc.oThinker;
+		if (!rcc || !rcct) {
+			return false;
+		}
+		if (O876_Raycaster.PointerLock.locked()) {
+			return false;
+		}
+		if (MAIN._oConfig.game.fullscreen) {
+			O876_Raycaster.FullScreen.changeEvent = function(e) {
+				if (O876_Raycaster.FullScreen.isFullScreen()) {
+					O876_Raycaster.PointerLock.requestPointerLock(oElement);
+					O876_Raycaster.PointerLock.setHook(G.oRaycaster.oCamera.oThinker.readMouseMovement, G.oRaycaster.oCamera.oThinker);
+				}
+			};
+			O876_Raycaster.FullScreen.enter(oElement);
+		} else {
+			O876_Raycaster.PointerLock.requestPointerLock(oElement);
+			O876_Raycaster.PointerLock.setHook(rcct.readMouseMovement, rcct);
+		}
+		return true;
+	},
+
 
 	screenResize: function(oEvent) {
 		var nPadding = 24;
 		var h = innerHeight;
 		var w = innerWidth;
 		var r = (h - nPadding) / w;
-		var oCanvas = this.screen;
+		var oCanvas = MAIN.screen;
 		var ch = oCanvas.height;
 		var cw = oCanvas.width;
 		var rBase = ch / cw; 
@@ -48,9 +89,7 @@ O2.createClass('O876_Raycaster.Main', {
 	}
 });
 
-O2.mixin(O876_Raycaster.Main, O876.Mixin.Events);
-
 window.addEventListener('load', function() {
-	var m = new O876_Raycaster.Main();
-	m.run();
+	MAIN.run();
 });
+
