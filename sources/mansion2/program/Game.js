@@ -117,7 +117,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
 	gameEventBuild: function(wd) {
-		var data = WORLD_DATA[this._sLevelIndex];
+		var data = LEVEL_DATA[this._sLevelIndex];
 		var wd.data = data;
 		var s = '';
 		for (s in MANSION.TILES_DATA) {

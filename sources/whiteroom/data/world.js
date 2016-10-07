@@ -161,6 +161,6 @@ var BLUEPRINTS = {
     };
 
 var WORLDS_DATA = [73, 70, 80, 79, 83, 82, 84, 78, 81, 88];
-var WORLD_DATA = {
+var LEVEL_DATA = {
 };
 

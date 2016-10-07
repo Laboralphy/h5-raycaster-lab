@@ -1,4 +1,4 @@
-O2.extendClass('Game', O876_Raycaster.Transistate, {
+O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   oRaycaster: null,
   oKbdDevice: null,
   oMotionDevice: null,
@@ -131,7 +131,7 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
       this.nLevel++;
     }
     this.sLevel = 'level' + this.nLevel.toString();
-    WORLD_DATA[this.sLevel] = {
+    LEVEL_DATA[this.sLevel] = {
       map: this.nLevel,
       walls: GFX_DATA.textures.white,
       tiles: GFX_DATA.tiles,
@@ -149,15 +149,15 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
   },
 
   loadLevelMap: function(sName) {
-    if (typeof WORLD_DATA[sName].map == 'object') {
+    if (typeof LEVEL_DATA[sName].map == 'object') {
       return;
     }
-    var nSeed = WORLD_DATA[sName].map;
+    var nSeed = LEVEL_DATA[sName].map;
     var oMap = this.aTagMap = JSON.parse((new O876.XHR()).getSync(CONFIG.game.urlLaby + nSeed));
     var x, y;
     var x64, y64;
     var aMap = [], aMapRow;
-    var aMetaCodes = WORLD_DATA[sName].walls.metacodes;
+    var aMetaCodes = LEVEL_DATA[sName].walls.metacodes;
     for (y = 0; y < oMap.length; y++) {
       aMapRow = [];
       y64 = y * this.oRaycaster.nPlaneSpacing + (this.oRaycaster.nPlaneSpacing >> 1);
@@ -167,29 +167,29 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
         switch (oMap[y][x]) {
           case LABY.BLOCK_ENTRANCE: // entrance -> définir le point de départ solo
             if (oMap[y - 2][x] == LABY.BLOCK_VOID) {
-              WORLD_DATA[sName].startpoint.y = y64 - (this.oRaycaster.nPlaneSpacing << 1);
-              WORLD_DATA[sName].startpoint.x = x64;
-              WORLD_DATA[sName].startpoint.angle = - PI / 2;
+              LEVEL_DATA[sName].startpoint.y = y64 - (this.oRaycaster.nPlaneSpacing << 1);
+              LEVEL_DATA[sName].startpoint.x = x64;
+              LEVEL_DATA[sName].startpoint.angle = - PI / 2;
             }
             if (oMap[y][x - 2] == LABY.BLOCK_VOID) {
-              WORLD_DATA[sName].startpoint.y = y64;
-              WORLD_DATA[sName].startpoint.x = x64 - (this.oRaycaster.nPlaneSpacing << 1);
-              WORLD_DATA[sName].startpoint.angle = PI;
+              LEVEL_DATA[sName].startpoint.y = y64;
+              LEVEL_DATA[sName].startpoint.x = x64 - (this.oRaycaster.nPlaneSpacing << 1);
+              LEVEL_DATA[sName].startpoint.angle = PI;
             }
             if (oMap[y + 2][x] == LABY.BLOCK_VOID) {
-              WORLD_DATA[sName].startpoint.y = y64 + (this.oRaycaster.nPlaneSpacing << 1);
-              WORLD_DATA[sName].startpoint.x = x64;
-              WORLD_DATA[sName].startpoint.angle = PI / 2;
+              LEVEL_DATA[sName].startpoint.y = y64 + (this.oRaycaster.nPlaneSpacing << 1);
+              LEVEL_DATA[sName].startpoint.x = x64;
+              LEVEL_DATA[sName].startpoint.angle = PI / 2;
             }
             if (oMap[y][x + 2] == LABY.BLOCK_VOID) {
-              WORLD_DATA[sName].startpoint.y = y64;
-              WORLD_DATA[sName].startpoint.x = x64 + (this.oRaycaster.nPlaneSpacing << 1);
-              WORLD_DATA[sName].startpoint.angle = 0;
+              LEVEL_DATA[sName].startpoint.y = y64;
+              LEVEL_DATA[sName].startpoint.x = x64 + (this.oRaycaster.nPlaneSpacing << 1);
+              LEVEL_DATA[sName].startpoint.angle = 0;
             }
           break; 
 
           case LABY.BLOCK_MOB_BASE: // mob
-            WORLD_DATA[sName].objects.push({
+            LEVEL_DATA[sName].objects.push({
               blueprint: 'skull',
               x: x64,
               y: y64,
@@ -200,8 +200,8 @@ O2.extendClass('Game', O876_Raycaster.Transistate, {
       }
       aMap.push(aMapRow);
     }
-    WORLD_DATA[sName].map = aMap;
-    this.oRaycaster.defineWorld(WORLD_DATA[sName]);
+    LEVEL_DATA[sName].map = aMap;
+    this.oRaycaster.defineWorld(LEVEL_DATA[sName]);
   },
 
 

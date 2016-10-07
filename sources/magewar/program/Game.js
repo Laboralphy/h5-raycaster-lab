@@ -725,7 +725,6 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		this.setPopupStyle({
 			text: 'rgb(220, 220, 220)',
 			shadow: 'black'
-			
 		});
 	},
 

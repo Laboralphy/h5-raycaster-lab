@@ -1,4 +1,4 @@
-O2.createObject('MAIN.CONFIG', {
+O2.createObject('CONFIG', {
   game: {
     interval: 40,         /* timer interval (ms)                */
     doomloop: 'interval', /* doomloop type "raf" or "interval"  */

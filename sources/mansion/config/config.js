@@ -1,4 +1,4 @@
-O2.createObject('MAIN.CONFIG', {
+O2.createObject('CONFIG', {
   game: {
 	namespace: 'MANSION',
     interval: 40,         /* timer interval (ms)                */

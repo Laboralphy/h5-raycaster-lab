@@ -1,7 +1,6 @@
-/* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
+/* globals O2, O876, O876_Raycaster, LEVEL_DATA, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_sLevelIndex: '',
-	_sNextLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',

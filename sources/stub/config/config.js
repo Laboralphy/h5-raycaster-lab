@@ -2,7 +2,7 @@
  * Configuration file for the raycaster rendering engine
  * You should not modify it, unless you know what you do
  */
-O2.createObject('MAIN.CONFIG', {
+O2.createObject('CONFIG', {
 	game: {
 		namespace: 'STUB',		/* game namespace */
 		interval: 40,			/* timer interval (ms). you should not change this value */

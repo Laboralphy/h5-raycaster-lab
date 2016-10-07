@@ -1,6 +1,7 @@
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	_oAudio: null,
+	_sLevelIndex: 'level1',
 	
 	sAmbience: '',
 	
@@ -51,16 +52,30 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	start: function(oOptions) {
 		this.bStart = true;
+		var oOptions = oOptions || {};
+		var oCanvas = document.getElementById('screen');
+		oCanvas.height = 250;
+		if (oOptions["vr"]) {
+			oCanvas.height = 210;
+			CONFIG.raycaster.vr = true;
+		} 
+		if (oOptions["mob"]) {
+			CONFIG.game.controlthinker = 'O876_Raycaster.MotionThinker';
+			CONFIG.game.fullscreen = true;
+			CONFIG.game.fpscontrol = false;
+		} 
 		document.getElementById('info').style.display = 'none';
-		document.getElementById('screen').style.display = '';
+		oCanvas.style.display = 'block';
+		MAIN.screenResize();
+		
 	},
 	
-	gameEventMenu: function() {
-		return !document.getElementById('screen').style.display = '';
+	gameEventMenu: function(data) {
+		return data.exit = this.bStart;
 	},
 	
 	gameEventBuild: function(wd) {
-		var data = WORLD_DATA.level1;
+		var data = LEVEL_DATA.level1;
 		var i = '';
 		for (i in TILES_DATA) {
 			data.tiles[i] = TILES_DATA[i];

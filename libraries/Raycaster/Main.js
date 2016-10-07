@@ -5,13 +5,12 @@ O2.createObject('MAIN', {
 	
 	game: null,
 	screen: null,
-	LEVEL_DATA: null,
 	
 	/**
 	 * Will start a game
 	 */
 	run: function() {
-		var oConfig = MAIN.CONFIG;
+		var oConfig = CONFIG;
 		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
 		MAIN.screenResize();
 		window.addEventListener('resize', MAIN.screenResize);
@@ -24,13 +23,6 @@ O2.createObject('MAIN', {
 				MAIN.lockPointer();
 			});
 		}
-	},
-	
-	level: function(sLevel, oData) {
-		if (!MAIN.LEVEL_DATA) {
-			MAIN.LEVEL_DATA = {};
-		}
-		MAIN.LEVEL_DATA[sLevel] = oData;
 	},
 	
 	/**
@@ -50,7 +42,7 @@ O2.createObject('MAIN', {
 		if (O876_Raycaster.PointerLock.locked()) {
 			return false;
 		}
-		if (MAIN._oConfig.game.fullscreen) {
+		if (CONFIG.game.fullscreen) {
 			O876_Raycaster.FullScreen.changeEvent = function(e) {
 				if (O876_Raycaster.FullScreen.isFullScreen()) {
 					O876_Raycaster.PointerLock.requestPointerLock(oElement);
@@ -92,4 +84,3 @@ O2.createObject('MAIN', {
 window.addEventListener('load', function() {
 	MAIN.run();
 });
-

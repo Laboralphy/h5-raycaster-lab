@@ -31,9 +31,9 @@ O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
-		var aWorldDataKeys = Object.keys(WORLD_DATA);
+		var aWorldDataKeys = Object.keys(LEVEL_DATA);
 		this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
-		return WORLD_DATA[this._sLevelIndex];
+		return LEVEL_DATA[this._sLevelIndex];
 	},
 	
 	/**

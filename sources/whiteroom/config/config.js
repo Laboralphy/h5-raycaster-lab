@@ -1,7 +1,8 @@
 var CONFIG = {
   game: {
+	namespace: 'WHITEROOM',
     interval: 40,         /* timer interval (ms) */
-    doomloop: 'interval', /* values : 'interval' | 'raf' */
+    doomloop: 'raf', /* values : 'interval' | 'raf' */
     urlLaby: '../../dynamics/laby/laby.php?g=whiteroom&s='   /* laby generation request locator */
   },
   raycaster: {
