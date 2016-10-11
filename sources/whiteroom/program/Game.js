@@ -328,6 +328,6 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
 
 
 function main() {
-  window.G = new Game('stateInitialize');
+  window.G = new WHITEROOM.Game('stateInitialize');
   G.resume();
 }

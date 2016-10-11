@@ -49,6 +49,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			position: 8
 		});
 	},
+
+	getLevel: function() {
+		return this._sLevelIndex;
+	},
 	
 	start: function(oOptions) {
 		this.bStart = true;
@@ -60,9 +64,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			CONFIG.raycaster.vr = true;
 		} 
 		if (oOptions["mob"]) {
-			CONFIG.game.controlthinker = 'O876_Raycaster.MotionThinker';
-			CONFIG.game.fullscreen = true;
-			CONFIG.game.fpscontrol = false;
+			CONFIG.game.controlThinker = 'O876_Raycaster.MotionThinker';
+			CONFIG.game.fullScreen = true;
+			CONFIG.game.fpsControl = false;
 		} 
 		document.getElementById('info').style.display = 'none';
 		oCanvas.style.display = 'block';

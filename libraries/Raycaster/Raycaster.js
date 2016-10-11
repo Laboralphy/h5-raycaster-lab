@@ -708,8 +708,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	buildMap : function() {
 		var oData = this.aWorld;
 		// verifier integrité des données
-		try {
-			this.checkObjectStructure(oData, [
+		this.checkObjectStructure(oData, [
 			'map.length',
 			'walls.src',
 			'walls.codes',
@@ -717,10 +716,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			'startpoint.y',
 			'startpoint.angle',
 			'visual'
-			]);
-		} catch (e) {
-			
-		}
+		]);
 		this.nMapSize = oData.map.length;
 		this.oMobileSectors = new O876_Raycaster.MobileRegister(
 				this.nMapSize);

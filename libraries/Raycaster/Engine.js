@@ -82,9 +82,9 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	_halt : function(sError, oError) {
 		if (('console' in window) && ('log' in window.console) && (sError)) {
-			console.log(sError);
+			console.error(sError);
 			if (oError) {
-				console.log(oError.toString());
+				console.error(oError.toString());
 			}
 		}
 		this.pause();

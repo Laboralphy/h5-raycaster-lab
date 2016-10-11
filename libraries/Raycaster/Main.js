@@ -12,13 +12,15 @@ O2.createObject('MAIN', {
 	run: function() {
 		var oConfig = CONFIG;
 		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
-		MAIN.screenResize();
-		window.addEventListener('resize', MAIN.screenResize);
+		if (oConfig.raycaster.canvasAutoResize) {
+			MAIN.screenResize();
+			window.addEventListener('resize', MAIN.screenResize);
+		}
 		var sNamespace = oConfig.game.namespace;
 		var P = window[sNamespace];
 		MAIN.game = new P.Game();
 		MAIN.game.setConfig(oConfig);
-		if (oConfig.game.fpscontrol && O876_Raycaster.PointerLock.init()) {
+		if (oConfig.game.fpsControl && O876_Raycaster.PointerLock.init()) {
 			MAIN.screen.addEventListener('click', function(oEvent) {
 				MAIN.lockPointer();
 			});
@@ -42,7 +44,7 @@ O2.createObject('MAIN', {
 		if (O876_Raycaster.PointerLock.locked()) {
 			return false;
 		}
-		if (CONFIG.game.fullscreen) {
+		if (CONFIG.game.fullScreen) {
 			O876_Raycaster.FullScreen.changeEvent = function(e) {
 				if (O876_Raycaster.FullScreen.isFullScreen()) {
 					O876_Raycaster.PointerLock.requestPointerLock(oElement);

@@ -118,7 +118,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	gameEventBuild: function(wd) {
 		var data = LEVEL_DATA[this._sLevelIndex];
-		var wd.data = data;
+		wd.data = data;
 		var s = '';
 		for (s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
@@ -682,6 +682,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
+
+	getLevel: function() {
+		return this._sLevelIndex;
+	},
+
+	setLevel: function(s) {
+		this._sLevelIndex = s;
+		this.enterLevel();	
+	},
 
 	/**
 	 * will bind phone events

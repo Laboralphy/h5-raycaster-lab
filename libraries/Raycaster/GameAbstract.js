@@ -1,6 +1,5 @@
-/* globals O2, O876, O876_Raycaster, LEVEL_DATA, CONFIG, Marker */
+/* globals O2, O876, O876_Raycaster, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
-	_sLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
@@ -68,11 +67,11 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
 		var oCT;
-		if (('controlthinker' in this._oConfig.game) && (this._oConfig.game.controlthinker)) {
-			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlthinker);
+		if (('controlThinker' in this._oConfig.game) && (this._oConfig.game.controlThinker)) {
+			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlThinker);
 			oCT = new ControlThinkerClass();
 		} else {
-			if (this._oConfig.game.fpscontrol) {
+			if (this._oConfig.game.fpsControl) {
 				oCT = new O876_Raycaster.FirstPersonThinker();
 			} else {
 				oCT = new O876_Raycaster.CameraKeyboardThinker();
@@ -145,7 +144,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			++y;
 			x = 0;
 		}
-		this.setDoomloop('stateRunning', this._oConfig.game.doomloop);
+		this.setDoomloop('stateRunning', this._oConfig.game.doomLoop);
 		this.trigger('enter');
 	},
 
@@ -233,30 +232,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
 	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
 	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
-	
-	/**
-	 * Return the name of the level currently loaded
-	 * @return string
-	 */
-	getLevel: function() {
-		return this._sLevelIndex;
-	},
-	
-	/**
-	 * Loads a new Level
-	 * @param sLevel new level reference
-	 */
-	setLevel: function(sLevel) {
-		this._sLevelIndex = sLevel;
-		this.enterLevel();
-	},
-
-	getString: function(sKey) {
-
-	},
-	
-
-
 	
 	/**
 	 * Affiche un message popup

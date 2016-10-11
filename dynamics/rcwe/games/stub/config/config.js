@@ -2,18 +2,20 @@
  * Configuration file for the raycaster rendering engine
  * You should not modify it, unless you know what you do
  */
-O2.objectCreate('MAIN.CONFIG', {
+O2.createObject('CONFIG', {
 	game: {
 		namespace: '$GAMENAME',		/* game namespace */
 		interval: 40,			/* timer interval (ms). you should not change this value */
-		doomloop: 'raf',	/* doomloop type "raf" or "interval". "raf" is very cpu intensive, "interval" is a cool method */
-		fullscreen: $FULLSCREEN, /* fullscreen flag */
-		fpscontrol: $FPSCONTROL, /* fps control (mouse + keyboard WASD) flag */
-		//controlthinker: '',	/* custom control thinker */
+		doomLoop: 'raf',		/* doomloop type "raf" or "interval". "raf" is very cpu intensive but is ok for a game, "interval" is a cool method but with some mouse glitches */
+		fullScreen: $FULLSCREEN, 	/* fullscreen flag. if true, clicking on screen will switch the game to fullscreen mode */
+		fpsControl: $FPSCONTROL, 	/* fps control (mouse + keyboard WASD) flag */
+		controlThinker: '',		/* custom control thinker */
 	},
 	raycaster: {
 		canvas: 'screen', /* id of rendering DOM canvas */
-		drawMap: false, /* mini map for debug purpose */
-		smoothTextures: $SMOOTHTEXTURES /* set to TRUE for old school games */
+		canvasAutoResize: true, /* if true : will resize the canvas to fit the screen */
+		drawMap: false, /* true : will display a mini map for debug purpose */
+		smoothTextures: $SMOOTHTEXTURES, /* set to TRUE for old school games */
+		vr: false
 	}
 });
