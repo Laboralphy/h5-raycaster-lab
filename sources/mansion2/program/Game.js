@@ -35,9 +35,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
-		this.on('build', this.gameEventBuild.bind(this));
+		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
-		this.on('level', this.gameEventEnterLevel.bind(this));
+		this.on('enter', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('frame', this.gameEventFrame.bind(this));
 		this.on('doomloop', this.gameEventDoomloop.bind(this));
@@ -116,8 +116,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * de rassemblage.
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
-	gameEventBuild: function(data) {
-		data = WORLD_DATA[this._sLevelIndex];
+	gameEventBuild: function(wd) {
+		var data = LEVEL_DATA[this._sLevelIndex];
+		wd.data = data;
 		var s = '';
 		for (s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
@@ -681,6 +682,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
+
+	getLevel: function() {
+		return this._sLevelIndex;
+	},
+
+	setLevel: function(s) {
+		this._sLevelIndex = s;
+		this.enterLevel();	
+	},
 
 	/**
 	 * will bind phone events

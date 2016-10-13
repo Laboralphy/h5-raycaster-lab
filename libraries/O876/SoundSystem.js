@@ -254,6 +254,9 @@ O2.createClass('O876.SoundSystem', {
 	 * @param sSrc what file to play (neither path nor extension)
 	 */
 	_setChanSource: function(oChan, sSrc) {
+		if (sSrc == undefined) {
+			throw new Error('undefined sound');
+		}
 		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
 	},
 	

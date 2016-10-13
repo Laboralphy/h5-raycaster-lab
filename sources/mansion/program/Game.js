@@ -1,11 +1,13 @@
-O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
+O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	_oAudio: null,
+	_sLevelIndex: 'level1',
 	
 	sAmbience: '',
 	
 	oGameScriptData: null,
 	oTagIndex: null,
+	bStart: false,
 	
 	init: function() {
 		this.initAudio();
@@ -24,8 +26,9 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 
 
-		this.on('build', this.gameEventBuild.bind(this));	
-		this.on('level', this.gameEventLevel.bind(this));	
+		this.on('menuloop', this.gameEventMenu.bind(this));	
+		this.on('leveldata', this.gameEventBuild.bind(this));	
+		this.on('enter', this.gameEventLevel.bind(this));	
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 	},
@@ -46,8 +49,37 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			position: 8
 		});
 	},
+
+	getLevel: function() {
+		return this._sLevelIndex;
+	},
 	
-	gameEventBuild: function(data) {
+	start: function(oOptions) {
+		this.bStart = true;
+		var oOptions = oOptions || {};
+		var oCanvas = document.getElementById('screen');
+		oCanvas.height = 250;
+		if (oOptions["vr"]) {
+			oCanvas.height = 210;
+			CONFIG.raycaster.vr = true;
+		} 
+		if (oOptions["mob"]) {
+			CONFIG.game.controlThinker = 'O876_Raycaster.MotionThinker';
+			CONFIG.game.fullScreen = true;
+			CONFIG.game.fpsControl = false;
+		} 
+		document.getElementById('info').style.display = 'none';
+		oCanvas.style.display = 'block';
+		MAIN.screenResize();
+		
+	},
+	
+	gameEventMenu: function(data) {
+		return data.exit = this.bStart;
+	},
+	
+	gameEventBuild: function(wd) {
+		var data = LEVEL_DATA.level1;
 		var i = '';
 		for (i in TILES_DATA) {
 			data.tiles[i] = TILES_DATA[i];
@@ -61,6 +93,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.GameAbstract, {
 			oTagIndex[t.tag] = [t.x, t.y];
 		});
 		this.oTagIndex = oTagIndex;
+		wd.data = data;
 	},
 	
 	gameEventLoad: function(data) {

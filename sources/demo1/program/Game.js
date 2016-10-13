@@ -25,7 +25,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
-		return WORLD_DATA.demo;
+		return LEVEL_DATA.demo;
 	},
 	
 	
