@@ -68,7 +68,8 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			loadHTML: '<button type="button" title="Load image"><span class="icon-plus" style="color: #00A"></span> Add</button>'
 		});
 		this._addTilesCommand('<span class="icon-cross" style="color: #A00"></span> Del.', 'Delete the selected tile', this.cmd_deleteTile.bind(this));
-		this._addTilesCommand('<span class="icon-cogs"></span> Generate', 'Generate new wall of flat tiles', this.cmd_generateTiles.bind(this));
+		// tile generation
+		// this._addTilesCommand('<span class="icon-cogs"></span> Generate', 'Generate new wall of flat tiles', this.cmd_generateTiles.bind(this));
 		this._showTilesContainer('wall');
 		
 		var oTileDropZone = $('<table class="tiledropzones">' + 
