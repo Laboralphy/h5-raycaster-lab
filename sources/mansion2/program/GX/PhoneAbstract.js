@@ -37,7 +37,7 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
 		
-		var c = oRaycaster.oCanvas;
+		var c = oRaycaster.getRenderCanvas();
 		var ctx = c.getContext('2d'); 
 		this.oCanvas = c;
 		this.oContext = ctx;
@@ -54,7 +54,6 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		this.oBlurCvs.height = this.nBlurHeight;
 		O876.CanvasFactory.setImageSmoothing(this.oBlurCvs.getContext('2d'), true);
 
-		var c = oRaycaster.getRenderCanvas();
 		// phone screen
 		this.oScreen = O876.CanvasFactory.getCanvas();
 		this.oScreen.width = this.SCREEN_W;
@@ -251,7 +250,7 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		var ch = oScreen.height;
 		var xim = xPhone + this.SCREEN_X;
 		var yim = yPhone + this.SCREEN_Y;
-		
+
 		var f = rccc.globalAlpha;
 		rccc.globalAlpha = this.nRaise;
 		rccc.drawImage(p, xPhone, yPhone);
@@ -259,4 +258,3 @@ O2.extendClass('MANSION.GX.PhoneAbstract', O876_Raycaster.GXEffect, {
 		rccc.globalAlpha = f;
 	}
 });
-

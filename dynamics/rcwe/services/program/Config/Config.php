@@ -19,9 +19,9 @@ class Config implements O876\MVC\Config\Intf {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see \O876\MVC\Config\Intf::getDbConfig()
+	 * @see \O876\MVC\Config\Intf::getDatabaseConfig()
 	 */
-	public function getDbConfig() {
+	public function getDatabaseConfig() {
 		return null;
 	}
 }

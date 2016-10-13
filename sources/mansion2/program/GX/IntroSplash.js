@@ -20,7 +20,7 @@ O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
-		var rcc = oRaycaster.oCanvas;
+		var rcc = oRaycaster.getRenderCanvas();
 		var oCanvas = O876.CanvasFactory.getCanvas();
 		oCanvas.width = rcc.width;
 		oCanvas.height = rcc.height;
@@ -117,7 +117,7 @@ O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 				pr.height
 			);
 		}
-		this.oRaycaster.oContext.drawImage(cvs, 0, 0);
+		this.oRaycaster.getRenderContext().drawImage(cvs, 0, 0);
 	},
 
 	/** Fonction appelée lorsque l'effet se termine de lui même

@@ -1,0 +1,10 @@
+<root>
+<style src="styles/base.css"></style>
+<style src="styles/help.css"></style>
+<div class="header title"><div class="return" id="help-home"></div><span>Help - Overview</span></div>
+<p>In order to recover <b>fragments of ancient books</b> hanged on walls, you must explore an old, abandonned and <b>haunted mansion</b>, former lair of an evil cult.</p>
+<p>Use your <b>smartphone camera</b> and take photos to gather clues and evidences of supernatural activities.</p>
+<p><b>Vengeful spirits</b> are guarding the place, 
+	you must get rid of them with your camera.</p>
+<p class="link" id="help-controls">Next : Keyboard controls</p>
+</root>

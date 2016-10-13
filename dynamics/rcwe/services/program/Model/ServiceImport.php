@@ -187,7 +187,7 @@ class ServiceImport {
 				throw new Exception('Permission to write file ' . $s . ' is denied');
 			}
 			$sData = json_encode($oData);
-			file_put_contents($s, "O2.createObject('WORLD_DATA.$sFile', $sData);");
+			file_put_contents($s, "O2.createObject('LEVEL_DATA.$sFile', $sData);");
 			chmod($s, 0777);
 		} catch (Exception $e) {
 			throw new Exception('Could not export level ' . $sFile . ' in project ' . $sProject . ' : ' . $e->getMessage());

@@ -10,9 +10,11 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	nKeyBufferSize: 16,
 	bUseBuffer: true,
 	aAliases: null,
+	oHandlers: null,
 
 	__construct: function() {
 		this.aKeys = [];
+		this.oHandlers = {};
 		this.aAliases = {};
 		// Gros tableau pour capter plus rapidement les touches...
 		// peu élégant et peu économe mais efficace.
@@ -39,24 +41,22 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	eventKeyUp: function(e) {
 		var oEvent = window.event ? window.event : e;
 		var nCode = oEvent.charCode ? oEvent.charCode : oEvent.keyCode;
-		var oDev = window.__keyboardDevice;
-		if (nCode in oDev.aAliases) {
-			nCode = oDev.aAliases[nCode];
+		if (nCode in this.aAliases) {
+			nCode = this.aAliases[nCode];
 		}
-		oDev.keyBufferPush(-nCode);
-		oDev.keyAction(nCode, 2);
+		this.keyBufferPush(-nCode);
+		this.keyAction(nCode, 2);
 		return false;
 	},
 
 	eventKeyDown: function(e) {
 		var oEvent = window.event ? window.event : e;
 		var nCode = oEvent.charCode ? oEvent.charCode : oEvent.keyCode;
-		var oDev = window.__keyboardDevice;
-		if (nCode in oDev.aAliases) {
-			nCode = oDev.aAliases[nCode];
+		if (nCode in this.aAliases) {
+			nCode = this.aAliases[nCode];
 		}
-		oDev.keyBufferPush(nCode);
-		oDev.keyAction(nCode, 1);
+		this.keyBufferPush(nCode);
+		this.keyAction(nCode, 1);
 		return false;
 	},
 
@@ -73,17 +73,38 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 		}
 	},
 
+	/**
+	 * Will add event listener and keep track of it for future remove
+	 * @param sEvent DOM Event name
+	 * @param pHandler event handler function
+	 */
+	plugEvent: function(sEvent, pHandler) {
+		var p = pHandler.bind(this);
+		this.oHandlers[sEvent] = p;
+		document.addEventListener(sEvent, p, false);
+	},
+
+	/**
+	 * Will remove previously added event handler
+	 * Will do nothing if handler has not been previously added
+	 * @param sEvent DOM event name
+	 */
+	unplugEvent: function(sEvent) {
+		if (sEvent in this.oHandlers) {
+			var p = this.oHandlers[sEvent];
+			document.removeEventListener(sEvent, p);
+			delete this.oHandlers[sEvent];
+		}
+	},
+
 	plugEvents: function() {
-		window.__keyboardDevice = this;
-		document.onkeyup = this.eventKeyUp;
-		document.onkeydown = this.eventKeyDown;
+		this.plugEvent('keyup', this.eventKeyUp);
+		this.plugEvent('keydown', this.eventKeyDown);
 	},
 	
 	unplugEvents: function() {
-		window.__keyboardDevice = null;
-		document.onkeyup = undefined;
-		document.onkeydown = undefined;
+		this.unplugEvent('keyup');
+		this.unplugEvent('keydown');
 	}
-
 });
 

@@ -56,7 +56,7 @@ class ServiceGame {
 			if (!file_exists($sPath . '/data')) {
 				mkdir($sPath . '/data');
 			}
-			file_put_contents($sPath . '/data/world.js', 'O2.createObject(\'WORLD_DATA.level\', ' . json_encode($oData) . ');' . "\n");
+			file_put_contents($sPath . '/data/world.js', 'O2.createObject(\'LEVEL_DATA.level\', ' . json_encode($oData) . ');' . "\n");
 			chmod($sPath . '/data/world.js', 0777);
 			
 			// modify index

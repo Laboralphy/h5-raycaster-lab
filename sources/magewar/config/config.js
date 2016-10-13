@@ -1,16 +1,17 @@
-var CONFIG = {
-  game: {
-    interval: 40,         /* timer interval (ms)                */
-    doomloop: 'raf', /* doomloop type "raf" or "interval"  */
-    fullscreen: false,
-    sound: true,	/* true = sound / false = no sound */
-    controlthinker: 'MW.PlayerThinker'
-  },
-  raycaster: {
-    canvas: 'screen',
-    ghostVision: 0,
-    drawMap: true,
-    smoothTextures: false,
-    zoom: 1
-  }
-};
+O2.createObject('CONFIG', {
+	game: {
+		namespace: 'MW',
+		interval: 40,
+		doomLoop: 'raf',
+		fullScreen: false,
+		fpsControl: false,
+		controlThinker: 'MW.PlayerThinker'
+	},
+	raycaster: {
+		canvas: 'screen',
+		canvasAutoResize: true,
+		drawMap: false,
+		smoothTextures: false,
+		vr: false
+	}
+});

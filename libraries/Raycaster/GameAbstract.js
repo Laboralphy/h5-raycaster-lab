@@ -1,7 +1,5 @@
-/* globals O2, O876, O876_Raycaster, WORLD_DATA, CONFIG, Marker */
+/* globals O2, O876, O876_Raycaster, CONFIG, Marker */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
-	_sLevelIndex: '',
-	_sNextLevelIndex: '',
 	_oScreenShot: null,
 	_oTagData: null,
 	_sTag: '',
@@ -17,6 +15,14 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.on('tag', this.onTagTriggered.bind(this));
 		if ('init' in this) {
 			this.init();
+		}
+	},
+
+	
+	_halt: function(sError, oError) {
+		__inherited(sError, oError);
+		if (sError) {
+			this.trigger('error', {message: sError, data: oError});
 		}
 	},
 	
@@ -39,21 +45,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
-		if ('WORLD_DATA' in window) {
-			var aWorldDataKeys = Object.keys(WORLD_DATA).sort(function(a, b) {
-				return a > b;
-			});
-			var wd;
-			if (!this._sLevelIndex) {
-				this._sLevelIndex = aWorldDataKeys[0];
-			}
-			this.trigger('build', WORLD_DATA[this._sLevelIndex]);
-			return WORLD_DATA[this._sLevelIndex];
-		} else {
-			var wd = {};
-			this.trigger('build', wd);
-			return wd;
-		}
+		var wd = {data: {}};
+		this.trigger('leveldata', wd);
+		return wd.data;
 	},
 	
 	/**
@@ -69,16 +63,15 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	 * Permet l'initialisation des objet nouvellement créés (comme la caméra)
 	 */
 	onEnterLevel: function() {
-		this.getMouseDevice(this.oRaycaster.oCanvas);
+		this.getMouseDevice(this.oRaycaster.getScreenCanvas());
 		this.oRaycaster.bSky = true;
 		this.oRaycaster.bFlatSky = true;
-		this.oRaycaster.nPlaneSpacing = 64;
 		var oCT;
-		if (('controlthinker' in CONFIG.game) && (CONFIG.game.controlthinker)) {
-			var ControlThinkerClass = O2._loadObject(CONFIG.game.controlthinker);
+		if (('controlThinker' in this._oConfig.game) && (this._oConfig.game.controlThinker)) {
+			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlThinker);
 			oCT = new ControlThinkerClass();
 		} else {
-			if (CONFIG.game.fpscontrol) {
+			if (this._oConfig.game.fpsControl) {
 				oCT = new O876_Raycaster.FirstPersonThinker();
 			} else {
 				oCT = new O876_Raycaster.CameraKeyboardThinker();
@@ -125,7 +118,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			});
 		}
 		this.oRaycaster.oCamera.fSpeed = 6;
-		this.trigger('enter');
 		this.setDoomloop('stateTagProcessing');
 	},
 
@@ -152,8 +144,8 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			++y;
 			x = 0;
 		}
-		this.setDoomloop('stateRunning', CONFIG.game.doomloop);
-		this.trigger('level');
+		this.setDoomloop('stateRunning', this._oConfig.game.doomLoop);
+		this.trigger('enter');
 	},
 
 
@@ -242,28 +234,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API ////// RAYCASTER PUBLIC API //////
 	
 	/**
-	 * Return the name of the level currently loaded
-	 * @return string
-	 */
-	getLevel: function() {
-		return this._sLevelIndex;
-	},
-	
-	/**
-	 * Loads a new Level
-	 * @param sLevel new level reference
-	 */
-	setLevel: function(sLevel) {
-		this._sLevelIndex = sLevel;
-		this.enterLevel();
-	},
-
-	getString: function(sKey) {
-
-	},
-
-	
-	/**
 	 * Affiche un message popup
 	 * @param string sMessage contenu du message
 	 */
@@ -321,7 +291,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		oCanvas.width = w;
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
-		oContext.drawImage(this.oRaycaster.oCanvas, 0, 0, wr, hr, 0, 0, w, h);
+		oContext.drawImage(this.oRaycaster.getScreenCanvas(), 0, 0, wr, hr, 0, 0, w, h);
 		return this._oScreenShot = oCanvas;
 	},
 

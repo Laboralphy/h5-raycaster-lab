@@ -6,10 +6,3 @@ modules/*
 
 # all log files
 *.log
-
-# magewar compiled client program and active plugins
-servers/mw/www/mw/
-servers/mw/mwplugins/*
-
-# all storage directories
-*.storage/

@@ -25,7 +25,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	 * @return object
 	 */
 	onRequestLevelData: function() {
-		return WORLD_DATA.demo;
+		return LEVEL_DATA.demo;
 	},
 	
 	
@@ -38,7 +38,7 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	onEnterLevel: function() {
 		this.oRaycaster.nPlaneSpacing = 64;
 		var oCT = new O876_Raycaster.FirstPersonThinker();
-		oCT.oMouse = this.getMouseDevice(this.oRaycaster.oCanvas);
+		oCT.oMouse = this.getMouseDevice(this.oRaycaster.getScreenCanvas());
 		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		this.oRaycaster.oCamera.setThinker(oCT);

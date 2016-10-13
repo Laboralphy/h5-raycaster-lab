@@ -1,0 +1,15 @@
+<root>
+<style src="styles/base.css"></style>
+<style src="styles/help.css"></style>
+<div class="header title"><div class="return" id="home"></div><span>Help</span></div>
+<h2>Topics :</h2>
+<p>To get some help, press <b>[SPACE BAR]</b> and click on "Help" to reach this screen.</p>
+<ul>
+	<li id="help-overview-0" class="link">Overview, goal</li>
+	<li id="help-controls" class="link">Keyboard controls</li>
+	<li id="help-camera-1" class="link">Show/hide camera</li>
+	<li id="help-camera-2" class="link">Taking photos</li>
+	<li id="help-interact" class="link">Environment interaction</li>
+</ul>
+<p class="remark">Click outside smartphone surface to switch back to game.</p>
+</root>

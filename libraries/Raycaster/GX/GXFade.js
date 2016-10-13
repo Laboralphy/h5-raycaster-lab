@@ -22,8 +22,8 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	__construct : function(oRaycaster) {
 		__inherited(oRaycaster);
 		this.oRainbow = new O876.Rainbow();
-		this.oCanvas = this.oRaycaster.oCanvas;
-		this.oContext = this.oCanvas.getContext('2d');
+		this.oCanvas = this.oRaycaster.getRenderCanvas();
+		this.oContext = this.oRaycaster.getRenderContext();
 		this.oEasing = new O876.Easing();
 	},
 	

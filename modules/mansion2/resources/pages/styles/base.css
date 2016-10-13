@@ -1,0 +1,34 @@
+div.header {
+	padding: 0.5em;
+	background-color: #666;
+	color: white;
+}
+
+div.title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+div.return {
+	width: 1.1em;
+	height: 1.1em;
+	background-color: rgba(255, 255, 255, 0.4);
+	float: left;
+	padding: 1px;
+	margin-right: 0.4em;
+	text-align: center;
+	border-radius: 20%;
+}
+
+div.return:before {
+	content: "<";
+}
+
+p {
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+
+.breakfloat {
+	clear: both;
+}

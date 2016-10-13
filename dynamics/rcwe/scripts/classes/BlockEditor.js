@@ -229,6 +229,10 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		}).bind(this));
 	},
 	
+	resetDropZones: function() {
+		$('td.dropzone', this._oStructure).data('tile', '');
+	},
+	
 
 	_getBlockData: function(sData) {
 		switch(sData) {

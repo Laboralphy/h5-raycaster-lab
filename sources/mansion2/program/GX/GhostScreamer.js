@@ -48,7 +48,7 @@ O2.extendClass('MANSION.GX.GhostScreamer', O876_Raycaster.GXEffect, {
 	render: function() {
 		var ghosts = this._aGhosts;
 		if (ghosts.length >= 0) {
-			var oCanvas = this.oRaycaster.oCanvas;
+			var oCanvas = this.oRaycaster.getRenderCanvas();
 			var oContext = oCanvas.getContext('2d');
 			var x, x1, g, r, fAlpha = oContext.globalAlpha, gco = oContext.globalCompositeOperation;
 			oContext.globalCompositeOperation = 'lighter';

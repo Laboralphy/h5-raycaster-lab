@@ -1,15 +1,17 @@
-var CONFIG = {
-  game: {
-    interval: 40,         /* timer interval (ms)                */
-    doomloop: 'interval', /* doomloop type "raf" or "interval"  */
-    fullscreen: false,
-    fpscontrol: true
-  },
-  raycaster: {
-    canvas: 'screen',
-    ghostVision: 0,
-    drawMap: false,
-    smoothTextures: false,
-    zoom: 1
-  }
-};
+O2.createObject('CONFIG', {
+	game: {
+		namespace: 'VILLAGE',
+		interval: 40,
+		doomLoop: 'raf',
+		fullScreen: false,
+		fpsControl: true,
+		controlThinker: ''
+	},
+	raycaster: {
+		canvas: 'screen',
+		canvasAutoResize: true,
+		drawMap: false,
+		smoothTextures: false,
+		vr: false
+	}
+});

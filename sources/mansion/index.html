@@ -28,11 +28,11 @@ canvas, img {
 	margin-top: 32px;
 	text-align: center;
 	width: 100%;
-	background: url(resources/tiles/images/splash.jpg);
+	background-image: url(resources/tiles/images/splash.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
 	height: 500px;
-	padding: 16px;
+	padding: 0px;
 }
 
 #info a, #info a:visited  {
@@ -67,10 +67,31 @@ canvas, img {
 #screen {
 	margin: auto;
 }
+
+#info .handler {
+	display: none;
+}
+
+
+@media only screen and (max-device-width: 768px) {
+	#info .desktop {
+		display: none;
+	}
+	
+	#info {
+		background-image: url(resources/tiles/images/splash-s.jpg);
+	}
+	
+	#info .handler {
+		display: block;
+	}
+}
 	</style>
   </head>
   <body bgcolor="black">
 	<div id="info">
+	  <div class="desktop">
+		<br/>
 		<h1>Raycasting Technical Demo</h1>
 		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël Marandet</a></p>
 		<img src="resources/tiles/images/controls.png" /><br />
@@ -78,7 +99,16 @@ canvas, img {
 		Use your keyboard and mouse to move and look around.<br />
 		This is <b>not a game</b> but rather a technical demo.<br />
 		<br />
-		<button type="button" onclick="start()">START</button></p>
+		<button type="button" onclick="MAIN.game.start()">START</button></p>
+	  </div>
+	  <div class="handler">
+		<h1>Raycasting Technical Demo</h1>
+		<p>Author : <a href="https://plus.google.com/+RaphaëlMarandet">+Raphaël Marandet</a></p>
+		<p>
+			<button type="button" onclick="MAIN.game.start({mob: true})">START - NORMAL</button>
+			<button type="button" onclick="MAIN.game.start({mob: true, vr: true})">START - 3D GLASSES</button>
+		</p>
+	  </div>
 	</div>
     <canvas style="display: none" id="screen" width="400" height="250" moz-opaque="moz-opaque"></canvas>
   </body> 

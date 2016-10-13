@@ -714,7 +714,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		this.sendSignal = ps.sendPluginSignal.bind(ps);
 		
 		this.on('menuloop', this.menuLooping.bind(this));
-		this.on('build', this.levelBuilding.bind(this));
+		this.on('leveldata', this.levelBuilding.bind(this));
 		this.on('load', this.levelLoading.bind(this));
 		this.on('enter', this.levelEntering.bind(this));
 		this.on('doomloop', this.doomLooping.bind(this));
@@ -725,7 +725,6 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		this.setPopupStyle({
 			text: 'rgb(220, 220, 220)',
 			shadow: 'black'
-			
 		});
 	},
 
@@ -785,7 +784,8 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	 * 
 	 * @return object
 	 */
-	levelBuilding : function(data) {
+	levelBuilding : function(wd) {
+		var data = wd.data;
 		for (var i in this.oData) {
 			data[i] = this.oData[i];
 		}
@@ -799,8 +799,8 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		var s = data.phase;
 		var n = data.progress;
 		var nMax = data.max;
-		var oCanvas = this.oRaycaster.oCanvas;
-		var oContext = this.oRaycaster.oContext;
+		var oCanvas = this.oRaycaster.getScreenCanvas();
+		var oContext = this.oRaycaster.getScreenContext();
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
 		var sMsg = STRINGS._('~load_' + s);
 		var y = oCanvas.height >> 1;
@@ -826,7 +826,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 		oRC.nPlaneSpacing = 64;
 		
 		var oCT = oRC.oCamera.getThinker();
-		oCT.oMouse = this.getMouseDevice(oRC.oCanvas);
+		oCT.oMouse = this.getMouseDevice(oRC.getScreenCanvas());
 		oCT.oKeyboard = this.getKeyboardDevice();
 		oCT.oGame = this;
 		
@@ -887,7 +887,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 	
 	frameCounting: function(data) {
 		var nFPS = data.fps, nAVG = data.avg, nTime = data.time;
-		if (nTime > 5 && this.oRaycaster.oCanvas.width > 400 && nAVG < CONST.MINIMUM_FPS) {
+		if (nTime > 5 && this.oRaycaster.getScreenCanvas().width > 400 && nAVG < CONST.MINIMUM_FPS) {
 			this.oRaycaster.downgrade();
 			this.sendSignal('ui_resize');
 			window.screenResize(null);
@@ -1092,7 +1092,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 					// touche boss
 					var oBody = document.getElementsByTagName('body')[0];
 					if (this.bBoss) {
-						this.oRaycaster.oCanvas.style.display = '';
+						this.oRaycaster.getScreenCanvas().style.display = '';
 						oBody.style.backgroundColor = '';
 						oBody.style.color = '';
 						oBody.removeChild(this.oBossMsg);
@@ -1101,7 +1101,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 						document.title = this.sBossModeTitle;
 					} else {
 						O876_Raycaster.PointerLock.exitPointerLock();
-						this.oRaycaster.oCanvas.style.display = 'none';
+						this.oRaycaster.getScreenCanvas().style.display = 'none';
 						oBody.style.backgroundColor = 'white';
 						oBody.style.color = 'black';
 						this.oBossMsg = document.createElement('div');
