@@ -1248,7 +1248,9 @@ O2.createClass('RCWE.Application', {
 		var pLoad = function() {
 			$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived, pError);
 		};
-		
+		this.oWorldViewer.xStart = null;
+		this.oWorldViewer.yStart = null;
+		this.oWorldViewer.aStart = null;
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
 	},
 	
