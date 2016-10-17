@@ -10,6 +10,7 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		this.addCommand('<span class="icon-enlarge" style="-webkit-transform: rotate(45deg); display: block; float:left"></span>&nbsp;', 'Shift map', this.cmd_viewshift.bind(this));
 		this.addCommand('<span class="icon-stop2"></span>', 'Block tools', this.cmd_blocktools.bind(this));
 		this.addCommand('<span class="icon-wrench"></span>', 'Build game', this.cmd_buildgame.bind(this));
+		this.addCommand('<span class="icon-download"></span>', 'Export level', this.cmd_exportlevel.bind(this));
 		//this.addCommand('⚙', 'Restart with plugins', this.cmd_viewplugins.bind(this));
 		
 		this.getBody().empty();
