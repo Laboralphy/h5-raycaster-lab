@@ -1124,6 +1124,59 @@ O2.createClass('RCWE.Application', {
 		});
 	},
 
+	cmd_advancedpad_tileeconomizer: function() {
+		var oReg = {};
+		$('.tilesContainer canvas.tile').each(function(i, c) { 
+			oReg[$(c).attr('id')] = 0; 
+		});
+		function register(x) {
+			return ++oReg[x];
+		}
+		this.oBlockBrowser._aBlockCache.forEach(function(b) {
+			if (b) {
+				var d = b.oData;
+				var s = 'floor ceil right right2 left left2';
+				s.split(' ')
+					.map(x => d[x])
+					.filter(x => !!x)
+					.forEach(x => register(x));
+				var f = d.frames;
+				s = 'right right2 left left2';
+				var aTiles = s.split(' ')
+					.filter(x => !!d[x] && $('#' + d[x]).length)
+					.map(x => $('#' + d[x]))
+				while (f > 1) {
+					aTiles = aTiles.map(x => x.next());
+					aTiles.forEach(x => register(x.attr('id')));
+					--f;
+				}
+			}
+		});
+		var $divEcoTile = $('.eco-tiles', this.oAdvancedPad.getContainer());
+		$divEcoTile.empty();
+		var oCanvas, $td, $btn, $fig, $figCaption;
+		for (var x in oReg) {
+			if (oReg[x] == 0) {
+				$fig = $('<figure></figure>');
+				$fig.append(O876.CanvasFactory.cloneCanvas($('#' + x).get(0)));
+				$divEcoTile.append($fig);
+				$btn = $('<button type="button">' + x.strike() + '</button>');
+				$btn.data('tile', x);
+				$btn.on('click', (function(oEvent) {
+					var $b = $(oEvent.target);
+					if (!$b.is('button')) {
+						$b = $b.parents('button').eq(0);
+					}
+					this.cmd_blockeditor_deletetile($b.data('tile'));
+					$b.parents('figure').eq(0).remove();
+				}).bind(this));
+				$figCaption = $('<figcaption></figcaption>');
+				$figCaption.append($btn);
+				$fig.append($figCaption);
+			}
+		}
+	},
+
 	/**
 	 * The advanced pad : build game, is now displayed
 	 * feeding the form with the game name

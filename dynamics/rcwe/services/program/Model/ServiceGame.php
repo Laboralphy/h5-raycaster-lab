@@ -53,32 +53,27 @@ class ServiceGame {
 			chdir($sPrevPath);
 			
 			// create data file
-			if (!file_exists($sPath . '/data')) {
-				mkdir($sPath . '/data');
-			}
-			file_put_contents($sPath . '/data/world.js', 'O2.createObject(\'LEVEL_DATA.level\', ' . json_encode($oData) . ');' . "\n");
-			chmod($sPath . '/data/world.js', 0777);
+			mkdir($sPath . '/data/levels', 0777, true);
+			file_put_contents($sPath . '/data/levels/world.js', 'O2.createObject(\'LEVEL_DATA.level\', ' . json_encode($oData) . ');' . "\n");
+			chmod($sPath . '/data/levels/world.js', 0777);
 			
 			// modify index
 			$sFileContent = strtr(file_get_contents($sPath . '/index.html'), array('$PROJECT' => $oOptions['gamename']));
 			file_put_contents($sPath . '/index.html', $sFileContent);			
 
-			// modify config
-			$sFileContent = strtr(file_get_contents($sPath . '/config/config.js'), array(
+			$aReplaceArray = array(
 				'$GAMENAME' => $oOptions['gamename'] ? strtoupper($oOptions['gamename']) : 'STUB',
 				'$FULLSCREEN' => $oOptions['fullscreen'] ? 'true' : 'false',
 				'$FPSCONTROL' => $oOptions['fpscontrol'] ? 'true' : 'false',
 				'$SMOOTHTEXTURES' => $oOptions['smoothtextures'] ? 'true' : 'false'
-			));
+			);
+
+			// modify config
+			$sFileContent = strtr(file_get_contents($sPath . '/config/config.js'), $aReplaceArray);
 			file_put_contents($sPath . '/config/config.js', $sFileContent);
 			
 			// modify Game Class
-			$sFileContent = strtr(file_get_contents($sPath . '/program/Game.js'), array(
-				'$GAMENAME' => $oOptions['gamename'] ? strtoupper($oOptions['gamename']) : 'STUB',
-				'$FULLSCREEN' => $oOptions['fullscreen'] ? 'true' : 'false',
-				'$FPSCONTROL' => $oOptions['fpscontrol'] ? 'true' : 'false',
-				'$SMOOTHTEXTURES' => $oOptions['smoothtextures'] ? 'true' : 'false'
-			));
+			$sFileContent = strtr(file_get_contents($sPath . '/program/Game.js'), $aReplaceArray);
 			file_put_contents($sPath . '/program/Game.js', $sFileContent);
 			
 			

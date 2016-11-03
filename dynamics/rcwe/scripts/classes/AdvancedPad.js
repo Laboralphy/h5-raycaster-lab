@@ -49,9 +49,10 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	cmd_blocktools: function(oEvent) {
 		this.cmd_selectOneCommand(oEvent);
 		this.getBody().empty();
-		this.getBody().append('<p><b>Block Tools</b></p><p>This is the block tools page.</p>');
+		this.getBody().append('<p><b>Block and Tile Tools</b></p><p>This is the block and tile tools page.</p>');
+		this.getBody().append('<p>The replacement tool is used to replace a block by another one, or by any block randomly chosen from a list (space separated values).</p>');
 		// block replacement : replace a block 
-		var $form = $('<form><input size="3" name="from" type="text"/><input size="12" name="to" type="text"/></form>');
+		var $form = $('<form><table><tbody><tr><th>block</th><th>replaced by...</th></tr><tr><td><input size="3" name="from" type="text"/></td><td><input size="12" name="to" type="text"/></td></tr></tbody></table></form>');
 		var $button=$('<button type="button">Replace</button>');
 		$button.on('click', (function() {
 			var sFrom = $('input[name="from"]', $form).eq(0).val();
@@ -60,6 +61,14 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		}).bind(this));
 		$form.append($button);
 		this.getBody().append($form);
+		this.getBody().append('<br />');
+		this.getBody().append('<p>The tile economizer will display all tiles that are not used in blocks.</p>');
+		$button = $('<button type="button">Start</button>');
+		$divEcoTile = $('<div class="eco-tiles" ></div>');
+		$button.on('click', (function() {
+			this.doAction('tileeconomizer');
+		}).bind(this));
+		this.getBody().append($button).append($divEcoTile);
 	},
 	
 	buildPluginList: function() {
@@ -184,5 +193,11 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 		this.loadPref(aPrefs);
 	},
 
+	/**
+	 * Exports the level in a downloadable way
+	 * Starts the download of a json file
+	 */
+	cmd_exportlevel: function(oEvent) {
 
+	}
 });
