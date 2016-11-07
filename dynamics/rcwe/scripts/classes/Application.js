@@ -20,9 +20,9 @@ O2.createClass('RCWE.Application', {
 	oTemplateLoader: null,
 	oStartPointLocator: null,
 	oFileImportDialog: null,
+	oPasteZone: null,
 	
 	oMediator: null,
-	
 	
 	bThingSearched: false,
 	sMode: null, // last opened tab
@@ -119,6 +119,13 @@ O2.createClass('RCWE.Application', {
 		oFileOpenDialog.onAction = pAction;
 		oFileOpenDialog.hide();
 		this.linkWidget('d10', oFileOpenDialog);
+
+		var oPasteZone = new RCWE.PasteZone();
+		oPasteZone.build();
+		oPasteZone.setSize('100%', '100%');
+		oPasteZone.onAction = pAction;
+		oPasteZone.hide();
+		this.linkWidget('d10', oPasteZone);
 		
 		var oFileImportDialog = new RCWE.FileImportDialog();
 		oFileImportDialog.build();
@@ -164,6 +171,7 @@ O2.createClass('RCWE.Application', {
 		this.oThingBrowser = oThingBrowser;
 		this.oThingEditor = oThingEditor;
 		this.oFileOpenDialog = oFileOpenDialog;
+		this.oPasteZone = oPasteZone;
 		this.oFileImportDialog = oFileImportDialog;
 		this.oAdvancedPad = oAdvancedPad;
 		this.oTemplateLoader = oTemplateLoader;
@@ -350,18 +358,27 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 	
-	showMainScreen: function(s) {
+	showMainScreen: function(s, param) {
 		switch (s) {
 			case 'map':
 				this.oFileOpenDialog.hide();
+				this.oPasteZone.hide();
 				//---
-				this.oMapGrid.show();
+				this.oMapGrid.show(param);
 			break;
 
 			case 'fileopen':
 				this.oMapGrid.hide();
+				this.oPasteZone.hide();
 				//---
-				this.oFileOpenDialog.show();
+				this.oFileOpenDialog.show(param);
+			break;
+
+			case 'pastezone':
+				this.oMapGrid.hide();
+				this.oFileOpenDialog.hide();
+				//---
+				this.oPasteZone.show(param);
 			break;
 		}
 	},
@@ -517,6 +534,9 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 
+	cmd_blockeditor_pastetile: function(sTileType) {
+		this.showMainScreen('pastezone', sTileType);
+	},
 
 	// ADVANCED PAD
 	// ADVANCED PAD
@@ -841,6 +861,24 @@ O2.createClass('RCWE.Application', {
 		this.error('<b>Raycaster Engine Error :</b> ' + sError);
 	},
 	
+
+
+
+	// PASTE ZONE
+	// PASTE ZONE
+	// PASTE ZONE
+	cmd_pastezone_close: function() {
+		this.showMainScreen('map');
+	},
+
+	cmd_pastezone_importtile: function(oCanvas, sTileType) {
+		this.oBlockEditor.cmd_addImage(
+			oCanvas, 
+			$('.tilesContainer.' + sTileType, this.oBlockEditor.getContainer())
+		);
+	},
+
+
 
 
 	// FILE OPEN DIALOG
@@ -1217,7 +1255,6 @@ O2.createClass('RCWE.Application', {
 	cmd_advancedpad_importlevel: function() {
 		//window.prompt('filename');
 		//this.showMainScreen('fileimport');
-		
 	},
 	
 	// startingpointlocator

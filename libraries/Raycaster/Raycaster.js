@@ -735,7 +735,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			codes : oData.walls.codes,
 			animated : 'animated' in oData.walls ? oData.walls.animated : {}
 		};
-		if ('flats' in oData) {
+		if ('flats' in oData && oData.flats) {
 			this.bFloor = true;
 			var bEmptyCeil = oData.flats.codes.every(function(item) {
 				if (item) {
