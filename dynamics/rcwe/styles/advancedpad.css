@@ -35,3 +35,7 @@
 .AdvancedPad form select {
 	width: 128px;
 }
+
+.AdvancedPad .eco-tiles figure {
+	float: left;
+}

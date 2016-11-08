@@ -67,6 +67,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			load: this.cmd_load.bind(this),
 			loadHTML: '<button type="button" title="Load image"><span class="icon-plus" style="color: #00A"></span> Add</button>'
 		});
+		this._addTilesCommand('<span class="icon-paste" style="color: #00A"></span> Paste', 'Import tile from clipboard', this.cmd_pasteTile.bind(this));
 		this._addTilesCommand('<span class="icon-cross" style="color: #A00"></span> Del.', 'Delete the selected tile', this.cmd_deleteTile.bind(this));
 		// tile generation
 		// this._addTilesCommand('<span class="icon-cogs"></span> Generate', 'Generate new wall of flat tiles', this.cmd_generateTiles.bind(this));
@@ -649,7 +650,20 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 		}
 	},
 	
-	
+
+	cmd_pasteTile: function() {
+		var sTileType;
+		var $ctc = $(this._getCurrentTilesContainer());
+		if ($ctc.hasClass('wall')) {
+			sTileType = 'wall';
+		} else if ($ctc.hasClass('flat')) {
+			sTileType = 'flat';
+		}
+		if (sTileType) {
+			this.doAction('pastetile', sTileType);
+		}
+	},
+
 	cmd_deleteTile: function() {
 		var $selected = $('canvas.tile.selected', this._oStructure);
 		if ($selected.length) {
@@ -683,6 +697,9 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	 * this avoids having two same images
 	 */
 	_isTileAlreadyPresent: function(sMD5, $container) {
+		if (!sMD5) {
+			return false;
+		}
 		var b = false;
 		$('canvas.tile', $container).each(function() {
 			var $this = $(this);
@@ -709,6 +726,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			throw new Error('unable to determine current tile type');
 		}
 		var nId = 0, sId;
+		var sMD5;
 		while ((i + nTileWidth) <= oImage.width) {
 			$canvas = $('<canvas></canvas>');
 			if (aIds !== undefined && aIds.length > 0) {
@@ -733,7 +751,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			++nId;
 			// if the new canvas has an exact replica... discard it
 			// else append it to its container
-			var sMD5 = MD5(oCanvas.toDataURL());
+			sMD5 = MD5(oCanvas.toDataURL());
 			if (!this._isTileAlreadyPresent(sMD5, oContainer)) {
 				$canvas.data('md5src', sMD5);
 				oContainer.append(oCanvas);
