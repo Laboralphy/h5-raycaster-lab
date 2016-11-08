@@ -467,12 +467,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.yScrSize = this._oCanvas.height >> 1;
 	},
 	
-	getRenderContext: function() {
-		return this._oRenderContext;
-	},
 
 	getRenderCanvas: function() {
 		return this._oRenderCanvas;
+	},
+
+	getRenderContext: function() {
+		return this._oRenderContext;
 	},
 	
 	getScreenCanvas: function() {
@@ -734,7 +735,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			codes : oData.walls.codes,
 			animated : 'animated' in oData.walls ? oData.walls.animated : {}
 		};
-		if ('flats' in oData) {
+		if ('flats' in oData && oData.flats) {
 			this.bFloor = true;
 			var bEmptyCeil = oData.flats.codes.every(function(item) {
 				if (item) {
@@ -1428,6 +1429,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			var wBG = oBG.width;
 			var hBG = oBG.height;
 			var xBG = (this.fBGOfs + this.fCameraBGOfs) % wBG | 0;
+			while (xBG < 0) {
+				xBG += wBG;
+			}
 			var yBG = this.yScrSize - (hBG >> 1);
 			hBG = hBG + yBG;
 			rctx.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);

@@ -18,6 +18,8 @@ projectBuild() {
 	local sModuleDir="$sScriptDir/../modules/$sProject"
 	local myPwd=`pwd`
 
+	rm -r "$sModuleDir"
+
 	if [ ! -d "$sProjectDir" ]
 	then
 		echo "There is no source project named : $sProject"

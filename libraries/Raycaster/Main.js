@@ -8,8 +8,12 @@ O2.createObject('MAIN', {
 	
 	/**
 	 * Will start a game
+	 * requires a CONFIG object
 	 */
 	run: function() {
+		if (!('CONFIG' in window)) {
+			throw new Error('Where is my CONFIG object ?');
+		}
 		var oConfig = CONFIG;
 		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
 		if (oConfig.raycaster.canvasAutoResize) {
@@ -84,5 +88,7 @@ O2.createObject('MAIN', {
 });
 
 window.addEventListener('load', function() {
-	MAIN.run();
+	if ('CONFIG' in window) {
+		MAIN.run();
+	}
 });

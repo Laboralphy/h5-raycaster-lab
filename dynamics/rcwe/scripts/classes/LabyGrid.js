@@ -54,7 +54,8 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.oTagFactory = new RCWE.TagFactory();
 		
 		__inherited('World grid');
-		
+		var c = this.getContainer();
+		c.addClass('LabyGrid');
 		
 		var $oCanvas = $('<canvas></canvas>');
 		
@@ -630,11 +631,14 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 	 * Paste the clipboard content on the grid, from the selected region top-left corner
 	 */
 	cmd_paste: function() {
+		if (!this.getContainer().is(':visible')) {
+			return;
+		}
 		var a = this.aClipBoard;
 		var x1 = Math.min(this.oSelect.x1, this.oSelect.x2);
 		var y1 = Math.min(this.oSelect.y1, this.oSelect.y2);
 		var ai;
-		if (a.length > 0) {
+		if (a && a.length) {
 			var xMin = a[0].x + x1, 
 				yMin = a[0].y + y1, 
 				xMax = a[0].x + x1, 
