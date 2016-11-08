@@ -747,7 +747,12 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			++nId;
 			// if the new canvas has an exact replica... discard it
 			// else append it to its container
-			var sMD5 = MD5(oCanvas.toDataURL());
+			var sMD5;
+			try {
+				sMD5 = MD5(oCanvas.toDataURL());
+			} catch (e) {
+				sMD5 = '';
+			}
 			if (!this._isTileAlreadyPresent(sMD5, oContainer)) {
 				$canvas.data('md5src', sMD5);
 				oContainer.append(oCanvas);

@@ -62,9 +62,8 @@ O2.createClass('RCWE.PasteBin', {
 		}, false); //official paste handler
 		var pasteCatcher = document.createElement("div");
 		this.pasteCatcher = pasteCatcher;
-		pasteCatcher.setAttribute("id", "paste_ff");
 		pasteCatcher.setAttribute("contenteditable", "");
-		pasteCatcher.style.cssText = 'opacity: 0; position: fixed; top: 0px; left: 0px; width: 10px; margin-left: -20px;';
+		pasteCatcher.style.cssText = 'opacity: 0; position: fixed; top: 0px; left: 0px; max-width: 10px; overflow: hidden; width: 10px; margin-left: -20px; ';
 		document.body.appendChild(pasteCatcher);
 
 		// create an observer instance
