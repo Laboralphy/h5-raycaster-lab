@@ -1,26 +1,29 @@
 O2.createClass('RCWE.PasteBin', {
 
 	bActive: true,
-	pasteCatcher: null,
-	ctrl_pressed: false,
-	command_pressed: false,
-	paste_event_support: false,
+	oPasteCatcher: null,
+	bCtrlPressed: false,
+	bCommandPressed: false,
+	bPasteEventTriggered: false,
 
 	__construct: function(ff) {
 		if (ff) {
 			this.init();
 		} else {
-			this.oPasteBin.declareEvent();			
+			this.declareEvent();			
 		}
 	},
 
 //on keyboard press
-	on_keyboard_action: function (event) {
+	keyDownAction: function (event) {
+		if (!this.bActive) {
+			return;
+		}
 		var k = event.keyCode;
 		//ctrl
 		if (k == 17 || event.metaKey || event.ctrlKey) {
-			if (this.ctrl_pressed == false)
-				this.ctrl_pressed = true;
+			if (this.bCtrlPressed == false)
+				this.bCtrlPressed = true;
 		}
 		//v
 		if (k == 86) {
@@ -29,91 +32,84 @@ O2.createClass('RCWE.PasteBin', {
 				return false;
 			}
 
-			if (this.ctrl_pressed == true && this.pasteCatcher != null){
-				this.pasteCatcher.focus();
+			if (this.bCtrlPressed == true && this.oPasteCatcher != null){
+				this.oPasteCatcher.focus();
 			}
 		}
 	},
 	//on kaybord release
-	on_keyboardup_action: function (event) {
+	keyUpAction: function (event) {
 		//ctrl
-		if (event.ctrlKey == false && this.ctrl_pressed == true) {
-			this.ctrl_pressed = false;
+		if (event.ctrlKey == false && this.bCtrlPressed == true) {
+			this.bCtrlPressed = false;
 		}
 		//command
-		else if(event.metaKey == false && this.command_pressed == true){
-			this.command_pressed = false;
-			this.ctrl_pressed = false;
+		else if(event.metaKey == false && this.bCommandPressed == true){
+			this.bCommandPressed = false;
+			this.bCtrlPressed = false;
 		}
 	},
 
 
 	init: function () {
-		var _self = this;
 		//handlers
-		document.addEventListener('keydown', function (e) {
-			_self.on_keyboard_action(e);
-		}, false); //firefox fix
-		document.addEventListener('keyup', function (e) {
-			_self.on_keyboardup_action(e);
-		}, false); //firefox fix
-		document.addEventListener('paste', function (e) {
-			_self.pasteEvent(e);
-		}, false); //official paste handler
-		var pasteCatcher = document.createElement("div");
-		this.pasteCatcher = pasteCatcher;
-		pasteCatcher.setAttribute("contenteditable", "");
-		pasteCatcher.style.cssText = 'opacity: 0; position: fixed; top: 0px; left: 0px; max-width: 10px; overflow: hidden; width: 10px; margin-left: -20px; ';
-		document.body.appendChild(pasteCatcher);
+		document.addEventListener('keydown', this.keyDownAction.bind(this), false); //firefox fix
+		document.addEventListener('keyup', this.keyUpAction.bind(this), false); //firefox fix
+		document.addEventListener('paste', this.pasteEvent.bind(this), false); //official paste handler
+		var oPasteCatcher = document.createElement("div");
+		this.oPasteCatcher = oPasteCatcher;
+		oPasteCatcher.setAttribute("contenteditable", "");
+		oPasteCatcher.style.cssText = 'opacity: 0; position: fixed; top: 0px; left: 0px; max-width: 10px; overflow: hidden; width: 10px; margin-left: -20px; ';
+		document.body.appendChild(oPasteCatcher);
 
 		// create an observer instance
-		var observer = new MutationObserver(function(mutations) {
+		var observer = new MutationObserver((function(mutations) {
 			mutations.forEach(function(mutation) {
-				if (_self.paste_event_support === true || _self.ctrl_pressed == false || mutation.type != 'childList'){
+				if (this.bPasteEventTriggered || !this.bCtrlPressed || mutation.type != 'childList'){
 					//we already got data in paste_auto()
 					return true;
 				}
 				//if paste handle failed - capture pasted object manually
-				if(mutation.addedNodes.length == 1) {
-					if (mutation.addedNodes[0].src != undefined) {
+				if (mutation.addedNodes.length == 1) {
+					if (mutation.addedNodes[0].src !== undefined) {
 						//image
-						_self.pasteImage(mutation.addedNodes[0].src);
+						this.pasteImage(mutation.addedNodes[0].src);
 					}
 					//register cleanup after some time.
 					setTimeout(function () {
-						pasteCatcher.innerHTML = '';
+						oPasteCatcher.innerHTML = '';
 					}, 20);
 				}
-			});
-		});
-		var config = { attributes: true, childList: true, characterData: true };
-		observer.observe(pasteCatcher, config);
+			}, this);
+		}).bind(this));
+		var config = { 
+			attributes: true, 
+			childList: true, 
+			characterData: true
+		};
+		observer.observe(oPasteCatcher, config);
 	},	
 
 	pasteEvent: function(event) {
-		this.paste_event_support = false;
+		this.bPasteEventTriggered = false;
 		if (!this.bActive) {
 			return;
 		}
 		var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-		var index, item, blob, reader;
+		var item, blob, reader, 
+			oURL = window.URL || window.webkitURL,
+			sSource;
 		if (items) {
-			this.paste_event_support = true;
+			this.bPasteEventTriggered = true;
 		}
-		for (index in items) {
+		for (var index = 0, l = items.length; index < l; ++index) {
 			item = items[index];
-			if (item.kind === 'file') {
+			console.log(item);
+			if (item.kind === 'file' && item.type.indexOf('image') >= 0) {
 				blob = item.getAsFile();
 				reader = new FileReader();
 				reader.addEventListener('load', (function(event){
-					var sCheck = 'data:image/png;base64,';
-					if (event.target.result.substr(0, sCheck.length) === sCheck) {
-						this.pasteImage(event.target.result);
-					}
-					sCheck = 'data:image/jpeg;base64,';
-					if (event.target.result.substr(0, sCheck.length) === sCheck) {
-						this.pasteImage(event.target.result);
-					}
+					this.pasteImage(event.target.result);
 				}).bind(this)); // data url!
 				reader.readAsDataURL(blob);
 			}
@@ -127,8 +123,9 @@ O2.createClass('RCWE.PasteBin', {
 	pasteImage: function(sSrc) {
 		var oImage = new Image();
 		oImage.addEventListener('load', (function(oEvent) {
-			this.trigger('paste.image', oEvent.target);
+			this.trigger('paste.image', oImage);
 		}).bind(this));
+		
 		oImage.src = sSrc;
 		if (oImage.complete) {
 			this.trigger('paste.image', oImage);

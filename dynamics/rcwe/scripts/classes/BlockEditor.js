@@ -697,6 +697,9 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 	 * this avoids having two same images
 	 */
 	_isTileAlreadyPresent: function(sMD5, $container) {
+		if (!sMD5) {
+			return false;
+		}
 		var b = false;
 		$('canvas.tile', $container).each(function() {
 			var $this = $(this);
@@ -723,6 +726,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			throw new Error('unable to determine current tile type');
 		}
 		var nId = 0, sId;
+		var sMD5;
 		while ((i + nTileWidth) <= oImage.width) {
 			$canvas = $('<canvas></canvas>');
 			if (aIds !== undefined && aIds.length > 0) {
@@ -747,12 +751,7 @@ O2.extendClass('RCWE.BlockEditor', RCWE.Window, {
 			++nId;
 			// if the new canvas has an exact replica... discard it
 			// else append it to its container
-			var sMD5;
-			try {
-				sMD5 = MD5(oCanvas.toDataURL());
-			} catch (e) {
-				sMD5 = '';
-			}
+			sMD5 = MD5(oCanvas.toDataURL());
 			if (!this._isTileAlreadyPresent(sMD5, oContainer)) {
 				$canvas.data('md5src', sMD5);
 				oContainer.append(oCanvas);

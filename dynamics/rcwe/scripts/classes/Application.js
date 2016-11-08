@@ -872,10 +872,14 @@ O2.createClass('RCWE.Application', {
 	},
 
 	cmd_pastezone_importtile: function(oCanvas, sTileType) {
-		this.oBlockEditor.cmd_addImage(
-			oCanvas, 
-			$('.tilesContainer.' + sTileType, this.oBlockEditor.getContainer())
-		);
+		try {
+			this.oBlockEditor.cmd_addImage(
+				oCanvas, 
+				$('.tilesContainer.' + sTileType, this.oBlockEditor.getContainer())
+			);
+		} catch (e) {
+			this.error('Pasting images from another web location is forbidden because of the "Same Origin Policy". First, paste your image into your favorite paint software, copy it from there, and then, paste it back here.<br/>Sorry for the inconvenience.');
+		}
 	},
 
 

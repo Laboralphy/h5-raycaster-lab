@@ -17,7 +17,7 @@ O2.extendClass('RCWE.PasteZone', RCWE.Window, {
 	//		this.addCommand('<span class="icon-folder"></span> Open', 'Load the selected file', this.cmd_open.bind(this));
 //		this.addCommand('<span class="icon-bin" style="color: #A00"></span> Delete', 'Delete the selected file', this.cmd_delete.bind(this));
 
-		this.getBody().append('<p><b>Paste Zone</b></p><p>Copy an image from any other application and paste it here by pressing <i>ctrl-v</i>. This will create several tiles.</p>');
+		this.getBody().append('<p><b>Paste Zone</b></p><p>Copy an image from any other application <b style="color: #800">(Firefox users : Except from other web pages !)</b> and paste it here by pressing <i>ctrl-v</i>. This will create several tiles.</p>');
 		this.getBody().append('<p>This will paste <b class="tile-type">unknown</b> tiles.</p>');
 		var $imageZone = $('<div class="imageZone"></div>');
 		this.getBody().append($imageZone);
@@ -44,44 +44,44 @@ O2.extendClass('RCWE.PasteZone', RCWE.Window, {
 	},
 
 	cmd_pasteImage: function(oImage) {
-		var x = 0;
+		var x = 0, y = 0;
 		var $canvas;
 		var $iz = $(this.oImageZone);
 		$iz.empty();
 		var h = this.sTileType === 'wall' ? 96 : 64;
 		var w = 64;
-		while (x < oImage.width) {
-			$fig = $('<figure class="paste-tile"></figure>');
-			$figcap = $('<figcaption></figcaption>');
-			$b = $('<button type="button"><span class="icon-checkmark" style="color: #080"></span></button>');
-			$bDel = $('<button type="button"><span class="icon-cross" style="color: #A00"></span></button>');
-			$figcap.append($b);
-			$figcap.append($bDel);
-			$canvas = $('<canvas width="' + w + '" height="' + h + '"></canvas>');
-			$canvas.data('tile-type', this.sTileType);
-			ctx = $canvas.get(0).getContext('2d');
-			ctx.drawImage(oImage, x, 0, Math.min(w, oImage.width - x), h, 0, 0, Math.min(w, oImage.width - x), h);
-			$fig.append($canvas);
-			$fig.append($figcap);
-			$iz.append($fig);
-			$bDel.one('click', (function(oEvent) {
-				var $btn = $(oEvent.target);
-				var $f = $btn.parents('figure').eq(0);
-				var $c = $('canvas', $f);
-				$f.fadeOut(function() {
+		while (y < oImage.height) {
+			x = 0;
+			while (x < oImage.width) {
+				$fig = $('<figure class="paste-tile"></figure>');
+				$figcap = $('<figcaption></figcaption>');
+				$b = $('<button type="button"><span class="icon-checkmark" style="font-size: 0.8em; color: #080"></span></button>');
+				$bDel = $('<button type="button"><span class="icon-cross" style="font-size: 0.8em; color: #A00"></span></button>');
+				$figcap.append($b);
+				$figcap.append($bDel);
+				$canvas = $('<canvas width="' + w + '" height="' + h + '"></canvas>');
+				$canvas.data('tile-type', this.sTileType);
+				ctx = $canvas.get(0).getContext('2d');
+				ctx.drawImage(oImage, x, y, Math.min(w, oImage.width - x), h, 0, 0, Math.min(w, oImage.width - x), h);
+				$fig.append($canvas);
+				$fig.append($figcap);
+				$iz.append($fig);
+				$bDel.one('click', (function(oEvent) {
+					var $btn = $(oEvent.target);
+					var $f = $btn.parents('figure').eq(0);
+					var $c = $('canvas', $f);
 					$f.remove();
-				});
-			}).bind(this));
-			$b.one('click', (function(oEvent) {
-				var $btn = $(oEvent.target);
-				var $f = $btn.parents('figure').eq(0);
-				var $c = $('canvas', $f);
-				this.doAction('importtile', $c.get(0), $c.data('tile-type'));
-				$f.fadeOut(function() {
+				}).bind(this));
+				$b.one('click', (function(oEvent) {
+					var $btn = $(oEvent.target);
+					var $f = $btn.parents('figure').eq(0);
+					var $c = $('canvas', $f);
+					this.doAction('importtile', $c.get(0), $c.data('tile-type'));
 					$f.remove();
-				});
-			}).bind(this));
-			x += w;
+				}).bind(this));
+				x += w;
+			}
+			y += h;
 		}
 		// one 64x96 tile
 		// a 1:1 tileset
