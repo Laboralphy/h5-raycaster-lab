@@ -133,15 +133,15 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	
 	processGameLogic: function() {
 		var gl = this.oGame.oLogic;
-		if (this.oGame.oPhone.isActive('Camera')) {
+		if (this.oGame.isCameraActive()) {
 			var aMobs = this.getVisibleMobiles();
 			gl.setVisibleMobiles(aMobs);
 			if (gl.isCameraBuzzing()) {
-				this.oGame.oPhone.getCurrentApplication().charge();
+				this.oGame.oCamera.charge();
 				this.oGame.playSound(MANSION.SOUNDS_DATA.events.charge);
 			}
 			if (gl.hasCameraReachedFullCharge()) {
-				this.oGame.oPhone.getCurrentApplication().charge();
+				this.oGame.oCamera.charge();
 				this.oGame.playSound(MANSION.SOUNDS_DATA.events.fullcharge);
 			}
 		}

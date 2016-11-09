@@ -69,6 +69,8 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 		this.oMessageCanvas = O876.CanvasFactory.getCanvas();
 		this.oMessageCanvas.width = this.wSize; 
 		this.oMessageCanvas.height = this.hSize;
+		O876.CanvasFactory.setImageSmoothing(this.oMessageCanvas, true);
+		O876.CanvasFactory.setImageSmoothing(this.oCanvas, true);
 		this.xPos = this.xTo = (this.oCanvas.width - this.oMessageCanvas.width) >> 1;
 		this.yPos = 0;
 		this.yTo = 16;

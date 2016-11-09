@@ -13,7 +13,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 	oBlurCvs: null,
 	nBlurHeight: 8, // hauteur de la frange horiz en pixels
 	nBlurWidth: 8, // hauteur de la frange horiz en pixels
-	oPhone: null,
+	oVisor: null,
 	oScreen: null,
 	oScreenContext: null,
 
@@ -22,12 +22,11 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 	nMaxTimeIndex: 10,
 	nState: 0, // 0: normal, 10, start raising, 11: raising, 20: start falling, 21, falling
 	
-	//oApplication: null,
 	onHidden: null,
 	
-	SCREEN_W: 195, // application screen width
-	SCREEN_H: 204, // application screen height
-	SCREEN_X: 102, // application screen position relative to the start of the image skin
+	SCREEN_W: 195, // screen width
+	SCREEN_H: 204, // screen height
+	SCREEN_X: 102, // screen position relative to the start of the image skin
 	SCREEN_Y: 26,
 
 	xPhone: -1,
@@ -44,14 +43,14 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 	nEnergy: 0, // amount of energy
 	nMaxEnergy: 100, // maximum amount of energy
 	
-	nCircleSize: 25,
+	nCircleSize: 0,
 	oCircleColor1: null,
 	oCircleColor2: null,
 	
 	oParticles: null,
 	
 	aDisplayScore: null,
-	nTextSize: 14,
+	nTextSize: 12,
 	oScoreCanvas: null,
 	nDisplayScoreTime: 60,
 	
@@ -65,10 +64,9 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		this.oCanvas = c;
 		this.oContext = ctx;
 		this.oEasing = new O876.Easing();
-		this.aApplications = {};
 		
 		// phone
-		this.oPhone = oRaycaster.getTile(this.sTile);
+		this.oVisor = oRaycaster.getTile(this.sTile);
 		this.nBlurHeight = (this.oCanvas.height >> 3);
 		this.nBlurWidth = (this.oCanvas.width >> 3);
 		
@@ -81,11 +79,22 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		this.oScreen = O876.CanvasFactory.getCanvas();
 		this.oScreen.width = this.SCREEN_W;
 		this.oScreen.height = this.SCREEN_H;
-		
 		this.oScreenContext = this.oScreen.getContext('2d');
 		O876.CanvasFactory.setImageSmoothing(this.oScreenContext, true);
 		
 		this.oEasingHUD = new O876.Easing();
+
+		this.oScoreCanvas = O876.CanvasFactory.getCanvas();
+		this.oScoreCanvas.width = 320;
+		this.oScoreCanvas.height = 160;
+		ctx = this.oScoreCanvas.getContext('2d');
+		ctx.fillStyle = 'rgb(255, 255, 255)';
+		ctx.strokeStyle = 'rgb(0, 0, 0)';
+		ctx.font = 'bold ' + this.nTextSize.toString() + 'px courier';
+		ctx.textBaseline = 'top';
+		this.oCircleColor1 = {r: 64, g: 128, b: 255, a: 1};
+		this.oCircleColor2 = {r: 150, g: 200, b: 255, a: 1};
+		this.oRainbow = new O876.Rainbow();
 	},
 
 	update: function(oLogic) {
@@ -110,11 +119,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 	},
 
 	
-	setApplication: function(a) {
-		//this.oApplication = a;
-	},
-	
-	renderApplication: function() {
+	renderScreen: function() {
 		var c = this.oCanvas;
 		var s = this.oScreen;
 		this.oScreenContext.drawImage(
@@ -263,11 +268,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		this.nDisplayScoreTime = 60;
 	},
 	
-	
-	
-	getCurrentApplication: function() {
-		return this.oApplication;
-	},
+
 	
 	
 	isVisible: function() {
@@ -304,6 +305,14 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 			default:
 				return false;
 		}
+	},
+
+	/**
+	 * returns true if the camera is on
+	 * @return boolean
+	 */
+	isRaised: function() {
+		return this.getStatus() === 'visible';
 	},
 
 	/**
@@ -362,7 +371,6 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 			case 21: // falling
 				this.oEasing.f(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
-					this.setApplication(null);
 					this.nState = 0;
 				}
 				this.nRaise = this.oEasing.x;
@@ -424,10 +432,10 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		}
 		var rcc = this.oCanvas;
 		var rccc = this.oContext;
-		this.renderApplication();	// renders the application screen
+		this.renderScreen();	// renders the application screen
 		this.blur();				// blurs the background image
 		
-		var p = this.oPhone.oImage;	
+		var p = this.oVisor.oImage;	
 		var rw = rcc.width;			
 		var rh = rcc.height;
 		var pw = p.width;
@@ -450,4 +458,4 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 	}
 });
 
-O2.mixin(MANSION.Phone, O876.Mixin.Events);
+O2.mixin(MANSION.GX.CameraObscura, O876.Mixin.Events);

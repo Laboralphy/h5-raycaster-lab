@@ -8,7 +8,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oLocators: null,
 	
 	aDebugLines: null,
-	oPhone: null,
 	oCamera: null,
 	oLogic: null,
 
@@ -69,6 +68,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('attack', this.gameEventAttack.bind(this));
 		
 		this.on('key.down', this.gameEventKey.bind(this));		
+
+		this.setPopupStyle({
+			background: 'rgba(128, 64, 10, 0.5)',
+			border: 'rgba(128, 32, 0, 0.25)',
+			shadow: 'rgb(0, 0, 0)',
+			text: 'rgb(255, 255, 255)',
+			width: 320,
+			height: 40,
+			font: 'monospace 11',
+			speed: 100,
+			position: 12
+		});
 	},
 	
 	/**
@@ -95,9 +106,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	initPopup: function() {
 		this.setPopupStyle({
-			font: 'monospace 10',
+			background: 'rgba(128, 64, 10, 0.5)',
+			border: 'rgba(128, 32, 0, 0.25)',
+			shadow: 'rgb(0, 0, 0)',
+			text: 'rgb(255, 255, 255)',
 			width: 320,
 			height: 32,
+			font: 'monospace 10',
 			speed: 120,
 			position: 8
 		});
@@ -211,7 +226,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (!O876_Raycaster.PointerLock.locked()) {
 			return;
 		}
-		if (this.oCamera.getStatus() === 'visible') {
+		if (this.isCameraActive()) {
 			this.cameraShoot();
 		} else {
 			this.activateWall(this.getPlayer());
@@ -237,52 +252,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Evenement de click avec coordinnée par rapport au canvas
 	 */
 	gameEventClick: function(data) {
-		/*var x = data.x;
-		var y = data.y;
-		var p = this.oPhone;
-		var pc = this.oPhone.getCurrentPhone();
-		
-		// desktop click manager
-		if ((p.isActive('Desktop') || p.isActive('Album')) && pc.isVisible()) {
-			var pi = pc.oPhone.oImage;
-			var xpc = pc.xPhone;
-			var ypc = pc.yPhone;
-			if (x < xpc || y < ypc || x >= (xpc + pi.width) || y >= (ypc + pi.height)) {
-				this.closeApplication(true);
-			} else {
-				var ax = xpc + pc.SCREEN_X;
-				var ay = ypc + pc.SCREEN_Y;
-				var oDesktop = p.getCurrentApplication();
-				var id = oDesktop.peek(x - ax, y - ay);
-				this.oRaycaster.getScreenCanvas().style.cursor = '';
-				oDesktop.execCommand(id, this);
-			}
-		}*/
 	},
 
 	gameEventMouseMove: function(data) {
-		/*var x = data.x;
-		var y = data.y;
-		var p = this.oPhone;
-		var pc = this.oPhone.getCurrentPhone();
-		
-		// desktop mouse move manager
-		if ((p.isActive('Desktop') || p.isActive('Album')) && pc.isVisible()) {
-			var pi = pc.oPhone.oImage;
-			var xpc = pc.xPhone;
-			var ypc = pc.yPhone;
-			if (!(x < xpc || y < ypc || x >= (xpc + pi.width) || y >= (ypc + pi.height))) {
-				var ax = xpc + pc.SCREEN_X;
-				var ay = ypc + pc.SCREEN_Y;
-				var oDesktop = p.getCurrentApplication();
-				var id = oDesktop.peek(x - ax, y - ay);
-				if (id) {
-					this.oRaycaster.getScreenCanvas().style.cursor = 'pointer';
-				} else {
-					this.oRaycaster.getScreenCanvas().style.cursor = '';
-				}
-			}
-		}*/
 	},
 
 	/**
@@ -291,14 +263,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventActivate: function() {
-		/*if (this.oPhone.getCurrentApplication()) {
-			this.oPhone.close();
-			O876_Raycaster.PointerLock.enable(this.oRaycaster.getScreenCanvas());
-		} else {
-			this.oPhone.activate('Desktop');
-			O876_Raycaster.PointerLock.disable();
-			this.oPhone.getCurrentApplication().loadNote('home');
-		}*/
 	},
 
 	/**
@@ -413,11 +377,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.oCamera && this.oCamera.nRaise) {
 			this.oCamera.update(gl);
 		}
-		/*
-		if (this.oPhone.isActive('Camera')) {
-			var oCameraApp = this.oPhone.getCurrentApplication();
-			oCameraApp.setEnergyGauges(gl.getCameraEnergy(), gl.getCameraMaxEnergy());
-		}*/
 	},
 	
 	/**
@@ -740,32 +699,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ct.oGame = this;
 	},
 
-
-	phoneAppCameraOn: function(data) {
-		oAppCamera = data.application;
-		oAppCamera.setEnergyGauges(0, this.oLogic.getCameraMaxEnergy());
-		oAppCamera.nCircleSize = this.oLogic.getCameraCircleSize();
-		oAppCamera.oParticles.setParticleCanvas(this.oRaycaster.getTile('l_particle').oImage);
-		var p = this.oPhone.getCurrentPhone();
-		oAppCamera.oParticles.setAttractor(0, p.SCREEN_H, 20480);
-		this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
-	},
-
-	phoneAppCameraOff: function() {
-		this.oLogic.cameraOff();
-		this.getPlayer().fSpeed = MANSION.CONST.SPEED_NORMAL;
-	},
-	
-
-
 	/**
-	 * Close the current application
+	 * returns true if the camera is on
+	 * @return boolean
 	 */
-	closeApplication: function(bRestorePointerLock) {
-		this.oPhone.close();
-		if (bRestorePointerLock) {
-			O876_Raycaster.PointerLock.enable(this.oRaycaster.getScreenCanvas());
-		}
+	isCameraActive: function() {
+		return this.oCamera && this.oCamera.isRaised();
 	},
 
 	
@@ -775,27 +714,21 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * like the camera
 	 */
 	toggleCamera: function() {
-		console.log('toggle');
 		if (!this.oCamera) {
-			console.log('create');
 			this.oCamera = this.oRaycaster.addGXEffect(MANSION.GX.CameraObscura);
-			
 		}
-		if (this.oCamera.getStatus() === 'visible') {
-			console.log('hide');
-			this.oCamera.hide();
+		var c = this.oCamera;
+		var l = this.oLogic;
+		if (c.isRaised()) {
+			c.hide();
+			l.cameraOff();
+			this.getPlayer().fSpeed = MANSION.CONST.SPEED_NORMAL;
 		} else {
-			console.log('show');
-			this.oCamera.show();
+			c.show();
+			c.setEnergyGauges(0, l.getCameraMaxEnergy());
+			c.nCircleSize = l.getCameraCircleSize();
+			this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
 		}
-		/*
-		if (this.oPhone.isActive('Camera')) {
-			this.closeApplication();
-		} else {
-			this.oPhone.activate('Camera');
-			O876_Raycaster.PointerLock.enable(this.oRaycaster.getScreenCanvas());
-		}
-		*/
 	},
 
 	/**
