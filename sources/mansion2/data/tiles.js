@@ -471,6 +471,18 @@ O2.createObject('MANSION.TILES_DATA', {
 		]
 	},
 	
+	l_visor: {
+		src: 'resources/ui/camera/visor.png',
+		frames: 1,
+		width: 400,
+		height: 250,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
+	},
+	
 	//////////////// PARTICLE /////////////////
 	
 	l_particle: {
