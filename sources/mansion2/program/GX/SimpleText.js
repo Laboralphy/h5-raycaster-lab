@@ -89,7 +89,7 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 		var ctx = this.oRaycaster.getRenderContext();
 		var fAlpha = ctx.globalAlpha;
 		ctx.globalAlpha = this.oEasingAlpha.x;
-		this.oRaycaster.getScreenContext().drawImage(cvs, 0, 0);
+		ctx.drawImage(cvs, 0, 0);
 		ctx.globalAlpha = fAlpha;
 	},
 

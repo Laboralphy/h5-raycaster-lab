@@ -1,4 +1,4 @@
-O2.createObject('MANSION.TILES_INTRO_DATA', {
+O2.createObject('MANSION.LEVEL_TILES_DATA.m050-intro', {
 	//////////////// INTRO TILES //////////////////
 	intro_s0_amulet: {
 		src: 'resources/intro/s0-amulet.png',

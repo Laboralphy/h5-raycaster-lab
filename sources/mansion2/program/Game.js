@@ -4,7 +4,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbienceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_sLevelIndex: 'm090-htp',
+	_sLevelIndex: 'intro',
 	_oLocators: null,
 	
 	aDebugLines: null,
@@ -68,18 +68,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('attack', this.gameEventAttack.bind(this));
 		
 		this.on('key.down', this.gameEventKey.bind(this));		
-
-		this.setPopupStyle({
-			background: 'rgba(128, 64, 10, 0.5)',
-			border: 'rgba(128, 32, 0, 0.25)',
-			shadow: 'rgb(0, 0, 0)',
-			text: 'rgb(255, 255, 255)',
-			width: 320,
-			height: 40,
-			font: 'monospace 11',
-			speed: 100,
-			position: 12
-		});
 	},
 	
 	/**
@@ -139,9 +127,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
-		if (this._sLevelIndex === 'm050-intro') {
-			for (s in MANSION.TILES_INTRO_DATA) {
-				data.tiles[s] = MANSION.TILES_INTRO_DATA[s];
+		if (this._sLevelIndex in MANSION.LEVEL_TILES_DATA) {
+			for (s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
+				data.tiles[s] = MANSION.LEVEL_TILES_DATA[this._sLevelIndex][s];
 			}
 		}
 		for (s in MANSION.BLUEPRINTS_DATA) {
@@ -674,7 +662,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oPlayer = this.getPlayer();
 		var ct;
 		switch (this._sLevelIndex) {
-			case 'm050-intro':
+			case 'intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
 				ct = oPlayer.getThinker();
 				O876_Raycaster.PointerLock.disable();
