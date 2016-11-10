@@ -156,6 +156,9 @@ O2.createClass('O876.SoundSystem', {
 	 * le programme d'ambience est reseté par cette manip
 	 */
 	crossFadeMusic: function(sFile) {
+		if (sFile === undefined) {
+			throw new Error('sound file is not specified');
+		}
 		if (this.bCrossFading) {
 			this.sCrossFadeTo = sFile;
 			return;
@@ -168,7 +171,7 @@ O2.createClass('O876.SoundSystem', {
 		}
 		this.oInterval = window.setInterval((function() {
 			iVolume += nVolumeDelta;
-			this.oMusicChan.volume = iVolume / 100;
+			this.oMusicChan.volume = Math.min(1, Math.max(0, iVolume / 100));
 			if (iVolume <= 0) {
 				this.playMusic(sFile);
 				this.oMusicChan.volume = 1;

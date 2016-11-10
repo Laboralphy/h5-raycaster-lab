@@ -13,7 +13,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 			var oDoor = g.getLocator('door_ghost');
 			oGhost.data('hold-door', 'door_ghost');
 			g.lockDoor(oDoor.x, oDoor.y);	
-			g.popupMessage(MANSION.STRINGS_DATA.LEVELS['m090-htp'].hint_ghost_incoming);
+			g.popupMessage(MANSION.STRINGS_DATA.LEVELS['tutorial'].hint_ghost_incoming);
 		}
 	},
 

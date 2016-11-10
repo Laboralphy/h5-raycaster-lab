@@ -54,7 +54,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	},
 
 	LEVELS: {
-		'm090-htp': {
+		tutorial: {
 			hint_shoot_painting: 'Take a picture of this painting !',
 			hint_pickup_page: 'Your goal is to recover fragments of manuscript like this one.',
 			hint_ghost_incoming: "You have attracted a vengeful spirit's attention.",

@@ -3,8 +3,10 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		thunder: 'ambiance/thunder'
 	},
 	bgm: {
-		'm090-htp': 'music/forest',
-		'm100-ch1': 'music/forest',
+		levels: {
+			tutorial: 'music/forest',
+			ch1: 'music/forest',
+		},
 		woods: 'music/forest',
 		atrium: 'music/atrium',
 		mansion: 'music/inside',

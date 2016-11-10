@@ -173,7 +173,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();
-		this.playAmbience(MANSION.SOUNDS_DATA.bgm[this.getLevel()]);
+		this.playAmbience(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		//this.oPhone = new MANSION.Phone(this.oRaycaster);
 		//this.bindPhoneEvents(this.oPhone);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
@@ -201,7 +201,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case 'Secret':
 				this.playSound(MANSION.SOUNDS_DATA.events.secret, x * ps + ps2, y * ps + ps2);
 				break;
-			
 		}
 	},
 
