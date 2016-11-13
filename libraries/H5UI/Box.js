@@ -16,6 +16,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	_yGradEnd : 0,
 	_nGradOrientation : 0,
 	
+	__construct: function() {
+		__inherited();
+		this.on('mousein', this.onMouseIn.bind(this));
+		this.on('mouseout', this.onMouseOut.bind(this));
+	},
 
 	setColor : function(sNormal, sHighlight) {
 		if (sHighlight === undefined) {

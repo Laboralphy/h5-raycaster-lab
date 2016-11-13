@@ -4,12 +4,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbienceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_sLevelIndex: 'intro',
+	_sLevelIndex: 'tutorial',
 	_oLocators: null,
 	
 	aDebugLines: null,
 	oCamera: null,
 	oLogic: null,
+	oUI: null,
 
 
 	/**
@@ -35,6 +36,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
+		this.initUI();
 		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
@@ -106,6 +108,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		});
 	},
 	
+	initUI: function() {
+		var oUI = new MANSION.UIManager();
+		oUI.init();
+		this.oUI = oUI;
+	},
 
 
 
@@ -250,6 +257,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventActivate: function() {
+		var ui = this.oUI;
+		if (ui.isVisible()) {
+			ui.hide();
+			O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
+		} else {
+			ui.show();
+			O876_Raycaster.PointerLock.disable();
+		}
 	},
 
 	/**
@@ -371,6 +386,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param oEvent {}
 	 */
 	gameEventFrame: function(oEvent) {
+		this.oUI.render();
+
 		var aLog = this.aDebugLines;
 		if (aLog !== null) {
 			var c = this.oRaycaster.getScreenContext();

@@ -63,13 +63,14 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	},
 
 	requestPointerLock: function(oElement) {
-		if (!O876_Raycaster.PointerLock.bEnabled) {
+		var pl = O876_Raycaster.PointerLock;
+		if (!pl.bEnabled) {
 			return;
 		}
-		if (O876_Raycaster.PointerLock.locked()) {
+		if (pl.locked()) {
 			return;
 		}
-		O876_Raycaster.PointerLock.oElement = oElement;
+		pl.oElement = oElement;
 		oElement.requestPointerLock = oElement.requestPointerLock || oElement.mozRequestPointerLockWithKeys || oElement.mozRequestPointerLock;
 		oElement.requestPointerLock();
 	},

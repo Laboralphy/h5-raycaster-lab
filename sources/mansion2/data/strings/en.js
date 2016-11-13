@@ -66,7 +66,13 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	},
 	
 	UI: {
-		empty_album: 'Empty album'
+		empty_album: 'Empty album',
+		menu_title: 'Menu',
+		menu_options: {
+			mo_album: 'Album',
+			mo_notes: 'Notes',
+			mo_help: 'Help'
+		}
 	}
 
 });

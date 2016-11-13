@@ -265,20 +265,15 @@ O2.createClass('H5UI.WinControl', {
 		}
 		if (oClicked != this._oPointedControl) {
 			if (this._oPointedControl !== null) {
-				this.doMouseEvent('MouseOut', x, y, nButton,
+				this.doMouseEvent('mouseout', x, y, nButton,
 						this._oPointedControl);
 			}
 			this._oPointedControl = oClicked;
-			this.doMouseEvent('MouseIn', x, y, nButton, oClicked);
+			this.doMouseEvent('mousein', x, y, nButton, oClicked);
 		}
-		var sMouseEventMethod = 'on' + sEvent;
-		var pMouseEventMethod;
 		if (oClicked !== null) {
-			if (sMouseEventMethod in oClicked) {
-				pMouseEventMethod = oClicked[sMouseEventMethod];
-				pMouseEventMethod.apply(oClicked, [ x - oClicked._x,
-						y - oClicked._y, nButton ]);
-			}
+			oClicked.trigger(sEvent, x - oClicked._x,
+						y - oClicked._y, nButton )
 			oClicked.doMouseEvent(sEvent, x - oClicked._x, y - oClicked._y,
 					nButton);
 		}
@@ -681,6 +676,10 @@ O2.createClass('H5UI.WinControl', {
 		}
 	},
 
+	isVisible: function() {
+		return this._bVisible;
+	},
+
 	/**
 	 * Renvoie la référence au context du canvas
 	 * 
@@ -753,5 +752,8 @@ O2.createClass('H5UI.WinControl', {
 	 */
 	hasControls : function() {
 		return this._aControls !== null && this._aControls.length > 0;
-	}
+	} 
 });
+
+
+O2.mixin(H5UI.WinControl, O876.Mixin.Events);
