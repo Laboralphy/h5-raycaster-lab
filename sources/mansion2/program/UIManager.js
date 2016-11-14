@@ -17,6 +17,7 @@ O2.createClass('MANSION.UIManager', {
 		this.oWidgets = {};
 		this.oWidgets.menu = this.declareWidget(new UI.MainMenu(this));
 		this.oWidgets.album = this.declareWidget(new UI.Album(this));
+		this.oWidgets.notes = this.declareWidget(new UI.Notes(this));
 		this.displayWidget('menu');
 		oSystem.hide();
 	},
@@ -25,6 +26,10 @@ O2.createClass('MANSION.UIManager', {
 		this.oSystem.oScreen.linkControl(w);
 		this.oSystem.centerWidget(w);
 		return w;
+	},
+
+	getWidget: function(s) {
+		return this.oWidgets[s];
 	},
 	
 	displayWidget: function(s) {

@@ -1,6 +1,8 @@
 O2.extendClass('UI.Album', UI.Window, {
 	
 	_oPhoto: null,
+	_aPhotos: null,
+	_iPhoto: 0,
 	
 	/**
 	 * Création du widget du menu principal
@@ -16,17 +18,40 @@ O2.extendClass('UI.Album', UI.Window, {
 		
 		this.setCommands([
 			['↩ menu', ui.commandFunction('main'), 0], 
-			null, 
-			['◀prev', ui.commandFunction('album_prev'), 1], 
+			null,
+			['◀prev', ui.commandFunction('album_prev'), 1],
 			['next▶', ui.commandFunction('album_next'), 1]
 		]);
 	},
-	
-	loadPhotos: function(aPhotos) {
-		if (aPhotos.length) {
-			var p = aPhotos[0];
-			this._oPhoto.setSource(p.data);
-		}
-	}
-});
 
+	loadPhotos: function(aPhotos) {
+		this._aPhotos = aPhotos;
+		this.showPhoto(aPhotos.length - 1);
+	},
+
+	showPhoto: function(iPhoto) {
+		switch (iPhoto) {
+			case 'next':
+				this.showNextPhoto();
+				break;
+			case 'prev':
+				this.showPrevPhoto();
+				break;
+			default:
+				var ap = this._aPhotos;
+				if (ap.length) {
+					var p = ap[this._iPhoto = Math.max(0, Math.min(ap.length - 1))];
+					this._oPhoto.setSource(p.data);
+				}
+				break;
+		}
+	},
+
+	showNextPhoto: function() {
+		this.showPhoto(this._iPhoto + 1);
+	},
+
+	showPrevPhoto: function() {
+		this.showPhoto(this._iPhoto - 1);
+	},
+});

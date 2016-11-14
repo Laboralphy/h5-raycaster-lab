@@ -185,15 +185,17 @@ O2.createClass('UI.System', {
 		x = x / this.__ratio | 0;
 		y = y / this.__ratio | 0;
 		var nDelta = 0;
-		if (e.wheelDelta) {
+		if ('wheelDelta' in e) {
 			nDelta = e.wheelDelta;
-		} else {
+		} else if ('detail' in e) {
 			nDelta = -40 * e.detail;
+		} else {
+			throw new Error('WTF cant read wheel movement data !!!');
 		}
 		if (nDelta > 0) {
-			oThis.doMouseEvent('mousewheelup', x - oThis._x, y - oThis._y, e.which);
-		} else {
-			oThis.doMouseEvent('mousewheeldown', x - oThis._x, y - oThis._y, e.which);
+			oThis.doMouseEvent('mousewheelup', x - oThis._x, y - oThis._y, nDelta);
+		} else if (nDelta < 0){
+			oThis.doMouseEvent('mousewheeldown', x - oThis._x, y - oThis._y, nDelta);
 		}
 	},
 

@@ -419,7 +419,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				}
 			}
 		}
-	}
+	},
 });
 
 O2.mixin(O876_Raycaster.GameAbstract, O876.Mixin.Events);

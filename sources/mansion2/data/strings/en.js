@@ -73,7 +73,8 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			mo_notes: 'Notes',
 			mo_help: 'Help'
 		},
-		album_title: 'Album'
+		album_title: 'Album',
+		notes_title: 'Notes'
 	}
 
 });

@@ -59,8 +59,14 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	scrollTo : function(x, y) {
 		if (x != this._xScroll || y != this._yScroll) {
-			this._xScroll = x;
-			this._yScroll = y;
+			var yContSize = this.getContainer().getHeight();
+			var yThisSize = this.getHeight();
+			var yMax = Math.max(0, yContSize - yThisSize);
+			var xContSize = this.getContainer().getWidth();
+			var xThisSize = this.getWidth();
+			var xMax = Math.max(0, xContSize - xThisSize);
+			this._xScroll = x = Math.max(0, Math.min(x, xMax));
+			this._yScroll = y = Math.max(0, Math.min(y, yMax));
 			this.getContainer().moveTo(-x, -y);
 			this.invalidate();
 		}
@@ -91,13 +97,15 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 
 	renderSelf : function() {
 		// Le container doit être assez grand pour tout contenir
-		var w = 0, h = 0, o;
-		var c = this.getContainer();
-		for ( var i = 0; i < c._aControls.length; i++) {
-			o = c.getControl(i);
-			w = Math.max(w, o._x + o.getWidth());
-			h = Math.max(h, o._y + o.getHeight());
+		if (this._bInvalid) {
+			var w = 0, h = 0, o;
+			var c = this.getContainer();
+			for ( var i = 0; i < c._aControls.length; i++) {
+				o = c.getControl(i);
+				w = Math.max(w, o._x + o.getWidth());
+				h = Math.max(h, o._y + o.getHeight());
+			}
+			c.setSize(w, h);
 		}
-		c.setSize(w, h);
 	}
 });

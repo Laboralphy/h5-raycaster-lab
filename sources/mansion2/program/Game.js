@@ -71,7 +71,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		
 		this.on('key.down', this.gameEventKey.bind(this));		
 	},
-	
+
 	/**
 	 * Logic initialization
 	 * Done once per game.
@@ -121,6 +121,32 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				case 'main':
 					ui.displayWidget('menu');
 					break;
+				case 'album_next':
+					ui.getWidget('album').showPhoto('next');
+					break;
+				case 'album_prev':
+					ui.getWidget('album').showPhoto('prev');
+					break;
+				case 'mo_notes': 
+					ui.displayWidget('notes').loadTitles(ui, [
+						{id: 1, title: 'A black notepad'},
+						{id: 2, title: 'The dairy'},
+						{id: 3, title: 'A note left on the floor'},
+						{id: 4, title: 'Le culte des goules - Comte d\'Erlette'},
+						{id: 5, title: 'A shity world'},
+						{id: 6, title: 'Le nécronomicon pour les nuls'},
+						{id: 7, title: 'Bob l\'éponge contre Séphirot'},
+						{id: 8, title: 'Le Livre de Dysan'},
+						{id: 9, title: 'The ninth door'},
+						{id: 10, title: 'Once upon a time'},
+						{id: 11, title: 'W.T.F.'},
+					]);
+					break;
+
+				default: 
+					console.log('unknow ui command', oEvent.command);
+					break;
+
 			}
 		}).bind(this));
 		ui.oSystem.oScreen.on('click', this.uiHide.bind(this));
@@ -870,6 +896,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var ui = this.oUI;
 		ui.show();
 		O876_Raycaster.PointerLock.disable();
+		this.pause(true);
 	},
 	
 	/**
@@ -879,6 +906,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var ui = this.oUI;
 		ui.hide();
 		O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
+		this.resume();
 	},
 	
 	/**
