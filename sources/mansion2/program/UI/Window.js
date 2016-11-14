@@ -14,8 +14,9 @@ O2.extendClass('UI.Window', H5UI.Box, {
 	_nStatusBarHeight: 16,
 	_fStatusBarFontFactor: 0.75,
 	_nButtonWidth: 60,
-	_nButtonPadding: 4,
+	_nButtonPadding: 8,
 	_aCmdButtons: null,
+	_oBackgroundImage: null,
 	
 	/** 
 	 * Les paramètres puvent contenir :
@@ -23,13 +24,16 @@ O2.extendClass('UI.Window', H5UI.Box, {
 	 */
 	__construct: function(oParams) {
 		__inherited();
+		this._oBackgroundImage = this.linkControl(new H5UI.Image());
+		this._oBackgroundImage.hide();
+		this._oBackgroundImage.moveTo(0, 0);
 		this.setColor(UI.clWINDOW, UI.clWINDOW);
 		this.setBorder(4, UI.clWINDOW_BORDER, UI.clWINDOW_BORDER);
 		var oCaption = this.linkControl(new H5UI.Text());
 		oCaption.font.setFont('monospace');
 		oCaption.font.setStyle('bold');
 		oCaption.font.setSize(12);
-		oCaption.font.setColor(UI.clFONT);
+		oCaption.font.setColor('#FFF', '#000');
 		oCaption.setCaption(oParams.caption);
 		oCaption.moveTo(8, 8);
 		this._oCaptionBar = oCaption;
@@ -96,7 +100,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			sCaption = a[i][0];
 			sColor = a[i][2];
 			pHandler = a[i][1];
-			b = this.linkControl(new UI.Button());
+			b = this.linkControl(new H5UI.Button());
 			b.setCaption(sCaption);
 			b.setSize(this._nButtonWidth, this._nStatusBarHeight);
 			b.oText.font.setSize(10);
@@ -121,6 +125,14 @@ O2.extendClass('UI.Window', H5UI.Box, {
 		return this._aCmdButtons[n];
 	},
 	
+	setBackgroundImage: function(sSrc) {
+		this.setColor('transparent');
+		var bg = this._oBackgroundImage;
+		bg.setSource(sSrc);
+		bg.show();
+		this.setBorder(0);
+	},
+
 	
 	
 	/**

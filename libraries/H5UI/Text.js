@@ -33,7 +33,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		if (this._bAutosize && this._bInvalid) {
 			this.font.update();
 			var oMetrics = this.getSurface().measureText(this._sCaption);
-			this.setSize(oMetrics.width, this.font._nFontSize + 1);
+			this.setSize(oMetrics.width, this.font._nFontSize);
 		}
 	},
 
@@ -98,14 +98,14 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 			if (this._bAutosize) {
 				this.font.update();
 				oMetrics = oSurface.measureText(this._sCaption);
-				this.setSize(oMetrics.width, this.font._nFontSize + 1);
+				this.setSize(oMetrics.width, this.font._nFontSize);
 			} else {
 			}
 			oSurface.textBaseline = 'middle';
 			if (this.font._bOutline) {
-				oSurface.strokeText(this._sCaption, 0, this.getHeight() >> 1);
-			}		
-			oSurface.fillText(this._sCaption, 0, this.getHeight() >> 1);
+				oSurface.strokeText(this._sCaption, 0, this.getHeight() / 2);
+			}
+			oSurface.fillText(this._sCaption, 0, this.getHeight() / 2);
 		}
 	}
 });

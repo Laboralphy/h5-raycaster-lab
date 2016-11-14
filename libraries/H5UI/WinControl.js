@@ -271,11 +271,17 @@ O2.createClass('H5UI.WinControl', {
 			this._oPointedControl = oClicked;
 			this.doMouseEvent('mousein', x, y, nButton, oClicked);
 		}
-		if (oClicked !== null) {
-			oClicked.trigger(sEvent, x - oClicked._x,
-						y - oClicked._y, nButton )
-			oClicked.doMouseEvent(sEvent, x - oClicked._x, y - oClicked._y,
+		var oEvent;
+		if (oClicked) {
+			oEvent = {type: sEvent, target: oClicked, x: x - oClicked._x, y: y - oClicked._y, button: nButton, stop: false};
+			oClicked.trigger(sEvent, oEvent);
+			if (!oEvent.stop) {
+				oClicked.doMouseEvent(sEvent, x - oClicked._x, y - oClicked._y,
 					nButton);
+			}
+		} else {
+			oEvent = {type: sEvent, target: this, x: x, y: y, button: nButton, stop: false};
+			this.trigger(sEvent, this, x, y, nButton);
 		}
 	},
 	
@@ -757,3 +763,4 @@ O2.createClass('H5UI.WinControl', {
 
 
 O2.mixin(H5UI.WinControl, O876.Mixin.Events);
+O2.mixin(H5UI.WinControl, O876.Mixin.Data);

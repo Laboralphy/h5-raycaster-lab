@@ -1466,7 +1466,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.oConfig.drawMap) {
 			this.drawMap();
 		}
-		this.drawWeapon();
+		//this.drawWeapon();
 	},
 	
 	/**

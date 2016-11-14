@@ -109,9 +109,21 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	initUI: function() {
-		var oUI = new MANSION.UIManager();
-		oUI.init();
-		this.oUI = oUI;
+		var w;
+		var ui = this.oUI = new MANSION.UIManager();
+		ui.init();
+		ui.on('command', (function(oEvent) {
+			switch (oEvent.command) {
+				case 'mo_album':
+					w = ui.displayWidget('album');
+					w.loadPhotos(this.oLogic.getAlbum());
+					break;
+				case 'main':
+					ui.displayWidget('menu');
+					break;
+			}
+		}).bind(this));
+		ui.oSystem.oScreen.on('click', this.uiHide.bind(this));
 	},
 
 
@@ -181,8 +193,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();
 		this.playAmbience(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
-		//this.oPhone = new MANSION.Phone(this.oRaycaster);
-		//this.bindPhoneEvents(this.oPhone);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
 	},
 	
@@ -259,11 +269,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventActivate: function() {
 		var ui = this.oUI;
 		if (ui.isVisible()) {
-			ui.hide();
-			O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
+			this.uiHide();
 		} else {
-			ui.show();
-			O876_Raycaster.PointerLock.disable();
+			this.uiShow();
 		}
 	},
 
@@ -657,17 +665,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._sLevelIndex = s;
 		this.enterLevel();	
 	},
-
-	/**
-	 * will bind phone events
-	 * This is a kind of phone initialization, but will
-	 * occurs after each loaded level 
-	 * @param p Phone
-	 */
-	bindPhoneEvents: function(p) {
-		p.on('phone.startup.Camera', this.phoneAppCameraOn.bind(this));
-		p.on('phone.shutdown.Camera', this.phoneAppCameraOff.bind(this));
-	},
 	
 	/**
 	 * Will configure the player thinker according to what type of level it is now.
@@ -835,7 +832,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					var aSubject = sPhotoSubject.split(' ');
 					var sName = aSubject.shift();
 					var nScore = aSubject.shift() | 0;
-					var oPhoto = O876.CanvasFactory.cloneCanvas(this.oRaycaster.getRenderCanvas());
+					var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
 					var oEvent = {
 						subject: sName,
 						score: nScore,
@@ -865,6 +862,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	
 	////// UTILITIES //////
+	
+	/**
+	 * shows UI and exits pointerlock mode
+	 */
+	uiShow: function() {
+		var ui = this.oUI;
+		ui.show();
+		O876_Raycaster.PointerLock.disable();
+	},
+	
+	/**
+	 * hides UI and enters pointerlock mode
+	 */
+	uiHide: function() {
+		var ui = this.oUI;
+		ui.hide();
+		O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
+	},
 	
 	/**
 	 * Renvoie les coordonée d'un locator

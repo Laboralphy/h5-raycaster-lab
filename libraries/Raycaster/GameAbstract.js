@@ -281,17 +281,21 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	/**
 	 * Effectue un screenshot de l'écran actuellement rendu
 	 * L'image (canvas) générée est stockée dans la propriété _oScreenShot
+	 * @param bPure si true, alors l'image est redessinée (sans les effect GX et sans la 3D)
 	 */
-	screenShot: function() {
+	screenShot: function(w, h) {
+		if (w === undefined) {
+			w = 192;
+		}
+		this.oRaycaster.drawScreen();
 		var oCanvas = O876.CanvasFactory.getCanvas();
 		var wr = this.oRaycaster.xScrSize;
 		var hr = this.oRaycaster.yScrSize << 1;
-		var w = 192;
-		var h = hr * w / wr | 0;
+		h = h || (hr * w / wr | 0);
 		oCanvas.width = w;
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
-		oContext.drawImage(this.oRaycaster.getScreenCanvas(), 0, 0, wr, hr, 0, 0, w, h);
+		oContext.drawImage(this.oRaycaster.getRenderCanvas(), 0, 0, wr, hr, 0, 0, w, h);
 		return this._oScreenShot = oCanvas;
 	},
 

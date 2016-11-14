@@ -314,7 +314,7 @@ O2.createClass('MANSION.Logic', {
 	/**
 	 * A photo of the specified subject is taken
 	 */
-	setPhotoSubject: function(sRef, nScore,oPhotoCanvas) {
+	setPhotoSubject: function(sRef, nScore, oPhotoCanvas) {
 		if (!this._aCameraSubjects) {
 			this._aCameraSubjects = [];
 		}

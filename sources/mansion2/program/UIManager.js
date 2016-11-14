@@ -5,6 +5,8 @@
 O2.createClass('MANSION.UIManager', {
 
 	oSystem: null,
+	
+	oWidgets: null,
 
 	init: function() {
 		H5UI.font.defaultFont = 'monospace';
@@ -12,8 +14,31 @@ O2.createClass('MANSION.UIManager', {
 		var oSystem = new UI.System();
 		oSystem.setRenderCanvas(document.getElementById(CONFIG.raycaster.canvas));
 		this.oSystem = oSystem;
-		this.createMenu();
+		this.oWidgets = {};
+		this.oWidgets.menu = this.declareWidget(new UI.MainMenu(this));
+		this.oWidgets.album = this.declareWidget(new UI.Album(this));
+		this.displayWidget('menu');
 		oSystem.hide();
+	},
+	
+	declareWidget: function(w) {
+		this.oSystem.oScreen.linkControl(w);
+		this.oSystem.centerWidget(w);
+		return w;
+	},
+	
+	displayWidget: function(s) {
+		var w, wShown;
+		for (var sWidget in this.oWidgets) {
+			w = this.oWidgets[sWidget];
+			if (s === sWidget) {
+				w.show();
+				wShown = w;
+			} else {
+				w.hide();
+			}
+		}
+		return wShown;
 	},
 
 	getRenderCanvas: function() {
@@ -55,26 +80,13 @@ O2.createClass('MANSION.UIManager', {
 			this.oSystem.render();
 		}
 	},
-
-	/**
-	 * Création du widget du menu principal
-	 */
-	createMenu: function() {
-		var w = new UI.Window({caption: MANSION.STRINGS_DATA.UI.menu_title});
-		w.setSize(128, 128);
-		this.oSystem.declareWidget(w);
-		this.oSystem.centerWidget(w);
-		var b;
-
-		var bw = 96, bh = 16, bs = 24, bx = 16, by = 40;
-		
-		for (var o in MANSION.STRINGS_DATA.UI.menu_options) {
-			b = new H5UI.Button();
-			b.setCaption(MANSION.STRINGS_DATA.UI.menu_options[o]);
-			b.setSize(bw, bh);
-			b.moveTo(bx, by);
-			w.linkControl(b);
-			by += bs;
-		}
+	
+	commandFunction: function(sCommand) {
+		return (function(oEvent) {
+			this.trigger('command', {command: sCommand});
+			oEvent.stop = true;
+		}).bind(this);
 	}
 });
+
+O2.mixin(MANSION.UIManager, O876.Mixin.Events);

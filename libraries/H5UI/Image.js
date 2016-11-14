@@ -1,16 +1,11 @@
 O2.extendClass('H5UI.Image', H5UI.WinControl, {
 	_oTexture: null,
 	_bAutosize: true,
-	onLoad: null,
+	_sColorBorder : '#000000',
+	_nBorderWidth : 0,
 	
 	_loadEvent: function(oEvent) {
-		var i = oEvent.target.__image;
-		oEvent.target.__image = null;
-		if (i.onLoad) {
-			i.onLoad();
-		} else {
-			i.invalidate();
-		}
+		this.invalidate();
 	},
 	
 	setSource: function(sSrc) {
@@ -18,20 +13,12 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 			this._oTexture = new Image();
 		}
 		this._oTexture.src = sSrc;
-		this._oTexture.__image = this;
-		this._oTexture.addEventListener('load', this._loadEvent, true);
-		this.invalidate();
-	},
-	
-	setImage: function(oImage) {
-		if (this._oTexture != oImage) {
-			this._oTexture = oImage;
-			this._oTexture.__image = this;
-			this._oTexture.addEventListener('load', this._loadEvent, true);
+		if (this._oTexture.complete) {
 			this.invalidate();
+		} else {
+			this._oTexture.addEventListener('load', this._loadEvent.bind(this), true);
 		}
 	},
-	
 	
 	renderSelf: function() {
 		var s = this.getSurface();
@@ -53,6 +40,11 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 					this.getHeight()
 				);
 			}
+		}
+		if (this._nBorderWidth) {
+			this._oContext.strokeStyle = this._sColorBorder;
+			this._oContext.lineWidth = this._nBorderWidth;
+			this._oContext.strokeRect(0, 0, this.getWidth(), this.getHeight());
 		}
 	}
 });
