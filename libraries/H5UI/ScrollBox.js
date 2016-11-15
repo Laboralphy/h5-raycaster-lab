@@ -38,6 +38,10 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		return o;
 	},
 
+	clear: function() {
+		this.getContainer().clear();
+	},
+
 	/**
 	 * Renvoie l'instance du controleur interne Construit le conteneur interne
 	 * on the fly en cas de besoin
@@ -46,8 +50,7 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	getContainer : function() {
 		if (this._oContainer === null) {
-			this._oContainer = this.linkControl(new H5UI.WinControl(), true);
-			this._oContainer._sClass = 'ScrollBoxContainer';
+			this._oContainer = this.linkControl(new H5UI.ScrollBoxContainer(), true);
 		}
 		return this._oContainer;
 	},
@@ -109,6 +112,5 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		}
 		c.setSize(w, h);
 		this.getSurface().clearRect(0, 0, this.getWidth(), this.getHeight());
-		this.getContainer().getSurface().clearRect(0, 0, this.getContainer().getWidth(), this.getContainer().getHeight());
 	}
 });

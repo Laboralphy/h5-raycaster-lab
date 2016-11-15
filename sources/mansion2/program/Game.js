@@ -145,14 +145,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					
 				case 'note_back':
 					w = ui.displayWidget('notes');
-					if (w._oPad.isVisible) {
+					if (w._oPad.isVisible()) {
 						w.displayList();
 					} else {
 						ui.displayWidget('menu');
 					}
 					break;
 				case 'note_read':
-					ui.displayWidget('notes').displayText("People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so.");
+					ui.displayWidget('notes').displayText("Do we need Redux ?", "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so.");
 					break;
 
 				default: 

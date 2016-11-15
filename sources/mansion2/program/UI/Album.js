@@ -16,11 +16,12 @@ O2.extendClass('UI.Album', UI.Window, {
 		this._oPhoto.moveTo(32, 32);
 		this._oPhoto._set('_nBorderWidth', 8);
 		
+		var S = MANSION.STRINGS_DATA.UI;
 		this.setCommands([
-			['↩ menu', ui.commandFunction('main'), 0], 
-			null,
-			['◀prev', ui.commandFunction('album_prev'), 1],
-			['next▶', ui.commandFunction('album_next'), 1]
+			[S.back, ui.commandFunction('main'), 0], 
+			null, null,
+			[S.prev, ui.commandFunction('album_prev'), 1],
+			[S.next, ui.commandFunction('album_next'), 1]
 		]);
 	},
 

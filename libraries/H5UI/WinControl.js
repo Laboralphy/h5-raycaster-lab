@@ -75,7 +75,7 @@ O2.createClass('H5UI.WinControl', {
 	 *  Détruit tous les controles enfant
 	 */
 	clear : function() {
-		while (this._aControls.length) {
+		while (this.hasControls()) {
 			this.unlinkControl(0);
 		}
 	},

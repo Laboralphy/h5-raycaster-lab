@@ -67,6 +67,10 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	
 	UI: {
 		empty_album: 'Empty album',
+		back: '↩ back',
+		prev: '◀prev',
+		next: 'next▶',
+		menu: '↩ menu',
 		menu_title: 'Menu',
 		menu_options: {
 			mo_album: 'Album',

@@ -49,11 +49,12 @@ O2.extendClass('UI.Notes', UI.Window, {
 
 
 		this.setCommands([
-			['↩ menu', ui.commandFunction('note_back'), 0]
+			[MANSION.STRINGS_DATA.UI.back, ui.commandFunction('note_back'), 0]
 		]);
 	},
 
-	displayText: function(sText) {
+	displayText: function(sTitle, sText) {
+		this.setTitleCaption(sTitle);
 		this._oList.hide();
 		this._oText.setWordWrap(true);
 		this._oText.setAutosize(true);
@@ -63,6 +64,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 	},
 	
 	displayList: function() {
+		this.setTitleCaption(MANSION.STRINGS_DATA.UI.notes_title);
 		this._oPad.hide();
 		this._oList.show()
 	},
@@ -76,7 +78,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 	    }
 	 */
 	loadTitles: function(ui, aTitles) {
-		//this._oList.clear();
+		this._oList.clear();
 		aTitles.forEach((function(x, i) {
 			this.appendTitle(ui, i, x.id, x.title);
 		}).bind(this));
