@@ -14,6 +14,8 @@ O2.createObject('UI', {
 	clSELECT_WINDOW: '#88F',
 	
 	INV_ICON_SIZE: 48,
-	ALT_ICON_SIZE: 48
+	ALT_ICON_SIZE: 48,
+	
+	FONT_SIZE: 12,
 });
 

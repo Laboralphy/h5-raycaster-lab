@@ -21,9 +21,9 @@ O2.extendClass('UI.ProgressBar', H5UI.Box, {
 		this.oBar = this.linkControl(new H5UI.Box());
 		this.setBarColor(UI.clBAR);
 		this.oCaption = this.linkControl(new H5UI.Text());
-		this.oCaption.font.setFont('monospace');
-		this.oCaption.font.setSize(12);
-		this.oCaption.font.setColor(UI.clFONT);
+		this.oCaption.setFontFace('monospace');
+		this.oCaption.setFontSize(UI.FONT_SIZE);
+		this.oCaption.setFontColor(UI.clFONT);
 		this.oCaption.setCaption(this.sCaption);
 		this.oCaption.moveTo(8, 8);
 	},

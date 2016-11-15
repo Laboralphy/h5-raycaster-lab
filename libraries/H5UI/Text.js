@@ -21,6 +21,26 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		O876.CanvasFactory.setImageSmoothing(this.getSurface(), true);
 		this.font = new H5UI.Font(this);
 	},
+	
+	setFontStyle: function(sStyle) {
+		this.font.setStyle(sStyle);
+		this.invalidate();
+	},
+
+	setFontSize: function(nSize) {
+		this.font.setSize(nSize);
+		this.invalidate();
+	},
+
+	setFontColor: function(sColor, sOutline) {
+		this.font.setColor(sColor, sOutline);
+		this.invalidate();
+	},
+
+	setFontFace: function(sName) {
+		this.font.setFont(sName);
+		this.invalidate();
+	},
 
 	/**
 	 * Modification du caption
@@ -30,12 +50,16 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 	 */
 	setCaption : function(s) {
 		this._set('_sCaption', s);
-		if (this._bAutosize && this._bInvalid) {
-			this.font.update();
+		this.font.update();
+		if (this._bAutosize && this._bInvalid && !this._bWordWrap) {
 			var oMetrics = this.getSurface().measureText(this._sCaption);
 			this.setSize(oMetrics.width, this.font._nFontSize);
 		}
+		this.render();
+		this.invalidate();
+		this.render();
 	},
+
 
 	/**
 	 * Définition du flag autosize quand ce flag est actif, le control prend la
@@ -59,6 +83,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		// Redimensionnement du texte
 		oSurface.clearRect(0, 0, this.getWidth(), this.getHeight());
 		if (this._bWordWrap){
+			var aRenderLines = [];
 			this.font.update();
 			var aWords;
 			var sLine = '', sWord, x = 0, y = 0;
@@ -74,10 +99,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 					if (oMetrics.width >= this.getWidth()) {
 						// flush
 						x = 0;
-						if (this.font._bOutline) {
-							oSurface.strokeText(sLine, x, y);
-						}		
-						oSurface.fillText(sLine, x, y);
+						aRenderLines.push(sLine);
 						y += this.font._nFontSize + this._nLineHeight;
 						sLine = sWord;
 					} else {
@@ -86,14 +108,21 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 					}
 				}
 				x = 0;
-				if (this.font._bOutline) {
-					oSurface.strokeText(sLine, x, y);
-				}		
-				oSurface.fillText(sLine, x, y);
+				aRenderLines.push(sLine);
 				y += this.font._nFontSize + this._nLineHeight;
 				sLine = '';
 				this._yLastWritten = y;
 			}
+			if (this._bAutosize) {
+				this.setSize(this.getWidth(), y + this.font._nFontSize);
+			}
+			oSurface.fillStyle= '#FFF';
+			aRenderLines.forEach((function(s, i) {
+				if (this.font._bOutline) {
+					oSurface.strokeText(s, 0, i * (this.font._nFontSize + this._nLineHeight));
+				}
+				oSurface.fillText(s, 0, i * (this.font._nFontSize + this._nLineHeight));
+			}).bind(this));
 		} else {
 			if (this._bAutosize) {
 				this.font.update();

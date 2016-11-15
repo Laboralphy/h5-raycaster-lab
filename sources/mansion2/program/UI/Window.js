@@ -30,10 +30,10 @@ O2.extendClass('UI.Window', H5UI.Box, {
 		this.setColor(UI.clWINDOW, UI.clWINDOW);
 		this.setBorder(4, UI.clWINDOW_BORDER, UI.clWINDOW_BORDER);
 		var oCaption = this.linkControl(new H5UI.Text());
-		oCaption.font.setFont('monospace');
-		oCaption.font.setStyle('bold');
-		oCaption.font.setSize(12);
-		oCaption.font.setColor('#FFF', '#000');
+		oCaption.setFontFace('monospace');
+		oCaption.setFontStyle('bold');
+		oCaption.setFontSize(UI.FONT_SIZE);
+		oCaption.setFontColor('#FFF', '#000');
 		oCaption.setCaption(oParams.caption);
 		oCaption.moveTo(8, 8);
 		this._oCaptionBar = oCaption;
@@ -58,21 +58,22 @@ O2.extendClass('UI.Window', H5UI.Box, {
 	 * Courrament utilisé pour afficher les touche de raccourci
 	 * @param s string nouveau contenu du titre
 	 */
+	 /*
 	setStatusCaption: function(s) {
 		if (this._oStatusBar === null) {
 			var oMsg = this.linkControl(new H5UI.Text());
 			oMsg._bWordWrap = false;
 			oMsg._bAutosize = true;
-			oMsg.font.setSize(this._nStatusBarHeight * this._fStatusBarFontFactor | 0);
-			oMsg.font.setFont('arial');
-			oMsg.font.setColor('#333333');
+			oMsg.setFontSize(this._nStatusBarHeight * this._fStatusBarFontFactor | 0);
+			oMsg.setFontFace('arial');
+			oMsg.setFontColor('#333333');
 			this._oStatusBar = oMsg;
 			this._oStatusBar.moveTo(8, this.getHeight() - this._nStatusBarHeight);
 		}
 		this._oStatusBar.setCaption(s);
 		this.invalidate();
 		this._oStatusBar.render();
-	},
+	},*/
 	
 	/** 
 	 * Ajoute une bar de command en bas de la fenetre
@@ -103,7 +104,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			b = this.linkControl(new H5UI.Button());
 			b.setCaption(sCaption);
 			b.setSize(this._nButtonWidth, this._nStatusBarHeight);
-			b.oText.font.setSize(10);
+			b.oText.setFontSize(UI.FONT_SIZE * 0.85 | 0);
 			b.moveTo(x + this._nButtonPadding, this.getHeight() - this._nStatusBarHeight - this._nButtonPadding);
 			aColor = aColors[sColor];
 			b.setColor(aColor[0], aColor[1]);

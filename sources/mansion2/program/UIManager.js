@@ -86,9 +86,11 @@ O2.createClass('MANSION.UIManager', {
 		}
 	},
 	
-	commandFunction: function(sCommand) {
+	commandFunction: function(sCommand, oExtraParams) {
+		oExtraParams = oExtraParams || {};
+		oExtraParams.command = sCommand;
 		return (function(oEvent) {
-			this.trigger('command', {command: sCommand});
+			this.trigger('command', oExtraParams);
 			oEvent.stop = true;
 		}).bind(this);
 	}

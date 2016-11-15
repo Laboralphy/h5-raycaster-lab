@@ -5,7 +5,7 @@ O2.extendClass('UI.MainMenu', UI.Window, {
 	__construct: function(ui) {
 		__inherited({caption: MANSION.STRINGS_DATA.UI.menu_title});
 		this.setSize(128, 128);
-		this.setBackgroundImage('resources/ui/windows/menu-main.png');
+		this.setBackgroundImage('resources/ui/windows/bg-mainmenu.png');
 		var b;
 
 		var bw = 96, bh = 16, bs = 24, bx = 16, by = 40;
