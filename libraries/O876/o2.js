@@ -55,6 +55,19 @@ Function.prototype.createClass = function(pPrototype) {
 	}
 };
 
+O2._superizeFunction = function(f, fParent) {
+	var fNew;
+	var s = 'fNew = function() {\n' +
+		'var __inherited = (function() {\n' +
+		'	return fParent.apply(this, arguments);\n' +
+		'}).bind(this);\n' +
+		'var __function = ' +
+		f.toString() + ';' +
+		'\nreturn __function.apply(this, arguments);\n' +
+	'}\n';
+	return eval(s);
+};
+
 /** Mécanisme d'extention de classe.
  * Cette fonction accepte un ou deux paramètres
  * Appel avec 1 paramètre :
@@ -65,21 +78,26 @@ Function.prototype.createClass = function(pPrototype) {
  * @return Instance de lui-même.
  */
 Function.prototype.extendPrototype = function(aDefinition) {
-	var iProp = '', f, fInherited;
+	var iProp = '', f, fInherited, f2;
 	if (aDefinition instanceof Function) {
 		aDefinition = aDefinition.prototype;
 	}
 	for (iProp in aDefinition) {
 		f = aDefinition[iProp];
-		if (iProp in this.prototype	&& (this.prototype[iProp] instanceof Function)) {
+		if (iProp in this.prototype && (this.prototype[iProp] instanceof Function)) {
 			// Sauvegarde de la méthode en cours : elle pourrait être héritée
 			fInherited = this.prototype[iProp];
 			// La méthode en cour est déja présente dans la super classe
 			if (f instanceof Function) {
 				// completion des __inherited
-				eval('f = ' + __inheritedThisMacroString(f.toString()));
-				this.prototype[iProp] = f;
-				this.prototype[iProp].__inherited = fInherited;
+				// Ancien code
+				//eval('f = ' + __inheritedThisMacroString(f.toString()));
+				//this.prototype[iProp] = f;
+				//this.prototype[iProp].__inherited = fInherited;
+
+				// Nouveau code
+				this.prototype[iProp] = O2._superizeFunction(f, fInherited);
+
 			} else {
 				// On écrase probablement une methode par une propriété : Erreur
 				throw new Error(
