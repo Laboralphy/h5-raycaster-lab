@@ -141,6 +141,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						{id: 10, title: 'Once upon a time'},
 						{id: 11, title: 'W.T.F.'},
 					]);
+					ui.displayWidget('notes').displayList();
 					break;
 					
 				case 'note_back':
@@ -152,14 +153,27 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
+					console.log('reading note', oEvent);
 					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
 						{
 							type: 'text',
 							content: "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so."
 						},
 						{
+							type: 'image',
+							src: 'resources/ui/documents/portrait-witch.png',
+						},
+						{
 							type: 'text',
 							content: "If you don't share your database connection (session) between multiple threads for concurrent inserts, this is safe. If multiple threads insert on the same connection, this is unsafe, i.e. you might get either ID or a completely invalid ID."
+						},
+						{
+							type: 'image',
+							src: 'resources/ui/documents/portrait-warlock.png',
+						},
+						{
+							type: 'text',
+							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses"
 						},
 					]);
 					break;

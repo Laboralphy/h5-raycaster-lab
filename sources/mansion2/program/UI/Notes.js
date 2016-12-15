@@ -4,51 +4,69 @@ O2.extendClass('UI.Notes', UI.Window, {
 	_oPad: null,
 	_oText: null,
 	_oBG: null,
+	_oScrollBar: null,
 	_yCursor: 0,
 
+	_oDisplayed: null,
+
 	BUTTON_HEIGHT: 16,
-	
+	START_Y: 32, // debut de la position de la liste et du pad
+	SCROLLBAR_WIDTH: 4, // Epaisseur barre de scroll
+	PADDING: 8, // Espacement bordure - composant
+
 	__construct: function(ui) {
 		__inherited({caption: MANSION.STRINGS_DATA.UI.notes_title});
 		this.setSize(256, 192);
 		this.setBackgroundImage('resources/ui/windows/bg-notes.png');
 
+
+
+		// Background of the pad
 		var oBG = this.linkControl(new H5UI.Box());
-		oBG.setSize(240, 130 - (this.BUTTON_HEIGHT >> 1));
-		oBG.moveTo(8, 31);
+		var BG_HEIGHT = 130 - (this.BUTTON_HEIGHT >> 1);
+		oBG.setSize(240, BG_HEIGHT);
+		oBG.moveTo(this.PADDING, this.START_Y - 1);
 		oBG.setColor('#000');
 		this.oBG = oBG;
 
+		// List of articles
+		// Clicking on an item of this list will
+		// Display the PAD and the text content
 		var oList = this.linkControl(new H5UI.ScrollBox());
-		oList.setSize(oBG.getWidth(), oBG.getHeight() - 2);
-		oList.moveTo(8, 32);
+		oList.setSize(oBG.getWidth(), BG_HEIGHT - 2);
+		oList.moveTo(this.PADDING, this.START_Y);
 		this._oList = oList;
 		oList.on('mousewheelup', (function(oEvent) {
 			oList.scrollTo(oList.getScrollX(), oList.getScrollY() - (oEvent.button / 10 | 0));
+			oScrollBar.setPosition(oList.getScrollY());
 		}).bind(this));
 		oList.on('mousewheeldown', (function(oEvent) {
 			oList.scrollTo(oList.getScrollX(), oList.getScrollY() - (oEvent.button / 10 | 0));
+			oScrollBar.setPosition(oList.getScrollY());
 		}).bind(this));
+
+		// The scrollbar (for both list and pad)
+		var oScrollBar = this.linkControl(new H5UI.ScrollBar());
+		oScrollBar.setSize(this.SCROLLBAR_WIDTH, BG_HEIGHT - 2);
+		oScrollBar.moveTo(this.getWidth() - this.PADDING - this.SCROLLBAR_WIDTH, this.START_Y);
+		oScrollBar.setOrientation(1);
+		this._oScrollBar = oScrollBar;
+		oScrollBar.show();
 		
+		// Pad : the zone on where the text is written
 		var oPad = this.linkControl(new H5UI.ScrollBox());
-		oPad.setSize(oBG.getWidth(), oBG.getHeight() - 2);
-		oPad.moveTo(8, 32);
+		oPad.setSize(oBG.getWidth(), BG_HEIGHT - 2);
+		oPad.moveTo(this.PADDING, this.START_Y);
 		oPad.hide();
 		this._oPad = oPad;
 		oPad.on('mousewheelup', (function(oEvent) {
 			oPad.scrollTo(oPad.getScrollX(), oPad.getScrollY() - (oEvent.button / 10 | 0));
+			oScrollBar.setPosition(oPad.getScrollY());
 		}).bind(this));
 		oPad.on('mousewheeldown', (function(oEvent) {
 			oPad.scrollTo(oPad.getScrollX(), oPad.getScrollY() - (oEvent.button / 10 | 0));
+			oScrollBar.setPosition(oPad.getScrollY());
 		}).bind(this));
-
-		var oText = oPad.linkControl(new H5UI.Text());
-		oText._set('_nLineHeight', 4);
-		oText.moveTo(2, 2);
-		oText.setFontColor('#CCC');
-		oText.setFontFace('serif');
-		oText.setFontSize(12);
-		this._oText = oText;
 
 
 		this.setCommands([
@@ -56,6 +74,12 @@ O2.extendClass('UI.Notes', UI.Window, {
 		]);
 	},
 	
+	/**
+	 * This will create a text item
+	 * Please provide the text content.
+	 * The text object will be appended to the PAD
+	 * @param sText string : text content
+	 */
 	createTextItem: function(sText) {
 		var oText = this._oPad.linkControl(new H5UI.Text());
 		oText._set('_nLineHeight', 4);
@@ -65,9 +89,17 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
-		oText.setSize(this.oBG.getWidth() - 4, 0);
+		oText.setSize(this.oBG.getWidth() - 8, 0);
 		oText.setCaption(sText);
 		this._yCursor += oText.getHeight();
+	},
+
+	createImageItem: function(oSrc) {
+		var oImg = this._oPad.linkControl(new H5UI.Image());
+		oImg.setSource(oSrc);
+		oImg.render();
+		oImg.moveTo((this.oBG.getWidth() - oImg.getWidth()) >> 1, 2 + this._yCursor);
+		this._yCursor += oImg.getHeight();
 	},
 
 	/**
@@ -78,21 +110,59 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this.setTitleCaption(sTitle);
 		this._oList.hide();
 		this._oPad.clear();
-		aItems.forEach(function(oItem) {
-			switch (oItem.type) {
-				case 'text':
-					this.createTextItem(oItem.content);
-					break;
-			}
-		}, this);
-		this._oPad.show();
+		this._yCursor = 0;
+		var oLoader = new O876_Raycaster.ImageListLoader();
+		aItems
+			.filter(i => i.type === 'image')
+			.forEach(function(i) {
+				oLoader.addImage(i.src);
+			});
+		oLoader.on('load', (function(aImgList) {
+			aItems.forEach(function(oItem) {
+				switch (oItem.type) {
+					case 'text':
+						this.createTextItem(oItem.content);
+						break;
+
+					case 'image':
+						// les image de aImgList, sont rangées dans le meme ordre
+						// que l'objet de définiton initial : aItems
+						this.createImageItem(aImgList.shift());
+						break;
+				}
+			}, this);
+			this._oPad.show();
+			this.setScrollBarOwner(this._oPad);
+		}).bind(this));
+		oLoader.loadAll();
 	},
 	
 	displayList: function() {
 		this.setTitleCaption(MANSION.STRINGS_DATA.UI.notes_title);
 		this._oPad.hide();
-		this._oList.show()
+		this._oList.show();
+		this.setScrollBarOwner(this._oList);
 	},
+
+	/**
+	 * Définirr le composant associé à la scrollbar
+	 */
+	setScrollBarOwner: function(oOwner) {
+		this._oDisplayed = oOwner;
+		oOwner.getContainer().render();
+		oOwner.render();
+	},
+
+	renderSelf: function() {
+		var oOwner = this._oDisplayed;
+		if (oOwner) {
+			var sb = this._oScrollBar;
+			sb.setStepCount(oOwner.getContainer().getHeight());
+			sb.setLength(oOwner.getHeight());
+			sb.setPosition(oOwner.getScrollY());
+		}
+	},
+
 
 	/**
 	 * aTitles in an array of plain objets.

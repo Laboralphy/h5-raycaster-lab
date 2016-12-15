@@ -4,8 +4,9 @@
  */
 O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	_sClass : 'ScrollBar',
-	_sColorBar : '#999999',
-	_sColorBackground : '#CCCCCC',
+	_sColorBar : '#888',
+	_sColorBarBorder : '#222',
+	_sColorBackground : '#CCC',
 
 	_nStepCount : 100, // zone couverte par la scrollbar
 	_nPosition : 0, // Position de la scrollbar
@@ -75,7 +76,7 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	 * Modifie la longueur logique de la scrollbar Par exemple si la scrollbar
 	 * est associé à une zone de texte de 30 lignes affichable, et que cette
 	 * zone contient un fichier texte de 500 lignes et qu'on souhaire voir les
-	 * lignes 100 à 129. on fait : sb.setLineCount(500); sb.setLength(30);
+	 * lignes 100 à 129. on fait : sb.setStepCount(500); sb.setLength(30);
 	 * sb.setPosition(100);
 	 */
 	setLength : function(n) {
@@ -86,8 +87,7 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	 * Défini une nouvelle position en pixel
 	 */
 	setPixelPosition : function(y) {
-		this.setPosition(y * this._nStepCount
-				/ this.getAxisValue(this.getWidth(), this.getHeight()) | 0);
+		this.setPosition(y * this._nStepCount / this.getAxisValue(this.getWidth(), this.getHeight()) | 0);
 	},
 
 	// MD Déterminer la zone cliquée
@@ -148,19 +148,20 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 		var s = this.getSurface();
 		s.fillStyle = this._sColorBackground;
 		s.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-		this.ySize = this._nLength
-				* this.getAxisValue(this.getWidth(), this.getHeight())
-				/ this._nStepCount | 0;
+		this.ySize = this._nLength *
+				this.getAxisValue(this.getWidth(), this.getHeight()) /
+				this._nStepCount | 0;
 		this.yRange = this.getAxisValue(this.getWidth(), this.getHeight())
 				- this.ySize;
-		this.yPos = this._nPosition * this.yRange
-				/ (this._nStepCount - this._nLength) | 0;
+		this.yPos = this._nPosition * this.yRange / (this._nStepCount - this._nLength) | 0;
 		s.fillStyle = this._sColorBar;
+		s.strokeStyle = this._sColorBarBorder;
 		if (this._bVertical) {
-			s.fillRect(2, this.yPos, this.getWidth() - 4, this.ySize);
+			s.fillRect(0, this.yPos, this.getWidth(), this.ySize);
+			s.strokeRect(0, this.yPos, this.getWidth(), this.ySize);
 		} else {
-			s.fillRect(this.yPos, 2, this.ySize, this.getHeight() - 4);
+			s.fillRect(this.yPos, 0, this.ySize, this.getHeight());
+			s.strokeRect(0, this.yPos, this.getWidth(), this.ySize);
 		}
 	}
 });

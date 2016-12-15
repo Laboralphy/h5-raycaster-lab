@@ -9,10 +9,14 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 	},
 	
 	setSource: function(sSrc) {
-		if (!this._oTexture) {
-			this._oTexture = new Image();
+		if (sSrc instanceof HTMLImageElement) {
+			this._oTexture = sSrc;
+		} else {
+			if (!this._oTexture) {
+				this._oTexture = new Image();
+			}
+			this._oTexture.src = sSrc;
 		}
-		this._oTexture.src = sSrc;
 		if (this._oTexture.complete) {
 			this.invalidate();
 		} else {
