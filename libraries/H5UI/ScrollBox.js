@@ -11,6 +11,12 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	_oContainer : null,
 	_xScroll : 0,
 	_yScroll : 0,
+	_oScrollBars: null,
+
+
+	addScrollBars: function(sType) {
+		
+	},
 
 	/**
 	 * Methode modifiée qui linke le controle transmis en paramètre directement

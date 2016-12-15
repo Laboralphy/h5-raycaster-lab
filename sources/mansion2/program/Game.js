@@ -85,7 +85,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Initializes audio system
 	 */
 	initAudio: function() {
-		a = new O876.SoundSystem();
+		var a = new O876.SoundSystem();
 		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
@@ -152,7 +152,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					ui.displayWidget('notes').displayText("Do we need Redux ?", "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so.");
+					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
+						{
+							type: 'text',
+							content: "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so."
+						},
+						{
+							type: 'text',
+							content: "If you don't share your database connection (session) between multiple threads for concurrent inserts, this is safe. If multiple threads insert on the same connection, this is unsafe, i.e. you might get either ID or a completely invalid ID."
+						},
+					]);
 					break;
 
 				default: 

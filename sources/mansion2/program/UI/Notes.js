@@ -3,6 +3,8 @@ O2.extendClass('UI.Notes', UI.Window, {
 	_oList: null,
 	_oPad: null,
 	_oText: null,
+	_oBG: null,
+	_yCursor: 0,
 
 	BUTTON_HEIGHT: 16,
 	
@@ -11,10 +13,11 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this.setSize(256, 192);
 		this.setBackgroundImage('resources/ui/windows/bg-notes.png');
 
-		oBG = this.linkControl(new H5UI.Box());
+		var oBG = this.linkControl(new H5UI.Box());
 		oBG.setSize(240, 130 - (this.BUTTON_HEIGHT >> 1));
 		oBG.moveTo(8, 31);
 		oBG.setColor('#000');
+		this.oBG = oBG;
 
 		var oList = this.linkControl(new H5UI.ScrollBox());
 		oList.setSize(oBG.getWidth(), oBG.getHeight() - 2);
@@ -52,14 +55,36 @@ O2.extendClass('UI.Notes', UI.Window, {
 			[MANSION.STRINGS_DATA.UI.back, ui.commandFunction('note_back'), 0]
 		]);
 	},
+	
+	createTextItem: function(sText) {
+		var oText = this._oPad.linkControl(new H5UI.Text());
+		oText._set('_nLineHeight', 4);
+		oText.moveTo(2, 2 + this._yCursor);
+		oText.setFontColor('#CCC');
+		oText.setFontFace('serif');
+		oText.setFontSize(12);
+		oText.setWordWrap(true);
+		oText.setAutosize(true);
+		oText.setSize(this.oBG.getWidth() - 4, 0);
+		oText.setCaption(sText);
+		this._yCursor += oText.getHeight();
+	},
 
-	displayText: function(sTitle, sText) {
+	/**
+	 * Display document
+	 * { type: text | image
+	 */
+	displayDocument: function(sTitle, aItems) {
 		this.setTitleCaption(sTitle);
 		this._oList.hide();
-		this._oText.setWordWrap(true);
-		this._oText.setAutosize(true);
-		this._oText.setSize(oBG.getWidth() - 4, 0);
-		this._oText.setCaption(sText);
+		this._oPad.clear();
+		aItems.forEach(function(oItem) {
+			switch (oItem.type) {
+				case 'text':
+					this.createTextItem(oItem.content);
+					break;
+			}
+		}, this);
 		this._oPad.show();
 	},
 	
