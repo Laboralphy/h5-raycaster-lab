@@ -24,7 +24,7 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 
 	setCaption : function(sCaption) {
 		this.oText.setCaption(sCaption);
-		this.realignControls();
+		this._realignControls();
 	},
 
 	getCaption : function() {

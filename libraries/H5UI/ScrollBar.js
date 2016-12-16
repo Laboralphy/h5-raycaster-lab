@@ -20,8 +20,14 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	bDragging : false,
 	yDragDock : 0,
 	yDragging : 0,
+	_bDragHandler: true,
 
 	_bVertical : false,
+
+	__construct: function() {
+		__inherited();
+		this.registerMouseEventHandlers();
+	},
 
 	getAxisValue : function(x, y) {
 		return this._bVertical ? y : x;
@@ -90,12 +96,20 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 		this.setPosition(y * this._nStepCount / this.getAxisValue(this.getWidth(), this.getHeight()) | 0);
 	},
 
+	registerMouseEventHandlers: function() {
+		this.on('mousedown', this.onMouseDown.bind(this));
+		this.on('mouseup', this.onMouseUp.bind(this));
+	},
+
 	// MD Déterminer la zone cliquée
 	// Top : Page Up
 	// Bottom Page Down
 	// Mid : Initier drag du pad
 
-	onMouseDown : function(x, y, b) {
+	onMouseDown : function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
 		y = this.getAxisValue(x, y);
 		if (y < this.yPos) {
 			// Page Up
@@ -112,6 +126,16 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 			this.dragStart(x, y, b);
 		}
 		this.invalidate();
+	},
+
+	onMouseUp : function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
+		if (this.bDragging) {
+			this.bDragging = false;
+			this.stopDrag();
+		}
 	},
 
 	onStartDragging : function(x, y, b) {
@@ -131,12 +155,6 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	onEndDragging : function(x, y, b) {
 	},
 
-	onMouseUp : function(x, y, b) {
-		if (this.bDragging) {
-			this.bDragging = false;
-			this.stopDrag();
-		}
-	},
 
 	doScroll : function() {
 		if ('onScroll' in this) {

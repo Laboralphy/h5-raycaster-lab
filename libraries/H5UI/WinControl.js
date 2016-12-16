@@ -51,7 +51,7 @@ O2.createClass('H5UI.WinControl', {
 			center : []
 		};
 		this._aHideControls = [];
-		this.buildSurface();
+		this._buildSurface();
 		this.invalidate();
 	},
 
@@ -71,33 +71,24 @@ O2.createClass('H5UI.WinControl', {
 		H5UI.data.destroyedCanvases++;
 	},
 
-	/**
-	 *  Détruit tous les controles enfant
-	 */
-	clear : function() {
-		while (this.hasControls()) {
-			this.unlinkControl(0);
-		}
-	},
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
 
 	/**
 	 * Methode de construction du canvas
 	 * 
 	 */
-	buildSurface : function() {
+	_buildSurface : function() {
 		this._oCanvas = H5UI.getCanvas();
 		H5UI.data.buildCanvases++;
 		this._oContext = this._oCanvas.getContext('2d');
 	},
-
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
 
 	/**
 	 * Fonction protégée de modification de propriété conduisant à une
@@ -122,7 +113,7 @@ O2.createClass('H5UI.WinControl', {
 	 * l'alignement. Cete méthode à pour préfixe "moveTo" Un réalignement
 	 * intervient lorsque le controle parent change de place ou de taille.
 	 */
-	realignControls : function() {
+	_realignControls : function() {
 		var n, a, sDokoMethod;
 		for ( var sDoko in this._aAlignedControls) {
 			sDokoMethod = 'moveTo' + sDoko.substr(0, 1).toUpperCase() + sDoko.substr(1).toLowerCase();
@@ -143,11 +134,11 @@ O2.createClass('H5UI.WinControl', {
 	 * @param nDoko
 	 *            Où doit etre aligner le controle ('center')
 	 */
-	registerAlignedControl : function(oControl, sDoko) {
+	_registerAlignedControl : function(oControl, sDoko) {
 		oControl.render();
-		this.unregisterAlignedControl(oControl);
-		this.pushArrayItem(this._aAlignedControls[sDoko], oControl);
-		this.realignControls();
+		this._unregisterAlignedControl(oControl);
+		this._pushArrayItem(this._aAlignedControls[sDoko], oControl);
+		this._realignControls();
 	},
 
 	/**
@@ -156,9 +147,9 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            control, dont il faut supprimer l'alignement
 	 */
-	unregisterAlignedControl : function(oControl) {
+	_unregisterAlignedControl : function(oControl) {
 		for ( var sDoko in this._aAlignedControls) {
-			this.removeArrayItem(this._aAlignedControls[sDoko], oControl);
+			this._removeArrayItem(this._aAlignedControls[sDoko], oControl);
 		}
 	},
 
@@ -175,7 +166,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @param sIndex
 	 *            optionnel, clé de l'index à mettre à jour
 	 */
-	removeArrayItem : function(oArray, xItem, sIndex) {
+	_removeArrayItem : function(oArray, xItem, sIndex) {
 		var nItem;
 		if (typeof xItem == 'object') {
 			nItem = oArray.indexOf(xItem);
@@ -207,7 +198,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            optionnel, clé de l'index à mettre à jour
 	 * @return item
 	 */
-	pushArrayItem : function(oArray, oItem, sIndex) {
+	_pushArrayItem : function(oArray, oItem, sIndex) {
 		var nLen, nItem = oArray.indexOf(oItem);
 		if (nItem < 0) {
 			nLen = oArray.length;
@@ -228,8 +219,8 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            control qui se cache
 	 */
-	hideControl : function(oControl) {
-		this.pushArrayItem(this._aHideControls, oControl);
+	_hideControl : function(oControl) {
+		this._pushArrayItem(this._aHideControls, oControl);
 	},
 
 	/**
@@ -238,9 +229,141 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            controle à rendre visible
 	 */
-	showControl : function(oControl) {
-		this.removeArrayItem(this._aHideControls, oControl);
+	_showControl : function(oControl) {
+		this._removeArrayItem(this._aHideControls, oControl);
 	},
+
+
+	/**
+	 * Transforme un objet d'arguments en tableau (spécificité webkit)
+	 * 
+	 * @param a
+	 *            args
+	 * @return array
+	 */
+	_argObjectToArray : function(a) {
+		var i = '';
+		var aArgs = [];
+		if ('length' in a) {
+			for (i = 0; i < a.length; i++) {
+				aArgs.push(a[i]);
+			}
+			return aArgs;
+		}
+		for (i in a) {
+			aArgs.push(a[i]);
+		}
+		return aArgs;
+	},
+
+	/**
+	 * Appelle un method du parent
+	 * 
+	 * @param sMethod
+	 *            nom de la methode à appeler
+	 * @param autre
+	 *            method
+	 * @return retourn de la methode
+	 */
+	_callParentMethod : function() {
+		if (this._oParent === null) {
+			return null;
+		}
+		var aArgs = this._argObjectToArray(arguments);
+		var sMethod = aArgs.shift();
+		if (sMethod in this._oParent) {
+			return this._oParent[sMethod].apply(this._oParent, aArgs);
+		}
+	},
+
+	/**
+	 * Appelle une methode si celle ci existe Utilisé lors d'appel d'évènement
+	 * facultativement défini
+	 */
+	_callEvent : function() {
+		var aArgs = this._argObjectToArray(arguments);
+		var sMethod = aArgs.shift();
+		if (sMethod in this) {
+			return this[sMethod].apply(this, aArgs);
+		}
+	},
+
+	/**
+	 * Ajoute le control à la liste des controle invalide pour une optimisation
+	 * du rendu
+	 * 
+	 * @param o
+	 *            Controle à invalider
+	 */
+	_invalidateControl : function(o) {
+		if (this._aInvalidControls.indexOf(o) < 0) {
+			this._aInvalidControls.push(o);
+		}
+	},
+
+	/**
+	 * Dessine les controle enfant
+	 */
+	_renderControls : function() {
+		var o;
+		while (this._aInvalidControls.length) {
+			o = this._aInvalidControls.shift();
+			if (o._nHandle) {
+				o.render();
+			}
+		}
+	},
+
+	/**
+	 * Efface les controles caché de la surface
+	 */
+	_hideControls : function() {
+		var o;
+		while (this._aHideControls.length) {
+			o = this._aHideControls.shift();
+			this._oContext.clearRect(o._x, o._y, o.getWidth(), o.getHeight());
+		}
+	},
+
+
+
+
+
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
+
+	renderSelf : function() {
+	},
+
+	needRender : function() {
+		return this._bVisible && (this._nWidth * this._nHeight) !== 0;
+	},
+
+	/**
+	 * Redessine le contenu graphique du controle fenêtré l'extérieur de ce
+	 * rectangle est normalment invisible et n'a aps besoin d'etre traité
+	 */
+	render : function() {
+		var o;
+		if (this._bInvalid) {
+			this._hideControls();
+			this.renderSelf();
+			// repeindre les controle enfant
+			this._renderControls();
+			for (var i = 0; i < this._aControls.length; i++) {
+				o = this._aControls[i];
+				if (o.needRender()) {
+					this._oContext.drawImage(o._oCanvas, o._x, o._y);
+				}
+			}
+			this._bInvalid = false;
+		}
+	},
+
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
 
 	/**
 	 * Gestion des évènement souris (click, mousein, mouseout, mousemove,
@@ -305,12 +428,12 @@ O2.createClass('H5UI.WinControl', {
 	doDragDropEvent : function(sEvent, x, y, nButton) {
 		var oPos = this.getControlRelativePosition(this._oDraggedControl);
 		switch (sEvent) {
-		case 'MouseMove':
-			this._oDraggedControl.callEvent('onDragging', x - oPos.x, y - oPos.y, nButton);
+		case 'mousemove':
+			this._oDraggedControl._callEvent('onDragging', x - oPos.x, y - oPos.y, nButton);
 			break;
 
-		case 'MouseUp': // fin du drag n drop
-			this._oDraggedControl.callEvent('onEndDragging', x - oPos.x, y - oPos.y, nButton);
+		case 'mouseup': // fin du drag n drop
+			this._oDraggedControl._callEvent('onEndDragging', x - oPos.x, y - oPos.y, nButton);
 			this._oDraggedControl = null;
 			break;
 		}
@@ -323,130 +446,12 @@ O2.createClass('H5UI.WinControl', {
 	startDragObject : function(oTarget, x, y, b) {
 		if (this._bDragHandler) {
 			this._oDraggedControl = oTarget;
-			oTarget.callEvent('onStartDragging', x, y, b);
+			oTarget._callEvent('onStartDragging', x, y, b);
 		} else {
-			this.callParentMethod('startDragObject', oTarget, x, y, b);
+			this._callParentMethod('startDragObject', oTarget, x, y, b);
 		}
 	},
 
-	/**
-	 * Transforme un objet d'arguments en tableau (spécificité webkit)
-	 * 
-	 * @param a
-	 *            args
-	 * @return array
-	 */
-	argObjectToArray : function(a) {
-		var i = '';
-		var aArgs = [];
-		if ('length' in a) {
-			for (i = 0; i < a.length; i++) {
-				aArgs.push(a[i]);
-			}
-			return aArgs;
-		}
-		for (i in a) {
-			aArgs.push(a[i]);
-		}
-		return aArgs;
-	},
-
-	/**
-	 * Appelle un method du parent
-	 * 
-	 * @param sMethod
-	 *            nom de la methode à appeler
-	 * @param autre
-	 *            method
-	 * @return retourn de la methode
-	 */
-	callParentMethod : function() {
-		if (this._oParent === null) {
-			return null;
-		}
-		var aArgs = this.argObjectToArray(arguments);
-		var sMethod = aArgs.shift();
-		if (sMethod in this._oParent) {
-			return this._oParent[sMethod].apply(this._oParent, aArgs);
-		}
-	},
-
-	/**
-	 * Appelle une methode si celle ci existe Utilisé lors d'appel d'évènement
-	 * facultativement défini
-	 */
-	callEvent : function() {
-		var aArgs = this.argObjectToArray(arguments);
-		var sMethod = aArgs.shift();
-		if (sMethod in this) {
-			return this[sMethod].apply(this, aArgs);
-		}
-	},
-
-	/**
-	 * Ajoute le control à la liste des controle invalide pour une optimisation
-	 * du rendu
-	 * 
-	 * @param o
-	 *            Controle à invalider
-	 */
-	invalidateControl : function(o) {
-		if (this._aInvalidControls.indexOf(o) < 0) {
-			this._aInvalidControls.push(o);
-		}
-	},
-
-	/**
-	 * Dessine les controle enfant
-	 */
-	renderControls : function() {
-		var o;
-		while (this._aInvalidControls.length) {
-			o = this._aInvalidControls.shift();
-			if (o._nHandle) {
-				o.render();
-			}
-		}
-	},
-
-	/**
-	 * Efface les controles caché de la surface
-	 */
-	hideControls : function() {
-		var o;
-		while (this._aHideControls.length) {
-			o = this._aHideControls.shift();
-			this._oContext.clearRect(o._x, o._y, o.getWidth(), o.getHeight());
-		}
-	},
-
-	renderSelf : function() {
-	},
-
-	needRender : function() {
-		return this._bVisible && (this._nWidth * this._nHeight) !== 0;
-	},
-
-	/**
-	 * Redessine le contenu graphique du controle fenêtré l'extérieur de ce
-	 * rectangle est normalment invisible et n'a aps besoin d'etre traité
-	 */
-	render : function() {
-		var o;
-		if (this._bInvalid) {
-			this.hideControls();
-			this.renderSelf();
-			// repeindre les controle enfant
-			this.renderControls();
-			for (var i = 0; i < this._aControls.length; i++) {
-				o = this._aControls[i];
-				if (o.needRender()) {
-					this._oContext.drawImage(o._oCanvas, o._x, o._y);
-				}
-			}
-			this._bInvalid = false;
-		}
-	},
 
 	/** ************* Méthodes publiques ************* */
 	/** ************* Méthodes publiques ************* */
@@ -534,7 +539,7 @@ O2.createClass('H5UI.WinControl', {
 	 * fait appel au top du client
 	 */
 	top : function() {
-		this.callParentMethod('setTopControl', this);
+		this._callParentMethod('setTopControl', this);
 	},
 
 	/**
@@ -549,12 +554,12 @@ O2.createClass('H5UI.WinControl', {
 			throw new Error('out of bounds: ' + n.toString() + ' - range is 0 to ' + this._aControls.length);
 		}
 		oControl = this._aControls[n];
-		this.removeArrayItem(this._aControls, n, '_nIndex');
-		this.removeArrayItem(this._aInvalidControls, oControl);
+		this._removeArrayItem(this._aControls, n, '_nIndex');
+		this._removeArrayItem(this._aInvalidControls, oControl);
 		for ( var sAlign in this._aAlignedControls) {
-			this.removeArrayItem(this._aAlignedControls[sAlign], oControl);
+			this._removeArrayItem(this._aAlignedControls[sAlign], oControl);
 		}
-		this.removeArrayItem(this._aHideControls, oControl);
+		this._removeArrayItem(this._aHideControls, oControl);
 		/*
 		 * if (n == (this._aControls.length - 1)) { oControl =
 		 * this._aControls.pop(); } else { oControl = this._aControls[n];
@@ -563,6 +568,16 @@ O2.createClass('H5UI.WinControl', {
 		 */
 		oControl.__destruct();
 		this.invalidate();
+	},
+
+
+	/**
+	 *  Détruit tous les controles enfant
+	 */
+	clear : function() {
+		while (this.hasControls()) {
+			this.unlinkControl(0);
+		}
 	},
 
 	/**
@@ -610,9 +625,9 @@ O2.createClass('H5UI.WinControl', {
 	 */
 	align : function(sDoko) {
 		if (sDoko === undefined) {
-			this.callParentMethod('unregisterAlignedControl', this);
+			this._callParentMethod('_unregisterAlignedControl', this);
 		} else {
-			this.callParentMethod('registerAlignedControl', this, sDoko);
+			this._callParentMethod('_registerAlignedControl', this, sDoko);
 		}
 	},
 
@@ -628,7 +643,7 @@ O2.createClass('H5UI.WinControl', {
 		if (w != this.getWidth() || h != this.getHeight()) {
 			this._nWidth = this._oCanvas.width = w;
 			this._nHeight = this._oCanvas.height = h;
-			this.realignControls();
+			this._realignControls();
 			this.invalidate();
 		}
 	},
@@ -643,7 +658,7 @@ O2.createClass('H5UI.WinControl', {
 		if (x != this._x || y != this._y) {
 			this._x = x;
 			this._y = y;
-			this.realignControls();
+			this._realignControls();
 			this.invalidate();
 		}
 	},
@@ -667,7 +682,7 @@ O2.createClass('H5UI.WinControl', {
 	hide : function() {
 		if (this._bVisible) {
 			this._bVisible = false;
-			this.callParentMethod('hideControl', this);
+			this._callParentMethod('_hideControl', this);
 			this.invalidate();
 		}
 	},
@@ -704,7 +719,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @return Object HTMLCanvasContext2d
 	 */
 	getParentSurface : function() {
-		return this.callParentMethod('getSurface');
+		return this._callParentMethod('getSurface');
 	},
 
 	/**
@@ -739,7 +754,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            bouttons de la souris enfoncé
 	 */
 	dragStart : function(x, y, b) {
-		this.callParentMethod('startDragObject', this, x, y, b);
+		this._callParentMethod('startDragObject', this, x, y, b);
 	},
 
 	/**
@@ -747,8 +762,8 @@ O2.createClass('H5UI.WinControl', {
 	 */
 	invalidate : function() {
 		this._bInvalid = true;
-		this.callParentMethod('invalidate');
-		this.callParentMethod('invalidateControl', this);
+		this._callParentMethod('invalidate');
+		this._callParentMethod('_invalidateControl', this);
 	},
 
 	/**
