@@ -9,22 +9,22 @@ O2.extendClass('UI.Notes', UI.Window, {
 
 	_oDisplayed: null,
 
-	BUTTON_HEIGHT: 16,
+	ITEM_HEIGHT: 16,
+	
 	START_Y: 32, // debut de la position de la liste et du pad
 	SCROLLBAR_WIDTH: 4, // Epaisseur barre de scroll
 	PADDING: 8, // Espacement bordure - composant
+	WINDOW_WIDTH: 256,
+	WINDOW_HEIGHT: 192,
 
 	__construct: function(ui) {
 		__inherited({caption: MANSION.STRINGS_DATA.UI.notes_title});
-		this.setSize(256, 192);
+		this.setSize(this.WINDOW_WIDTH, this.WINDOW_HEIGHT);
 		this.setBackgroundImage('resources/ui/windows/bg-notes.png');
-
-
-
 		// Background of the pad
 		var oBG = this.linkControl(new H5UI.Box());
-		var BG_HEIGHT = 130 - (this.BUTTON_HEIGHT >> 1);
-		oBG.setSize(240, BG_HEIGHT);
+		var BG_HEIGHT = this.getHeight() - this._nButtonHeight - this._nButtonPadding * 2 - (this.START_Y - 1);
+		oBG.setSize(this.WINDOW_WIDTH - this.PADDING * 2, BG_HEIGHT);
 		oBG.moveTo(this.PADDING, this.START_Y - 1);
 		oBG.setColor('#000');
 		this.oBG = oBG;
@@ -91,7 +91,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oText.setAutosize(true);
 		oText.setSize(this.oBG.getWidth() - 8, 0);
 		oText.setCaption(sText);
-		this._yCursor += oText.getHeight();
+		this._yCursor += oText.getHeight() + 2;
 	},
 
 	createImageItem: function(oSrc) {
@@ -99,7 +99,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oImg.setSource(oSrc);
 		oImg.render();
 		oImg.moveTo((this.oBG.getWidth() - oImg.getWidth()) >> 1, 2 + this._yCursor);
-		this._yCursor += oImg.getHeight();
+		this._yCursor += oImg.getHeight() + 2;
 	},
 
 	/**
@@ -184,14 +184,14 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 */
 	appendTitle: function(ui, iRank, id, sTitle) {
 		var b = this._oList.linkControl(new H5UI.Button());
-		b.setSize(this._oList.getWidth(), this.BUTTON_HEIGHT);
+		b.setSize(this._oList.getWidth(), this.ITEM_HEIGHT);
 		b.oText.setAutosize(false);
-		b.oText.setSize(b.getWidth() - 8, this.BUTTON_HEIGHT);
+		b.oText.setSize(b.getWidth() - 8, this.ITEM_HEIGHT);
 		b.oText.moveTo(4, 4);
 		b.setColor('#666', '#999');
 		b.oText.font.setColor('#FFF');
 		b.setCaption(sTitle);
-		b.moveTo(0, iRank * this.BUTTON_HEIGHT);
+		b.moveTo(0, iRank * this.ITEM_HEIGHT);
 		b.on('click', ui.commandFunction('note_read', {note: id}));
 	}
 

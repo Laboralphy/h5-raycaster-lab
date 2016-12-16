@@ -11,8 +11,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 	_sClass: 'UI.Window',
 	_oStatusBar: null,
 	_oCaptionBar: null,
-	_nStatusBarHeight: 16,
-	_fStatusBarFontFactor: 0.75,
+	_nButtonHeight: 16,
 	_nButtonWidth: 60,
 	_nButtonPadding: 8,
 	_aCmdButtons: null,
@@ -52,29 +51,6 @@ O2.extendClass('UI.Window', H5UI.Box, {
 		this._oCaptionBar.setCaption(s);
 	},
 	
-	/**
-	 * Modification de la status bar
-	 * La status bar sert à afficher des info complémentaire sur l'état de la fenetre
-	 * Courrament utilisé pour afficher les touche de raccourci
-	 * @param s string nouveau contenu du titre
-	 */
-	 /*
-	setStatusCaption: function(s) {
-		if (this._oStatusBar === null) {
-			var oMsg = this.linkControl(new H5UI.Text());
-			oMsg._bWordWrap = false;
-			oMsg._bAutosize = true;
-			oMsg.setFontSize(this._nStatusBarHeight * this._fStatusBarFontFactor | 0);
-			oMsg.setFontFace('arial');
-			oMsg.setFontColor('#333333');
-			this._oStatusBar = oMsg;
-			this._oStatusBar.moveTo(8, this.getHeight() - this._nStatusBarHeight);
-		}
-		this._oStatusBar.setCaption(s);
-		this.invalidate();
-		this._oStatusBar.render();
-	},*/
-	
 	/** 
 	 * Ajoute une bar de command en bas de la fenetre
 	 * un click sur un bouton lance la function "command"
@@ -103,9 +79,9 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			pHandler = a[i][1];
 			b = this.linkControl(new H5UI.Button());
 			b.setCaption(sCaption);
-			b.setSize(this._nButtonWidth, this._nStatusBarHeight);
+			b.setSize(this._nButtonWidth, this._nButtonHeight);
 			b.oText.setFontSize(UI.FONT_SIZE * 0.85 | 0);
-			b.moveTo(x + this._nButtonPadding, this.getHeight() - this._nStatusBarHeight - this._nButtonPadding);
+			b.moveTo(x + this._nButtonPadding, this.getHeight() - this._nButtonHeight - this._nButtonPadding);
 			aColor = aColors[sColor];
 			b.setColor(aColor[0], aColor[1]);
 			if (pHandler) {
@@ -132,18 +108,6 @@ O2.extendClass('UI.Window', H5UI.Box, {
 		bg.setSource(sSrc);
 		bg.show();
 		this.setBorder(0);
-	},
-
-	
-	
-	/**
-	 * Modifier la taille conduit à déplacer la status bar
-	 */
-	setSize: function(w, h) {
-		__inherited(w, h);
-		if (this._oStatusBar) {
-			this._oStatusBar.moveTo(8, this.getHeight() - this._nStatusBarHeight);
-		}
 	}
 });
 

@@ -89,6 +89,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
+		if (CONFIG.game.mute) {
+			console.log('mute');
+			a.mute();
+		}
 	},
 	
 	/**
@@ -161,7 +165,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						},
 						{
 							type: 'image',
-							src: 'resources/ui/documents/portrait-witch.png',
+							src: 'resources/ui/documents/photo_mansion.jpg',
 						},
 						{
 							type: 'text',
@@ -169,11 +173,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						},
 						{
 							type: 'image',
-							src: 'resources/ui/documents/portrait-warlock.png',
+							src: 'resources/ui/documents/photo_owl.png',
 						},
 						{
 							type: 'text',
-							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses"
+							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses."
 						},
 					]);
 					break;

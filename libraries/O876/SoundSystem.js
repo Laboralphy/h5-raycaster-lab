@@ -138,7 +138,9 @@ O2.createClass('O876.SoundSystem', {
 		oChan.loop = true;
 		this._setChanSource(oChan, sFile);
 		oChan.load();
-		oChan.play();
+		if (!this.bMute) {
+			oChan.play();
+		}
 	},
 
 	/**

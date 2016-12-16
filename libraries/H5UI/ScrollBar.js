@@ -26,7 +26,10 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 
 	__construct: function() {
 		__inherited();
-		this.registerMouseEventHandlers();
+		// marche plus :'(
+		// pas le temps de réparer
+		// 2016-12-17
+		//this.registerMouseEventHandlers();
 	},
 
 	getAxisValue : function(x, y) {

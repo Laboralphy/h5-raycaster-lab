@@ -27,7 +27,9 @@ O2.extendClass('UI.Album', UI.Window, {
 
 	loadPhotos: function(aPhotos) {
 		this._aPhotos = aPhotos;
-		this.showPhoto(aPhotos.length - 1);
+		if (aPhotos) {
+			this.showPhoto(aPhotos.length - 1);
+		}
 	},
 
 	showPhoto: function(iPhoto) {
