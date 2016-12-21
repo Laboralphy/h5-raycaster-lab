@@ -68,7 +68,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.bFlatSky = true;
 		var oCT;
 		if (('controlThinker' in this._oConfig.game) && (this._oConfig.game.controlThinker)) {
-			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlThinker);
+			var ControlThinkerClass = O2.loadObject(this._oConfig.game.controlThinker);
 			oCT = new ControlThinkerClass();
 		} else {
 			if (this._oConfig.game.fpsControl) {

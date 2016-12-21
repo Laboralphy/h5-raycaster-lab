@@ -49,7 +49,7 @@ O2.extendClass('MW.HUDPlugin', MW.Plugin, {
 	activateElement: function(sElement) {
 		var d, p;
 		d = this.oData[sElement];
-		p = O2._loadObject(d[0]);
+		p = O2.loadObject(d[0]);
 		d = this.centerElement(d);
 		var oElement = new p();
 		oElement._sClass = sElement;

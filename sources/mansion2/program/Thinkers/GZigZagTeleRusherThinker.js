@@ -33,14 +33,10 @@ O2.extendClass('MANSION.GZigZagTeleRusherThinker', MANSION.VengefulThinker, {
 				break;
 				
 				case 3:
-					this.bRush = true;
-					this.teleportRandom(128, 256); 
-					return;
-				
 				case 4:
 					this.bRush = true;
 					this.teleportRandom(128, 256); 
-					return;
+				break;
 			}
 		} else {
 			this.teleportRandom(128, 256); 

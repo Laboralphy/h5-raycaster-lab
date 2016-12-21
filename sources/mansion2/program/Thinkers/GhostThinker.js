@@ -28,7 +28,7 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	},
 	
 	playSound: function(sSound) {
-		oMe = this.oMobile;
+		var oMe = this.oMobile;
 		var oSounds = oMe.data('sounds');
 		if (oSounds && (sSound in oSounds)) {
 			this.oGame.playSound(oSounds[sSound], oMe.x, oMe.y);

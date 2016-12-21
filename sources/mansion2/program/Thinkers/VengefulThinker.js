@@ -75,8 +75,6 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 		return false;
 	},
-	
-	boundTestWalkable: null,
 
 	/**
 	 * Renvoie true si le sujet peut voir la cible.
@@ -92,10 +90,12 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		var yMe = oMe.ySector;
 		var xTarget = oTarget.xSector;
 		var yTarget = oTarget.ySector;
-		if (!this.boundTestWalkable) {
-			this.boundTestWalkable = this.testWalkable.bind(this);
-		}
-		return !!this._oBresenham.line(xMe, yMe, xTarget, yTarget, this.boundTestWalkable);
+		return !!this._oBresenham.line(
+			xMe, 
+			yMe, 
+			xTarget, 
+			yTarget, 
+			(x, y) => this.testWalkable(x, y));
 	},
 
 
@@ -158,6 +158,13 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	teleportFront: function() {
 		this.setThink('Teleport', 64, 0);
+	},
+
+	/**
+	 * Téléportation derrière la cible
+	 */
+	teleportRear: function() {
+		this.setThink('Teleport', 64, Math.PI);
 	},
 
 	/**
@@ -278,6 +285,23 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	/**
+	 * Bat en retraite
+	 */
+	thinkRetreat_enter: function(n) {
+		this.setExpireTime(n);
+	},
+
+	thinkRetreat: function() {
+		if (this.isTimeMultiple(20)) {
+			this.walkToTarget(-this._fSpeed);
+		}
+		this.process();
+		this.move('b');
+		if (this.isActionExpired()) {
+			this.setThink('Idle');
+		}
+	},
 
 	/**
 	 * Pourchasse la cible en se positionnant vers elle et en avancant
@@ -433,8 +457,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				m.setXY(x1, y1);
 				// et bouger jusqu'a coordonnées finales
 				m.slide(x - x1, y - y1);
+				this.setThink('TeleportOut');
 			}
-			this.setThink('TeleportOut');
 		}
 	},
 
@@ -479,6 +503,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkShutter_enter: function() {
 		this.setExpireTime(30);
+		this.oMobile.data('shutter', true);
 	},
 
 	thinkShutter: function() {
@@ -488,6 +513,9 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	thinkShutter_exit: function() {
+		this.oMobile.data('shutter', false);
+	},
 	
 	thinkDie_enter: function() {
 		this.oMobile.oSprite.playAnimationType(2);

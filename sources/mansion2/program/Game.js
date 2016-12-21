@@ -90,7 +90,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oAudio = a;
 		a.setPath('resources/sounds');
 		if (CONFIG.game.mute) {
-			console.log('mute');
 			a.mute();
 		}
 	},
@@ -1023,7 +1022,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (sClass in s) {
 			oInstance = s[sClass];
 		} else {
-			pClass = O2._loadObject(sClass);
+			pClass = O2.loadObject(sClass);
 			oInstance = new pClass();
 			s[sClass] = oInstance;
 		}
