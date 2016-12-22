@@ -384,7 +384,7 @@ O2.createClass('H5UI.WinControl', {
 			return;
 		}
 		if (oClicked === undefined) {
-			oClicked = this.getControlAt(x, y);
+			oClicked = this.peek(x, y);
 		}
 		if (oClicked != this._oPointedControl) {
 			if (this._oPointedControl !== null) {
@@ -462,13 +462,13 @@ O2.createClass('H5UI.WinControl', {
 	/** ************* Méthodes publiques ************* */
 	/** ************* Méthodes publiques ************* */
 
-	/**
-	 * Renvoie la classe de widget. la "classe" est une simple variable.
-	 * 
-	 * @return string
-	 */
-	getClass : function() {
-		return this._sClass;
+	prop: function(sProp, xValue) {
+		if (xValue !== undefined) {
+			this._set(sProp, xValue);
+			return this;
+		} else {
+			return this[sProp];
+		}
 	},
 
 	/**
@@ -728,7 +728,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @param x,
 	 *            y coordonnées
 	 */
-	getControlAt : function(x, y) {
+	peek : function(x, y) {
 		var o, ox, oy, w, h;
 		if (this._aControls) {
 			for (var i = this._aControls.length - 1; i >= 0; i--) {

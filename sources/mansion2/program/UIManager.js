@@ -1,6 +1,6 @@
 /**
  * Cette classe est spécialisée dans la gestion de l'UI
- * Particulièrement dan sla création des widgets
+ * Particulièrement dans la création des widgets
  */
 O2.createClass('MANSION.UIManager', {
 

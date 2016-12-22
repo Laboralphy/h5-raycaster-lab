@@ -6,25 +6,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oDarkHaze: null,
 	_sLevelIndex: 'tutorial',
 	_oLocators: null,
-	
-	aDebugLines: null,
+	_oConsole: null,
+
 	oCamera: null,
 	oLogic: null,
 	oUI: null,
 
 
-	/**
-	 * Displays a debug line
-	 * @param n line number
-	 * @param s string displayed text 
-	 */
-	displayDebugLine: function(n, s) {
-		if (this.aDebugLines === null) {
-			this.aDebugLines = [];
-		}
-		this.aDebugLines[n] = s;
+	console: function() {
+		return this._oConsole;
 	},
-
 
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
@@ -37,6 +28,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initAudio();
 		this.initPopup();
 		this.initUI();
+		this._oConsole = new MANSION.Console();
 		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
@@ -378,9 +370,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventKey: function(oEvent) {
 		var oGhost = this.oRaycaster.oHorde.aMobiles[1];
 		switch (oEvent.k) {
-			case KEYS.F1:
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_aging_girl', pos.x, pos.y);
+			case KEYS.ALPHANUM.P:
+				var sCommand = this.prompt('Enter command');
+				var aCommand = sCommand.split(' ');
+				var sScript = aCommand.shift();
+				var sAction = aCommand.shift();
+				try {
+					var oScript = this.getScript(sScript);
+					if (sAction in oScript) {
+						oScript[sAction].call(oScript, {
+							game: this,
+							data: aCommand
+						});
+					}
+				} catch (e) {
+					this.console().print(e);
+				}
+//				var pos = this.getPlayer().getFrontCellXY();
+//				this.spawnGhost('g_aging_girl', pos.x, pos.y);
 			break;
 			
 			case KEYS.F2: 
@@ -459,17 +466,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	gameEventFrame: function(oEvent) {
 		this.oUI.render();
-
-		var aLog = this.aDebugLines;
-		if (aLog !== null) {
-			var c = this.oRaycaster.getScreenContext();
-			c.fillStyle = '#FFF';
-			for (var i = 0, l = aLog.length; i < l; ++i) {
-				if (aLog[i] !== undefined) {
-					c.fillText(aLog[i], 0, i * 12 + 12);
-				}
-			}
-		}
+		this._oConsole.render(this.oRaycaster.getScreenContext(), 4, 12);
 	},
 
 
@@ -926,6 +923,20 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	
 	
 	////// UTILITIES //////
+
+	/**
+	 * Prompt for tech command, 
+	 * pausing the game before the prompt
+	 * resuming the game after prompt
+	 * @param sCaption text to be displayed
+	 * @param sDefault valeur par défaut
+	 */
+	prompt: function(sCaption, sDefault) {
+		this.pause(true);
+		var s = prompt(sCaption, sDefault)
+		this.resume();
+		return s;
+	},
 	
 	/**
 	 * shows UI and exits pointerlock mode
