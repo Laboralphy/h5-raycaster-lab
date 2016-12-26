@@ -373,7 +373,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			case KEYS.ALPHANUM.P:
 				var sCommand = this.prompt('Enter command');
 				var aCommand = sCommand.split(' ');
-				var sScript = aCommand.shift();
+				var sScript = 'Debug';
 				var sAction = aCommand.shift();
 				try {
 					var oScript = this.getScript(sScript);
@@ -386,59 +386,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				} catch (e) {
 					this.console().print(e);
 				}
-//				var pos = this.getPlayer().getFrontCellXY();
-//				this.spawnGhost('g_aging_girl', pos.x, pos.y);
 			break;
-			
-			case KEYS.F2: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_bashed_boy', pos.x, pos.y);
-			break;
-			
-			case KEYS.F3: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_blond_child', pos.x, pos.y);
-			break;		
-			
-			case KEYS.F4: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_dark_tears', pos.x, pos.y);
-			break;
-			
-			case KEYS.F5: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_decaying', pos.x, pos.y);
-			break;
-			
-			case KEYS.F6: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_dementia', pos.x, pos.y);
-			break;
-			
-			case KEYS.F7: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_eyeball', pos.x, pos.y);
-			break;
-			case KEYS.F8: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_half_skull', pos.x, pos.y);
-			break;
-			case KEYS.F9: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_hardy', pos.x, pos.y);
-			break;
-			case KEYS.F10: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_old_ghoul', pos.x, pos.y);
-			break;
-			case KEYS.F11: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_severed_jaw', pos.x, pos.y);
-			break;
-			case KEYS.F12: 
-				var pos = this.getPlayer().getFrontCellXY();
-				this.spawnGhost('g_spooky_doll', pos.x, pos.y);
-			break;
+
 		}
 	},
 	

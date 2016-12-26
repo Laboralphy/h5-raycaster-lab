@@ -63,11 +63,11 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	scrollTo : function(x, y) {
 		if (x != this._xScroll || y != this._yScroll) {
-			var yContSize = this.getContainer().getHeight();
-			var yThisSize = this.getHeight();
+			var yContSize = this.getContainer().height();
+			var yThisSize = this.height();
 			var yMax = Math.max(0, yContSize - yThisSize);
-			var xContSize = this.getContainer().getWidth();
-			var xThisSize = this.getWidth();
+			var xContSize = this.getContainer().width();
+			var xThisSize = this.width();
 			var xMax = Math.max(0, xContSize - xThisSize);
 			this._xScroll = x = Math.max(0, Math.min(x, xMax));
 			this._yScroll = y = Math.max(0, Math.min(y, yMax));
@@ -107,10 +107,10 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		var c = this.getContainer();
 		for ( var i = 0; i < c._aControls.length; i++) {
 			o = c.getControl(i);
-			w = Math.max(w, o._x + o.getWidth());
-			h = Math.max(h, o._y + o.getHeight());
+			w = Math.max(w, o._x + o.width());
+			h = Math.max(h, o._y + o.height());
 		}
 		c.setSize(w, h);
-		this.getSurface().clearRect(0, 0, this.getWidth(), this.getHeight());
+		this.getSurface().clearRect(0, 0, this.width(), this.height());
 	}
 });

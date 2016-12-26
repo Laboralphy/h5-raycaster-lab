@@ -23,7 +23,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this.setBackgroundImage('resources/ui/windows/bg-notes.png');
 		// Background of the pad
 		var oBG = this.linkControl(new H5UI.Box());
-		var BG_HEIGHT = this.getHeight() - this._nButtonHeight - this._nButtonPadding * 2 - (this.START_Y - 1);
+		var BG_HEIGHT = this.height() - this._nButtonHeight - this._nButtonPadding * 2 - (this.START_Y - 1);
 		oBG.setSize(this.WINDOW_WIDTH - this.PADDING * 2, BG_HEIGHT);
 		oBG.moveTo(this.PADDING, this.START_Y - 1);
 		oBG.setColor('#000');
@@ -33,7 +33,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		// Clicking on an item of this list will
 		// Display the PAD and the text content
 		var oList = this.linkControl(new H5UI.ScrollBox());
-		oList.setSize(oBG.getWidth(), BG_HEIGHT - 2);
+		oList.setSize(oBG.width(), BG_HEIGHT - 2);
 		oList.moveTo(this.PADDING, this.START_Y);
 		this._oList = oList;
 		oList.on('mousewheelup', (function(oEvent) {
@@ -48,14 +48,14 @@ O2.extendClass('UI.Notes', UI.Window, {
 		// The scrollbar (for both list and pad)
 		var oScrollBar = this.linkControl(new H5UI.ScrollBar());
 		oScrollBar.setSize(this.SCROLLBAR_WIDTH, BG_HEIGHT - 2);
-		oScrollBar.moveTo(this.getWidth() - this.PADDING - this.SCROLLBAR_WIDTH, this.START_Y);
+		oScrollBar.moveTo(this.width() - this.PADDING - this.SCROLLBAR_WIDTH, this.START_Y);
 		oScrollBar.setOrientation(1);
 		this._oScrollBar = oScrollBar;
 		oScrollBar.show();
 		
 		// Pad : the zone on where the text is written
 		var oPad = this.linkControl(new H5UI.ScrollBox());
-		oPad.setSize(oBG.getWidth(), BG_HEIGHT - 2);
+		oPad.setSize(oBG.width(), BG_HEIGHT - 2);
 		oPad.moveTo(this.PADDING, this.START_Y);
 		oPad.hide();
 		this._oPad = oPad;
@@ -89,17 +89,17 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
-		oText.setSize(this.oBG.getWidth() - 8, 0);
+		oText.setSize(this.oBG.width() - 8, 0);
 		oText.setCaption(sText);
-		this._yCursor += oText.getHeight() + 2;
+		this._yCursor += oText.height() + 2;
 	},
 
 	createImageItem: function(oSrc) {
 		var oImg = this._oPad.linkControl(new H5UI.Image());
 		oImg.setSource(oSrc);
 		oImg.render();
-		oImg.moveTo((this.oBG.getWidth() - oImg.getWidth()) >> 1, 2 + this._yCursor);
-		this._yCursor += oImg.getHeight() + 2;
+		oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
+		this._yCursor += oImg.height() + 2;
 	},
 
 	/**
@@ -157,8 +157,8 @@ O2.extendClass('UI.Notes', UI.Window, {
 		var oOwner = this._oDisplayed;
 		if (oOwner) {
 			var sb = this._oScrollBar;
-			sb.setStepCount(oOwner.getContainer().getHeight());
-			sb.setLength(oOwner.getHeight());
+			sb.setStepCount(oOwner.getContainer().height());
+			sb.setLength(oOwner.height());
 			sb.setPosition(oOwner.getScrollY());
 		}
 	},
@@ -184,9 +184,9 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 */
 	appendTitle: function(ui, iRank, id, sTitle) {
 		var b = this._oList.linkControl(new H5UI.Button());
-		b.setSize(this._oList.getWidth(), this.ITEM_HEIGHT);
+		b.setSize(this._oList.width(), this.ITEM_HEIGHT);
 		b.oText.setAutosize(false);
-		b.oText.setSize(b.getWidth() - 8, this.ITEM_HEIGHT);
+		b.oText.setSize(b.width() - 8, this.ITEM_HEIGHT);
 		b.oText.moveTo(4, 4);
 		b.setColor('#666', '#999');
 		b.oText.font.setColor('#FFF');

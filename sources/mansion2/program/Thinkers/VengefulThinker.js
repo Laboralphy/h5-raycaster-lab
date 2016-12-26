@@ -14,6 +14,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	// means the next few moves will aim at attacking player
 	// ex : rush,  or teleport + rush...
 	_oBresenham: null,
+	_oSnail: null,
 	
 	MAX_INVISIBLE_DISTANCE: 384,
 	MAX_VISIBLE_DISTANCE: 640,
@@ -21,7 +22,16 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	__construct: function() {
 		__inherited();
 		this._oBresenham = new O876.Bresenham();
+		this._oSnail = new Snail();
 	},
+
+
+
+
+
+	/**
+	 * Snail functions
+	 */
 
 	/**
 	 * sets the normal moving speed of the ghost
@@ -172,7 +182,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * a une position aléatoire
 	 */
 	teleportRandom: function(nDistMin, nDistMax) {
-		this.setThink('Teleport', nDistMin + Math.random() * nDistMax, Math.random() * 2 * Math.PI - Math.PI);
+		this.setThink('Teleport', nDistMin + Math.random() * (nDistMax - nDistMax), Math.random() * 2 * Math.PI - Math.PI);
 	},
 
 	stop: function() {
@@ -414,6 +424,22 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		this.setThink('Idle');
 	},
 	
+
+
+	// ** TROUVER UNE TELEPORTATION DETERMINISTE
+
+	fTeleportRandomDistMin: 0,
+	fTeleportRandomDistMax: 0,
+	thinkTeleportRandom: function(nDistMin, nDistMax) {
+		this.fTeleportRandomDistMin = nDistMin;
+		this.fTeleportRandomDistMax = nDistMax;
+		var fDist = nDistMin + Math.random() * (nDistMax - nDistMax);
+		var fAngle = Math.random() * 2 * Math.PI - Math.PI;
+		//while (!this.isEntityVisible(this.getTarget())) {
+
+		//}
+		this.setThink('Teleport', nDistMin + Math.random() * (nDistMax - nDistMax), Math.random() * 2 * Math.PI - Math.PI);
+	},
 	
 	/**
 	 * Téléporte le fantome devant le nez de la cible
@@ -458,6 +484,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				// et bouger jusqu'a coordonnées finales
 				m.slide(x - x1, y - y1);
 				this.setThink('TeleportOut');
+			} else {
+				console.log(new Date(), 'missed teleport', xs, ys, 'x inside', rc.insideMap(xs), 'y inside', rc.insideMap(ys), 'walkable', !this.testSolid(xs, ys));
 			}
 		}
 	},

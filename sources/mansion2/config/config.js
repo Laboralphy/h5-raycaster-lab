@@ -11,7 +11,7 @@ O2.createObject('CONFIG', {
 	raycaster: {
 		canvas: 'screen',
 		canvasAutoResize: true,
-		drawMap: false,
+		drawMap: true,
 		smoothTextures: false,
 		vr: false
 	}

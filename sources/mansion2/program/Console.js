@@ -6,7 +6,7 @@ O2.createClass('MANSION.Console', {
 	_nTime: 0,
 
 
-	MAX_LINES: 10,
+	MAX_LINES: 25,
 
 	__construct: function() {
 		this.clear();

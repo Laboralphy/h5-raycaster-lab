@@ -82,28 +82,28 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 			this._xGradStart = 0;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.height() - 1;
 			break;
 
 		case 2: // Horiz
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
+			this._xGradEnd = this.width() - 1;
 			this._yGradEnd = 0;
 			break;
 	
 		case 3: // Diag 1
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
-			this._yGradEnd = this.getHeight() - 1;
+			this._xGradEnd = this.width() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 	
 		case 4: // Diag 2
-			this._xGradStart = this.getWidth() - 1;
+			this._xGradStart = this.width() - 1;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 		}
 	},
@@ -154,11 +154,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	
 	renderSelf : function() {
 		this._oContext.fillStyle = this.getFillStyle();
-		this._oContext.fillRect(0, 0, this.getWidth(), this.getHeight());
+		this._oContext.fillRect(0, 0, this.width(), this.height());
 		if (this._nBorderWidth) {
 			this._oContext.strokeStyle = this._sColorBorder;
 			this._oContext.lineWidth = this._nBorderWidth;
-			this._oContext.strokeRect(0, 0, this.getWidth(), this.getHeight());
+			this._oContext.strokeRect(0, 0, this.width(), this.height());
 		}
 	}
 });

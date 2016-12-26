@@ -81,7 +81,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		var oSurface = this.getSurface();
 		var oMetrics;
 		// Redimensionnement du texte
-		oSurface.clearRect(0, 0, this.getWidth(), this.getHeight());
+		oSurface.clearRect(0, 0, this.width(), this.height());
 		if (this._bWordWrap){
 			var aRenderLines = [];
 			this.font.update();
@@ -96,7 +96,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 					sWord = aWords.shift();
 					sSpace = sLine ? ' ' : '';
 					oMetrics = oSurface.measureText(sLine + sSpace + sWord);
-					if (oMetrics.width >= this.getWidth()) {
+					if (oMetrics.width >= this.width()) {
 						// flush
 						x = 0;
 						aRenderLines.push(sLine);
@@ -114,7 +114,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 				this._yLastWritten = y;
 			}
 			if (this._bAutosize) {
-				this.setSize(this.getWidth(), y + this.font._nFontSize);
+				this.setSize(this.width(), y + this.font._nFontSize);
 			}
 			oSurface.fillStyle= '#FFF';
 			aRenderLines.forEach((function(s, i) {
@@ -132,9 +132,9 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 			}
 			oSurface.textBaseline = 'middle';
 			if (this.font._bOutline) {
-				oSurface.strokeText(this._sCaption, 0, this.getHeight() / 2);
+				oSurface.strokeText(this._sCaption, 0, this.height() / 2);
 			}
-			oSurface.fillText(this._sCaption, 0, this.getHeight() / 2);
+			oSurface.fillText(this._sCaption, 0, this.height() / 2);
 		}
 	}
 });

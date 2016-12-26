@@ -96,7 +96,7 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	 * Défini une nouvelle position en pixel
 	 */
 	setPixelPosition : function(y) {
-		this.setPosition(y * this._nStepCount / this.getAxisValue(this.getWidth(), this.getHeight()) | 0);
+		this.setPosition(y * this._nStepCount / this.getAxisValue(this.width(), this.height()) | 0);
 	},
 
 	registerMouseEventHandlers: function() {
@@ -168,21 +168,21 @@ O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
 	renderSelf : function() {
 		var s = this.getSurface();
 		s.fillStyle = this._sColorBackground;
-		s.fillRect(0, 0, this.getWidth(), this.getHeight());
+		s.fillRect(0, 0, this.width(), this.height());
 		this.ySize = this._nLength *
-				this.getAxisValue(this.getWidth(), this.getHeight()) /
+				this.getAxisValue(this.width(), this.height()) /
 				this._nStepCount | 0;
-		this.yRange = this.getAxisValue(this.getWidth(), this.getHeight())
+		this.yRange = this.getAxisValue(this.width(), this.height())
 				- this.ySize;
 		this.yPos = this._nPosition * this.yRange / (this._nStepCount - this._nLength) | 0;
 		s.fillStyle = this._sColorBar;
 		s.strokeStyle = this._sColorBarBorder;
 		if (this._bVertical) {
-			s.fillRect(0, this.yPos, this.getWidth(), this.ySize);
-			s.strokeRect(0, this.yPos, this.getWidth(), this.ySize);
+			s.fillRect(0, this.yPos, this.width(), this.ySize);
+			s.strokeRect(0, this.yPos, this.width(), this.ySize);
 		} else {
-			s.fillRect(this.yPos, 0, this.ySize, this.getHeight());
-			s.strokeRect(0, this.yPos, this.getWidth(), this.ySize);
+			s.fillRect(this.yPos, 0, this.ySize, this.height());
+			s.strokeRect(0, this.yPos, this.width(), this.ySize);
 		}
 	}
 });

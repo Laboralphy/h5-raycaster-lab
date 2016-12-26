@@ -81,7 +81,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			b.setCaption(sCaption);
 			b.setSize(this._nButtonWidth, this._nButtonHeight);
 			b.oText.setFontSize(UI.FONT_SIZE * 0.85 | 0);
-			b.moveTo(x + this._nButtonPadding, this.getHeight() - this._nButtonHeight - this._nButtonPadding);
+			b.moveTo(x + this._nButtonPadding, this.height() - this._nButtonHeight - this._nButtonPadding);
 			aColor = aColors[sColor];
 			b.setColor(aColor[0], aColor[1]);
 			if (pHandler) {

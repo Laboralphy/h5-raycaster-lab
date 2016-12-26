@@ -321,7 +321,7 @@ O2.createClass('H5UI.WinControl', {
 		var o;
 		while (this._aHideControls.length) {
 			o = this._aHideControls.shift();
-			this._oContext.clearRect(o._x, o._y, o.getWidth(), o.getHeight());
+			this._oContext.clearRect(o._x, o._y, o.width(), o.height());
 		}
 	},
 
@@ -477,8 +477,8 @@ O2.createClass('H5UI.WinControl', {
 	 * 
 	 * @return int
 	 */
-	getWidth : function() {
-		return this._nWidth;
+	width : function(w) {
+		return this.prop('_nWidth', w);
 	},
 
 	/**
@@ -487,8 +487,8 @@ O2.createClass('H5UI.WinControl', {
 	 * 
 	 * @return int
 	 */
-	getHeight : function() {
-		return this._nHeight;
+	height : function(h) {
+		return this.prop('_nHeight', h);
 	},
 
 	/**
@@ -640,7 +640,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            taille y
 	 */
 	setSize : function(w, h) {
-		if (w != this.getWidth() || h != this.getHeight()) {
+		if (w != this.width() || h != this.height()) {
 			this._nWidth = this._oCanvas.width = w;
 			this._nHeight = this._oCanvas.height = h;
 			this._realignControls();
@@ -672,7 +672,7 @@ O2.createClass('H5UI.WinControl', {
 	moveToCenter : function() {
 		var p = this.getParent();
 		if (p) {
-			this.moveTo(((p.getWidth() - this.getWidth()) >> 1), ((p.getHeight() - this.getHeight()) >> 1));
+			this.moveTo(((p.width() - this.width()) >> 1), ((p.height() - this.height()) >> 1));
 		}
 	},
 
@@ -735,8 +735,8 @@ O2.createClass('H5UI.WinControl', {
 				o = this._aControls[i];
 				ox = o._x;
 				oy = o._y;
-				w = o.getWidth();
-				h = o.getHeight();
+				w = o.width();
+				h = o.height();
 				if (x >= ox && y >= oy && x < (ox + w) && y < (oy + h) && o._bVisible) {
 					return o;
 				}

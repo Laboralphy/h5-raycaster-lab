@@ -31,7 +31,7 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 				this.setSize(this._oTexture.width, this._oTexture.height);
 				s.drawImage(this._oTexture,	0, 0);						
 			} else {
-				s.clearRect(0, 0, this.getWidth(), this.getHeight());
+				s.clearRect(0, 0, this.width(), this.height());
 				s.drawImage(
 					this._oTexture,
 					0, 
@@ -40,15 +40,15 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 					this._oTexture.height,
 					0, 
 					0, 
-					this.getWidth(),
-					this.getHeight()
+					this.width(),
+					this.height()
 				);
 			}
 		}
 		if (this._nBorderWidth) {
 			this._oContext.strokeStyle = this._sColorBorder;
 			this._oContext.lineWidth = this._nBorderWidth;
-			this._oContext.strokeRect(0, 0, this.getWidth(), this.getHeight());
+			this._oContext.strokeRect(0, 0, this.width(), this.height());
 		}
 	}
 });

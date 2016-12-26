@@ -74,9 +74,9 @@ O2.extendClass('UI.Icon', H5UI.WinControl, {
 	
 	renderSelf: function() {
 		var c = this._oContext; 
-		var w = this.getWidth();
-		var h = this.getHeight();
-		c.clearRect(0, 0, this.getWidth(), this.getHeight());
+		var w = this.width();
+		var h = this.height();
+		c.clearRect(0, 0, this.width(), this.height());
 		this.drawImage();
 		if (this._bSelected) {
 			var sGCO = c.globalCompositeOperation;
