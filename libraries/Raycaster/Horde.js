@@ -155,7 +155,7 @@ O2.createClass('O876_Raycaster.Horde',  {
 	 */
 	spawnMobile : function(sBlueprint, x, y, fTheta) {
 		var oMobile = this.oMobileDispenser.popMobile(sBlueprint);
-		if (oMobile === null) {
+		if (!oMobile) {
 			var aData = {
 				blueprint : sBlueprint,
 				x : x,

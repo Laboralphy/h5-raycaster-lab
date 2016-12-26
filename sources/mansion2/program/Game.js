@@ -687,12 +687,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		switch (this._sLevelIndex) {
 			case 'intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
+				oPlayer.setXY(oPlayer.x, oPlayer.y);
 				ct = oPlayer.getThinker();
 				O876_Raycaster.PointerLock.disable();
 			break;
 			
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
+				oPlayer.setXY(oPlayer.x, oPlayer.y);
 				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
 				ct = oPlayer.getThinker();
 				ct.on('button0.down', (function() { 

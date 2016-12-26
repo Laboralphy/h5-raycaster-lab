@@ -12,13 +12,14 @@ O2.createClass('MANSION.Script.Debug', {
 		var g = oEvent.game;
 		var sGhost = oEvent.data[0];
 		var pos = g.getPlayer().getFrontCellXY();
+		console.log( pos.x, pos.y);
 		g.spawnGhost(sGhost, pos.x, pos.y);
 	},
 
 	/**
 	 * Renvoie la liste des fantomes
 	 */
-	ghosts: function(oEvent) {
+	bp: function(oEvent) {
 		/** : displays a list of available ghosts. Use "spawn" to spawn a ghosts. **/
 		var g = oEvent.game;
 		var aList = [];
@@ -30,6 +31,25 @@ O2.createClass('MANSION.Script.Debug', {
 			}
 		}
 		g.console().clear().print(aList.join(', '));
+	},
+	
+	ghosts: function(oEvent) {
+		/** : lists all active ghosts **/
+		var g = oEvent.game;
+		var horde = g.oRaycaster.oHorde.aMobiles;
+		var aList = horde.map(ghost => ghost.getBlueprint() && ghost.getBlueprint('subtype') == 'ghost' ? horde.indexOf(ghost) + ' : ' + ghost.getBlueprint('name') : null);
+		g.console().clear().print(aList.join('\n'));
+	},
+	
+	follow: function(oEvent) {
+		/** <ghost_id> : follows a ghost AI progression **/
+		var g = oEvent.game;
+		var id = oEvent.data[0] | 0;
+		g.oRaycaster.oHorde.aMobiles.forEach(function(ghost, iGhost) {
+			if (ghost.getThinker()) {
+				ghost.getThinker()._bDebug = iGhost === id;
+			}
+		});
 	},
 
 	help: function(oEvent) {

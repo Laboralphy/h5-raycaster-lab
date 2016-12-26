@@ -22,7 +22,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	__construct: function() {
 		__inherited();
 		this._oBresenham = new O876.Bresenham();
-		this._oSnail = new Snail();
+		this._oSnail = new O876.Snail();
 	},
 
 
@@ -85,19 +85,27 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 		return false;
 	},
-
+	
 	/**
 	 * Renvoie true si le sujet peut voir la cible.
 	 * pour que la fonction renvoie true il faut que le sujet puisse voir la cible
 	 * ceci prend en compte l'invisibilité de la cible, 
 	 * le niveau de detection et l'aveuglement du sujet,
 	 * les obstacle muraux qui cacheraient éventuellement la cible
+	 * Si on spécifié les coordonnées d'une secteur, celui ci sera utilisée
+	 * sinon on utilisera le secteur du mobile
+	 * @param oTarget cible qu'on cherche à voir
+	 * @param xMe (optionel) coord secteur source
+	 * @param yMe (optionel) coord secteur source
 	 * @return bool
 	 */
-	isEntityVisible : function(oTarget) {
+	isEntityVisible : function(oTarget, xMe, yMe) {
 		var oMe = this.oMobile;
-		var xMe = oMe.xSector;
-		var yMe = oMe.ySector;
+		xMe = xMe !== undefined ? xMe : oMe.xSector;
+		yMe = yMe !== undefined ? yMe : oMe.ySector;
+		if (!this.testWalkable(xMe, yMe)) {
+			return false;
+		}
 		var xTarget = oTarget.xSector;
 		var yTarget = oTarget.ySector;
 		return !!this._oBresenham.line(
@@ -167,14 +175,14 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * Téléportation devant la cible
 	 */
 	teleportFront: function() {
-		this.setThink('Teleport', 64, 0);
+		this.setThink('Teleport', {distance: 64, angle: 0});
 	},
 
 	/**
 	 * Téléportation derrière la cible
 	 */
 	teleportRear: function() {
-		this.setThink('Teleport', 64, Math.PI);
+		this.setThink('Teleport', {distance: 64, angle: Math.PI});
 	},
 
 	/**
@@ -182,7 +190,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * a une position aléatoire
 	 */
 	teleportRandom: function(nDistMin, nDistMax) {
-		this.setThink('Teleport', nDistMin + Math.random() * (nDistMax - nDistMax), Math.random() * 2 * Math.PI - Math.PI);
+		this.setThink('TeleportRandom', nDistMin, nDistMax);
 	},
 
 	stop: function() {
@@ -428,31 +436,64 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 
 	// ** TROUVER UNE TELEPORTATION DETERMINISTE
 
-	fTeleportRandomDistMin: 0,
-	fTeleportRandomDistMax: 0,
-	thinkTeleportRandom: function(nDistMin, nDistMax) {
-		this.fTeleportRandomDistMin = nDistMin;
-		this.fTeleportRandomDistMax = nDistMax;
-		var fDist = nDistMin + Math.random() * (nDistMax - nDistMax);
-		var fAngle = Math.random() * 2 * Math.PI - Math.PI;
-		//while (!this.isEntityVisible(this.getTarget())) {
-
-		//}
-		this.setThink('Teleport', nDistMin + Math.random() * (nDistMax - nDistMax), Math.random() * 2 * Math.PI - Math.PI);
+	thinkTeleportRandom_enter: function(nDistMin, nDistMax) {
+		var ps = this.oGame.oRaycaster.nPlaneSpacing;
+		nDistMin = nDistMin / ps | 0;
+		nDistMax = nDistMax / ps | 0; 
+		var snail = this._oSnail;
+		var aSectors = ArrayTools.shuffle(snail.crawl(nDistMin, nDistMax));
+		var bTargetVisible, 
+			fDist, 
+			fAngle, 
+			oSector, xSector, ySector,
+			oTarget = this.getTarget(),
+			xMe = oTarget.xSector,
+			yMe = oTarget.ySector;
+		while (aSectors.length > 0) {
+			oSector = aSectors.shift();
+			xSector = oSector.x + xMe;
+			ySector = oSector.y + yMe;
+			bTargetVisible = this.isEntityVisible(oTarget, xSector, ySector);
+			if (bTargetVisible) {
+				this.oMobile
+					.data('thinker.teleport.x', xSector * ps + (ps >> 1))
+					.data('thinker.teleport.y', ySector * ps + (ps >> 1));
+				return;
+			} else {
+				if (aSectors.length === 0 && nDistMin > 0) {
+					// there is hope to find a suitable secteur, decrease the search radius
+					--nDistMin;
+					aSectors = ArrayTools.shuffle(snail.crawl(nDistMin));
+				} // else : no hope. aSectors.length will be 0 and the loop will break
+			}
+		}
+		// no suitable place found...
+		
 	},
 	
-	/**
-	 * Téléporte le fantome devant le nez de la cible
-	 * terrible !
-	 */
-	fTeleportDist: 0, // distance de téléportation cible
-	fTeleportAngle: 0, // angle de téléport par rapport à la cible (0 = devant ; PI = derrière)
-	thinkTeleport_enter: function(fDist, fAngle) {
+	thinkTeleportRandom: function() {
+		var x = this.oMobile.data('thinker.teleport.x');
+		var y = this.oMobile.data('thinker.teleport.y');
+		this.setThink('Teleport', {x: x, y: y});
+	},
+	
+	
+	thinkTeleport_enter: function(oParams) {
+		var x, y;
+		if (('x' in oParams) && ('y' in oParams)) {
+			x = oParams.x;
+			y = oParams.y;
+		} else if (('distance' in oParams) && ('angle' in oParams)) {
+			var t = this.getTarget();
+			var fDist = oParams.distance;
+			var fAngle = oParams.angle;
+			x = t.x + fDist * Math.cos(fAngle);
+			y = t.y + fDist * Math.sin(fAngle);
+		}
 		var s = this.oMobile.oSprite;
 		s.nAlpha = 0;
 		s.bTranslucent = true;
-		this.fTeleportDist = fDist;
-		this.fTeleportAngle = fAngle;
+		this.oMobile.data('thinker.teleport.x', x).data('thinker.teleport.y', y);
 		this.stop();
 	},
 
@@ -464,12 +505,11 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		if (s.nAlpha > 3) {
 			s.bVisible = false;
 			s.nAlpha = 3;
-			var fDist = this.fTeleportDist;
-			var fAngle = t.getAngle() + this.fTeleportAngle;
 			var ps = this.oGame.oRaycaster.nPlaneSpacing;
-			// calculer les coordonnée finales
-			var x = t.x + fDist * Math.cos(fAngle);
-			var y = t.y + fDist * Math.sin(fAngle);
+			// calculer les coordonnées finales
+			var x = m.data('thinker.teleport.x');
+			var y = m.data('thinker.teleport.y');
+			m.data('thinker.teleport.x', null).data('thinker.teleport.y', null);
 			// calculer le secteur final
 			var xs = (x / ps | 0);
 			var ys = (y / ps | 0);
@@ -484,8 +524,6 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				// et bouger jusqu'a coordonnées finales
 				m.slide(x - x1, y - y1);
 				this.setThink('TeleportOut');
-			} else {
-				console.log(new Date(), 'missed teleport', xs, ys, 'x inside', rc.insideMap(xs), 'y inside', rc.insideMap(ys), 'walkable', !this.testSolid(xs, ys));
 			}
 		}
 	},

@@ -2,6 +2,7 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	_nTime : 0,
 	_sCurrentThinkProc: '',
 	_oTarget: null,
+	_bDebug: false,
 	
 
 	__construct : function() {
@@ -130,6 +131,16 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 			throw new Error('Thinker action not found ' + sProcName);
 		}
 		this._sCurrentThinkProc = s;
+		if (this._bDebug) {
+			var aLine = [];
+			var m = this.oMobile;
+			if (m) {
+				aLine.push(m.getBlueprint('name'));
+				aLine.push('pos x:' + (m.x | 0) + ' - y:' + (m.y | 0) + ' - sector x:' + m.xSector + ' - y:' + m.ySector);
+				aLine.push('thinker: ' + s);
+				this.oGame.console().clear().print(aLine.join('\n'));
+			}
+		}
 		if (sProcEnter in this) {
 			this[sProcEnter].apply(this, aArgs);
 		}

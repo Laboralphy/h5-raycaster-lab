@@ -15,7 +15,31 @@ O2.createClass('O876.Random', {
 
 	rand: function(a, b) {
 		var r = this._rand();
-		return a === undefined ? r : Math.max(a, Math.min(b, (b - a + 1) * r + a | 0));
+		switch (typeof a) {
+			case "undefined":
+				return r;
+				
+			case "number":
+				if (b === undefined) {
+					b = a - 1;
+					a = 0;
+				}
+				return Math.max(a, Math.min(b, (b - a + 1) * r + a | 0));
+			
+			case "object":
+				if (Array.isArray(a)) {
+					if (a.length > 0) {
+						return a[r * a.length | 0];
+					} else {
+						return undefined;
+					}
+				} else {
+					return this.rand(Object.keys(a));
+				}
+				
+			default:
+				return r;
+		}
 	}
 });
 
