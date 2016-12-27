@@ -13,6 +13,5 @@ O2.extendClass('MANSION.GChaserThinker', MANSION.VengefulThinker, {
 			var m = this.oMobile;
 			this.teleportRandom(128, 256); 
 		}
-		
 	}
 });

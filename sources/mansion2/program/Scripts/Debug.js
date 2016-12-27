@@ -11,9 +11,7 @@ O2.createClass('MANSION.Script.Debug', {
 		/** <ghost> : will spawn a ghost. Type "ghosts" to get a list of available ghosts. **/
 		var g = oEvent.game;
 		var sGhost = oEvent.data[0];
-		var pos = g.getPlayer().getFrontCellXY();
-		console.log( pos.x, pos.y);
-		g.spawnGhost(sGhost, pos.x, pos.y);
+		g.spawnGhost(sGhost);
 	},
 
 	/**

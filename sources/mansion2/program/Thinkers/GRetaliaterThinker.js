@@ -8,9 +8,9 @@ O2.extendClass('MANSION.GRetaliaterThinker', MANSION.VengefulThinker, {
 
 	_bImHit: false,
 
-	damage: function() {
+	damage: function(nAmount, bCritical) {
 		this._bImHit = true;
-		__inherited();
+		__inherited(nAmount, bCritical);
 	},
 
 	thinkIdle: function() {

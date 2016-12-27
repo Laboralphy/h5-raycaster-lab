@@ -28,7 +28,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		tile: 'g_bashed_boy',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.GChaser',
+		thinker: 'MANSION.GEvader',
 		fx: 3,
 		data: {
 			subtype: 'ghost',
@@ -52,7 +52,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		tile: 'g_blond_child',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.GChaser',
+		thinker: 'MANSION.GRetaliater',
 		fx: 3,
 		data: {
 			subtype: 'ghost',
@@ -697,7 +697,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		fx: 3,
 		data: {
 			name: 'ectomissile',
-			speed: 6,
+			speed: 3,
 			sounds: {
 				fire: 'fire1',
 				explode: 'impact1'

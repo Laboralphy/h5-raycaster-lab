@@ -11,6 +11,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	oCamera: null,
 	oLogic: null,
 	oUI: null,
+	oSnail: null,
 
 
 	console: function() {
@@ -24,6 +25,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	init: function() {
 		O2.createObject('MANSION.STRINGS_DATA', MANSION.STRINGS_DATA_EN);
 		this._oLocators = {};
+		this.oSnail = new O876.Snail();
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
@@ -746,6 +748,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 	/**
 	 * A hostile ghost is spawned.
+	 * If no coordinates are given : use random location near player
 	 * @param sBlueprint string reference to the blueprint
 	 * @param x float initial ghost position x
 	 * @param y float initial ghost position y
@@ -753,6 +756,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @return Mobile
 	 */
 	spawnGhost: function(sBlueprint, x, y, a) {
+		if (x === undefined) {
+			var pos = ArrayTools.shuffle(this.getSectorsNearObject(this.getPlayer(), 128, 256)).shift();
+			if (pos) {
+				x = pos.x;
+				y = pos.y;
+			} else {
+				return;
+			}
+		}
 		var oGhost = this.spawnWraith(sBlueprint, x, y, a);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		oGhost.data('hp', oGhost.data('life'));
@@ -762,7 +774,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 	spawnWraith: function(sBlueprint, x, y, a) {
-		var oGhost = this.spawnMobile(sBlueprint, x, y, a);
+		var ps = this.oRaycaster.nPlaneSpacing;
+		var ps2 = ps >> 1;
+		var oGhost = this.spawnMobile(sBlueprint, ps * x + ps2, ps * y + ps2, a);
 		oGhost.getThinker().reset();
 		return oGhost;
 	},
@@ -959,6 +973,73 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	getPlayer: function() {
 		return this.oRaycaster.oCamera;
 	},
+	
+	/**
+	 * Renvoie true si l'endroit spécifié est traversable par un mobile
+	 * Renvoie false si le secteur spécifié est hors carte
+	 * @param x coordoonées secteur
+	 * @param y coordoonées secteur
+	 * @return bool
+	 */
+	isSectorWalkable: function(x, y) {
+		var rc = this.oRaycaster;
+		var rcs = rc.nMapSize;
+		if (x >= 0 && y >= 0 && x < rcs && y < rcs) {
+			return rc.getMapPhys(x, y) === rc.PHYS_NONE;
+		} else {
+			return false;
+		}
+	},
+	
+	/**
+	 * Renvoie true si l'endroit spécifié est solid (non traversable par un mobile)
+	 * Renvoie false si le secteur spécifié est hors carte
+	 * @param x coordoonées secteur
+	 * @param y coordoonées secteur
+	 * @return bool
+	 */
+	isSectorSolid: function(x, y) {
+		var rc = this.oRaycaster;
+		var rcs = rc.nMapSize;
+		if (x >= 0 && y >= 0 && x < rcs && y < rcs) {
+			return rc.getMapPhys(x, y) !== rc.PHYS_NONE;
+		} else {
+			return false;
+		}
+	},
+
+
+	
+	/**
+	 * Trouve une place à proximité de l'objet spécifié, et a distance indiquée
+	 * L'endroit trouvé sera assurément un walkable
+	 * @param oTarget objet mobile de référence
+	 * @param nDistMin distance minimum (texel)
+	 * @param nDistMax distance maximum (texel)
+	 * @return plain object {x, y} coordonnées texel (centrée sur secteur)
+	 */
+	getSectorsNearObject: function(oTarget, nDistMin, nDistMax) {
+		if (nDistMax === undefined) {
+			nDistMin = nDistMax;
+		}
+		var ps = this.oRaycaster.nPlaneSpacing;
+		var bWalkable, 
+			xMe = oTarget.xSector,
+			yMe = oTarget.ySector;
+		return this
+			.oSnail
+			.crawl(
+				nDistMin / ps | 0, 
+				nDistMax / ps | 0
+			)
+			.filter(
+				oSector => 
+					this.isSectorWalkable(
+						oSector.x + xMe, 
+						oSector.y + yMe
+					)
+			);
+	},	
 	
 	/**
 	 * Renvoie le type d'objet

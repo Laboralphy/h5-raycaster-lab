@@ -14,7 +14,6 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	// means the next few moves will aim at attacking player
 	// ex : rush,  or teleport + rush...
 	_oBresenham: null,
-	_oSnail: null,
 	
 	MAX_INVISIBLE_DISTANCE: 384,
 	MAX_VISIBLE_DISTANCE: 640,
@@ -22,16 +21,11 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	__construct: function() {
 		__inherited();
 		this._oBresenham = new O876.Bresenham();
-		this._oSnail = new O876.Snail();
 	},
 
 
 
 
-
-	/**
-	 * Snail functions
-	 */
 
 	/**
 	 * sets the normal moving speed of the ghost
@@ -104,6 +98,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		xMe = xMe !== undefined ? xMe : oMe.xSector;
 		yMe = yMe !== undefined ? yMe : oMe.ySector;
 		if (!this.testWalkable(xMe, yMe)) {
+			console.log('isEntityVisible : not walkable here', xMe, yMe, oMe.xSector, oMe.ySector);
 			return false;
 		}
 		var xTarget = oTarget.xSector;
@@ -118,23 +113,11 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 
 
 	testSolid: function(x, y) {
-		var rc = this.oGame.oRaycaster;
-		var rcs = rc.nMapSize;
-		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
-			return rc.getMapPhys(x, y) !== rc.PHYS_NONE;
-		} else {
-			return false;
-		}
+		return this.oGame.isSectorSolid(x, y);
 	},
 
 	testWalkable: function(x, y) {
-		var rc = this.oGame.oRaycaster;
-		var rcs = rc.nMapSize;
-		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
-			return rc.getMapPhys(x, y) === rc.PHYS_NONE;
-		} else {
-			return false;
-		}
+		return this.oGame.isSectorWalkable(x, y);
 	},
 
 			
@@ -290,6 +273,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkChase_enter: function(n) {
 		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkChase: function() {
@@ -308,11 +292,12 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkRetreat_enter: function(n) {
 		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkRetreat: function() {
 		if (this.isTimeMultiple(20)) {
-			this.walkToTarget(-this._fSpeed);
+			this.walkToTarget(this._fSpeed);
 		}
 		this.process();
 		this.move('b');
@@ -349,6 +334,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	thinkZigZagChase_enter: function(n) {
 		this.setExpireTime(n);
 		this.bZigZag = false;
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkZigZagChase: function() {
@@ -412,6 +398,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkEvadeShoot_enter: function(n) {
 		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkEvadeShoot: function() {
@@ -437,18 +424,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	// ** TROUVER UNE TELEPORTATION DETERMINISTE
 
 	thinkTeleportRandom_enter: function(nDistMin, nDistMax) {
-		var ps = this.oGame.oRaycaster.nPlaneSpacing;
-		nDistMin = nDistMin / ps | 0;
-		nDistMax = nDistMax / ps | 0; 
-		var snail = this._oSnail;
-		var aSectors = ArrayTools.shuffle(snail.crawl(nDistMin, nDistMax));
 		var bTargetVisible, 
-			fDist, 
-			fAngle, 
 			oSector, xSector, ySector,
 			oTarget = this.getTarget(),
 			xMe = oTarget.xSector,
-			yMe = oTarget.ySector;
+			yMe = oTarget.ySector,
+			ps = this.oGame.oRaycaster.nPlaneSpacing;
+		var aSectors = ArrayTools.shuffle(
+			this.oGame.getSectorsNearObject(oTarget, nDistMin, nDistMax)
+		);
 		while (aSectors.length > 0) {
 			oSector = aSectors.shift();
 			xSector = oSector.x + xMe;
@@ -463,7 +447,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				if (aSectors.length === 0 && nDistMin > 0) {
 					// there is hope to find a suitable secteur, decrease the search radius
 					--nDistMin;
-					aSectors = ArrayTools.shuffle(snail.crawl(nDistMin));
+					aSectors = ArrayTools.shuffle(this.oGame.getSectorsNearObject(oTarget, nDistMin));
 				} // else : no hope. aSectors.length will be 0 and the loop will break
 			}
 		}
