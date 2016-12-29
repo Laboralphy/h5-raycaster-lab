@@ -15,7 +15,7 @@ O2.createClass('RCWE.Thing', {
 			'delay': 80,
 			'width': 0,
 			'height': 0,
-			'yoyo': false,
+			'loop': 'none',
 			'transl': false,
 			'noshad': false,
 			'alpha50': false
@@ -28,6 +28,7 @@ O2.createClass('RCWE.Thing', {
 	},
 	
 	setData: function(sKey, value) {
+		if (sKey == 'yoyo') return;
 		if (sKey in this.oData) {
 			this.oData[sKey] = value;
 		} else {

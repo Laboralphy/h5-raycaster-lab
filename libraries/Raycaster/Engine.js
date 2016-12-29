@@ -459,5 +459,28 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	stateEnd : function() {
 		this.pause();
+	},
+
+	/**
+	 * If the boolean parameter is false : it will stop the timer, 
+	 * effectively freezing all activities.
+	 * If the boolean parameter is true : it will only pause the raycaster
+	 * rendering process.
+	 */
+	pause: function(bSoft) {
+		if (bSoft) {
+			if (this.oRaycaster) {
+				this.oRaycaster.bPause = true;
+			}
+		} else {
+			__inherited();
+		}
+	},
+
+	resume: function() {
+		if (this.oRaycaster) {
+			this.oRaycaster.bPause = false;
+		}
+		__inherited();
 	}
 });

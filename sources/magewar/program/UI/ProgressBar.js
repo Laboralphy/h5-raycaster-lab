@@ -52,7 +52,7 @@ O2.extendClass('UI.ProgressBar', H5UI.Box, {
 	 */
 	setProgress: function(n) {
 		this._set('nProgress', n);
-		this.oBar.setSize(Math.max(1, this.getWidth() * this.nProgress / this.nMax | 0), this.getHeight());
+		this.oBar.setSize(Math.max(1, this.width() * this.nProgress / this.nMax | 0), this.height());
 	},
 
 	/**

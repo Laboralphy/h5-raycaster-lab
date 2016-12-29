@@ -10,8 +10,6 @@
  * - $color-darken-2 : la couleur de base légèrement plus foncée (appliquée a des backgrounds)
  * - $color-text : la couleur de base (appliquée à du texte) 
  * - $color-text-lighten-5 : la couleur de base fortemennt éclaircée (appliquée a du texte)
- * - $color-border : la couleur de base (appliquée à des bordures) 
- * - $color-border-lighten-5 : la couleur de base fortemennt éclaircée (appliquée a des bordures)
  * 
  * exemple de thème :
  * 
@@ -25,12 +23,12 @@ O2.createClass('O876.ThemeGenerator', {
 	_oStyle: null,
 	
 	define: function(sColor, oTheme) {
-		var r = new O876.Rainbow();
-		var aLighten = r.spectrum(sColor, '#FFFFFF', 7);
-		var aDarken = r.spectrum(sColor, '#000000', 7);
+		var oRainbow = new O876.Rainbow();
+		var aLighten = oRainbow.spectrum(sColor, '#FFFFFF', 7);
+		var aDarken = oRainbow.spectrum(sColor, '#000000', 7);
 		var sName = '$color';
 	
-		var oCSS = {};
+		var oCSS = {}
 		oCSS[sName] = 'background-color : ' + sColor;
 		oCSS[sName + '-text'] = 'color : ' + sColor;
 		
@@ -46,11 +44,10 @@ O2.createClass('O876.ThemeGenerator', {
 		var aTheme = [];
 		
 		for (var sClass in oTheme) {
-			aTheme.push(sClass + ' { ' + oTheme[sClass].map(function(t) { 
-				return oCSS[t];
-			}).join('; ') + '; }');
+			aTheme.push(sClass + ' { ' + oTheme[sClass].map(function(t) { return oCSS[t]; }).join('; ') + '; }');
 		}
 	
+		
 		if (this._oStyle) {
 			this._oStyle.remove();
 			this._oStyle = null;
@@ -58,7 +55,7 @@ O2.createClass('O876.ThemeGenerator', {
 		var oStyle = document.createElement('style');
 		oStyle.setAttribute('type', 'text/css');
 		oStyle.innerHTML = aTheme.join('\n').replace(/\$color/g, sName);
-		this._oStyle = oStyle;
+		this._oStyle = oStyle; 
 		document.getElementsByTagName('head')[0].appendChild(oStyle);
 	}
 });

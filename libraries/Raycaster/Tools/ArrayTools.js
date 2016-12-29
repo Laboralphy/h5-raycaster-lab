@@ -13,14 +13,6 @@ O2.createObject('ArrayTools', {
 	removeItem: function(aArray, nItem) {
 		var aItem = Array.prototype.splice.call(aArray, nItem, 1);
 		return aItem[0];
-		/*
-		if (nItem >= (aArray.length - 1)) {
-			return aArray.pop();
-		} else {
-			var oItem = aArray[nItem];
-			aArray[nItem] = aArray.pop();
-			return oItem;
-		}*/
 	},
 	
 	isArray: function(o) {

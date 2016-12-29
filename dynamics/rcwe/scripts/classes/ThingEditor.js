@@ -10,9 +10,11 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 	_oAnimCanvas: null,
 	_oAnimContext: null,
 	_oAnimation: null,
+	_aLoopTypes: null,
 	
 	build: function() {
 		__inherited('Thing editor');
+		this._aLoopTypes = ['none', 'forward', 'yoyo', 'random'];
 		this.getContainer().addClass('ThingEditor');
 		var $structure = $('<table>' +
 			'<tbody>' +
@@ -29,7 +31,7 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 		
 		// frames
 		// delay
-		// yoyo
+		// loop
 		// transl
 		// noshad
 		// alpha50
@@ -52,10 +54,12 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 		$('th', $tr).append('delay :');
 		$('td', $tr).append('<input name="delay" type="number" min="40" max="8800" step="40" value="80" />').append('ms');
 		$tbody.append($tr);
-		
+
 		$tr = $('<tr><th></th><td></td></tr>');
-		$('th', $tr).append('yoyo :');
-		$('td', $tr).append('<input name="yoyo" type="checkbox"/>');
+		$('th', $tr).append('loop :');
+		var $animtype = $('<select name="loop"></select>');
+		$animtype.append(this._aLoopTypes.map(x => $('<option value="' + x + '">' + x + '</option>')));
+		$('td', $tr).append($animtype);
 		$tbody.append($tr);
 
 		$tr = $('<tr><th></th><td></td></tr>');
@@ -79,7 +83,7 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 
 		this._oForm = $form;
 		
-		$('input', $form).on('change', (function(oEvent) {
+		$('input, select', $form).on('change', (function(oEvent) {
 			this.restartAnimation();	
 		}).bind(this));
 
@@ -103,8 +107,10 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 			case 'transl':
 			case 'alpha50':
 			case 'noshad':
-			case 'yoyo':
 				return $('[name="' + sData + '"]', this._oForm).prop('checked');
+
+			case 'loop':
+				return this._aLoopTypes.indexOf($('[name="loop"]', this._oForm).val()) | 0;
 				
 			case 'frames':
 			case 'delay':
@@ -117,10 +123,12 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 			case 'transl':
 			case 'alpha50':
 			case 'noshad':
-			case 'yoyo':
 				$('[name="' + sData + '"]', this._oForm).prop('checked', !!value).trigger('change');
 				break;
 				
+			case 'loop':
+				return $('[name="loop"]', this._oForm).val(this._aLoopTypes[value]).trigger('change');
+
 			case 'frames':
 			case 'delay':
 				$('[name="' + sData + '"]', this._oForm).val(value).trigger('change');
@@ -134,7 +142,7 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 			nStart: 0,
 			nCount: this._getThingData('frames'),
 			nDuration: this._getThingData('delay'),
-			nLoop: this._getThingData('yoyo') ? 2 : 1,
+			nLoop: this._getThingData('loop'),
 			nIndex: 0,
 			nTime: 0
 		});
@@ -210,7 +218,7 @@ O2.extendClass('RCWE.ThingEditor', RCWE.Window, {
 		this.oImage = oImage.get(0);
 	},
 	
-	EXPORTABLE_PROPS: 'frames delay yoyo transl noshad alpha50',
+	EXPORTABLE_PROPS: 'frames delay loop transl noshad alpha50',
 	
 	exportThing: function(oThing) {
 		oThing.setData('image', this.oImage);

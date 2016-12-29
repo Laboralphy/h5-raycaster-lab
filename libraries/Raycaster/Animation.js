@@ -8,7 +8,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 	nCount : 0, // nombre total de frames
 	nDuration : 0, // durée de chaque frame, plus la valeur est grande plus l'animation est lente
 	nTime : 0, // temps
-	nLoop : 0, // type de boucle 1: boucle forward; 2: boucle yoyo
+	nLoop : 0, // type de boucle 1: boucle forward; 2: boucle yoyo 3: random
 	nFrame: 0, // Frame actuellement affichée
 	
 	nDirLoop: 1,  // direction de la boucle (pour yoyo)
@@ -34,7 +34,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 		// Dépassement de duration (pour une seule fois)
 		if (this.nTime >= this.nDuration) {
 			this.nTime -= this.nDuration;
-			if (this.nLoop === 3) {
+			if (this.nLoop == 3) {
 				this.nIndex = Math.random() * this.nCount | 0;
 			} else {
 				this.nIndex += this.nDirLoop;
@@ -55,7 +55,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 				
 			case 2:
 				if (this.nIndex >= this.nCount) {
-					this.nIndex = this.nCount - 2;
+					this.nIndex = this.nCount - 1;
 					this.nDirLoop = -1;
 				}
 				if (this.nIndex <= 0) {

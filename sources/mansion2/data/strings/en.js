@@ -48,14 +48,14 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		txforest: 'A cursed forest...',
 		txcult: 'An evil cult...',
 		txworsh: '...worshippers of Dark Gods...',
-		txmans: '...their dreadful mansion,\nhaunted by vengeful spirits.',
+		txmans: '...their abandoned mansion is\nnow haunted by vengeful spirits.',
 		txheap: 'Heaps of powerful and dangerous\ntomes of black magic.',
-		txgetem: 'Recover them before it\'s too late !'
+		txgetem: 'Recover these lost books before\nthey fall into the wrong hands !'
 	},
 
 	LEVELS: {
-		'm090-htp': {
-			hint_shoot_painting: 'You should take a picture of this painting',
+		tutorial: {
+			hint_shoot_painting: 'Take a picture of this painting !',
 			hint_pickup_page: 'Your goal is to recover fragments of manuscript like this one.',
 			hint_ghost_incoming: "You have attracted a vengeful spirit's attention.",
 			hint_exit: "Left-click to exit level.",
@@ -66,7 +66,19 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	},
 	
 	UI: {
-		empty_album: 'Empty album'
+		empty_album: 'Empty album',
+		back: '↩ back',
+		prev: '◀prev',
+		next: 'next▶',
+		menu: '↩ menu',
+		menu_title: 'Menu',
+		menu_options: {
+			mo_album: 'Album',
+			mo_notes: 'Notes',
+			mo_help: 'Help'
+		},
+		album_title: 'Album',
+		notes_title: 'Notes'
 	}
 
 });

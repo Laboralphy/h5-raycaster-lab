@@ -11,7 +11,7 @@ O2.createClass('O876_Raycaster.ThinkerManager', {
 		if (sThinker === undefined || sThinker === null) {
 			return null;
 		}
-		var pThinker = O2._loadObject(sThinker + 'Thinker');
+		var pThinker = O2.loadObject(sThinker + 'Thinker');
 		if (pThinker !== null) {
 			var oThinker = new pThinker();
 			oThinker.oGame = this.oGameInstance;

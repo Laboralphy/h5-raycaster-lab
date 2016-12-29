@@ -98,6 +98,11 @@ O2.createObject('H5UI', {
 	canvasDispenser: [],
 	handle : 0,
 	
+	font: {
+		defaultFont: 'monospace',
+		defaultSize: 12,
+		defaultColor: '#000'
+	},
 	
 	root: null,
 

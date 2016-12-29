@@ -60,7 +60,7 @@
 		alpha50: bool,					// flag de semi transparence 
 		noshad: bool,					// flag de non-ombrage
 		transl: bool,					// flag de translucidité
-		yoyo: bool						// flag d'animation yoyo
+		loop: initial					// type d'animation
 	}, ...
 	things: array of {
 		x: int,							// tier de case x

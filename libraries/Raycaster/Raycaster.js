@@ -70,6 +70,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	// Permet de régler les évènements liés au temps
 	TIME_FACTOR : 50,  // c'est le nombre de millisecondes qui s'écoule entre chaque calcul
 
+	bPause: false,
+
 	// World Render params
 	oWall : null,
 	oFloor : null,
@@ -305,11 +307,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	frameProcess : function() {
+		if (this.bPause) {
+			return;
+		}
 		this.aDiscardedMobiles = this.updateHorde();
 		this.oEffects.process();
 	},
 
 	frameRender : function() {
+		if (this.bPause) {
+			this.flipBuffer();
+			return;
+		}
 		if (this.b3d) {
 			var c = this.oCamera; // camera
 			var a = c.fTheta; // angle camera
@@ -467,12 +476,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.yScrSize = this._oCanvas.height >> 1;
 	},
 	
-	getRenderContext: function() {
-		return this._oRenderContext;
-	},
 
 	getRenderCanvas: function() {
 		return this._oRenderCanvas;
+	},
+
+	getRenderContext: function() {
+		return this._oRenderContext;
 	},
 	
 	getScreenCanvas: function() {
@@ -734,7 +744,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			codes : oData.walls.codes,
 			animated : 'animated' in oData.walls ? oData.walls.animated : {}
 		};
-		if ('flats' in oData) {
+		if ('flats' in oData && oData.flats) {
 			this.bFloor = true;
 			var bEmptyCeil = oData.flats.codes.every(function(item) {
 				if (item) {
@@ -1428,6 +1438,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			var wBG = oBG.width;
 			var hBG = oBG.height;
 			var xBG = (this.fBGOfs + this.fCameraBGOfs) % wBG | 0;
+			while (xBG < 0) {
+				xBG += wBG;
+			}
 			var yBG = this.yScrSize - (hBG >> 1);
 			hBG = hBG + yBG;
 			rctx.drawImage(oBG, 0, 0, wBG, hBG, wBG - xBG, yBG, wBG, hBG);
@@ -1462,7 +1475,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.oConfig.drawMap) {
 			this.drawMap();
 		}
-		this.drawWeapon();
+		//this.drawWeapon();
 	},
 	
 	/**

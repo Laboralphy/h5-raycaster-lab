@@ -1,6 +1,6 @@
 O2.createClass('H5UI.Font', {
 	_sStyle: '',
-	_sFont : 'monospace',
+	_sFont : '',
 	_nFontSize : 10,
 	_sColor : 'rgb(255, 255, 255)',
 	_oControl : null,
@@ -8,6 +8,9 @@ O2.createClass('H5UI.Font', {
 	_bOutline: false,
 
 	__construct : function(oControl) {
+		this._sFont = H5UI.font.defaultFont;
+		this._nFontSize = H5UI.font.defaultSize;
+		this._sColor = H5UI.font.defaultColor;
 		if (oControl === undefined) {
 			throw new Error('h5ui.font: no specified control');
 		}

@@ -8,22 +8,36 @@ O2.extendClass('MANSION.GRetaliaterThinker', MANSION.VengefulThinker, {
 
 	_bImHit: false,
 
-	damage: function() {
+	damage: function(nAmount, bCritical) {
 		this._bImHit = true;
-		__inherited();
+		__inherited(nAmount, bCritical);
+	},
+
+	isDamaged: function() {
+		if (this._bImHit) {
+			this._bImHit = false;
+			return true;
+		} else {
+			return false;
+		}
 	},
 
 	thinkIdle: function() {
 		__inherited();
 		var oTarget = this.getTarget();
 		if (this.isEntityVisible(oTarget)) {
-			if (this._bImHit) {
-				this._bImHit = false;
-				this.shoot();
+			if (this.isDamaged()) {
+				this.setThink('Wait', 25, 'Shoot');
+			} else {
+				this.setThink('Chase', 120);
 			}
-			this.setThink('Chase', 120);
 		} else {
 			this.teleportRandom(128, 256); 
 		}
+	},
+
+	thinkShoot: function() {
+		this.shoot();
+		this.setThink('Idle');
 	}
 });

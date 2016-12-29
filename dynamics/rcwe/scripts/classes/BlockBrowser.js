@@ -205,7 +205,7 @@ O2.extendClass('RCWE.BlockBrowser', RCWE.Window, {
 			var $b = $(oCanvas);
 			var oBlock = $b.data('block');
 			var bModified = false;
-			('right left ceil floor').split(' ').forEach(function(sData) {
+			('right left right2 left2 ceil floor').split(' ').forEach(function(sData) {
 				if (oBlock.getData(sData) == id) {
 					oBlock.setData(sData, '');
 					bModified = true;

@@ -1,3 +1,4 @@
+"use strict"
 /** O2: Fonctionalités Orientées Objets pour Javascript
  * 2010 Raphaël Marandet
  * ver 1.0 10.10.2010
@@ -7,32 +8,6 @@
  */
 
 var O2 = {};
-
-/** Remplace dans une chaine "inherited(" par "inherited(this"
- * @param s Chaine à remplacer
- * @return nouvelle chaine remplacée
- */
-function __inheritedThisMacroString(s) {
-	return s.toString().replace(/__inherited\s*\(/mg,
-			'O2.parent(this, ').replace(
-			/O2.parent\s*\(\s*this,\s*\)/mg, 'O2.parent(this)');
-}
-
-/** Invoque la methode parente
- * @param This appelant, + Paramètres normaux de la methode parente.
- * @return Retour normal de la methode parente.
- */
-O2.parent = function() {
-	var fCaller = O2.parent.caller;
-	var oThis = arguments[0];
-	var aParams;
-	if ('__inherited' in fCaller) {
-		aParams = Array.prototype.slice.call(arguments, 1);
-		return fCaller.__inherited.apply(oThis, aParams);
-	} else {
-		throw new Error('o2: no __inherited');
-	}
-};
 
 /** Creation d'une nouvelle classe
  * @example NouvelleClasse = Function.createClass(function(param1) { this.data = param1; });
@@ -55,6 +30,19 @@ Function.prototype.createClass = function(pPrototype) {
 	}
 };
 
+O2._superizeFunction = function(f, fParent) {
+	var fNew;
+	var s = 'fNew = function() {\n' +
+		'var __inherited = (function() {\n' +
+		'	return fParent.apply(this, arguments);\n' +
+		'}).bind(this);\n' +
+		'var __function = ' +
+		f.toString() + ';' +
+		'\nreturn __function.apply(this, arguments);\n' +
+	'}\n';
+	return eval(s);
+};
+
 /** Mécanisme d'extention de classe.
  * Cette fonction accepte un ou deux paramètres
  * Appel avec 1 paramètre :
@@ -65,21 +53,26 @@ Function.prototype.createClass = function(pPrototype) {
  * @return Instance de lui-même.
  */
 Function.prototype.extendPrototype = function(aDefinition) {
-	var iProp = '', f, fInherited;
+	var iProp = '', f, fInherited, f2;
 	if (aDefinition instanceof Function) {
 		aDefinition = aDefinition.prototype;
 	}
 	for (iProp in aDefinition) {
 		f = aDefinition[iProp];
-		if (iProp in this.prototype	&& (this.prototype[iProp] instanceof Function)) {
+		if (iProp in this.prototype && (this.prototype[iProp] instanceof Function)) {
 			// Sauvegarde de la méthode en cours : elle pourrait être héritée
 			fInherited = this.prototype[iProp];
 			// La méthode en cour est déja présente dans la super classe
 			if (f instanceof Function) {
 				// completion des __inherited
-				eval('f = ' + __inheritedThisMacroString(f.toString()));
-				this.prototype[iProp] = f;
-				this.prototype[iProp].__inherited = fInherited;
+				// Ancien code
+				//eval('f = ' + __inheritedThisMacroString(f.toString()));
+				//this.prototype[iProp] = f;
+				//this.prototype[iProp].__inherited = fInherited;
+
+				// Nouveau code
+				this.prototype[iProp] = O2._superizeFunction(f, fInherited);
+
 			} else {
 				// On écrase probablement une methode par une propriété : Erreur
 				throw new Error(
@@ -142,7 +135,7 @@ O2.createObject = function(sName, oObject) {
  * @param s string, nom de la classe
  * @return pointer vers la Classe
  */
-O2._loadObject = function(s, oContext) {
+O2.loadObject = function(s, oContext) {
 	var aClass = s.split('.');
 	var pBase = oContext || window;
 	var sSub, sAlready = '';
@@ -163,6 +156,12 @@ O2._loadObject = function(s, oContext) {
 	}
 };
 
+O2._loadObject = function(s, oContext) {
+	console.warn('O2._loadObject is deprecated. Use the brand new O2.loadObject, which do the same thing, but without this "_" in front of the name.');
+	console.trace();
+	return O2.loadObject(s, oContext);
+}
+
 /** Creation d'une classe avec support namespace
  * le nom de la classe suit la syntaxe de la fonction O2.createObject() concernant les namespaces.
  * @param sName string, nom de la classe
@@ -180,7 +179,7 @@ O2.createClass = function(sName, pPrototype) {
  */
 O2.extendClass = function(sName, pParent, pPrototype) {
 	if (typeof pParent === 'string') {
-		pParent = O2._loadObject(pParent);
+		pParent = O2.loadObject(pParent);
 	}
 	return O2.createObject(sName, Function.extendClass(pParent, pPrototype));
 };
@@ -192,9 +191,16 @@ O2.extendClass = function(sName, pParent, pPrototype) {
  * @param pMixin mixin lui même
  */
 O2.mixin = function(pPrototype, pMixin) {
+	var oMixin;
 	if (typeof pPrototype == 'string') {
-		pPrototype = O2._loadObject(pPrototype);
+		pPrototype = O2.loadObject(pPrototype);
 	}
-	pPrototype.extendPrototype(pMixin);
+	if (typeof pMixin === 'function') {
+		oMixin = new pMixin();
+		oMixin.mixin(pPrototype);
+	} else {
+		oMixin = pMixin;
+		pPrototype.extendPrototype(oMixin);
+	}
 };
 

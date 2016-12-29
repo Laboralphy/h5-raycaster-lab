@@ -17,9 +17,6 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 		this.setColor(this._sColorNormal, this._sColorOver);
 		this.setBorder(1, this._sColorBorder);
 		this.oText = this.linkControl(new H5UI.Text());
-		this.oText.font.setFont('Arial');
-		this.oText.font.setSize(12);
-		this.oText.font.setColor('#000');
 		this.oText.moveTo(4, 4);
 		this.oText.setCaption('Button');
 		this.oText.align('center');
@@ -27,7 +24,7 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 
 	setCaption : function(sCaption) {
 		this.oText.setCaption(sCaption);
-		this.realignControls();
+		this._realignControls();
 	},
 
 	getCaption : function() {

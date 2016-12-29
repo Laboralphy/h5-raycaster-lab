@@ -47,6 +47,7 @@ O2.extendClass('RCWE.WorldViewer', RCWE.Window, {
 	},
 	
 	resizeProc: function(oEvent) {
+		var hWork, wWork;
 		var $screen = $('#screen');
 		var $screenContainer = $screen.parent();
 		var oScreen = $screen.get(0);

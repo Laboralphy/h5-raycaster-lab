@@ -16,6 +16,12 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	_yGradEnd : 0,
 	_nGradOrientation : 0,
 	
+	
+	__construct: function() {
+		__inherited();
+		this.on('mousein', this.onMouseIn.bind(this));
+		this.on('mouseout', this.onMouseOut.bind(this));
+	},
 
 	setColor : function(sNormal, sHighlight) {
 		if (sHighlight === undefined) {
@@ -46,7 +52,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	 * @param y mouse position y (pixels)
 	 * @param b clicked button mask
 	 */
-	onMouseIn : function(x, y, b) {
+	onMouseIn : function(oEvent) {
+		var oSender = oEvent.target;
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
 		this._set('_sColorBorder', this._sColorBorderInside);
 		this._set('_sColor', this._sColorInside);
 	},
@@ -57,7 +67,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	 * @param y mouse position y (pixels)
 	 * @param b clicked button mask
 	 */
-	onMouseOut : function(x, y, b) {
+	onMouseOut : function(oEvent) {
+		var oSender = oEvent.target;
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
 		this._set('_sColorBorder', this._sColorBorderOutside);
 		this._set('_sColor', this._sColorOutside);
 	},
@@ -68,28 +82,28 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 			this._xGradStart = 0;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.height() - 1;
 			break;
 
 		case 2: // Horiz
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
+			this._xGradEnd = this.width() - 1;
 			this._yGradEnd = 0;
 			break;
 	
 		case 3: // Diag 1
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
-			this._yGradEnd = this.getHeight() - 1;
+			this._xGradEnd = this.width() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 	
 		case 4: // Diag 2
-			this._xGradStart = this.getWidth() - 1;
+			this._xGradStart = this.width() - 1;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 		}
 	},
@@ -137,14 +151,14 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 		}
 		return xFillStyle;
 	},
-
+	
 	renderSelf : function() {
 		this._oContext.fillStyle = this.getFillStyle();
-		this._oContext.fillRect(0, 0, this.getWidth(), this.getHeight());
+		this._oContext.fillRect(0, 0, this.width(), this.height());
 		if (this._nBorderWidth) {
 			this._oContext.strokeStyle = this._sColorBorder;
 			this._oContext.lineWidth = this._nBorderWidth;
-			this._oContext.strokeRect(0, 0, this.getWidth(), this.getHeight());
+			this._oContext.strokeRect(0, 0, this.width(), this.height());
 		}
 	}
 });
