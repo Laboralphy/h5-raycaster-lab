@@ -73,7 +73,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				if (this.distanceTo(oTarget) >= this.MAX_INVISIBLE_DISTANCE) {
 					return false;
 				}
-				fAngle += 6 * Math.random() - 3;
+				fAngle += 6 * this.oGame.rand() - 3;
 			}
 			return fAngle;
 		}
@@ -254,17 +254,19 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 
 
+	_sThinkWaitAfter: '',
 	/**
 	 * Patiente un certain temps
 	 */
-	thinkWait_enter: function(n) {
+	thinkWait_enter: function(n, sAfter) {
 		this.setExpireTime(n);
+		this._sThinkWaitAfter = sAfter;
 	},
 
 	thinkWait: function() {
 		this.process();
 		if (this.isActionExpired()) {
-			this.setThink('Idle');
+			this.setThink(this._sThinkWaitAfter || 'Idle');
 		}
 	},
 	
@@ -381,7 +383,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			this.setThink('Idle');
 		}
 	},
-	
+
 	/**
 	 * Shoot an ecto missile against the target
 	 */
@@ -402,7 +404,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 
 	thinkEvadeShoot: function() {
-		if (this.isTimeMultiple(40) && Math.random() < this._fFireProb) {
+		if (this.isTimeMultiple(40) && MAIN.rand() < this._fFireProb) {
 			this.shoot();
 		}
 		this.thinkEvade();

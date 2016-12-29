@@ -12,6 +12,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	oLogic: null,
 	oUI: null,
 	oSnail: null,
+	oRandom: null,
 
 
 	console: function() {
@@ -30,6 +31,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initAudio();
 		this.initPopup();
 		this.initUI();
+		this.initRandom();
 		this._oConsole = new MANSION.Console();
 		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
@@ -64,6 +66,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('attack', this.gameEventAttack.bind(this));
 		
 		this.on('key.down', this.gameEventKey.bind(this));		
+	},
+
+	/**
+	 * Initialization of randm generator
+	 */
+	initRandom: function() {
+		var r = new O876.Random();
+		r.seed(Date.now() / 1000);
+		MAIN.rand = function(x, y) {
+			return r.rand(x, y);
+		}
 	},
 
 	/**

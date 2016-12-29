@@ -17,6 +17,10 @@ O2.extendClass('MANSION.GEvaderThinker', MANSION.VengefulThinker, {
 
 	// 0 < on rushe < SEC < on retreat < MIN < on évade < MAX < on chase
 
+	PATTERN_CHASE: 1,
+	PATTERN_EVADE: 2,
+
+
 	thinkIdle: function() {
 		__inherited();
 		var oTarget = this.getTarget();
@@ -24,17 +28,20 @@ O2.extendClass('MANSION.GEvaderThinker', MANSION.VengefulThinker, {
 			var nDistance = this.distanceTo(oTarget);
 			if (nDistance < this.DISTANCE_SECURITY) {
 				// on rushe
-				this.setThink('Rush', 300);
-			} else if (nDistance < this.DISTANCE_MIN) {
-				this.setThink('Retreat', 120);
-			} else if (nDistance < this.DISTANCE_MAX) {
-				this.setThink('Evade', 120);
+				this.setThink('Rush', 75);
 			} else {
-				this.setThink('Chase', 120);
+				switch (this.pattern()) {
+					case this.PATTERN_CHASE:
+						this.setThink('Chase', 120);
+						break;
+
+					case this.PATTERN_EVADE:
+						this.setThink('Evade', 120);
+						break;
+				}
 			}
 		} else {
-			this.teleportRandom(this.DISTANCE_MIN, this.DISTANCE_MAX);
+			this.teleportRandom(128, 256); 
 		}
-		
 	}
 });

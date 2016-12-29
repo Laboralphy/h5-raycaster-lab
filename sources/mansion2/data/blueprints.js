@@ -76,7 +76,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		tile: 'g_dark_tears',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.GChaser',
+		thinker: 'MANSION.GZigZag',
 		fx: 3,
 		data: {
 			subtype: 'ghost',
@@ -100,7 +100,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		tile: 'g_decaying',
 		width: 32,
 		height: 96,
-		thinker: 'MANSION.GChaser',
+		thinker: 'MANSION.GZigZagRusher',
 		fx: 3,
 		data: {
 			subtype: 'ghost',

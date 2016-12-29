@@ -75,8 +75,8 @@ O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 					height: this.oPhoto.height,
 				};
 				if (this.nSplash > 0) {
-					pr.x = -Math.random() * pr.width;
-					pr.y = -Math.random() * pr.height;
+					pr.x = -MAIN.rand() * pr.width;
+					pr.y = -MAIN.rand() * pr.height;
 					pr.width *= 2;
 					pr.height *= 2;
 					this.oPhotoRect = pr;
