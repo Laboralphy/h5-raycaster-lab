@@ -201,7 +201,7 @@ O2.createClass('RCWE.RCDataBuilder', {
 				animations: [
 					[ // first and only animation
 						[0, 0, 0, 0, 0, 0, 0, 0],
-						bp.frames, bp.delay, bp.yoyo ? 2 : bp.frames > 1 ? 1 : 0
+						bp.frames, bp.delay, bp.loop
 					]
 				]
 			};

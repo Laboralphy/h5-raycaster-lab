@@ -14,7 +14,7 @@ O2.extendClass('MANSION.GZigZagRusherThinker', MANSION.VengefulThinker, {
 			if (this.distanceTo(oTarget) <= this.MINIMUM_RUSH_DISTANCE) {
 				this.setThink('Rush', 75);
 			} else {
-				this.setThink('ZigZagChase', 120);
+				this.setThink('ZigZagChase', MAIN.rand(300, 400));
 			}
 		} else {
 			this.teleportRandom(128, 256); 

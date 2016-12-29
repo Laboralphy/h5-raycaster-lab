@@ -10,8 +10,8 @@ O2.extendClass('MANSION.GChaserThinker', MANSION.VengefulThinker, {
 		if (this.isEntityVisible(oTarget)) {
 			this.setThink('Chase', 120);
 		} else {
+			var m = this.oMobile;
 			this.teleportRandom(128, 256); 
 		}
-		
 	}
 });

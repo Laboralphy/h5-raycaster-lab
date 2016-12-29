@@ -33,8 +33,13 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 			__inherited(o);
 		} else {
 			this.getContainer().linkControl(o);
+			o.invalidate();
 		}
 		return o;
+	},
+
+	clear: function() {
+		this.getContainer().clear();
 	},
 
 	/**
@@ -45,8 +50,7 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	getContainer : function() {
 		if (this._oContainer === null) {
-			this._oContainer = this.linkControl(new H5UI.WinControl(), true);
-			this._oContainer._sClass = 'ScrollBoxContainer';
+			this._oContainer = this.linkControl(new H5UI.ScrollBoxContainer(), true);
 		}
 		return this._oContainer;
 	},
@@ -59,10 +63,18 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	scrollTo : function(x, y) {
 		if (x != this._xScroll || y != this._yScroll) {
-			this._xScroll = x;
-			this._yScroll = y;
+			var yContSize = this.getContainer().height();
+			var yThisSize = this.height();
+			var yMax = Math.max(0, yContSize - yThisSize);
+			var xContSize = this.getContainer().width();
+			var xThisSize = this.width();
+			var xMax = Math.max(0, xContSize - xThisSize);
+			this._xScroll = x = Math.max(0, Math.min(x, xMax));
+			this._yScroll = y = Math.max(0, Math.min(y, yMax));
 			this.getContainer().moveTo(-x, -y);
-			this.invalidate();
+			if (this.getContainer()._bInvalid) {
+				this.invalidate();
+			}
 		}
 	},
 
@@ -95,9 +107,10 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		var c = this.getContainer();
 		for ( var i = 0; i < c._aControls.length; i++) {
 			o = c.getControl(i);
-			w = Math.max(w, o._x + o.getWidth());
-			h = Math.max(h, o._y + o.getHeight());
+			w = Math.max(w, o._x + o.width());
+			h = Math.max(h, o._y + o.height());
 		}
 		c.setSize(w, h);
+		this.getSurface().clearRect(0, 0, this.width(), this.height());
 	}
 });

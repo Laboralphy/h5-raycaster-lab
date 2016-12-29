@@ -23,6 +23,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		this._oBresenham = new O876.Bresenham();
 	},
 
+
+
+
+
 	/**
 	 * sets the normal moving speed of the ghost
 	 * @param f float normal speed
@@ -69,54 +73,51 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				if (this.distanceTo(oTarget) >= this.MAX_INVISIBLE_DISTANCE) {
 					return false;
 				}
-				fAngle += 6 * Math.random() - 3;
+				fAngle += 6 * this.oGame.rand() - 3;
 			}
 			return fAngle;
 		}
 		return false;
 	},
 	
-	boundTestWalkable: null,
-
 	/**
 	 * Renvoie true si le sujet peut voir la cible.
 	 * pour que la fonction renvoie true il faut que le sujet puisse voir la cible
 	 * ceci prend en compte l'invisibilité de la cible, 
 	 * le niveau de detection et l'aveuglement du sujet,
 	 * les obstacle muraux qui cacheraient éventuellement la cible
+	 * Si on spécifié les coordonnées d'une secteur, celui ci sera utilisée
+	 * sinon on utilisera le secteur du mobile
+	 * @param oTarget cible qu'on cherche à voir
+	 * @param xMe (optionel) coord secteur source
+	 * @param yMe (optionel) coord secteur source
 	 * @return bool
 	 */
-	isEntityVisible : function(oTarget) {
+	isEntityVisible : function(oTarget, xMe, yMe) {
 		var oMe = this.oMobile;
-		var xMe = oMe.xSector;
-		var yMe = oMe.ySector;
+		xMe = xMe !== undefined ? xMe : oMe.xSector;
+		yMe = yMe !== undefined ? yMe : oMe.ySector;
+		if (!this.testWalkable(xMe, yMe)) {
+			console.log('isEntityVisible : not walkable here', xMe, yMe, oMe.xSector, oMe.ySector);
+			return false;
+		}
 		var xTarget = oTarget.xSector;
 		var yTarget = oTarget.ySector;
-		if (!this.boundTestWalkable) {
-			this.boundTestWalkable = this.testWalkable.bind(this);
-		}
-		return !!this._oBresenham.line(xMe, yMe, xTarget, yTarget, this.boundTestWalkable);
+		return !!this._oBresenham.line(
+			xMe, 
+			yMe, 
+			xTarget, 
+			yTarget, 
+			(x, y) => this.testWalkable(x, y));
 	},
 
 
 	testSolid: function(x, y) {
-		var rc = this.oGame.oRaycaster;
-		var rcs = rc.nMapSize;
-		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
-			return rc.getMapPhys(x, y) !== rc.PHYS_NONE;
-		} else {
-			return false;
-		}
+		return this.oGame.isSectorSolid(x, y);
 	},
 
 	testWalkable: function(x, y) {
-		var rc = this.oGame.oRaycaster;
-		var rcs = rc.nMapSize;
-		if (x >= 0 && y >= 0 && x < rcs && y <= rcs) {
-			return rc.getMapPhys(x, y) === rc.PHYS_NONE;
-		} else {
-			return false;
-		}
+		return this.oGame.isSectorWalkable(x, y);
 	},
 
 			
@@ -157,7 +158,14 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * Téléportation devant la cible
 	 */
 	teleportFront: function() {
-		this.setThink('Teleport', 64, 0);
+		this.setThink('Teleport', {distance: 64, angle: 0});
+	},
+
+	/**
+	 * Téléportation derrière la cible
+	 */
+	teleportRear: function() {
+		this.setThink('Teleport', {distance: 64, angle: Math.PI});
 	},
 
 	/**
@@ -165,7 +173,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * a une position aléatoire
 	 */
 	teleportRandom: function(nDistMin, nDistMax) {
-		this.setThink('Teleport', nDistMin + Math.random() * nDistMax, Math.random() * 2 * Math.PI - Math.PI);
+		this.setThink('TeleportRandom', nDistMin, nDistMax);
 	},
 
 	stop: function() {
@@ -246,17 +254,19 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 
 
+	_sThinkWaitAfter: '',
 	/**
 	 * Patiente un certain temps
 	 */
-	thinkWait_enter: function(n) {
+	thinkWait_enter: function(n, sAfter) {
 		this.setExpireTime(n);
+		this._sThinkWaitAfter = sAfter;
 	},
 
 	thinkWait: function() {
 		this.process();
 		if (this.isActionExpired()) {
-			this.setThink('Idle');
+			this.setThink(this._sThinkWaitAfter || 'Idle');
 		}
 	},
 	
@@ -265,6 +275,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkChase_enter: function(n) {
 		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkChase: function() {
@@ -278,6 +289,24 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	/**
+	 * Bat en retraite
+	 */
+	thinkRetreat_enter: function(n) {
+		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
+	},
+
+	thinkRetreat: function() {
+		if (this.isTimeMultiple(20)) {
+			this.walkToTarget(this._fSpeed);
+		}
+		this.process();
+		this.move('b');
+		if (this.isActionExpired()) {
+			this.setThink('Idle');
+		}
+	},
 
 	/**
 	 * Pourchasse la cible en se positionnant vers elle et en avancant
@@ -307,6 +336,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	thinkZigZagChase_enter: function(n) {
 		this.setExpireTime(n);
 		this.bZigZag = false;
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkZigZagChase: function() {
@@ -353,7 +383,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			this.setThink('Idle');
 		}
 	},
-	
+
 	/**
 	 * Shoot an ecto missile against the target
 	 */
@@ -370,10 +400,11 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkEvadeShoot_enter: function(n) {
 		this.setExpireTime(n);
+		this.walkToTarget(this._fSpeed);
 	},
 
 	thinkEvadeShoot: function() {
-		if (this.isTimeMultiple(40) && Math.random() < this._fFireProb) {
+		if (this.isTimeMultiple(40) && MAIN.rand() < this._fFireProb) {
 			this.shoot();
 		}
 		this.thinkEvade();
@@ -390,19 +421,65 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		this.setThink('Idle');
 	},
 	
+
+
+	// ** TROUVER UNE TELEPORTATION DETERMINISTE
+
+	thinkTeleportRandom_enter: function(nDistMin, nDistMax) {
+		var bTargetVisible, 
+			oSector, xSector, ySector,
+			oTarget = this.getTarget(),
+			xMe = oTarget.xSector,
+			yMe = oTarget.ySector,
+			ps = this.oGame.oRaycaster.nPlaneSpacing;
+		var aSectors = ArrayTools.shuffle(
+			this.oGame.getSectorsNearObject(oTarget, nDistMin, nDistMax)
+		);
+		while (aSectors.length > 0) {
+			oSector = aSectors.shift();
+			xSector = oSector.x + xMe;
+			ySector = oSector.y + yMe;
+			bTargetVisible = this.isEntityVisible(oTarget, xSector, ySector);
+			if (bTargetVisible) {
+				this.oMobile
+					.data('thinker.teleport.x', xSector * ps + (ps >> 1))
+					.data('thinker.teleport.y', ySector * ps + (ps >> 1));
+				return;
+			} else {
+				if (aSectors.length === 0 && nDistMin > 0) {
+					// there is hope to find a suitable secteur, decrease the search radius
+					--nDistMin;
+					aSectors = ArrayTools.shuffle(this.oGame.getSectorsNearObject(oTarget, nDistMin));
+				} // else : no hope. aSectors.length will be 0 and the loop will break
+			}
+		}
+		// no suitable place found...
+		
+	},
 	
-	/**
-	 * Téléporte le fantome devant le nez de la cible
-	 * terrible !
-	 */
-	fTeleportDist: 0, // distance de téléportation cible
-	fTeleportAngle: 0, // angle de téléport par rapport à la cible (0 = devant ; PI = derrière)
-	thinkTeleport_enter: function(fDist, fAngle) {
+	thinkTeleportRandom: function() {
+		var x = this.oMobile.data('thinker.teleport.x');
+		var y = this.oMobile.data('thinker.teleport.y');
+		this.setThink('Teleport', {x: x, y: y});
+	},
+	
+	
+	thinkTeleport_enter: function(oParams) {
+		var x, y;
+		if (('x' in oParams) && ('y' in oParams)) {
+			x = oParams.x;
+			y = oParams.y;
+		} else if (('distance' in oParams) && ('angle' in oParams)) {
+			var t = this.getTarget();
+			var fDist = oParams.distance;
+			var fAngle = oParams.angle;
+			x = t.x + fDist * Math.cos(fAngle);
+			y = t.y + fDist * Math.sin(fAngle);
+		}
 		var s = this.oMobile.oSprite;
 		s.nAlpha = 0;
 		s.bTranslucent = true;
-		this.fTeleportDist = fDist;
-		this.fTeleportAngle = fAngle;
+		this.oMobile.data('thinker.teleport.x', x).data('thinker.teleport.y', y);
 		this.stop();
 	},
 
@@ -414,12 +491,11 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		if (s.nAlpha > 3) {
 			s.bVisible = false;
 			s.nAlpha = 3;
-			var fDist = this.fTeleportDist;
-			var fAngle = t.getAngle() + this.fTeleportAngle;
 			var ps = this.oGame.oRaycaster.nPlaneSpacing;
-			// calculer les coordonnée finales
-			var x = t.x + fDist * Math.cos(fAngle);
-			var y = t.y + fDist * Math.sin(fAngle);
+			// calculer les coordonnées finales
+			var x = m.data('thinker.teleport.x');
+			var y = m.data('thinker.teleport.y');
+			m.data('thinker.teleport.x', null).data('thinker.teleport.y', null);
 			// calculer le secteur final
 			var xs = (x / ps | 0);
 			var ys = (y / ps | 0);
@@ -433,8 +509,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 				m.setXY(x1, y1);
 				// et bouger jusqu'a coordonnées finales
 				m.slide(x - x1, y - y1);
+				this.setThink('TeleportOut');
 			}
-			this.setThink('TeleportOut');
 		}
 	},
 
@@ -479,6 +555,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 */
 	thinkShutter_enter: function() {
 		this.setExpireTime(30);
+		this.oMobile.data('shutter', true);
 	},
 
 	thinkShutter: function() {
@@ -488,6 +565,9 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		}
 	},
 	
+	thinkShutter_exit: function() {
+		this.oMobile.data('shutter', false);
+	},
 	
 	thinkDie_enter: function() {
 		this.oMobile.oSprite.playAnimationType(2);

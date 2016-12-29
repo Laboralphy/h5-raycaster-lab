@@ -63,7 +63,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			oMsg.font.setFont('arial');
 			oMsg.font.setColor('#333333');
 			this._oStatusBar = oMsg;
-			this._oStatusBar.moveTo(8, this.getHeight() - this._nStatusBarHeight);
+			this._oStatusBar.moveTo(8, this.height() - this._nStatusBarHeight);
 		}
 		this._oStatusBar.setCaption(s);
 		this.invalidate();
@@ -94,7 +94,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 			b.setCaption(a[i][0]);
 			b.setSize(this._nButtonWidth, this._nStatusBarHeight);
 			b.oText.font.setSize(10);
-			b.moveTo(x + this._nButtonPadding, this.getHeight() - this._nStatusBarHeight - this._nButtonPadding);
+			b.moveTo(x + this._nButtonPadding, this.height() - this._nStatusBarHeight - this._nButtonPadding);
 			aColor = aColors[a[i][2]];
 			b.setColor(aColor[0], aColor[1]);
 			b.onClick = a[i][1];
@@ -121,7 +121,7 @@ O2.extendClass('UI.Window', H5UI.Box, {
 	setSize: function(w, h) {
 		__inherited(w, h);
 		if (this._oStatusBar) {
-			this._oStatusBar.moveTo(8, this.getHeight() - this._nStatusBarHeight);
+			this._oStatusBar.moveTo(8, this.height() - this._nStatusBarHeight);
 		}
 	}
 });

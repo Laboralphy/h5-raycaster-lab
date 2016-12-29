@@ -5,12 +5,13 @@ O2.createObject('CONFIG', {
 		doomLoop: 'raf',
 		fullScreen: false,
 		fpsControl: true,
-		controlThinker: 'MANSION.PlayerThinker'
+		controlThinker: 'MANSION.PlayerThinker',
+		mute: true
 	},
 	raycaster: {
 		canvas: 'screen',
 		canvasAutoResize: true,
-		drawMap: false,
+		drawMap: true,
 		smoothTextures: false,
 		vr: false
 	}

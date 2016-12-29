@@ -435,6 +435,7 @@ O2.createObject('MANSION.TILES_DATA', {
 	
 	//////////// SMARTPHONE LAYOUT //////////
 	
+	/*
 	l_smart0: {
 		src: 'resources/ui/phone/layer0.png',
 		frames: 1,
@@ -469,10 +470,22 @@ O2.createObject('MANSION.TILES_DATA', {
 		animations: [
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
 		]
+	},*/
+	
+	l_visor: {
+		src: 'resources/ui/camera/visor.png',
+		frames: 1,
+		width: 400,
+		height: 250,
+		scale: 1,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
+		]
 	},
 	
 	//////////////// PARTICLE /////////////////
-	
+	/*
 	l_particle: {
 		src: 'resources/ui/phone/particle.png',
 		frames: 1,
@@ -483,5 +496,5 @@ O2.createObject('MANSION.TILES_DATA', {
 		animations: [
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0]
 		]
-	}
+	}*/
 });

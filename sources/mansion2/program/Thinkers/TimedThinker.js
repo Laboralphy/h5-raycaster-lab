@@ -13,7 +13,7 @@ O2.extendClass('MANSION.TimedThinker', O876_Raycaster.Thinker, {
 			throw new Error('Animation required for TimedThinker : this mobile does not have any');
 		}
 		a.reset();
-		t = a.nDuration * a.nCount;
+		var t = a.nDuration * a.nCount;
 		this.nTimeOut = this.oGame.getTime() + t;
 		this.think = this.thinkAlive;
 	},

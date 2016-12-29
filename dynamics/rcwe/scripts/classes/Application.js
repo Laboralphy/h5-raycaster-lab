@@ -20,9 +20,9 @@ O2.createClass('RCWE.Application', {
 	oTemplateLoader: null,
 	oStartPointLocator: null,
 	oFileImportDialog: null,
+	oPasteZone: null,
 	
 	oMediator: null,
-	
 	
 	bThingSearched: false,
 	sMode: null, // last opened tab
@@ -119,6 +119,13 @@ O2.createClass('RCWE.Application', {
 		oFileOpenDialog.onAction = pAction;
 		oFileOpenDialog.hide();
 		this.linkWidget('d10', oFileOpenDialog);
+
+		var oPasteZone = new RCWE.PasteZone();
+		oPasteZone.build();
+		oPasteZone.setSize('100%', '100%');
+		oPasteZone.onAction = pAction;
+		oPasteZone.hide();
+		this.linkWidget('d10', oPasteZone);
 		
 		var oFileImportDialog = new RCWE.FileImportDialog();
 		oFileImportDialog.build();
@@ -164,6 +171,7 @@ O2.createClass('RCWE.Application', {
 		this.oThingBrowser = oThingBrowser;
 		this.oThingEditor = oThingEditor;
 		this.oFileOpenDialog = oFileOpenDialog;
+		this.oPasteZone = oPasteZone;
 		this.oFileImportDialog = oFileImportDialog;
 		this.oAdvancedPad = oAdvancedPad;
 		this.oTemplateLoader = oTemplateLoader;
@@ -350,18 +358,27 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 	
-	showMainScreen: function(s) {
+	showMainScreen: function(s, param) {
 		switch (s) {
 			case 'map':
 				this.oFileOpenDialog.hide();
+				this.oPasteZone.hide();
 				//---
-				this.oMapGrid.show();
+				this.oMapGrid.show(param);
 			break;
 
 			case 'fileopen':
 				this.oMapGrid.hide();
+				this.oPasteZone.hide();
 				//---
-				this.oFileOpenDialog.show();
+				this.oFileOpenDialog.show(param);
+			break;
+
+			case 'pastezone':
+				this.oMapGrid.hide();
+				this.oFileOpenDialog.hide();
+				//---
+				this.oPasteZone.show(param);
 			break;
 		}
 	},
@@ -517,6 +534,9 @@ O2.createClass('RCWE.Application', {
 		}
 	},
 
+	cmd_blockeditor_pastetile: function(sTileType) {
+		this.showMainScreen('pastezone', sTileType);
+	},
 
 	// ADVANCED PAD
 	// ADVANCED PAD
@@ -843,6 +863,28 @@ O2.createClass('RCWE.Application', {
 	
 
 
+
+	// PASTE ZONE
+	// PASTE ZONE
+	// PASTE ZONE
+	cmd_pastezone_close: function() {
+		this.showMainScreen('map');
+	},
+
+	cmd_pastezone_importtile: function(oCanvas, sTileType) {
+		try {
+			this.oBlockEditor.cmd_addImage(
+				oCanvas, 
+				$('.tilesContainer.' + sTileType, this.oBlockEditor.getContainer())
+			);
+		} catch (e) {
+			this.error('Pasting images from another web location is forbidden because of the "Same Origin Policy". First, paste your image into your favorite paint software, copy it from there, and then, paste it back here.<br/>Sorry for the inconvenience.');
+		}
+	},
+
+
+
+
 	// FILE OPEN DIALOG
 	// FILE OPEN DIALOG
 	// FILE OPEN DIALOG
@@ -1124,6 +1166,59 @@ O2.createClass('RCWE.Application', {
 		});
 	},
 
+	cmd_advancedpad_tileeconomizer: function() {
+		var oReg = {};
+		$('.tilesContainer canvas.tile').each(function(i, c) { 
+			oReg[$(c).attr('id')] = 0; 
+		});
+		function register(x) {
+			return ++oReg[x];
+		}
+		this.oBlockBrowser._aBlockCache.forEach(function(b) {
+			if (b) {
+				var d = b.oData;
+				var s = 'floor ceil right right2 left left2';
+				s.split(' ')
+					.map(x => d[x])
+					.filter(x => !!x)
+					.forEach(x => register(x));
+				var f = d.frames;
+				s = 'right right2 left left2';
+				var aTiles = s.split(' ')
+					.filter(x => !!d[x] && $('#' + d[x]).length)
+					.map(x => $('#' + d[x]))
+				while (f > 1) {
+					aTiles = aTiles.map(x => x.next());
+					aTiles.forEach(x => register(x.attr('id')));
+					--f;
+				}
+			}
+		});
+		var $divEcoTile = $('.eco-tiles', this.oAdvancedPad.getContainer());
+		$divEcoTile.empty();
+		var oCanvas, $td, $btn, $fig, $figCaption;
+		for (var x in oReg) {
+			if (oReg[x] == 0) {
+				$fig = $('<figure></figure>');
+				$fig.append(O876.CanvasFactory.cloneCanvas($('#' + x).get(0)));
+				$divEcoTile.append($fig);
+				$btn = $('<button type="button">' + x.strike() + '</button>');
+				$btn.data('tile', x);
+				$btn.on('click', (function(oEvent) {
+					var $b = $(oEvent.target);
+					if (!$b.is('button')) {
+						$b = $b.parents('button').eq(0);
+					}
+					this.cmd_blockeditor_deletetile($b.data('tile'));
+					$b.parents('figure').eq(0).remove();
+				}).bind(this));
+				$figCaption = $('<figcaption></figcaption>');
+				$figCaption.append($btn);
+				$fig.append($figCaption);
+			}
+		}
+	},
+
 	/**
 	 * The advanced pad : build game, is now displayed
 	 * feeding the form with the game name
@@ -1164,7 +1259,6 @@ O2.createClass('RCWE.Application', {
 	cmd_advancedpad_importlevel: function() {
 		//window.prompt('filename');
 		//this.showMainScreen('fileimport');
-		
 	},
 	
 	// startingpointlocator
@@ -1248,7 +1342,9 @@ O2.createClass('RCWE.Application', {
 		var pLoad = function() {
 			$.rcweGetJSON(RCWE.CONST.PATH_TEMPLATES + '/levels/' + sName + '/template.json', pDataReceived, pError);
 		};
-		
+		this.oWorldViewer.xStart = null;
+		this.oWorldViewer.yStart = null;
+		this.oWorldViewer.aStart = null;
 		this.popup('Message', 'Loading online level, please wait...', '', pLoad);
 	},
 	
