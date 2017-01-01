@@ -1,0 +1,18 @@
+O2.createObject('CONFIG', {
+	game: {
+		namespace: 'MANSION',
+		interval: 40,
+		doomLoop: 'raf',
+		fullScreen: false,
+		fpsControl: true,
+		controlThinker: 'MANSION.PlayerThinker',
+		mute: true
+	},
+	raycaster: {
+		canvas: 'screen',
+		canvasAutoResize: true,
+		drawMap: true,
+		smoothTextures: false,
+		vr: false
+	}
+});

@@ -1,0 +1,177 @@
+/* BLOCKS */
+
+table tr > td {
+  font-family: courier;
+  font-size: 10px;
+  text-align: center;
+  border: solid thin black;
+  width: 16px;
+  height: 16px;
+  padding: 0px;
+  margin: 0px;
+}
+
+table.laby tr > td.wall {
+  background-color: #888;
+}
+
+table.laby tr > td.woodwall {
+  background-color: #A64;
+}
+
+table.laby tr > td.door {
+  background-color: #8F8;
+}
+
+table.laby tr > td.treasure {
+  background-color: #FC0;
+}
+
+table.laby tr > td.secret {
+  background-color: #0CF;
+}
+
+table.laby tr > td.exit {
+  font-weight: bold;
+  background-color: #08F;
+}
+
+table.laby tr > td.entrance {
+  font-weight: bold;
+  background-color: #F80;
+}
+
+table.laby tr > td.doorxside {
+  font-weight: bold;
+  background-color: #AAA;
+}
+
+table.laby tr > td.dooryside {
+  font-weight: bold;
+  background-color: #AAA;
+}
+
+table.laby tr > td.window {
+  background-color: #BBB;
+}
+
+table.laby tr > td.object {
+  background-color: #B0B;
+}
+
+table.laby tr > td.mob {
+  background-color: #700;
+  color: #F66;	
+}
+
+table.laby tr > td.book {
+  background-color: #B40;
+}
+
+table.laby tr > td.sob {
+  background-color: #60A;
+}
+
+
+
+
+
+
+
+
+table.laby tr > td.lockeddoor0 {
+  background-color: #CCF;
+  color: #008;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.lockeddoor1 {
+  background-color: #FCC;
+  color: #600;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.lockeddoor2 {
+  background-color: #CFC;
+  color: #060;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.lockeddoor3 {
+  background-color: #FFC;
+  color: #660;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+table.laby tr > td.key0 {
+  background-color: #00F;
+  color: #CCF;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.key1 {
+  background-color: #F00;
+  color: #FCC;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.key2 {
+  background-color: #0F0;
+  color: #CFC;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+table.laby tr > td.key3 {
+  background-color: #FF0;
+  color: #A40;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+
+
+
+/* MINI MAP */
+
+table.laby2 tr > td.laby3 {
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby2 {
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby1 {
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+table.laby2 tr > td.laby0 {
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+/* Dernière ligne : bordure du bas forcée */
+table.laby2 tr:last-child > td {
+  border-bottom: solid thin;
+}
+
+/* Dernière colone : bordure de droite forcée */
+table.laby2 tr > td:last-child {
+  border-right: solid thin;
+}

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# a tool for building projects
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+projectBuild() {
+	local sProject="$1"
+	if [ -z "$sProject" ]
+	then
+		echo "Please specify a source project."
+		echo "Choose one of these : "
+		ls $sScriptDir/../sources
+		return
+	fi
+	local sSourceDir="$sScriptDir/../sources"
+	local sProjectDir="$sSourceDir/$sProject"
+	local sModuleDir="$sScriptDir/../modules/$sProject"
+	local myPwd=`pwd`
+
+	rm -r "$sModuleDir"
+
+	if [ ! -d "$sProjectDir" ]
+	then
+		echo "There is no source project named : $sProject"
+	else
+		cd "$sProjectDir"
+		php -f $sProjectDir/cjs.php -- build
+		cd $sScriptDir/../dynamics/packer
+		echo "minimizing $sProject.js ..."
+		php -f pack.php -- $sModuleDir/$sProject.js
+		cd "$myPwd"
+	fi
+}
+
+projectBuild "$1"
