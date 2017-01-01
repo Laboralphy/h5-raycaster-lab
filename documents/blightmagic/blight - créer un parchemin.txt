@@ -1,9 +1,0 @@
-Faire un parchemin
-
-* Ajouter l'icone dans le fichier client resources/tiles/icons/icons32.png
-* Ajouter l'entrée correspondant à l'icone dans le fichier client data/icons.js
-* Ajouter un nom dans le fichier data/strings.js
-* Ajouter une entrée dans data/feedback.js
-* Eventuellement créer des effets (ajouter un fichier serveur dans Effects/)
-* Créer un fichier serveur Items/scr_xxxx.js
-* Eventuellement ajouter une entrée dans la table de loot : node_modules/ModChests/loot.js
