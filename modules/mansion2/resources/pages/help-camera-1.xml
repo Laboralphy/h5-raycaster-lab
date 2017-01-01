@@ -1,8 +1,0 @@
-<root>
-<style src="styles/base.css"></style>
-<style src="styles/help.css"></style>
-<div class="header title"><div class="return" id="help-home"></div><span>Help - Camera : Show/hide</span></div>
-<img class="center" src="images/h-mouse-r.png" />
-<p>Press the <b>[Right mouse button]</b> to switch between normal (exploration) and camera mode.</p>
-<p class="link" id="help-camera-2">Next : Taking photos</p>
-</root>

@@ -1,0 +1,8 @@
+01/04/2015
+
+- Correction des tables
+- Correction de l'interpretation des balises vides dans le parser XML
+- Specification des tag HTML 'self-closing' de manière à bien rendre chaque tag selon la norme HTML
+
+05/05/2015
+- Ajout d'un sélécteur CSS
