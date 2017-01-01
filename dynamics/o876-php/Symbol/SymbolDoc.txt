@@ -1,0 +1,48 @@
+1) Instantiation
+$oSymbol = new Symbol('abc');
+
+2) Rendu
+$oSymbol = new Symbol('abc');
+print $oSymbol;
+résultat :
+<abc />
+
+3) Ajout d'attribut
+$oSymbol = new Symbol('abc');
+$oSymbol->attribut = 'valeur';
+print $oSymbol;
+résultat :
+<abc attribut="valeur"/>
+
+4) Ajout de données textes
+$oSymbol = new Symbol('abc');
+$oSymbol->setData('texte');
+print $oSymbol;
+résultat :
+<abc>texte</abc>
+
+5) Ajout de symboles
+$oSymbol = new Symbol('abc');
+$oSymbol->link(new Symbol('xyz'));
+$oSymbol->link(new Symbol('uvw'));
+print $oSymbol;
+résultat :
+<abc>
+  <xyz />
+  <uvw />
+</abc>
+
+6) Insertion de symboles
+$oSymbol = new Symbol('abc');
+$oSymbol->link(new Symbol('xyz'));
+$oSymbol->link(new Symbol('uvw'));
+$oSymbol->insert(new Symbol('def'), 1);
+print $oSymbol;
+résultat :
+<abc>
+  <xyz />
+  <def />
+  <uvw />
+</abc>
+
+
