@@ -125,17 +125,22 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.on('command', (function(oEvent) {
 			switch (oEvent.command) {
 				case 'mo_album':
-					w = ui.displayWidget('album');
-					w.loadPhotos(this.oLogic.getAlbum());
+					w = ui.displayWidget('albumBrowser');
+					w.loadPhotos(ui, this.oLogic.getAlbum());
 					break;
 				case 'main':
 					ui.displayWidget('menu');
 					break;
+				case 'album_view':
+					w = ui.displayWidget('album');
+					w.loadPhotos(this.oLogic.getAlbum());
+					w.showPhoto(oEvent.photo);
+					break;
 				case 'album_next':
-					ui.getWidget('album').showPhoto('next');
+					ui.getWidget('album').showNextPhoto('next');
 					break;
 				case 'album_prev':
-					ui.getWidget('album').showPhoto('prev');
+					ui.getWidget('album').showPrevPhoto('prev');
 					break;
 				case 'mo_notes': 
 					ui.displayWidget('notes').loadTitles(ui, [
@@ -880,7 +885,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					this.getPlayer().data('subject-' + sName, true);
 					this.trigger('photo.subject', oEvent);
 					this.oLogic.setPhotoSubject(
-						MANSION.STRINGS_DATA.SUBJECTS[sName], 
+						sName,
 						nScore,
 						oEvent.photo
 					);

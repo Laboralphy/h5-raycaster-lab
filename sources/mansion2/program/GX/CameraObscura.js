@@ -108,7 +108,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 				});
 				if (lss.subjects && Array.isArray(lss.subjects)) {
 					lss.subjects.forEach(function(s) {
-						aShotStr.unshift(s);
+						aShotStr.unshift(MANSION.STRINGS_DATA.SUBJECTS[s].title);
 					});
 				}
 				aShotStr.push(MANSION.STRINGS_DATA.SHOTS.score + nScore.toString());

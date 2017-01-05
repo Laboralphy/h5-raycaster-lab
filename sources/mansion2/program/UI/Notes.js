@@ -89,7 +89,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
-		oText.setSize(this.oBG.width() - 8, 0);
+		oText.setSize(this.oBG.width() - this.PADDING, 0);
 		oText.setCaption(sText);
 		this._yCursor += oText.height() + 2;
 	},
@@ -186,8 +186,8 @@ O2.extendClass('UI.Notes', UI.Window, {
 		var b = this._oList.linkControl(new H5UI.Button());
 		b.setSize(this._oList.width(), this.ITEM_HEIGHT);
 		b.oText.setAutosize(false);
-		b.oText.setSize(b.width() - 8, this.ITEM_HEIGHT);
-		b.oText.moveTo(4, 4);
+		b.oText.setSize(b.width() - this.PADDING, this.ITEM_HEIGHT);
+		b.oText.moveTo(this.PADDING >> 1, this.PADDING >> 1);
 		b.setColor('#666', '#999');
 		b.oText.font.setColor('#FFF');
 		b.setCaption(sTitle);

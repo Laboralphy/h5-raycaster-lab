@@ -23,8 +23,14 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 
 	SUBJECTS: {
 		// paintings
-		p_skull_monk: 'Skull masked monk',
-		p_blood_moon: 'Blood moon',
+		p_skull_monk: {
+			title: 'Skull masked monk',
+			description: 'Neither really a monk nor really a mask. A scholar who tried to obtain eternal life, but failed in the attempt.'
+		},
+		p_blood_moon: {
+			title: 'Blood moon',
+			description: 'The moon is pretty in red. And so think most nightmary creatures.'
+		}
 	},
 
 	// something happened

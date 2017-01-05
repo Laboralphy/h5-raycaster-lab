@@ -314,7 +314,7 @@ O2.createClass('MANSION.Logic', {
 	/**
 	 * A photo of the specified subject is taken
 	 */
-	setPhotoSubject: function(sRef, nScore, oPhotoCanvas) {
+	setPhotoSubject: function(id, nScore, oPhotoCanvas) {
 		if (!this._aCameraSubjects) {
 			this._aCameraSubjects = [];
 		}
@@ -322,16 +322,16 @@ O2.createClass('MANSION.Logic', {
 			this._aTakenSubjects = [];
 		}
 		this._aCameraSubjects.push({
-			ref: sRef,
+			ref: id,
 			score: nScore
 		});
-		this._aTakenSubjects.push(sRef);
+		this._aTakenSubjects.push(id);
 		// post the photo in the album
 		if (!this._aAlbum) {
 			this._aAlbum = [];
 		}
 		this._aAlbum.push({
-			ref: sRef,
+			ref: id,
 			score: nScore,
 			data: oPhotoCanvas.toDataURL()
 		});
@@ -339,6 +339,16 @@ O2.createClass('MANSION.Logic', {
 
 	/**
 	 * retrevie all the photo in the album
+	 * the album has this format :
+	 * [{
+	 * 		// photo 0
+	 * 		ref: reference,
+	 * 		score: value
+	 * 		data: image content, base 64
+	 * }, {
+	 * 		// photo 1
+	 * 		// ...
+	 * ]
 	 */
 	getAlbum: function() {
 		return this._aAlbum;
