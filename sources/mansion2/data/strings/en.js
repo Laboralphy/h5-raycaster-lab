@@ -29,7 +29,15 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		},
 		p_blood_moon: {
 			title: 'Blood moon',
-			description: 'The moon is pretty in red. And so think most nightmary creatures.'
+			description: 'The moon is pretty in red. And so think most nocturnal creatures.'
+		},
+		p_beatrice: {
+			title: 'Beatrice the witch',
+			description: 'A powerful sorceress, she claimed to have lived a thousand years.'
+		},
+		p_miku: {
+			title: 'Miku and her brother',
+			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
 		}
 	},
 

@@ -408,9 +408,9 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		},
 	},
 
-	w_grim_clown: {
+	w_razor_clown: {
 		type: RC.OBJECT_TYPE_MOB,
-		tile: 'w_grim_clown',
+		tile: 'w_razor_clown',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',

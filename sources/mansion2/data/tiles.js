@@ -240,8 +240,8 @@ O2.createObject('MANSION.TILES_DATA', {
 		animations: [[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0]],
 	},
 
-	w_grim_clown: {
-		src:'resources/sprites/w_grim_clown.png',
+	w_razor_clown: {
+		src:'resources/sprites/w_razor_clown.png',
 		noshading: true,
 		scale: 0.5,
 		frames: 1,

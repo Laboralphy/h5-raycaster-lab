@@ -137,10 +137,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					w.showPhoto(oEvent.photo);
 					break;
 				case 'album_next':
-					ui.getWidget('album').showNextPhoto('next');
+					ui.getWidget('album').showNextPhoto();
 					break;
 				case 'album_prev':
-					ui.getWidget('album').showPrevPhoto('prev');
+					ui.getWidget('album').showPrevPhoto();
 					break;
 				case 'mo_notes': 
 					ui.displayWidget('notes').loadTitles(ui, [

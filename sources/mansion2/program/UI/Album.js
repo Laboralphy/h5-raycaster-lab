@@ -50,10 +50,14 @@ O2.extendClass('UI.Album', UI.Window, {
 		this._aPhotos = aPhotos;
 	},
 	
+	/**
+	 * Will find a photo with the specified id
+	 * throws error if the id is not corresponding to a photo
+	 * @param id matching the MANSION.STRINGS_DATA.SUBJECTS key
+	 */
 	findPhoto: function(id) {
 		var ap = this._aPhotos;
 		var i = -1;
-		console.log(ap);
 		ap.some(function(p, x) {
 			if (p.ref === id) {
 				i = x;
@@ -62,6 +66,9 @@ O2.extendClass('UI.Album', UI.Window, {
 				return false;
 			}
 		});
+		if (i < 0) {
+			throw new Error('photo subject not found : ' + id);
+		}
 		return i;
 	},
 
@@ -71,7 +78,7 @@ O2.extendClass('UI.Album', UI.Window, {
 		}
 		var ap = this._aPhotos;
 		if (ap.length) {
-			var p = ap[this._iPhoto = Math.max(0, Math.min(this._iPhoto, ap.length - 1))];
+			var p = ap[this._iPhoto = Math.max(0, Math.min(iPhoto, ap.length - 1))];
 			this.setTitleCaption(MANSION.STRINGS_DATA.SUBJECTS[p.ref].title);
 			this._oLegend.setCaption(MANSION.STRINGS_DATA.SUBJECTS[p.ref].description);
 			this._oPhoto.setSource(p.data);

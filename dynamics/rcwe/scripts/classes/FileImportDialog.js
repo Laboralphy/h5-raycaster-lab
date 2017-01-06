@@ -93,8 +93,8 @@ O2.extendClass('RCWE.FileImportDialog', RCWE.Window, {
 			var nTileCount = Object.keys(data).length;
 			if (nTileCount) {
 				$report.append('<p>Here is the list of duplicate and unused tiles for <b>' + sProject + '</b>, you should delete them.</p>');
-				$div = $('<div></div>');
-				$remBtn = $('<button type="button" style="font-weight: bold; color: #800">DELETE THESE TILES</button>');
+				var $div = $('<div></div>');
+				var $remBtn = $('<button type="button" style="font-weight: bold; color: #800">DELETE THESE TILES</button>');
 				$report.append($div);
 				$div.append($remBtn);
 				$remBtn.data('project', sProject);
