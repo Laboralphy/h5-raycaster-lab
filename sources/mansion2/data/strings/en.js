@@ -38,6 +38,12 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		p_miku: {
 			title: 'Miku and her brother',
 			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
+		},
+		
+		// WRAITH
+		w_cowled_skull: {
+			title: 'Cowled skull',
+			description: 'He eagerly seeks in the afterlife the secret he could not recover during life.'
 		}
 	},
 

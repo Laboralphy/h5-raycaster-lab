@@ -222,6 +222,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
+		for (s in MANSION.WRAITH_TILES_DATA) {
+			data.tiles[s] = MANSION.WRAITH_TILES_DATA[s];
+		}
 		if (this._sLevelIndex in MANSION.LEVEL_TILES_DATA) {
 			for (s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
 				data.tiles[s] = MANSION.LEVEL_TILES_DATA[this._sLevelIndex][s];
@@ -229,6 +232,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		for (s in MANSION.BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.BLUEPRINTS_DATA[s];
+		}
+		for (s in MANSION.WRAITH_BLUEPRINTS_DATA) {
+			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
 	},
 
@@ -842,6 +848,29 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		return oVFX;
 	},
+	
+	
+	/**
+	 * Stores the current view (photo in the album)
+	 */
+	storePhoto: function((sSubjectRef, nScore) {
+		if (this.getPlayer().data('subject-' + sSubjectRef) {
+			return;
+		}
+		var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
+		var oEvent = {
+			subject: sSubjectRef,
+			score: nScore,
+			photo: oPhoto
+		};
+		this.getPlayer().data('subject-' + sSubjectRef, true);
+		this.trigger('photo.subject', oEvent);
+		this.oLogic.setPhotoSubject(
+			sSubjectRef,
+			nScore,
+			oEvent.photo
+		);
+	},
 
 
 	/**
@@ -849,6 +878,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * if a block tagged "photoscript" is targetted, the corresponding script is run
 	 */
 	cameraShoot: function() {
+		
+		function createPhoto(sSubjectRef, nScore, sData) {
+			var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
+			var oEvent = {
+				subject: sName,
+				score: nScore,
+				photo: oPhoto
+			};
+			this.getPlayer().data('subject-' + sName, true);
+			this.trigger('photo.subject', oEvent);
+			this.oLogic.setPhotoSubject(
+				sName,
+				nScore,
+				oEvent.photo
+			);
+		}
+		
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
 			var b = this.getPlayer().getThinker().getFrontBlock();
@@ -876,19 +922,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					var aSubject = sPhotoSubject.split(' ');
 					var sName = aSubject.shift();
 					var nScore = aSubject.shift() | 0;
-					var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
-					var oEvent = {
-						subject: sName,
-						score: nScore,
-						photo: oPhoto
-					};
-					this.getPlayer().data('subject-' + sName, true);
-					this.trigger('photo.subject', oEvent);
-					this.oLogic.setPhotoSubject(
-						sName,
-						nScore,
-						oEvent.photo
-					);
+					this.storePhoto(sName, nScore);
 					this.mapData(b.x, b.y, 'subject', null);
 				}
 			}
@@ -899,6 +933,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var fDistance = g[2];
 				var fAngle = g[1];
 				var oGhost = g[0];
+				if (oGhost.data('subtype') === 'wraith') {
+					this.storePhoto(oGhost.getBlueprint().sId, oGhost.data('rank'));
+				}
 				this._oGhostScreamer.addGhost(oGhost);
 			}, this);
 		}
