@@ -408,9 +408,9 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		},
 	},
 
-	w_razor_clown: {
+	w_voracious_clown: {
 		type: RC.OBJECT_TYPE_MOB,
-		tile: 'w_razor_clown',
+		tile: 'w_voracious_clown',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',
@@ -663,9 +663,9 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 		},
 	},
 
-	w_young_witch: {
+	w_gothic_witch: {
 		type: RC.OBJECT_TYPE_MOB,
-		tile: 'w_young_witch',
+		tile: 'w_gothic_witch',
 		width: 32,
 		height: 96,
 		thinker: 'MANSION.Wraith',

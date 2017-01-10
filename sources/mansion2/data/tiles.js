@@ -240,8 +240,8 @@ O2.createObject('MANSION.TILES_DATA', {
 		animations: [[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0]],
 	},
 
-	w_razor_clown: {
-		src:'resources/sprites/w_razor_clown.png',
+    w_voracious_clown: {
+		src:'resources/sprites/w_voracious_clown.png',
 		noshading: true,
 		scale: 0.5,
 		frames: 1,
@@ -390,8 +390,8 @@ O2.createObject('MANSION.TILES_DATA', {
 		animations: [[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0]],
 	},
 
-	w_young_witch: {
-		src:'resources/sprites/w_young_witch.png',
+	w_gothic_witch: {
+		src:'resources/sprites/w_gothic_witch.png',
 		noshading: true,
 		scale: 0.5,
 		frames: 1,
