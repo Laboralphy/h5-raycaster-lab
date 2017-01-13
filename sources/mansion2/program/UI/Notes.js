@@ -102,6 +102,15 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this._yCursor += oImg.height() + 2;
 	},
 
+	createButtonItem: function(sCaption, pClick) {
+		var oButton = this._oPad.linkControl(new H5UI.Button());
+		oButton.setSize(this.oBG.width() - this.PADDING * 2, 16);
+        oButton.moveTo((this.oBG.width() - oButton.width()) >> 1, 2 + this._yCursor);
+		oButton.setCaption(sCaption);
+		oButton.on('click', pClick);
+        this._yCursor += oButton.height() + 2;
+	},
+
 	/**
 	 * Display document
 	 * { type: text | image
@@ -128,6 +137,10 @@ O2.extendClass('UI.Notes', UI.Window, {
 						// les image de aImgList, sont rangées dans le meme ordre
 						// que l'objet de définiton initial : aItems
 						this.createImageItem(aImgList.shift());
+						break;
+
+					case 'button':
+						this.createButtonItem(oItem.caption, oItem.click);
 						break;
 				}
 			}, this);

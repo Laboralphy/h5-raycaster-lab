@@ -1,3 +1,11 @@
+/**
+ * @class MANSION.Game
+ *
+ *
+ */
+
+/* global MAIN */
+/* global CONFIG */
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
 	_sAmbience: '',
@@ -69,10 +77,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 	/**
-	 * Initialization of randm generator
+	 * Initialization of random generator
 	 */
 	initRandom: function() {
-		var r = new O876.Random();
+		const r = new O876.Random();
 		r.seed(Date.now() / 1000);
 		MAIN.rand = function(x, y) {
 			return r.rand(x, y);
@@ -92,7 +100,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Initializes audio system
 	 */
 	initAudio: function() {
-		var a = new O876.SoundSystem();
+		const a = new O876.SoundSystem();
 		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
@@ -119,8 +127,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	initUI: function() {
-		var w;
-		var ui = this.oUI = new MANSION.UIManager();
+		let w;
+		const ui = this.oUI = new MANSION.UIManager();
 		ui.init();
 		ui.on('command', (function(oEvent) {
 			switch (oEvent.command) {
@@ -168,7 +176,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					console.log('reading note', oEvent);
 					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
 						{
 							type: 'text',
@@ -185,6 +192,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						{
 							type: 'image',
 							src: 'resources/ui/documents/photo_owl.png',
+						},
+						{
+							type: 'button',
+							click: () => this.readSpellScroll('heal'),
+							caption: 'Cast HEAL spell'
 						},
 						{
 							type: 'text',
@@ -218,22 +230,21 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventBuild: function(wd) {
 		var data = LEVEL_DATA[this._sLevelIndex];
 		wd.data = data;
-		var s = '';
-		for (s in MANSION.TILES_DATA) {
+		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
-		for (s in MANSION.WRAITH_TILES_DATA) {
+		for (let s in MANSION.WRAITH_TILES_DATA) {
 			data.tiles[s] = MANSION.WRAITH_TILES_DATA[s];
 		}
 		if (this._sLevelIndex in MANSION.LEVEL_TILES_DATA) {
-			for (s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
+			for (let s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
 				data.tiles[s] = MANSION.LEVEL_TILES_DATA[this._sLevelIndex][s];
 			}
 		}
-		for (s in MANSION.BLUEPRINTS_DATA) {
+		for (let s in MANSION.BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.BLUEPRINTS_DATA[s];
 		}
-		for (s in MANSION.WRAITH_BLUEPRINTS_DATA) {
+		for (let s in MANSION.WRAITH_BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
 	},
@@ -853,8 +864,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Stores the current view (photo in the album)
 	 */
-	storePhoto: function((sSubjectRef, nScore) {
-		if (this.getPlayer().data('subject-' + sSubjectRef) {
+	storePhoto: function(sSubjectRef, nScore) {
+		if (this.getPlayer().data('subject-' + sSubjectRef)) {
 			return;
 		}
 		var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
@@ -870,6 +881,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			nScore,
 			oEvent.photo
 		);
+	},
+
+
+    /**
+	 * Cast a spell
+     * @param sSpell id of spell
+     */
+	readSpellScroll: function(sSpell) {
+
+		this.uiHide();
+		console.log('cast', sSpell);
+		this.popupMessage('cast spell ' + sSpell);
 	},
 
 
@@ -964,6 +987,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	uiShow: function() {
 		var ui = this.oUI;
 		ui.show();
+		ui.displayWidget('menu');
 		O876_Raycaster.PointerLock.disable();
 		this.pause(true);
 	},
@@ -1088,8 +1112,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				nDistMax / ps | 0
 			)
 			.filter(
-				oSector => 
-					this.isSectorWalkable(
+				oSector => this.isSectorWalkable(
 						oSector.x + xMe, 
 						oSector.y + yMe
 					)
@@ -1162,9 +1185,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Lecture d'un son à la position x, y
 	 * Le son est modifié en amplitude en fonction de la distance séparant le point sonore avec
 	 * la position de la caméra
-	 * @param string sFile fichier son à jouer
-	 * @param float x position de la source du son
-	 * @param float y
+	 * @param  sFile string fichier son à jouer
+	 * @param  x float position de la source du son
+	 * @param  y float
 	 */
 	playSound : function(sFile, x, y) {
 		var fDist = 0;

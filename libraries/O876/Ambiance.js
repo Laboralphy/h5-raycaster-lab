@@ -1,8 +1,9 @@
 /**
- * This class will manage sound ambience events
- * It works well with O876.SoundSystem
+ * @class O876.Ambiance
+ * This class will manage sound ambiance events
+ * It works with O876.SoundSystem
  */
-O2.createClass('O876.Ambience', {
+O2.createClass('O876.Ambiance', {
 	
 	_nNextTime: 0,
 	_bValid: false,
@@ -61,4 +62,4 @@ O2.createClass('O876.Ambience', {
 	}
 });
 
-O2.mixin(O876.Ambience, O876.Mixin.Events);
+O2.mixin(O876.Ambiance, O876.Mixin.Events);

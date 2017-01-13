@@ -1,4 +1,6 @@
-/** Rainbow - Color Code Convertor Boîte à outil graphique
+/**
+ * @class O876.Rainbow
+ * Rainbow - Color Code Convertor Boîte à outil graphique
  * O876 raycaster project
  * 2012-01-01 Raphaël Marandet
  * good to GIT

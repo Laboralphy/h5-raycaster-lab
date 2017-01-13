@@ -6,3 +6,6 @@ modules/*
 
 # all log files
 *.log
+
+# idea
+.idea/*
