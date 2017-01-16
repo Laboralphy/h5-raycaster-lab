@@ -152,17 +152,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					break;
 				case 'mo_notes': 
 					ui.displayWidget('notes').loadTitles(ui, [
-						{id: 1, title: 'A black notepad'},
-						{id: 2, title: 'The dairy'},
-						{id: 3, title: 'A note left on the floor'},
-						{id: 4, title: 'Le culte des goules - Comte d\'Erlette'},
-						{id: 5, title: 'A shity world'},
-						{id: 6, title: 'Le nécronomicon pour les nuls'},
-						{id: 7, title: 'Bob l\'éponge contre Séphirot'},
-						{id: 8, title: 'Le Livre de Dysan'},
-						{id: 9, title: 'The ninth door'},
-						{id: 10, title: 'Once upon a time'},
-						{id: 11, title: 'W.T.F.'},
+						{id: 'Test1', title: 'A black notepad'},
+						{id: 'Test1', title: 'The dairy'},
+						{id: 'Test1', title: 'A note left on the floor'},
+						{id: 'Test1', title: 'Le culte des goules - Comte d\'Erlette'},
+						{id: 'Test1', title: 'A shity world'},
+						{id: 'Test1', title: 'Le nécronomicon pour les nuls'},
+						{id: 'Test1', title: 'Bob l\'éponge contre Séphirot'},
+						{id: 'Test1', title: 'Le Livre de Dysan'},
+						{id: 'Test1', title: 'The ninth door'},
+						{id: 'Test1', title: 'Once upon a time'},
+						{id: 'Test1', title: 'W.T.F.'},
 					]);
 					ui.displayWidget('notes').displayList();
 					break;
@@ -176,37 +176,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
-						{
-							type: 'text',
-							content: "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_mansion.jpg',
-						},
-						{
-							type: 'text',
-							content: "If you don't share your database connection (session) between multiple threads for concurrent inserts, this is safe. If multiple threads insert on the same connection, this is unsafe, i.e. you might get either ID or a completely invalid ID."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_owl.png',
-						},
-						{
-							type: 'button',
-							click: () => this.readSpellScroll('heal'),
-							caption: 'Cast HEAL spell'
-						},
-						{
-							type: 'text',
-							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses."
-						},
-					]);
+					console.log(oEvent);
+					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], id => this.readSpellScroll(id));
 					break;
 
 				default: 
-					console.log('unknow ui command', oEvent.command, oEvent);
+					console.log('unknown ui command', oEvent.command, oEvent);
 					break;
 
 			}
@@ -719,8 +694,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Will choose introThinker for the intro movie sequence
 	 */
 	configPlayerThinker: function() {
-		var oPlayer = this.getPlayer();
-		var ct;
+		let oPlayer = this.getPlayer();
+		let ct;
 		switch (this._sLevelIndex) {
 			case 'intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
@@ -728,19 +703,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				ct = oPlayer.getThinker();
 				O876_Raycaster.PointerLock.disable();
 			break;
-			
+
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
 				oPlayer.setXY(oPlayer.x, oPlayer.y);
 				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
 				ct = oPlayer.getThinker();
-				ct.on('button0.down', (function() { 
+				ct.on('button0.down', (function() {
 					this.trigger('command0');
 				}).bind(this))
-				.on('button2.down', (function() { 
+				.on('button2.down', (function() {
 					this.trigger('command2');
 				}).bind(this))
-				.on('use.down', (function() { 
+				.on('use.down', (function() {
 					this.trigger('activate');
 				}).bind(this));
 				O876_Raycaster.PointerLock.enable();
@@ -820,9 +795,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Return the number of currently active and hostile ghosts
 	 */
 	getGhostCount: function() {
-		var aMobs = this.oRaycaster.oHorde.aMobiles;
-		var n = 0;
-		for (var i = 0, l = aMobs.length; i < l; ++i) {
+		let aMobs = this.oRaycaster.oHorde.aMobiles;
+		let n = 0;
+		for (let i = 0, l = aMobs.length; i < l; ++i) {
 			if (aMobs[i].data('hp')) {
 				++n;
 			}

@@ -115,8 +115,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 * Display document
 	 * { type: text | image
 	 */
-	displayDocument: function(sTitle, aItems) {
-		this.setTitleCaption(sTitle);
+	displayDocument: function(aItems, pOnClick) {
 		this._oList.hide();
 		this._oPad.clear();
 		this._yCursor = 0;
@@ -129,6 +128,10 @@ O2.extendClass('UI.Notes', UI.Window, {
 		oLoader.on('load', (function(aImgList) {
 			aItems.forEach(function(oItem) {
 				switch (oItem.type) {
+					case 'title':
+                        this.setTitleCaption(oItem.content);
+                        break;
+
 					case 'text':
 						this.createTextItem(oItem.content);
 						break;
@@ -140,7 +143,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 						break;
 
 					case 'button':
-						this.createButtonItem(oItem.caption, oItem.click);
+						this.createButtonItem(oItem.caption, () => pOnClick(oItem.action));
 						break;
 				}
 			}, this);
