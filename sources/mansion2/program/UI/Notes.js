@@ -79,13 +79,17 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 * Please provide the text content.
 	 * The text object will be appended to the PAD
 	 * @param sText string : text content
+	 * @param sStyle string : text style like 'bold' or 'italic'
 	 */
-	createTextItem: function(sText) {
+	createTextItem: function(sText, sStyle) {
 		var oText = this._oPad.linkControl(new H5UI.Text());
 		oText._set('_nLineHeight', 4);
 		oText.moveTo(2, 2 + this._yCursor);
 		oText.setFontColor('#CCC');
 		oText.setFontFace('serif');
+		if (sStyle) {
+			oText.setFontStyle(sStyle);
+		}
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
@@ -112,10 +116,11 @@ O2.extendClass('UI.Notes', UI.Window, {
 	},
 
 	/**
-	 * Display document
-	 * { type: text | image
+	 * Display a document
+	 * @param aItems Array of items (plain objects) describing the content of the document
+	 * @param pOnAction a callback invoked when actions are triggered (like clicking on a button)
 	 */
-	displayDocument: function(aItems, pOnClick) {
+	displayDocument: function(aItems, pOnAction) {
 		this._oList.hide();
 		this._oPad.clear();
 		this._yCursor = 0;
@@ -133,7 +138,7 @@ O2.extendClass('UI.Notes', UI.Window, {
                         break;
 
 					case 'text':
-						this.createTextItem(oItem.content);
+						this.createTextItem(oItem.content, oItem.style);
 						break;
 
 					case 'image':
@@ -143,10 +148,11 @@ O2.extendClass('UI.Notes', UI.Window, {
 						break;
 
 					case 'button':
-						this.createButtonItem(oItem.caption, () => pOnClick(oItem.action));
+						this.createButtonItem(oItem.caption, () => pOnAction(oItem.action));
 						break;
 				}
 			}, this);
+            this._oPad.scrollTo(0, 0);
 			this._oPad.show();
 			this.setScrollBarOwner(this._oPad);
 		}).bind(this));
