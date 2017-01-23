@@ -1,3 +1,11 @@
+/**
+ * @class MANSION.Game
+ *
+ *
+ */
+
+/* global MAIN */
+/* global CONFIG */
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
 	_sAmbience: '',
@@ -65,14 +73,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
-		this.on('key.down', this.gameEventKey.bind(this));		
+		this.on('key.down', this.gameEventKey.bind(this));
+
+
 	},
 
 	/**
-	 * Initialization of randm generator
+	 * Initialization of random generator
 	 */
 	initRandom: function() {
-		var r = new O876.Random();
+		const r = new O876.Random();
 		r.seed(Date.now() / 1000);
 		MAIN.rand = function(x, y) {
 			return r.rand(x, y);
@@ -84,15 +94,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Done once per game.
 	 */
 	initLogic: function() {
-		this.oLogic = new MANSION.Logic();
-		this.oLogic.setCameraCaptureRank(1);
+		let logic = new MANSION.Logic();
+		logic.setCameraCaptureRank(1);
+		this.oLogic = logic;
 	},
 	
 	/**
 	 * Initializes audio system
 	 */
 	initAudio: function() {
-		var a = new O876.SoundSystem();
+		const a = new O876.SoundSystem();
 		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
@@ -119,8 +130,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	initUI: function() {
-		var w;
-		var ui = this.oUI = new MANSION.UIManager();
+		let w;
+		const ui = this.oUI = new MANSION.UIManager();
 		ui.init();
 		ui.on('command', (function(oEvent) {
 			switch (oEvent.command) {
@@ -144,17 +155,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					break;
 				case 'mo_notes': 
 					ui.displayWidget('notes').loadTitles(ui, [
-						{id: 1, title: 'A black notepad'},
-						{id: 2, title: 'The dairy'},
-						{id: 3, title: 'A note left on the floor'},
-						{id: 4, title: 'Le culte des goules - Comte d\'Erlette'},
-						{id: 5, title: 'A shity world'},
-						{id: 6, title: 'Le nécronomicon pour les nuls'},
-						{id: 7, title: 'Bob l\'éponge contre Séphirot'},
-						{id: 8, title: 'Le Livre de Dysan'},
-						{id: 9, title: 'The ninth door'},
-						{id: 10, title: 'Once upon a time'},
-						{id: 11, title: 'W.T.F.'},
+						{id: 'Test1', title: 'A black notepad'},
+						{id: 'Test1', title: 'The dairy'},
+						{id: 'Test1', title: 'A note left on the floor'},
+						{id: 'Test1', title: 'Le culte des goules - Comte d\'Erlette'},
+						{id: 'Test1', title: 'A shity world'},
+						{id: 'Test1', title: 'Le nécronomicon pour les nuls'},
+						{id: 'Test1', title: 'Bob l\'éponge contre Séphirot'},
+						{id: 'Test1', title: 'Le Livre de Dysan'},
+						{id: 'Test1', title: 'The ninth door'},
+						{id: 'Test1', title: 'Once upon a time'},
+						{id: 'Test1', title: 'W.T.F.'},
 					]);
 					ui.displayWidget('notes').displayList();
 					break;
@@ -168,33 +179,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					console.log('reading note', oEvent);
-					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
-						{
-							type: 'text',
-							content: "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_mansion.jpg',
-						},
-						{
-							type: 'text',
-							content: "If you don't share your database connection (session) between multiple threads for concurrent inserts, this is safe. If multiple threads insert on the same connection, this is unsafe, i.e. you might get either ID or a completely invalid ID."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_owl.png',
-						},
-						{
-							type: 'text',
-							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses."
-						},
-					]);
+					console.log(oEvent);
+					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], (function(oItem) {
+                        this.readSpellScroll(oItem);
+					}).bind(this));
 					break;
 
 				default: 
-					console.log('unknow ui command', oEvent.command, oEvent);
+					console.log('unknown ui command', oEvent.command, oEvent);
 					break;
 
 			}
@@ -218,22 +210,21 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventBuild: function(wd) {
 		var data = LEVEL_DATA[this._sLevelIndex];
 		wd.data = data;
-		var s = '';
-		for (s in MANSION.TILES_DATA) {
+		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
-		for (s in MANSION.WRAITH_TILES_DATA) {
+		for (let s in MANSION.WRAITH_TILES_DATA) {
 			data.tiles[s] = MANSION.WRAITH_TILES_DATA[s];
 		}
 		if (this._sLevelIndex in MANSION.LEVEL_TILES_DATA) {
-			for (s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
+			for (let s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
 				data.tiles[s] = MANSION.LEVEL_TILES_DATA[this._sLevelIndex][s];
 			}
 		}
-		for (s in MANSION.BLUEPRINTS_DATA) {
+		for (let s in MANSION.BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.BLUEPRINTS_DATA[s];
 		}
-		for (s in MANSION.WRAITH_BLUEPRINTS_DATA) {
+		for (let s in MANSION.WRAITH_BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
 	},
@@ -708,8 +699,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Will choose introThinker for the intro movie sequence
 	 */
 	configPlayerThinker: function() {
-		var oPlayer = this.getPlayer();
-		var ct;
+		let oPlayer = this.getPlayer();
+		let ct;
 		switch (this._sLevelIndex) {
 			case 'intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
@@ -717,19 +708,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				ct = oPlayer.getThinker();
 				O876_Raycaster.PointerLock.disable();
 			break;
-			
+
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
 				oPlayer.setXY(oPlayer.x, oPlayer.y);
 				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
 				ct = oPlayer.getThinker();
-				ct.on('button0.down', (function() { 
+				ct.on('button0.down', (function() {
 					this.trigger('command0');
 				}).bind(this))
-				.on('button2.down', (function() { 
+				.on('button2.down', (function() {
 					this.trigger('command2');
 				}).bind(this))
-				.on('use.down', (function() { 
+				.on('use.down', (function() {
 					this.trigger('activate');
 				}).bind(this));
 				O876_Raycaster.PointerLock.enable();
@@ -809,9 +800,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Return the number of currently active and hostile ghosts
 	 */
 	getGhostCount: function() {
-		var aMobs = this.oRaycaster.oHorde.aMobiles;
-		var n = 0;
-		for (var i = 0, l = aMobs.length; i < l; ++i) {
+		let aMobs = this.oRaycaster.oHorde.aMobiles;
+		let n = 0;
+		for (let i = 0, l = aMobs.length; i < l; ++i) {
 			if (aMobs[i].data('hp')) {
 				++n;
 			}
@@ -853,8 +844,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Stores the current view (photo in the album)
 	 */
-	storePhoto: function((sSubjectRef, nScore) {
-		if (this.getPlayer().data('subject-' + sSubjectRef) {
+	storePhoto: function(sSubjectRef, nScore) {
+		if (this.getPlayer().data('subject-' + sSubjectRef)) {
 			return;
 		}
 		var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
@@ -870,6 +861,22 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			nScore,
 			oEvent.photo
 		);
+	},
+
+
+    /**
+	 * Cast a spell from a scroll, or a document.
+	 * This action has a drawback on the document itself : the spell beign read-once, the whole spell section (tag) will vanish.
+     * @param sSpell id of spell
+     */
+	readSpellScroll: function(oSection) {
+		this.uiHide();
+		// cast the spell
+		let sSpell = oSection.action;
+		this.oLogic.castSpell(sSpell);
+        // remove the section
+		oSection.disabled = true;
+		this.popupMessage('cast spell ' + sSpell);
 	},
 
 
@@ -964,6 +971,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	uiShow: function() {
 		var ui = this.oUI;
 		ui.show();
+		ui.displayWidget('menu');
 		O876_Raycaster.PointerLock.disable();
 		this.pause(true);
 	},
@@ -1088,8 +1096,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				nDistMax / ps | 0
 			)
 			.filter(
-				oSector => 
-					this.isSectorWalkable(
+				oSector => this.isSectorWalkable(
 						oSector.x + xMe, 
 						oSector.y + yMe
 					)
@@ -1162,9 +1169,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Lecture d'un son à la position x, y
 	 * Le son est modifié en amplitude en fonction de la distance séparant le point sonore avec
 	 * la position de la caméra
-	 * @param string sFile fichier son à jouer
-	 * @param float x position de la source du son
-	 * @param float y
+	 * @param  sFile string fichier son à jouer
+	 * @param  x float position de la source du son
+	 * @param  y float
 	 */
 	playSound : function(sFile, x, y) {
 		var fDist = 0;

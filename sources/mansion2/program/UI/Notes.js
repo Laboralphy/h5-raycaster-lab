@@ -79,13 +79,17 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 * Please provide the text content.
 	 * The text object will be appended to the PAD
 	 * @param sText string : text content
+	 * @param sStyle string : text style like 'bold' or 'italic'
 	 */
-	createTextItem: function(sText) {
+	createTextItem: function(sText, sStyle) {
 		var oText = this._oPad.linkControl(new H5UI.Text());
 		oText._set('_nLineHeight', 4);
 		oText.moveTo(2, 2 + this._yCursor);
 		oText.setFontColor('#CCC');
 		oText.setFontFace('serif');
+		if (sStyle) {
+			oText.setFontStyle(sStyle);
+		}
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
@@ -102,12 +106,21 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this._yCursor += oImg.height() + 2;
 	},
 
+	createButtonItem: function(sCaption, pClick) {
+		var oButton = this._oPad.linkControl(new H5UI.Button());
+		oButton.setSize(this.oBG.width() - this.PADDING * 2, 16);
+        oButton.moveTo((this.oBG.width() - oButton.width()) >> 1, 2 + this._yCursor);
+		oButton.setCaption(sCaption);
+		oButton.on('click', pClick);
+        this._yCursor += oButton.height() + 2;
+	},
+
 	/**
-	 * Display document
-	 * { type: text | image
+	 * Display a document
+	 * @param aItems Array of items (plain objects) describing the content of the document
+	 * @param pOnAction a callback invoked when actions are triggered (like clicking on a button)
 	 */
-	displayDocument: function(sTitle, aItems) {
-		this.setTitleCaption(sTitle);
+	displayDocument: function(aItems, pOnAction) {
 		this._oList.hide();
 		this._oPad.clear();
 		this._yCursor = 0;
@@ -119,18 +132,33 @@ O2.extendClass('UI.Notes', UI.Window, {
 			});
 		oLoader.on('load', (function(aImgList) {
 			aItems.forEach(function(oItem) {
+				if (('disabled' in oItem) && (oItem.disabled)) {
+					return;
+				}
 				switch (oItem.type) {
+					case 'title':
+                        this.setTitleCaption(oItem.content);
+                        break;
+
 					case 'text':
-						this.createTextItem(oItem.content);
+						this.createTextItem(oItem.content, oItem.style);
 						break;
 
 					case 'image':
 						// les image de aImgList, sont rangées dans le meme ordre
-						// que l'objet de définiton initial : aItems
+						// que l'objet de definition initial : aItems
 						this.createImageItem(aImgList.shift());
+						break;
+
+					case 'button':
+						this.createButtonItem(oItem.caption, () => pOnAction(oItem));
+						if ('legend' in oItem) {
+                            this.createTextItem(oItem.legend, 'italic');
+                        }
 						break;
 				}
 			}, this);
+            this._oPad.scrollTo(0, 0);
 			this._oPad.show();
 			this.setScrollBarOwner(this._oPad);
 		}).bind(this));

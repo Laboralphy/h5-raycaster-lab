@@ -1,4 +1,8 @@
 /* globals O2, O876, O876_Raycaster, CONFIG, Marker */
+/**
+ * @class O876_Raycaster.GameAbstract
+ *
+ */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_oScreenShot: null,
 	_oTagData: null,
