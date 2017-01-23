@@ -132,6 +132,9 @@ O2.extendClass('UI.Notes', UI.Window, {
 			});
 		oLoader.on('load', (function(aImgList) {
 			aItems.forEach(function(oItem) {
+				if (('disabled' in oItem) && (oItem.disabled)) {
+					return;
+				}
 				switch (oItem.type) {
 					case 'title':
                         this.setTitleCaption(oItem.content);
@@ -143,12 +146,15 @@ O2.extendClass('UI.Notes', UI.Window, {
 
 					case 'image':
 						// les image de aImgList, sont rangées dans le meme ordre
-						// que l'objet de définiton initial : aItems
+						// que l'objet de definition initial : aItems
 						this.createImageItem(aImgList.shift());
 						break;
 
 					case 'button':
-						this.createButtonItem(oItem.caption, () => pOnAction(oItem.action));
+						this.createButtonItem(oItem.caption, () => pOnAction(oItem));
+						if ('legend' in oItem) {
+                            this.createTextItem(oItem.legend, 'italic');
+                        }
 						break;
 				}
 			}, this);

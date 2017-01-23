@@ -73,7 +73,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('hit', this.gameEventHit.bind(this));
 		this.on('attack', this.gameEventAttack.bind(this));
 		
-		this.on('key.down', this.gameEventKey.bind(this));		
+		this.on('key.down', this.gameEventKey.bind(this));
+
+
 	},
 
 	/**
@@ -92,8 +94,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Done once per game.
 	 */
 	initLogic: function() {
-		this.oLogic = new MANSION.Logic();
-		this.oLogic.setCameraCaptureRank(1);
+		let logic = new MANSION.Logic();
+		logic.setCameraCaptureRank(1);
+		this.oLogic = logic;
 	},
 	
 	/**
@@ -177,7 +180,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					break;
 				case 'note_read':
 					console.log(oEvent);
-					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], id => this.readSpellScroll(id));
+					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], (function(oItem) {
+                        this.readSpellScroll(oItem);
+					}).bind(this));
 					break;
 
 				default: 
@@ -860,13 +865,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 
     /**
-	 * Cast a spell
+	 * Cast a spell from a scroll, or a document.
+	 * This action has a drawback on the document itself : the spell beign read-once, the whole spell section (tag) will vanish.
      * @param sSpell id of spell
      */
-	readSpellScroll: function(sSpell) {
-
+	readSpellScroll: function(oSection) {
 		this.uiHide();
-		console.log('cast', sSpell);
+		// cast the spell
+		let sSpell = oSection.action;
+		this.oLogic.castSpell(sSpell);
+        // remove the section
+		oSection.disabled = true;
 		this.popupMessage('cast spell ' + sSpell);
 	},
 

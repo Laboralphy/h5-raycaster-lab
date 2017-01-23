@@ -8,22 +8,21 @@ O2.createObject('MANSION.NOTES.Test1', [
     },
     {
         type: 'text',
-        content: 'Illustrated with strange pictures of plants and written in an unknown language, this text is incomprehensible. However someone wrote annotations and compiled a formula.'
+        content: 'Illustrated with strange pictures of plants and written in an unknown language, this text is incomprehensible.'
     },
     {
         type: 'image',
         src: 'resources/ui/documents/voynich.png',
     },
     {
-        tag: 'spell_heal',
-        type: 'button',
-        action: 'heal',
-        caption: 'Cast HEAL spell'
+        type: 'text',
+        content: 'Because of the numerous drawing of plants and body parts, you believe this manuscript is about Medecine or Alchemy. ' +
+            'The commentaries written in margins confirm your speculations.'
     },
     {
-        type: 'text',
-        style: 'italic',
-        content: 'When you click on this button, you cast the spell. Once cast, the button is made unavailable'
-    },
-
+        type: 'button',
+        action: 'heal',
+        caption: 'Cast HEAL spell',
+        legend: 'You notice that someone wrote annotations and compiled a formula.'
+    }
 ]);
