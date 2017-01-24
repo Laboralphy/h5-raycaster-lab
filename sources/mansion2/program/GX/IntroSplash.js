@@ -1,6 +1,7 @@
 /** 
  * Intro Effect
  * Display flash photo and text
+ * @class MANSION.GX.IntroSplash
  */
 O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 	sClass: 'IntroSplash',
@@ -31,6 +32,8 @@ O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 	 * Affiche le splash d'une photo.
 	 * La photo apparait à position / taille aléatoire
 	 * puis se dessine coorectement dans l'écran
+	 * @param oPhoto liste d'images à afficher
+	 * @param nMaxSplash nombre de sautillement d'image (pour chaque photo)
 	 */
 	splash: function(oPhoto, nMaxSplash) {
 		if (nMaxSplash) {

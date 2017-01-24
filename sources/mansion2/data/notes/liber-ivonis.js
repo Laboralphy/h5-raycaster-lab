@@ -22,12 +22,12 @@ O2.createObject('MANSION.NOTES.eibon', [
     {
         type: 'text',
         content: 'During his journeys, Eibon had to fight strange creatures, and slayed many otherworldly horrors with spells. ' +
-            'Such spells are now written in this very book.'
+            'Such spells are written in this very book.'
     },
     {
         type: 'button',
         action: 'heal',
         caption: 'Read formula',
-        legend: 'You believe this formula will help defend against the horrors of this place.'
+        legend: 'It may help you defend yourself against hostile and vengeful spirits.'
     }
 ]);
