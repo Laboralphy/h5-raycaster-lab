@@ -98,15 +98,27 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this._yCursor += oText.height() + 2;
 	},
 
-	createImageItem: function(oSrc) {
-		var oImg = this._oPad.linkControl(new H5UI.Image());
-		oImg.setSource(oSrc);
-		oImg.render();
-		oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
-		this._yCursor += oImg.height() + 2;
-	},
+    createImageItem: function(oSrc) {
+        let oImg = this._oPad.linkControl(new H5UI.Image());
+        oImg.setSource(oSrc);
+        oImg.render();
+        oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
+        this._yCursor += oImg.height() + 2;
+        return oImg;
+    },
 
-	createButtonItem: function(sCaption, pClick) {
+    createPhotoItem: function(oSrc) {
+        let oImg = this._oPad.linkControl(new H5UI.Image());
+        oImg._set('_nBorderWidth', 4);
+        oImg._set('_sColorBorder', '#FFF');
+        oImg.setSource(oSrc);
+        oImg.render();
+        oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
+        this._yCursor += oImg.height() + 2;
+		return oImg;
+    },
+
+    createButtonItem: function(sCaption, pClick) {
 		var oButton = this._oPad.linkControl(new H5UI.Button());
 		oButton.setSize(this.oBG.width() - this.PADDING * 2, 16);
         oButton.moveTo((this.oBG.width() - oButton.width()) >> 1, 2 + this._yCursor);
@@ -126,7 +138,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		this._yCursor = 0;
 		var oLoader = new O876_Raycaster.ImageListLoader();
 		aItems
-			.filter(i => i.type === 'image')
+			.filter(i => (i.type === 'image') || (i.type === 'photo'))
 			.forEach(function(i) {
 				oLoader.addImage(i.src);
 			});
@@ -144,13 +156,19 @@ O2.extendClass('UI.Notes', UI.Window, {
 						this.createTextItem(oItem.content, oItem.style);
 						break;
 
-					case 'image':
-						// les image de aImgList, sont rangées dans le meme ordre
-						// que l'objet de definition initial : aItems
-						this.createImageItem(aImgList.shift());
-						break;
+                    case 'image':
+                        // les image de aImgList, sont rangées dans le meme ordre
+                        // que l'objet de definition initial : aItems
+                        this.createImageItem(aImgList.shift());
+                        break;
 
-					case 'button':
+                    case 'photo':
+                        // les image de aImgList, sont rangées dans le meme ordre
+                        // que l'objet de definition initial : aItems
+                        this.createPhotoItem(aImgList.shift());
+                        break;
+
+                    case 'button':
 						this.createButtonItem(oItem.caption, () => pOnAction(oItem));
 						if ('legend' in oItem) {
                             this.createTextItem(oItem.legend, 'italic');

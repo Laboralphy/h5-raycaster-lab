@@ -1,3 +1,7 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.WRAITH_BLUEPRINTS_DATA
+ */
 O2.createObject('MANSION.WRAITH_BLUEPRINTS_DATA', {
 	w_blind_cultist: {
 		type: RC.OBJECT_TYPE_MOB,

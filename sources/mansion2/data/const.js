@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.CONST
+ * Mansion general constant
+ */
 O2.createObject('MANSION.CONST', {
 	SPEED_NORMAL: 3,
 	SPEED_CAMERA: 2,

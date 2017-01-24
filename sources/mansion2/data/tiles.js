@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.TILES_DATA
+ * Mansion common tiles, loaded in all levels
+ */
 O2.createObject('MANSION.TILES_DATA', {
 	g_aging_girl: {
 		src: 'resources/sprites/g_aging_girl.png',

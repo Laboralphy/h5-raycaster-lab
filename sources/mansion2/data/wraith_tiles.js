@@ -1,3 +1,7 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.WRAITH_TILES_DATA
+ */
 O2.createObject('MANSION.WRAITH_TILES_DATA', {
 	w_blind_cultist: {
 		src:'resources/sprites/w_blind_cultist.png',

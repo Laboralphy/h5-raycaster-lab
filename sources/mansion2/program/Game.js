@@ -32,7 +32,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** INIT ****** INIT ****** INIT ******/
 
 	init: function() {
-		O2.createObject('MANSION.STRINGS_DATA', MANSION.STRINGS_DATA_EN);
+		MANSION.STRINGS_DATA = MANSION.STRINGS_DATA_EN;
 		this._oLocators = {};
 		this.oSnail = new O876.Snail();
 		this.initLogic();
@@ -155,10 +155,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					break;
 				case 'mo_notes': 
 					ui.displayWidget('notes').loadTitles(ui, [
-						{id: 'Test1', title: 'A black notepad'},
-						{id: 'Test1', title: 'The dairy'},
-						{id: 'Test1', title: 'A note left on the floor'},
-						{id: 'Test1', title: 'Le culte des goules - Comte d\'Erlette'},
+						{id: 'voynich', title: 'The Voynich Manuscript'},
+						{id: 'vermis', title: 'De Vermis Mysteriis'},
+						{id: 'goules', title: 'Le Culte des Goules'},
 						{id: 'Test1', title: 'A shity world'},
 						{id: 'Test1', title: 'Le nécronomicon pour les nuls'},
 						{id: 'Test1', title: 'Bob l\'éponge contre Séphirot'},
@@ -208,7 +207,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
 	gameEventBuild: function(wd) {
-		var data = LEVEL_DATA[this._sLevelIndex];
+		const data = LEVEL_DATA[this._sLevelIndex];
 		wd.data = data;
 		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
@@ -237,16 +236,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * - max : int, valeur max de la progression
 	 */
 	gameEventLoad: function(oEvent) {
-		var s = oEvent.phase;
-		var n = oEvent.progress;
-		var nMax = oEvent.max;
-		var oCanvas = this.oRaycaster.getScreenCanvas();
-		var oContext = this.oRaycaster.getScreenContext();
+		let s = oEvent.phase;
+		let n = oEvent.progress;
+		let nMax = oEvent.max;
+		let oCanvas = this.oRaycaster.getScreenCanvas();
+		let oContext = this.oRaycaster.getScreenContext();
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
-		var sMsg = MANSION.STRINGS_DATA.RC['l_' + s];
-		var y = oCanvas.height >> 1;
-		var nPad = 96;
-		var xMax = oCanvas.width - (nPad << 1);
+		let sMsg = MANSION.STRINGS_DATA.RC['l_' + s];
+		let y = oCanvas.height >> 1;
+		let nPad = 96;
+		let xMax = oCanvas.width - (nPad << 1);
 		oContext.font = '10px monospace';
 		oContext.fillStyle = 'white';
 		oContext.fillText(sMsg, nPad, oCanvas.height >> 1);
@@ -261,7 +260,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * pas de paramètre
 	 */
 	gameEventEnterLevel: function() {
-		var rc = this.oRaycaster;
+		const rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();

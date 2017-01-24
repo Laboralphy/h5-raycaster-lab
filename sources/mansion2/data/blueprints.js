@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.BLUEPRINTS_DATA
+ * Mansion common blueprints loaded in all level
+ */
 O2.createObject('MANSION.BLUEPRINTS_DATA', {
 	g_aging_girl: {
 		type: RC.OBJECT_TYPE_MOB,

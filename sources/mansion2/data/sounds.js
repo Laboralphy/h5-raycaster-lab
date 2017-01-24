@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.SOUNDS_DATA
+ * Mansion sound database
+ */
 O2.createObject('MANSION.SOUNDS_DATA', {
 	ambiance: {
 		thunder: 'ambiance/thunder'

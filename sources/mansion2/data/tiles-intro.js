@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.LEVEL_TILES_DATA.intro
+ * "intro" tiles
+ */
 O2.createObject('MANSION.LEVEL_TILES_DATA.intro', {
 	//////////////// INTRO TILES //////////////////
 	intro_s0_amulet: {

@@ -1,7 +1,10 @@
 /**
  * Created by ralphy on 16/01/17.
+ * @const MANSION
+ * @property MANSION.NOTES.Test1
+ * A test document : the voynich manuscript
  */
-O2.createObject('MANSION.NOTES.Test1', [
+O2.createObject('MANSION.NOTES.voynich', [
     {
         type: 'title',
         content: 'Voynich Manuscript'
@@ -11,8 +14,8 @@ O2.createObject('MANSION.NOTES.Test1', [
         content: 'Illustrated with strange pictures of plants and written in an unknown language, this text is incomprehensible.'
     },
     {
-        type: 'image',
-        src: 'resources/ui/documents/voynich.png',
+        type: 'photo',
+        src: 'resources/ui/documents/note_voynich.jpg',
     },
     {
         type: 'text',
@@ -22,7 +25,7 @@ O2.createObject('MANSION.NOTES.Test1', [
     {
         type: 'button',
         action: 'heal',
-        caption: 'Cast HEAL spell',
-        legend: 'You notice that someone wrote annotations and compiled a formula.'
+        caption: 'Read formula',
+        legend: 'You notice that someone wrote annotations and compiled a formula. It seems like a Healing incantation.'
     }
 ]);
