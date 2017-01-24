@@ -1,7 +1,7 @@
 /**
  * Created by ralphy on 24/01/17.
  * @const MANSION
- * @property MANSION.NOTES.deVermisMysteriis
+ * @property MANSION.NOTES.vermis
  * "De Vermis Mysteriis" by "Ludwig Prinn"
  */
 O2.createObject('MANSION.NOTES.vermis', [

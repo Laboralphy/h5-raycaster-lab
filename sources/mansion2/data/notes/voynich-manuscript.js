@@ -1,7 +1,7 @@
 /**
  * Created by ralphy on 16/01/17.
  * @const MANSION
- * @property MANSION.NOTES.Test1
+ * @property MANSION.NOTES.voynich
  * A test document : the voynich manuscript
  */
 O2.createObject('MANSION.NOTES.voynich', [

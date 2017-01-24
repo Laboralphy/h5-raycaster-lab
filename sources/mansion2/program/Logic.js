@@ -432,7 +432,6 @@ O2.createClass('MANSION.Logic', {
 
     /**
 	 * Casts a spell read from any documents
-	 * @param idDoc docuemnt identifier from which the spell is cast
 	 * @param idSpell spell identifier (ex: 'heal')
      */
     castSpell: function(idSpell) {

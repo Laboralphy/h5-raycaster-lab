@@ -1,7 +1,7 @@
 /**
  * Created by ralphy on 23/01/17.
  * @const MANSION
- * @property MANSION.NOTES.Test1
+ * @property MANSION.NOTES.goules
  * "Le culte des goules" by "Comte d'Erlette"
  */
 O2.createObject('MANSION.NOTES.goules', [

@@ -158,7 +158,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						{id: 'voynich', title: 'The Voynich Manuscript'},
 						{id: 'vermis', title: 'De Vermis Mysteriis'},
 						{id: 'goules', title: 'Le Culte des Goules'},
-						{id: 'Test1', title: 'A shity world'},
+						{id: 'eibon', title: 'Liber Ivonis'},
 						{id: 'Test1', title: 'Le nécronomicon pour les nuls'},
 						{id: 'Test1', title: 'Bob l\'éponge contre Séphirot'},
 						{id: 'Test1', title: 'Le Livre de Dysan'},
