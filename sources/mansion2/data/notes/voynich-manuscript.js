@@ -24,7 +24,7 @@ O2.createObject('MANSION.NOTES.voynich', [
     },
     {
         type: 'button',
-        action: 'heal',
+        action: 'Heal',
         caption: 'Read formula',
         legend: 'You notice that someone wrote annotations and compiled a formula. It seems like a Healing incantation.'
     }

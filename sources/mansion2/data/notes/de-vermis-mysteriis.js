@@ -27,9 +27,8 @@ O2.createObject('MANSION.NOTES.vermis', [
     },
     {
         type: 'button',
-        action: 'horror',
+        action: 'Horror',
         caption: 'Summon an entity',
-        legend: 'Before reading this book, try to think about what happened to Ash Williams ' +
-        'in the "Evil Dead" documentary.'
+        legend: '... at your own risks.'
     }
 ]);

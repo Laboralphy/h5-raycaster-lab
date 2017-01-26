@@ -25,7 +25,7 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'button',
-        action: 'horror',
+        action: 'Horror',
         caption: 'Read a passage',
         legend: 'Books don\'t drive people insane, do they ?'
     }

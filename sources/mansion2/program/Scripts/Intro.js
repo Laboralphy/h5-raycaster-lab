@@ -5,7 +5,7 @@ O2.createClass('MANSION.Script.Intro', {
 	
 	_splash: function(tag, xPhoto, sSound) {
 		var rc = tag.game.oRaycaster;
-		var gx = rc.addGXEffect(MANSION.GX.IntroSplash);
+		var gx = rc.addGXEffect(MANSION.GX.Splash);
 		if (!Array.isArray(xPhoto)) {
 			xPhoto = [xPhoto];
 		}

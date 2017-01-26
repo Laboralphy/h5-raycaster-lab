@@ -159,7 +159,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						{id: 'vermis', title: 'De Vermis Mysteriis'},
 						{id: 'goules', title: 'Le Culte des Goules'},
 						{id: 'eibon', title: 'Liber Ivonis'},
-						{id: 'Test1', title: 'Le nécronomicon pour les nuls'},
+						{id: 'necronomicon', title: 'The Necronomicon'},
 						{id: 'Test1', title: 'Bob l\'éponge contre Séphirot'},
 						{id: 'Test1', title: 'Le Livre de Dysan'},
 						{id: 'Test1', title: 'The ninth door'},
@@ -872,10 +872,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.uiHide();
 		// cast the spell
 		let sSpell = oSection.action;
-		this.oLogic.castSpell(sSpell);
         // remove the section
 		oSection.disabled = true;
-		this.popupMessage('cast spell ' + sSpell);
+		if (sSpell in MANSION.SPELLS) {
+			const SpellClass = MANSION.SPELLS[sSpell];
+            let spell = new SpellClass();
+            spell.run(this);
+		} else {
+            this.popupMessage('Unknown spell "' + sSpell + '" !');
+		}
 	},
 
 

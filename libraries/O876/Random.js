@@ -9,6 +9,10 @@ O2.createClass('O876.Random', {
 
 	_seed: 1,
 
+	__construct: function() {
+		this._seed = Math.random();
+	},
+
 	seed: function(x) {
     	return this.prop('_seed', x);
 	},

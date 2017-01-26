@@ -1,10 +1,10 @@
 /** 
  * Intro Effect
  * Display flash photo and text
- * @class MANSION.GX.IntroSplash
+ * @class MANSION.GX.Splash
  */
-O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
-	sClass: 'IntroSplash',
+O2.extendClass('MANSION.GX.Splash', O876_Raycaster.GXEffect, {
+	sClass: 'Splash',
 	oCanvas: null,
 	bOver: false,
 	
@@ -21,8 +21,8 @@ O2.extendClass('MANSION.GX.IntroSplash', O876_Raycaster.GXEffect, {
 
 	__construct: function(oRaycaster) {
 		__inherited(oRaycaster);
-		var rcc = oRaycaster.getRenderCanvas();
-		var oCanvas = O876.CanvasFactory.getCanvas();
+		const rcc = oRaycaster.getRenderCanvas();
+		const oCanvas = O876.CanvasFactory.getCanvas();
 		oCanvas.width = rcc.width;
 		oCanvas.height = rcc.height;
 		this.oCanvas = oCanvas;

@@ -421,24 +421,6 @@ O2.createClass('MANSION.Logic', {
 	 */
 	getClockTime: function() {
 		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
-	},
-
-    /******************************************
-	 * READ SPELLS !
-     ******************************************/
-
-
-
-
-    /**
-	 * Casts a spell read from any documents
-	 * @param idSpell spell identifier (ex: 'heal')
-     */
-    castSpell: function(idSpell) {
-    	switch (idSpell) {
-			case 'heal':
-				// prodiguer soin
-				break;
-		}
 	}
+
 });

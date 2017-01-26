@@ -1,15 +1,19 @@
 /**
  * Canvas factory
- * good to GIT
+ * @class O876.CanvasFactory
  */
 O2.createObject('O876.CanvasFactory', {
-	
+
 	/**
 	 * Create a new canvas
+     * @param w {int} width of the new canvas
+     * @param h {int} height of the new canvas
+	 * @param bImageSmoothing {boolean} default : true. if true, the new canvas will be smooth when resized
+	 * @return {*}
 	 */
 	getCanvas: function(w, h, bImageSmoothing) {
-		var oCanvas = document.createElement('canvas');
-		var oContext = oCanvas.getContext('2d');
+		let oCanvas = document.createElement('canvas');
+		let oContext = oCanvas.getContext('2d');
 		if (w && h) {
 			oCanvas.width = w;
 			oCanvas.height = h;
@@ -17,14 +21,14 @@ O2.createObject('O876.CanvasFactory', {
 		if (bImageSmoothing === undefined) {
 			bImageSmoothing = false;
 		}
-		O876.CanvasFactory.setImageSmoothing(oContext, false);
+		O876.CanvasFactory.setImageSmoothing(oContext, bImageSmoothing);
 		return oCanvas;
 	},
 	
 	/**
 	 * Set canvas image smoothing flag on or off
-	 * @param Context2D oContext
-	 * @param bool b on = smoothing on // false = smoothing off
+	 * @param oContext HTMLContext2D
+	 * @param b {boolean} on = smoothing on // false = smoothing off
 	 */
 	setImageSmoothing: function(oContext, b) {
 		oContext.webkitImageSmoothingEnabled = b;
@@ -39,11 +43,11 @@ O2.createObject('O876.CanvasFactory', {
 
 	/**
 	 * Clones a canvas into a new one
-	 * @param oCanvas to be cloned
-	 * @return  Canvas
+	 * @param oCanvas {HTMLCanvasElement} to be cloned
+	 * @return  HTMLCanvasElement
 	 */
 	cloneCanvas: function(oCanvas) {
-		var c = O876.CanvasFactory.getCanvas(
+		let c = O876.CanvasFactory.getCanvas(
 			oCanvas.width, 
 			oCanvas.height, 
 			O876.CanvasFactory.getImageSmoothing(oCanvas.getContext('2d'))
