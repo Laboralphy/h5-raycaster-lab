@@ -11,7 +11,7 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'text',
-        content: 'An forbidden book written by french author Comte d\'Erlette. ' +
+        content: 'A forbidden book written by french author Comte d\'Erlette. ' +
         'This tome depicts gruesome customs of an ancien and secret society ' +
         'whose members name themselves "les goules".'
     },

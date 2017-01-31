@@ -20,7 +20,7 @@ O2.createObject('MANSION.NOTES.necronomicon', [
     {
         type: 'text',
         content: 'Alhazred is said to have been a worshipper of ancien and evil deities such as Yog-Sothoth and Cthulhu. He described in the Necronomicon ' +
-            'how he found strange forgotten places like the ruins of babylon or the strange subterranean nameless city below the city of Irem.'
+        'how he found strange forgotten places like the ruins of babylon or the strange subterranean nameless city below the city of Irem.'
     },
     {
         type: 'button',
