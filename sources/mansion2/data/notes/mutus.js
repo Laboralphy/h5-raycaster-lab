@@ -2,7 +2,9 @@
  * Created by ralphy on 24/01/17?
  * @const MANSION
  * @property MANSION.NOTES.mutus
- * A test document : mutus liber
+ * mutus liber
+ * effect : LIGHT + POWER UP
+ * This is an alchemy book.
  */
 O2.createObject('MANSION.NOTES.mutus', [
     {
@@ -26,6 +28,6 @@ O2.createObject('MANSION.NOTES.mutus', [
         type: 'button',
         action: 'Heal',
         caption: 'Read formula',
-        legend: 'It may help you defend yourself against hostile and vengeful spirits.'
+        legend: ''
     }
 ]);

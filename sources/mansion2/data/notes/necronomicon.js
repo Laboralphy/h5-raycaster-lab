@@ -2,7 +2,8 @@
  * Created by ralphy on 25/01/17.
  * @const MANSION
  * @property MANSION.NOTES.necronomicon
- * A test document : the necronomicon
+ * The Necronomicon
+ * Effect : HORROR + WOUND or HEAL + PROTECT
  */
 O2.createObject('MANSION.NOTES.necronomicon', [
     {
@@ -29,7 +30,7 @@ O2.createObject('MANSION.NOTES.necronomicon', [
     {
         type: 'button',
         action: 'Heal',
-        caption: 'Read formula',
+        caption: 'Read Incantation',
         legend: 'If you feel lucky you may try to cast a spell from this book.'
     }
 ]);

@@ -2,7 +2,8 @@
  * Created by ralphy on 24/01/17?
  * @const MANSION
  * @property MANSION.NOTES.prodigiorum
- * A test document : prodigiorum ac
+ * prodigiorum ac
+ * Effect : NONE
  */
 O2.createObject('MANSION.NOTES.prodigiorum', [
     {

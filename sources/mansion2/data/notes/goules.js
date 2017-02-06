@@ -2,7 +2,9 @@
  * Created by ralphy on 23/01/17.
  * @const MANSION
  * @property MANSION.NOTES.goules
+ * effect : HORROR
  * "Le culte des goules" by "Comte d'Erlette"
+ * will trigger an "horror effect" : HORROR
  */
 O2.createObject('MANSION.NOTES.goules', [
     {

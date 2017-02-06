@@ -2,7 +2,8 @@
  * Created by ralphy on 24/01/17?
  * @const MANSION
  * @property MANSION.NOTES.reglas
- * A test document : las reglas de ruina
+ * las reglas de ruina
+ * Effect : HORROR
  */
 O2.createObject('MANSION.NOTES.reglas', [
     {

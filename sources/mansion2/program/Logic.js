@@ -43,6 +43,7 @@ O2.createClass('MANSION.Logic', {
 
 	_aAlbum: null,
 
+
 	/**
 	 * Game time transmission
 	 * for timed event

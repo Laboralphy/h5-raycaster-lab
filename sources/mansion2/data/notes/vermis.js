@@ -3,6 +3,7 @@
  * @const MANSION
  * @property MANSION.NOTES.vermis
  * "De Vermis Mysteriis" by "Ludwig Prinn"
+ * Effect : SUMMON NASTY THING
  */
 O2.createObject('MANSION.NOTES.vermis', [
     {

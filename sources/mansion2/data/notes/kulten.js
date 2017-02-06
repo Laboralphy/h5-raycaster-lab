@@ -4,6 +4,8 @@
  * @const MANSION
  * @property MANSION.NOTES.kulten
  * "Unaussprechlichen Kulten"
+ * effect : SUMMON BAD THINGS
+ * will summon a nasty vengefull spirit : SUMMON
  */
 O2.createObject('MANSION.NOTES.kulten', [
     {

@@ -2,7 +2,8 @@
  * Created by ralphy on 24/01/17?
  * @const MANSION
  * @property MANSION.NOTES.eibon
- * A test document : the voynich manuscript
+ * effect : PROTECT
+ * liber ivonis : provides protection against vengeful spirits
  */
 O2.createObject('MANSION.NOTES.eibon', [
     {

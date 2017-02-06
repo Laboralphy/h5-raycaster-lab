@@ -2,7 +2,8 @@
  * Created by ralphy on 16/01/17.
  * @const MANSION
  * @property MANSION.NOTES.voynich
- * A test document : the voynich manuscript
+ * the voynich manuscript
+ * Effect : HEAL
  */
 O2.createObject('MANSION.NOTES.voynich', [
     {
