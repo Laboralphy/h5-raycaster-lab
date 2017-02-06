@@ -11,9 +11,8 @@ O2.createObject('MANSION.NOTES.eibon', [
     },
     {
         type: 'text',
-        content: '"The Book of Eibon" (Liber Ivonis in latin) is rumored to have been written by an hyperborean warlock several thousands years ago. ' +
-            'The present tome is a latin translation of the original volume. ' +
-            'Eibon was a famous wizard who accomplished exploits on remote and strange land and planets.'
+        content: '"The Book of Eibon (or Liber Ivonis in latin)" is the tale of Eibon, a powerful Hyperborean wizard who lived ten thousand years ago. ' +
+            'Eibon was a famous wizard who accomplished exploits on remote, alien worlds and planets.'
     },
     {
         type: 'photo',

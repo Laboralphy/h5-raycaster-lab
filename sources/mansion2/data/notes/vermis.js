@@ -23,7 +23,7 @@ O2.createObject('MANSION.NOTES.vermis', [
     {
         type: 'text',
         content: 'There should be no surprise : All entities that can be summoned with ' +
-            'this book are utterly evil entities.',
+            'this book are utterly evil.',
     },
     {
         type: 'button',

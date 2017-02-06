@@ -5,7 +5,7 @@
  * @property MANSION.NOTES.pnakotic
  * "Pnakotic Manuscripts"
  */
-O2.createObject('MANSION.NOTES.kulten', [
+O2.createObject('MANSION.NOTES.pnakotic', [
     {
         type: 'title',
         content: 'Pnakotic Manuscripts'

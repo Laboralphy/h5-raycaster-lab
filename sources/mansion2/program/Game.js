@@ -154,18 +154,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					ui.getWidget('album').showPrevPhoto();
 					break;
 				case 'mo_notes': 
-					ui.displayWidget('notes').loadTitles(ui, [
-						{id: 'voynich', title: 'The Voynich Manuscript'},
-						{id: 'vermis', title: 'De Vermis Mysteriis'},
-						{id: 'goules', title: 'Le Culte des Goules'},
-						{id: 'eibon', title: 'Liber Ivonis'},
-						{id: 'necronomicon', title: 'The Necronomicon'},
-						{id: 'kulten', title: 'Unaussprechlichen Kulten'},
-						{id: 'pnakotic', title: 'Pnakotic Manuscripts'},
-						{id: 'Test1', title: 'The ninth door'},
-						{id: 'Test1', title: 'Once upon a time'},
-						{id: 'Test1', title: 'W.T.F.'},
-					]);
+					ui.displayWidget('notes').loadTitles(ui, Object.keys(MANSION.NOTES));
 					ui.displayWidget('notes').displayList();
 					break;
 					

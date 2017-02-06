@@ -221,7 +221,13 @@ O2.extendClass('UI.Notes', UI.Window, {
 	loadTitles: function(ui, aTitles) {
 		this._oList.clear();
 		aTitles.forEach((function(x, i) {
-			this.appendTitle(ui, i, x.id, x.title);
+			var aNote = MANSION.NOTES[x];
+			var oTitle = aNote.filter(function(n) {
+				return n.type === 'title';
+			}).shift();
+			console.log(oTitle);
+			var sTitle = oTitle.content;
+			this.appendTitle(ui, i, x, sTitle);
 		}).bind(this));
 	},
 
