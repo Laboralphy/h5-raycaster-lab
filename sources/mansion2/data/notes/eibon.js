@@ -21,8 +21,8 @@ O2.createObject('MANSION.NOTES.eibon', [
     },
     {
         type: 'text',
-        content: 'During his journeys, Eibon had to fight strange creatures, and slayed many otherworldly horrors with spells. ' +
-            'Such spells are written in this very book.'
+        content: 'During his journeys, Eibon had to fight strange creatures, and slayed many otherworldly horrors with powerful spells. ' +
+            'Such spells are written in this book.'
     },
     {
         type: 'button',

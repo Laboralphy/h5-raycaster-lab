@@ -23,6 +23,10 @@ O2.createObject('MANSION.NOTES.necronomicon', [
         'how he found strange forgotten places like the ruins of babylon or the strange subterranean nameless city below the city of Irem.'
     },
     {
+        type: 'text',
+        content: 'Alhazred died horribly. Eaten alive by an invisible creature in daylight. The scene was witnessed by many poeple.'
+    },
+    {
         type: 'button',
         action: 'Heal',
         caption: 'Read formula',
