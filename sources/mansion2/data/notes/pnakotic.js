@@ -4,6 +4,7 @@
  * @const MANSION
  * @property MANSION.NOTES.pnakotic
  * "Pnakotic Manuscripts"
+ * Effect Haste
  */
 O2.createObject('MANSION.NOTES.pnakotic', [
     {
@@ -29,7 +30,7 @@ O2.createObject('MANSION.NOTES.pnakotic', [
     },
     {
         type: 'button',
-        action: 'Horror',
+        action: 'Haste',
         caption: 'Summon an entity',
         legend: '... at your own risks.'
     }

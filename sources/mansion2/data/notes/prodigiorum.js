@@ -25,11 +25,5 @@ O2.createObject('MANSION.NOTES.prodigiorum', [
         content: 'The main subject is a discussion about the physical nature of the globe and the nature of the soul. ' +
             'It is filled with strange pictures and drawing of mythical creatures. It seems completely irrational and ' +
             'may only be the work of a demented dreamer.'
-    },
-    {
-        type: 'button',
-        action: 'Heal',
-        caption: 'Read formula',
-        legend: 'It may help you defend yourself against hostile and vengeful spirits.'
     }
 ]);

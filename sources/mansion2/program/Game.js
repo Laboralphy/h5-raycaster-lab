@@ -769,8 +769,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			}
 		}
 		var oGhost = this.spawnWraith(sBlueprint, x, y, a);
+        this.oLogic.createSoul(oGhost);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
-		oGhost.data('hp', oGhost.data('life'));
 		oGhost.data('dead', false);
 		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
 		return oGhost;

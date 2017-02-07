@@ -28,8 +28,8 @@ O2.createObject('MANSION.NOTES.vermis', [
     },
     {
         type: 'button',
-        action: 'Horror',
-        caption: 'Summon an entity',
+        action: 'Summon',
+        caption: 'Read a passage',
         legend: '... at your own risks.'
     }
 ]);

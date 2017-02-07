@@ -29,7 +29,7 @@ O2.createObject('MANSION.NOTES.necronomicon', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Random',
         caption: 'Read Incantation',
         legend: 'If you feel lucky you may try to cast a spell from this book.'
     }

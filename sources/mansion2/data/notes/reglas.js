@@ -26,8 +26,8 @@ O2.createObject('MANSION.NOTES.reglas', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Horror',
         caption: 'Read formula',
-        legend: 'It may help you defend yourself against hostile and vengeful spirits.'
+        legend: 'This book is so depressing...'
     }
 ]);

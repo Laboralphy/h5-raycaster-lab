@@ -26,7 +26,7 @@ O2.createObject('MANSION.NOTES.eibon', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Protect',
         caption: 'Read formula',
         legend: 'It may help you defend yourself against hostile and vengeful spirits.'
     }

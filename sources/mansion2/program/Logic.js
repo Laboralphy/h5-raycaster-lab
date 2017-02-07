@@ -23,26 +23,23 @@ O2.createClass('MANSION.Logic', {
 	_bCameraFullCharge: false,
 	_bCameraFlash: false,
 	_aCameraSubjects: null,
+    _nCameraIntervalTime: 1000, // minimum time between two camera shots
+    _nCameraNextShotTime: 1000, // last time the camera took a photo
+    _aLastShotStats: null,
 
 	_aCapturedSubjects: null,  // list of all gathered evidences
-	
-	
-	_nTime: 0, 
-	_nCameraIntervalTime: 1000, // minimum time between two camera shots
-	_nCameraNextShotTime: 1000, // last time the camera took a photo
-	
-	_aCapturedGhosts: null,
-	_aLastShotStats: null,
-	
-	_nScore: 0,
+    _aCapturedGhosts: null,
 
-	_nPhoneBattery: 100,
-	_nPhoneNetwork: 100,
-	_nPhoneClockH: 0,
-	_nPhoneClockM: 0,
+	_nTime: 0, 
+
+
+	_nScore: 0,
 
 	_aAlbum: null,
 
+	_oEffectProcessor: null,
+	_oPlayerEntity: null,  // An object containing all stats
+		// we can apply effects on it.
 
 	/**
 	 * Game time transmission
@@ -200,7 +197,7 @@ O2.createClass('MANSION.Logic', {
 						if (bFullEnergy) {
 							aTags.push('zero');
 						}
-						oGhost.getThinker().damage(e, bFullEnergy);
+						this.playerDamagesGhost(oGhost, e, bFullEnergy);
 						nTotalScore += e;
 						++nTotalShots;
 					}
@@ -395,33 +392,81 @@ O2.createClass('MANSION.Logic', {
 	},
 	
 	
-	
-	/***************************************
-	 *            PHONE STATE              *
-	 ***************************************/
-	
-	/**
-	 * Returns the network coverage indicator
-	 * @returns int between 0 and 100
-	 */
-	getNetworkIndicator: function() {
-		return this._nPhoneNetwork;
+
+
+
+    /*******************************************
+	 * PLAYER ENTITY
+     *******************************************/
+
+    /**
+	 * @TODO : Terminer cette saloperie de Soul System
+	 * 1) Lancer les Initialiser de Player, EffectProcessor
+	 * 2) Différencier Ghost et Player dans l'attribute change
+	 * 3) Ajouter ghostDamagesPlayer()
+	 * 4) Vérifier le thinker du player pour voir si ca coince ou pas
+     */
+
+    processEffects: function() {
+    	this._oEffectProcessor.processEffects();
 	},
 
-	/**
-	 * Returns the battery charge indicator
-	 * @returns int between 0 and 100
-	 */
-	getBatteryIndicator: function() {
-		return Math.min(99, Math.max(0, this._nPhoneBattery));
+    playerDamagesGhost: function(oGhost, nAmount, bCritical) {
+        var eDamage = new Effect.Damage();
+        eDamage.setLevel(nAmount);
+        eDamage.setSource(this.getPlayerSoul());
+        eDamage.setDuration(0);
+        oGhost.getThinker().damage(bCritical);
+        this._oEffectProcessor.applyEffect(eDamage);
 	},
-	
-	/**
-	 * Returns the time of night to be displayed
-	 * @returns string like "02:36"
-	 */
-	getClockTime: function() {
-		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
-	}
 
+    createSoul: function(oMobile) {
+    	var nHP = oMobile.data('life');
+        var p = new ADV.Creature();
+        var oBase = {
+            hpmax: 			nHP,
+            hp:				nHP,
+            power:			0,
+            resistance:		0,
+            speed:			0,
+			sight:			0,
+        };
+        for (var sAttr in oBase) {
+        	p.setAttribute(sAttr, oBase);
+		}
+        oMobile.data('soul', p);
+        p.data('mobile', oMobile);
+        p.on('attributechanged', this.attributeChanged.bind(this));
+        return p;
+    },
+
+	initEffectProcessor: function() {
+    	var ep = new ADV.EffectProcessor();
+    	this._oEffectProcessor = ep;
+	},
+
+	attributeChanged: function(sAttribute, nValue, nPrev, oSoul) {
+		var oMobile = oSoul.data('mobile');
+		switch (sAttribute) {
+			case 'hp':
+				if (nValue < 0) {
+					oMobile.data('dead', true);
+					oMobile.getThinker().setThink('Die');
+				}
+				break;
+
+			case 'speed':
+				oMobile._fSpeed = oMobile.data('speed') * ((100 + nValue) / 100);
+				break;
+		}
+	},
+
+	initPlayerSoul: function(oPlayer) {
+    	var p = this.createSoul(oPlayer);
+        this._oPlayerEntity = p;
+	},
+
+	getPlayerSoul: function() {
+		return this._oPlayerEntity;
+	},
 });

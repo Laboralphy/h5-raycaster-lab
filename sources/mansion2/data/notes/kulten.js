@@ -33,7 +33,7 @@ O2.createObject('MANSION.NOTES.kulten', [
     },
     {
         type: 'button',
-        action: 'Horror',
+        action: 'Summon',
         caption: 'Summon an entity',
         legend: '... at your own risks.'
     }
