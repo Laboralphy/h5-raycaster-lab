@@ -34,7 +34,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	initAudio: function() {
-		a = new O876.SoundSystem();
+		var a = new O876.SoundSystem();
 		a.setChannelCount(8);
 		a.setPath('resources/snd');
 		this._oAudio = a;

@@ -138,6 +138,10 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 				aLine.push(m.getBlueprint('name'));
 				aLine.push('pos x:' + (m.x | 0) + ' - y:' + (m.y | 0) + ' - sector x:' + m.xSector + ' - y:' + m.ySector);
 				aLine.push('thinker: ' + s);
+				var soul = m.data('soul');
+				if (soul) {
+					aLine.push('hp: ' + soul.getAttribute('hp') + '/' + soul.getAttribute('hpmax'));
+				}
 				this.oGame.console().clear().print(aLine.join('\n'));
 			}
 		}

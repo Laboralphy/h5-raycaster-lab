@@ -131,7 +131,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	
 	/**
 	 * Renvoie le temps actuel en millisecondes
-	 * @return int
+	 * @return {int}
 	 */
 	getTime: function() {
 		return this._nTimeStamp;

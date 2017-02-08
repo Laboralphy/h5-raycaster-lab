@@ -55,7 +55,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	process : function() {
-		this.bOver = this.oEasing.f();
+        this.bOver = this.oEasing.f();
 		this.oColor.a = this.oEasing.x;
 	},
 

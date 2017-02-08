@@ -160,4 +160,29 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 			__inherited(x, y);
 		}
 	},
+
+
+	die: function() {
+		this.think = this.thinkDie;
+	},
+
+	_oDeathEasing: null,
+    thinkDie: function() {
+        this.oMobile.data('dead', true);
+        this.oGame.trigger('death');
+        this._oDeathEasing = new O876.Easing();
+        this._oDeathEasing.from(1).to(1.7).during(30).use('squareAccel');
+        this.think = this.thinkDieFall;
+    },
+
+    thinkDieFall: function() {
+        var bOver = this._oDeathEasing.f();
+        this.oGame.oRaycaster.fViewHeight = this._oDeathEasing.x;
+        if (bOver) {
+            this.think = this.thinkDead;
+        }
+    },
+
+    thinkDead: function() {
+    },
 });

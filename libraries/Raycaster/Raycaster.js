@@ -119,6 +119,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	xScrSize : 0,
 	yScrSize : 0,
 	fViewAngle : 0,
+    /**
+	 * @property fViewHeight {number}
+     */
 	fViewHeight: 1,
 
 	// Rendu des murs
@@ -469,8 +472,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this._oRenderContext = this._oContext;
 		}
 		if ('smoothTextures' in this.oConfig) {
-			this._oRenderContext.mozImageSmoothingEnabled = this.oConfig.smoothTextures;
-			this._oRenderContext.webkitImageSmoothingEnabled = this.oConfig.smoothTextures;
+            O876.CanvasFactory.setImageSmoothing(this._oRenderContext, this.oConfig.smoothTextures);
 		}
 		this.xScrSize = this._oCanvas.width;
 		this.yScrSize = this._oCanvas.height >> 1;

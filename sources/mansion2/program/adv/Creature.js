@@ -12,8 +12,17 @@ O2.createClass('ADV.Creature', {
         this._oBonuses = {};
     },
 
+    checkAttributeChanged: function(sAttribute, nPrev) {
+        var nNew = this.getAttribute(sAttribute);
+        if (nNew != nPrev) {
+            this.trigger('attributechanged', sAttribute, nNew, nPrev, this);
+        }
+    },
+
     setAttribute: function(sAttribute, nValue) {
-        this._oAttributes[sAttribute] = nValue;
+        var nPrev = this.getAttribute(sAttribute);
+        this._oAttributes[sAttribute] = nValue | 0;
+        this.checkAttributeChanged(sAttribute, nPrev);
     },
 
     getAttribute: function(sAttribute) {
@@ -28,11 +37,8 @@ O2.createClass('ADV.Creature', {
         if (!(sAttribute in this._oBonuses)) {
             this._oBonuses[sAttribute] = 0;
         }
-        this._oBonuses[sAttribute] += nValue;
-        var nNew = this.getAttribute(sAttribute);
-        if (nNew != nPrev) {
-            this.trigger('attributechanged', sAttribute, nNew, nPrev, this);
-        }
+        this._oBonuses[sAttribute] += nValue | 0;
+        this.checkAttributeChanged(sAttribute, nPrev);
     },
 
 

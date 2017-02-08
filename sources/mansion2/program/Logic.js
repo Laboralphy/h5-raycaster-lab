@@ -30,8 +30,8 @@ O2.createClass('MANSION.Logic', {
 	_aCapturedSubjects: null,  // list of all gathered evidences
     _aCapturedGhosts: null,
 
-	_nTime: 0, 
-
+	_nTime: 0,
+	_nChronoSeconds: 0,
 
 	_nScore: 0,
 
@@ -44,9 +44,15 @@ O2.createClass('MANSION.Logic', {
 	/**
 	 * Game time transmission
 	 * for timed event
+	 * @param t {int} elapsed time in millisecond
 	 */
 	setTime: function(t) {
 		this._nTime = t;
+		// Periodic events
+		if (t >= this._nChronoSeconds) {
+            this._nChronoSeconds += (1 + (t - this._nChronoSeconds) / 1000 | 0) * 1000;
+            this.processEffects();
+		}
 	},
 	
 	/**
@@ -401,27 +407,58 @@ O2.createClass('MANSION.Logic', {
 
     /**
 	 * @TODO : Terminer cette saloperie de Soul System
-	 * 1) Lancer les Initialiser de Player, EffectProcessor
+	 * XXX 1) Lancer les Initialiser de Player, EffectProcessor
 	 * 2) Différencier Ghost et Player dans l'attribute change
 	 * 3) Ajouter ghostDamagesPlayer()
 	 * 4) Vérifier le thinker du player pour voir si ca coince ou pas
      */
 
+
+
+    /**
+	 * Process all temporary effects
+     */
     processEffects: function() {
     	this._oEffectProcessor.processEffects();
 	},
 
-    playerDamagesGhost: function(oGhost, nAmount, bCritical) {
+    /**
+	 * An entity inflict damage to another entity
+     * @param oEntity {ADV.Creature} entity being damaged
+     * @param nAmount {int}
+	 * @param oDamager {ADV.Creature} entity who did damage
+     */
+    damageEntity: function(oEntity, nAmount, oDamager) {
         var eDamage = new Effect.Damage();
         eDamage.setLevel(nAmount);
-        eDamage.setSource(this.getPlayerSoul());
+        eDamage.setSource(oDamager);
+        eDamage.setTarget(oEntity);
         eDamage.setDuration(0);
-        oGhost.getThinker().damage(bCritical);
         this._oEffectProcessor.applyEffect(eDamage);
-	},
+    },
+
+    /**
+     * The player has damaged a ghost
+     * @param oGhost {O876_Raycaster.Mobile} entity being damaged
+     * @param nAmount {int}
+     * @param bCritical
+     */
+    playerDamagesGhost: function(oGhost, nAmount, bCritical) {
+    	this.damageEntity(oGhost.data('soul'), nAmount, this.getPlayerSoul());
+        oGhost.getThinker().damage(bCritical);
+    },
+
+    /**
+	 * The player is being damaged by a ghost
+     * @param oGhost {O876_Raycaster.Mobile} entity damaging the player
+     * @param nAmount {int}
+     */
+    ghostDamagesPlayer: function(oGhost, nAmount) {
+        this.damageEntity(this.getPlayerSoul(), nAmount, oGhost.data('soul'));
+    },
 
     createSoul: function(oMobile) {
-    	var nHP = oMobile.data('life');
+    	var nHP = oMobile.data('life') | 0;
         var p = new ADV.Creature();
         var oBase = {
             hpmax: 			nHP,
@@ -432,7 +469,7 @@ O2.createClass('MANSION.Logic', {
 			sight:			0,
         };
         for (var sAttr in oBase) {
-        	p.setAttribute(sAttr, oBase);
+        	p.setAttribute(sAttr, oBase[sAttr]);
 		}
         oMobile.data('soul', p);
         p.data('mobile', oMobile);
@@ -447,16 +484,24 @@ O2.createClass('MANSION.Logic', {
 
 	attributeChanged: function(sAttribute, nValue, nPrev, oSoul) {
 		var oMobile = oSoul.data('mobile');
+		var bPlayer = oMobile.getType() === RC.OBJECT_TYPE_PLAYER;
+		console.log('attr', ...arguments);
 		switch (sAttribute) {
 			case 'hp':
-				if (nValue < 0) {
-					oMobile.data('dead', true);
-					oMobile.getThinker().setThink('Die');
+				if (nValue <= 0) {
+					if (bPlayer) {
+                        oMobile.getThinker().die();
+					} else {
+                        oMobile.getThinker().setThink('Die');
+                    }
 				}
 				break;
 
 			case 'speed':
-				oMobile._fSpeed = oMobile.data('speed') * ((100 + nValue) / 100);
+				oMobile.setSpeed(oMobile.data('speed') * ((100 + nValue) / 100));
+				break;
+
+			case 'sight':
 				break;
 		}
 	},

@@ -78,8 +78,8 @@ O2.createClass('ADV.Effect', {
 		return this._nLevel;
 	},
 
-	
-	
+
+
 	setDuration: function(n) {
 		if (n === null || n === Infinity) {
 			this.setDurationType(this.DURATION_TYPE_FOREVER);

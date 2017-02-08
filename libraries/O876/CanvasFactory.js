@@ -4,6 +4,9 @@
  */
 O2.createObject('O876.CanvasFactory', {
 
+
+	defaultImageSmoothing: false,
+
 	/**
 	 * Create a new canvas
      * @param w {int} width of the new canvas
@@ -19,9 +22,12 @@ O2.createObject('O876.CanvasFactory', {
 			oCanvas.height = h;
 		}
 		if (bImageSmoothing === undefined) {
-			bImageSmoothing = false;
+			bImageSmoothing = O876.CanvasFactory.defaultImageSmoothing;
 		}
 		O876.CanvasFactory.setImageSmoothing(oContext, bImageSmoothing);
+		if (bImageSmoothing) {
+			oCanvas.style.imageRendering = 'pixelated';
+		}
 		return oCanvas;
 	},
 	
@@ -31,7 +37,6 @@ O2.createObject('O876.CanvasFactory', {
 	 * @param b {boolean} on = smoothing on // false = smoothing off
 	 */
 	setImageSmoothing: function(oContext, b) {
-		oContext.webkitImageSmoothingEnabled = b;
 		oContext.mozImageSmoothingEnabled = b;
 		oContext.msImageSmoothingEnabled = b;
 		oContext.imageSmoothingEnabled = b;

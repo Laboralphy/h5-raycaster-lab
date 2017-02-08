@@ -1,5 +1,7 @@
-/** La classe mobile permet de mémoriser la position des objets circulant dans le laby
+/**
+ * La classe mobile permet de mémoriser la position des objets circulant dans le laby
  * O876 Raycaster project
+ * @class O876_Raycaster.Mobile
  * @date 2012-01-01
  * @author Raphaël Marandet
  */
@@ -43,6 +45,14 @@ O2.createClass('O876_Raycaster.Mobile', {
 	//oData: null,
 
 
+    /**
+	 * Retreive the blueprint of the sprite associated with this mobile
+	 * If a parameter is given, the method will return its values
+	 * else the method return the blueprint object
+	 * if no sprite is defined, the method returns null
+     * @param sXData {string=} a parameter of the blueprint
+     * @returns {*}
+     */
 	getBlueprint: function(sXData) {
 		if (this.oSprite) {
 			if (sXData === undefined) {
@@ -59,9 +69,11 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 
-	/** Renvoie le type de blueprint
+	/**
+	 * Renvoie le type de blueprint
 	 * Si le mobile n'a pas de sprite (et n'a pas de blueprint)
 	 * On renvoie 0, c'est généralement le cas pour le mobile-caméra
+	 * @return {int}
 	 */
 	getType: function() {
 		if (this.nBlueprintType === null) {
@@ -79,6 +91,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 
 	// évènements
 
+    /**
+	 * Define the thinker
+     * @param oThinker {O876_Raycaster.Thinker}
+     */
 	setThinker: function(oThinker) {
 		this.oThinker = oThinker;
 		if (oThinker) {
@@ -87,11 +103,18 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.oWallCollision = {x: 0, y: 0};
 		this.gotoLimbo();
 	},
-	
+
+    /**
+	 * Get the thinker instance defined previously by setThinker
+     * @returns {O876_Raycaster.Thinker}
+     */
 	getThinker: function() {
 		return this.oThinker;
 	},
 
+    /**
+	 * Makes the thinker think
+     */
 	think: function() {
 		this.xSave = this.x;
 		this.ySave = this.y;
@@ -102,44 +125,49 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 	
-	/** Modifie l'angle de la caméra d'un delta.
-	 * @param f float delta en radiant
+	/**
+	 * Rotates the mobile point of view angle
+	 * @param f {number} delta en radiant
 	 */
 	rotate: function(f) {
 		this.setAngle(this.fTheta + f);
 	},
 
+    /**
+	 * Sets the mobile speed
+     * @param f {number} new speed
+     */
 	setSpeed: function(f) {
 		this.fSpeed = f;
 	},
 
-	getSpeed: function(f) {
+    /**
+	 * Get the mobile speed previously defined by blueprint or by setSpeed
+     * @returns {number}
+     */
+	getSpeed: function() {
 		return this.fSpeed;
 	},
 
+    /**
+	 * Define a new angle
+     * @param f {number}
+     */
 	setAngle: function(f) {
 		this.fTheta = f % (PI * 2);
-		/*
-		var f2Pi = 2 * PI;
-		if (f > 0) {
-			while (this.fTheta >= PI) {
-				this.fTheta -= f2Pi;
-			}
-		} else {
-			while (this.fTheta < -PI) {
-				this.fTheta += f2Pi;
-			}
-		}*/
 	},
-	
-	getAngle: function(f) {
+
+    /**
+	 * Get the angle value previously define by setAngle
+     * @returns {number}
+     */
+	getAngle: function() {
 		return this.fTheta;
 	},	
 	
 	/** 
 	 * Renvoie les coordonnée du bloc devant le mobile
-	 * @param oMobile
-	 * @return object x y
+	 * @return {x, y}
 	 */
 	getFrontCellXY: function() {
 		if (this.oFrontCell === null) {
@@ -153,8 +181,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	},
 
 
-	/** Quitte la grille de collision de manière à ne plus interférer avec les autres sprites
-	 *
+	/**
+	 * Quitte la grille de collision de manière à ne plus interférer avec les autres sprites
 	 */
 	gotoLimbo: function() {
 		this.oRaycaster.oMobileSectors.unregister(this);
@@ -202,6 +230,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	/**
 	 * Fait glisser le mobile
 	 * détecte les collision avec le mur
+	 * @param dx {number}
+	 * @param dy {number}
 	 */
 	slide: function(dx, dy) {
 		var xc = this.xCollisions;
@@ -265,8 +295,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 	
 	
 
-	/** Déplace la caméra d'un certain nombre d'unité vers l'avant
-	 * @param fDist float Distance de déplacement
+	/**
+	 * Déplace la caméra d'un certain nombre d'unité vers l'avant
+     * @param fAngle {number} Angle of displacement
+     * @param fDist {number} Distance de déplacement
 	 */
 	move: function(fAngle, fDist) {
 		if (this.fMovingAngle != fAngle || this.fMovingSpeed != fDist) {
@@ -278,9 +310,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.slide(this.xInertie, this.yInertie);
 	},
 
-	/** Test de collision avec le mobile spécifié
-	 * @param oMobile mobile susceptible d'entrer en collision
-	 * @returnn bool
+	/**
+	 * Test de collision avec le mobile spécifié
+	 * @param oMobile {O876_Raycaster.Mobile} mobile susceptible d'entrer en collision
+	 * @returnn {bool}
 	 */
 	hits: function(oMobile) {
 		if (this.bEthereal || oMobile.bEthereal) {
@@ -294,39 +327,45 @@ O2.createClass('O876_Raycaster.Mobile', {
 		return d2 < dMin;
 	},
 
-	/** Fait tourner le mobile dans le sens direct en fonction de la vitesse de rotation
+	/**
+	 * Fait tourner le mobile dans le sens direct en fonction de la vitesse de rotation
 	 * si la vitesse est négative le sens de rotation est inversé
 	 */
 	rotateLeft: function() {
 		this.rotate(-this.fRotSpeed);
 	},
 
-	/** Fait tourner le mobile dans le sens retrograde en fonction de la vitesse de rotation
+	/**
+	 * Fait tourner le mobile dans le sens retrograde en fonction de la vitesse de rotation
 	 * si la vitesse est négative le sens de rotation est inversé
 	 */
 	rotateRight: function() {
 		this.rotate(this.fRotSpeed);
 	},
 
-	/** Déplace le mobile vers l'avant, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile vers l'avant, en fonction de sa vitesse
 	 */
 	moveForward: function() {
 		this.move(this.fTheta, this.fSpeed);
 	},
 
-	/** Déplace le mobile vers l'arrière, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile vers l'arrière, en fonction de sa vitesse
 	 */
 	moveBackward: function() {
 		this.move(this.fTheta, -this.fSpeed);
 	},
 
-	/** Déplace le mobile d'un mouvement latéral vers la gauche, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile d'un mouvement latéral vers la gauche, en fonction de sa vitesse
 	 */
 	strafeLeft: function() {
 		this.move(this.fTheta - PI / 2, this.fSpeed);
 	},
 
-	/** Déplace le mobile d'un mouvement latéral vers la droite, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile d'un mouvement latéral vers la droite, en fonction de sa vitesse
 	 */
 	strafeRight: function() {
 		this.move(this.fTheta + PI / 2, this.fSpeed);

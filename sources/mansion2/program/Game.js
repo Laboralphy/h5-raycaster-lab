@@ -71,8 +71,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('command2', this.gameEventCommand2.bind(this));
 		this.on('activate', this.gameEventActivate.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
-		this.on('attack', this.gameEventAttack.bind(this));
-		
+        this.on('attack', this.gameEventAttack.bind(this));
+        this.on('death', this.gameEventDeath.bind(this));
+
 		this.on('key.down', this.gameEventKey.bind(this));
 
 
@@ -96,6 +97,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	initLogic: function() {
 		let logic = new MANSION.Logic();
 		logic.setCameraCaptureRank(1);
+		logic.initEffectProcessor();
 		this.oLogic = logic;
 	},
 	
@@ -255,6 +257,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.configPlayerThinker();
 		this.playAmbience(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
+        this.getPlayer().data('life', 100);
+		this.oLogic.initPlayerSoul(this.getPlayer());
 	},
 	
 	/**
@@ -354,7 +358,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Evènement déclenché lorsqu'une entitée est aggressée physiquement
 	 * par une autre (contact).
-	 * @param oEvent {t: entité cible, a: aggresseur}
+     * @param oEvent.t {O876_Raycaster.Mobile} entité cible
+     * @param oEvent.a {O876_Raycaster.Mobile} aggresseur
 	 */
 	gameEventAttack: function(oEvent) {
 		var oTarget = oEvent.t;
@@ -362,10 +367,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			// joueur touché par fantôme
 			this._oDarkHaze.startPulse();
 			oTarget.getThinker().ghostThreat(oEvent.a);
+			this.oLogic.ghostDamagesPlayer(oEvent.a, 20);
 		} else {
 			// ???
+			// un fantome qui attaquye une autre fantome ?
 		}
 	},
+
+    /**
+	 * Death of player -> game over
+     * @param oEvent
+     */
+	gameEventDeath: function(oEvent) {
+		var rc = this.oRaycaster;
+        rc.addGXEffect(O876_Raycaster.GXFade).fadeOut('#000', 3000).neverEnding();
+        // virer les fantomes
+		this.clearGhosts();
+    },
 	
 
 	/**
@@ -791,12 +809,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		let aMobs = this.oRaycaster.oHorde.aMobiles;
 		let n = 0;
 		for (let i = 0, l = aMobs.length; i < l; ++i) {
-			if (aMobs[i].data('hp')) {
+			if (aMobs[i].data('dead') === false) {
 				++n;
 			}
 		}
 		return n;
 	},
+
+	clearGhosts: function() {
+        let aMobs = this.oRaycaster.oHorde.aMobiles;
+        let n = 0;
+        for (let i = 0, l = aMobs.length; i < l; ++i) {
+            if (aMobs[i].data('dead') === false) {
+                aMobs[i].getThinker().vanish();
+            }
+        }
+	},
+
+
 
 	/**
 	 * Le mobile spécifié tire un missile
