@@ -50,7 +50,7 @@ O2.createClass('MANSION.Script.Intro', {
 	
 	init: function(tag) {
 		// 30 unités jusqu'a destination
-		tag.game.playAmbience(MANSION.SOUNDS_DATA.bgm.cthulhu);
+		tag.game.playAmbiance(MANSION.SOUNDS_DATA.bgm.cthulhu);
 		this._cameraAdvance(tag, 15, 22);
 		this._text(tag, MANSION.STRINGS_DATA.INTRO.txforest.split('\n'));
 	},

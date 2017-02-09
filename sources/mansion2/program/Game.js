@@ -8,8 +8,8 @@
 /* global CONFIG */
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
-	_sAmbience: '',
-	_sAmbienceAfterFight: '',
+	_sAmbiance: '',
+	_sAmbianceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
 	_sLevelIndex: 'tutorial',
@@ -255,7 +255,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
 		this.configPlayerThinker();
-		this.playAmbience(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
+		this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
         this.getPlayer().data('life', 100);
 		this.oLogic.initPlayerSoul(this.getPlayer());
@@ -422,7 +422,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		// discarded mobiles
 		var aDiscarded = this.oRaycaster.getDiscardedMobiles();
 		if (aDiscarded) {
-			this.checkGhostAmbience();
+			this.checkGhostAmbiance();
 		}
 		// update camera
 		var gl = this.oLogic;
@@ -599,7 +599,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var sZone = oEvent.data;
 		// changement d'ambiance sonore
 		if (sZone in MANSION.SOUNDS_DATA.bgm) {
-			this.playAmbience(MANSION.SOUNDS_DATA.bgm[sZone]);
+			this.playAmbiance(MANSION.SOUNDS_DATA.bgm[sZone]);
 		}
 	},
 	
@@ -790,7 +790,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
         this.oLogic.createSoul(oGhost);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		oGhost.data('dead', false);
-		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
+		this.playGhostAmbiance(MANSION.SOUNDS_DATA.bgm.ghost);
 		return oGhost;
 	},
 
@@ -1223,45 +1223,45 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 
-	_sPreviousAmbience: '',
+	_sPreviousAmbiance: '',
 	
 	/**
 	 * Lance le fichier musical d'ambiance
 	 * @param string sAmb nom du fichier
 	 */
-	playAmbience: function(sAmb) {
-		if (this._sPreviousAmbience) {
-			this._sPreviousAmbience = sAmb;
+	playAmbiance: function(sAmb) {
+		if (this._sPreviousAmbiance) {
+			this._sPreviousAmbiance = sAmb;
 			return;
 		}
-		if (this.sAmbience == sAmb) {
+		if (this.sAmbiance == sAmb) {
 			return;
-		} else if (this.sAmbience) {
+		} else if (this.sAmbiance) {
 			this._oAudio.crossFadeMusic(sAmb);
-			this.sAmbience = sAmb;
+			this.sAmbiance = sAmb;
 		} else {
 			this._oAudio.playMusic(sAmb);
-			this.sAmbience = sAmb;
+			this.sAmbiance = sAmb;
 		}
 	},
 
-	checkGhostAmbience: function() {
-		if (this._sPreviousAmbience && this.getGhostCount() === 0) {
-			var pa = this._sPreviousAmbience;
-			this._sPreviousAmbience = '';
-			this.playAmbience(pa);
+	checkGhostAmbiance: function() {
+		if (this._sPreviousAmbiance && this.getGhostCount() === 0) {
+			var pa = this._sPreviousAmbiance;
+			this._sPreviousAmbiance = '';
+			this.playAmbiance(pa);
 		}
 	},
 
 	/**
 	 * plays a ghost music
 	 */
-	playGhostAmbience: function(sGhostAmb) {
-		if (this._sPreviousAmbience === '') {
-			var pa = this.sAmbience;
-			this.playAmbience(sGhostAmb);
-			this._sPreviousAmbience = pa;
+	playGhostAmbiance: function(sGhostAmb) {
+		if (this._sPreviousAmbiance === '') {
+			var pa = this.sAmbiance;
+			this.playAmbiance(sGhostAmb);
+			this._sPreviousAmbiance = pa;
 		}
-	}
+	},
 });
 

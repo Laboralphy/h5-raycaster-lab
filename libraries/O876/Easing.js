@@ -88,7 +88,7 @@ O2.createClass('O876.Easing', {
 	 * @param int t temps
 	 * si "t" est indéfini, utilise le timer interne 
 	 */
-	f: function(t) {
+	next: function(t) {
 		if (t === undefined) {
 			t = ++this.iTime;
 		} else {
@@ -100,7 +100,15 @@ O2.createClass('O876.Easing', {
 		}
 		var v = p(t / this.nTime);
 		this.x = this.xEnd * v + (this.xStart * (1 - v));
-		return t >= this.nTime;
+		return this;
+	},
+
+	val: function() {
+		return this.x;
+	},
+
+	over: function() {
+		return this.iTime >= this.nTime;
 	},
 
 	_linear: function(v) {

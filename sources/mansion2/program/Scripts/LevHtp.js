@@ -48,7 +48,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 		oFade.fadeOut('#000', 1500).neverEnding();
 		g.popupMessage('Exiting demonstration level... ... ...');
 		setTimeout(function() {
-			g.playAmbience('music/manor');
+			g.playAmbiance('music/manor');
 			g._halt();
 			O876_Raycaster.PointerLock.disable();
 			var xhr = new O876.XHR();
