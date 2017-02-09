@@ -1,4 +1,5 @@
 /**
+ * @class UI.System
  * L'UI System regroupe les interfaces graphiques exclusives Il ne peut y en
  * avoir qu'une seule à l'écran à la fois. Ces interfaces peuvent réagir à
  * certaines touches du clavier
@@ -46,8 +47,7 @@ O2.createClass('UI.System', {
 	/**
 	 * Positionne un widget au centre de l'écran
 	 * 
-	 * @param w
-	 *            Widget
+	 * @param w {H5UI.Widget} Widget
 	 */
 	centerWidget : function(w) {
 		w.moveTo((this.oScreen._nWidth - w._nWidth) >> 1, (this.oScreen._nHeight - w._nHeight) >> 1);

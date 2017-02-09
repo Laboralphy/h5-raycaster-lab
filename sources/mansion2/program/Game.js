@@ -39,6 +39,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initAudio();
 		this.initPopup();
 		this.initUI();
+		this.initHUD();
 		this.initRandom();
 		this._oConsole = new MANSION.Console();
 		this.on('leveldata', this.gameEventBuild.bind(this));
@@ -184,7 +185,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.oSystem.oScreen.on('click', this.uiHide.bind(this));
 	},
 
+	initHUD: function() {
+		this.oHUD = new MANSION.HUD();
 
+	},
 
 
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
@@ -430,6 +434,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.oCamera && this.oCamera.nRaise) {
 			this.oCamera.update(gl);
 		}
+		this.oHUD.update(gl);
 	},
 	
 	/**
@@ -439,6 +444,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventFrame: function(oEvent) {
 		this.oUI.render();
 		this._oConsole.render(this.oRaycaster.getScreenContext(), 4, 12);
+		this.oHUD.render();
 	},
 
 
