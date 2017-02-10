@@ -567,6 +567,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		this.setExpireTime(30);
 		this.playSound('die');
 	},
+
+	die: function() {
+		this.setThink('Die');
+	},
 	
 	thinkDie: function() {
 		this.process();

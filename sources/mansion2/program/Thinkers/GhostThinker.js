@@ -117,6 +117,7 @@ O2.extendClass('MANSION.GhostThinker', O876_Raycaster.Thinker, {
 	 * Exécute les fonction de sortie et d'entrée de phase 
 	 */
 	setThink: function(s) {
+		console.log('set think', s);
 		var aArgs = Array.prototype.slice.call(arguments, 1);
 		var sPrevProcName = this.getThinkProcName(this._sCurrentThinkProc);
 		var sProcName = this.getThinkProcName(s);

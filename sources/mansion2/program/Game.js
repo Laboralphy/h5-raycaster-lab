@@ -170,7 +170,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					console.log(oEvent);
 					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], (function(oItem) {
                         this.readSpellScroll(oItem);
 					}).bind(this));

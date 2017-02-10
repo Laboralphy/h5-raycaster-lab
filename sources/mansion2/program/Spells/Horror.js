@@ -47,5 +47,12 @@ O2.createClass('MANSION.SPELLS.Horror', {
         });
         aImages.forEach(image => imageLoader.addImage(image));
         imageLoader.loadAll();
+        var oSoul = g.oLogic.getPlayerSoul();
+        var eDamage = new Effect.Damage();
+        eDamage.setSource(oSoul);
+        eDamage.setTarget(oSoul);
+        eDamage.setLevel(25);
+        var ep = g.oLogic.getEffectProcessor();
+        ep.applyEffect(eDamage);
     }
 });

@@ -39,7 +39,7 @@ O2.createObject('MANSION.BLUEPRINTS_DATA', {
 			subtype: 'ghost',
 			name: 'Bashed boy',
 			speed: 1,
-			life: 1000,
+			life: 30,
 			cyber: {
 				shootprob: 0.333,
 				reaction: 20,

@@ -444,8 +444,8 @@ O2.createClass('MANSION.Logic', {
      * @param bCritical
      */
     playerDamagesGhost: function(oGhost, nAmount, bCritical) {
-    	this.damageEntity(oGhost.data('soul'), nAmount, this.getPlayerSoul());
         oGhost.getThinker().damage(bCritical);
+    	this.damageEntity(oGhost.data('soul'), nAmount, this.getPlayerSoul());
     },
 
     /**
@@ -485,15 +485,10 @@ O2.createClass('MANSION.Logic', {
 	attributeChanged: function(sAttribute, nValue, nPrev, oSoul) {
 		var oMobile = oSoul.data('mobile');
 		var bPlayer = oMobile.getType() === RC.OBJECT_TYPE_PLAYER;
-		console.log('attr', ...arguments);
 		switch (sAttribute) {
 			case 'hp':
 				if (nValue <= 0) {
-					if (bPlayer) {
-                        oMobile.getThinker().die();
-					} else {
-                        oMobile.getThinker().setThink('Die');
-                    }
+                    oMobile.getThinker().die();
 				}
 				break;
 
@@ -507,11 +502,18 @@ O2.createClass('MANSION.Logic', {
 	},
 
 	initPlayerSoul: function(oPlayer) {
-    	var p = this.createSoul(oPlayer);
-        this._oPlayerEntity = p;
+        this._oPlayerEntity = this.createSoul(oPlayer);
 	},
 
 	getPlayerSoul: function() {
 		return this._oPlayerEntity;
 	},
+
+    /**
+	 *
+     * @returns {ADV.EffectProcessor}
+     */
+	getEffectProcessor: function() {
+        return this._oEffectProcessor;
+	}
 });
