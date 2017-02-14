@@ -9,13 +9,15 @@
 O2.createObject('MANSION.NOTES.goules', [
     {
         type: 'title',
-        content: 'Le Culte des Goules'
+        content: 'Le Culte des Goules',
+        read: false
     },
     {
         type: 'text',
         content: 'A forbidden book written by french author Comte d\'Erlette. ' +
-        'This tome depicts gruesome customs of an ancien and secret society ' +
-        'whose members name themselves "les goules".'
+        'Like many book of itd kind, this one is rare and hold many secrets. '
+
+
     },
     {
         type: 'photo',
@@ -23,12 +25,16 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'text',
-        content: 'The book is very rare and is rumored to drive readers insane.'
+        content: 'This tome depicts gruesome facts about an ancient and secret ' +
+        'society whose members name themselves "les goules". ' +
+        'These cultists were among the most dreadful and cruel. ' +
+        'The book depicts practices, abductions, tortures and evil rituals. ' +
+        'The text is extremely shocking and the pictures are totally disturbing.'
     },
     {
         type: 'button',
         action: 'Horror',
         caption: 'Read a passage',
-        legend: 'Books don\'t drive people insane, do they ?'
+        legend: 'This book is rumored to drive readers insane...'
     }
 ]);

@@ -8,12 +8,15 @@
 O2.createObject('MANSION.NOTES.eibon', [
     {
         type: 'title',
-        content: 'Liber Ivonis'
+        content: 'Liber Ivonis',
+        read: false
     },
     {
         type: 'text',
-        content: '"The Book of Eibon (or Liber Ivonis in latin)" is the tale of Eibon, a powerful Hyperborean wizard who lived ten thousand years ago. ' +
-            'Eibon was a famous wizard who accomplished exploits on remote, alien worlds and planets.'
+        content: 'A very ancien text, written 12,000 years ago by an Hyperborean ' +
+        'wizard who claimed to have boldly travelled where no man has gone before. ' +
+        'Eibon visited many strange alien worlds on remote planets and reported ' +
+        'having slayed the most brutal otherworldly entities.'
     },
     {
         type: 'photo',
@@ -21,8 +24,11 @@ O2.createObject('MANSION.NOTES.eibon', [
     },
     {
         type: 'text',
-        content: 'During his journeys, Eibon had to fight strange creatures, and slayed many otherworldly horrors with powerful spells. ' +
-            'Such spells are written in this book.'
+        content: 'How did Eibon fought so many monsters and lived to tell the story ? ' +
+        'The book is itself an amazing peace of adventure. Eibon describes the ' +
+        'spells he used during his journeys, he wrote glyphs and sigils. ' +
+        'Most of the incantations are unreadable but some scholar wrote ' +
+        'translation of a few formula.'
     },
     {
         type: 'button',
