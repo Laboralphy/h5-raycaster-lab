@@ -99,11 +99,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		menu_title: 'Menu',
 		menu_options: {
 			mo_album: 'Album',
-			mo_notes: 'Notes',
+			mo_notes: 'Books',
 			mo_help: 'Help'
 		},
 		album_title: 'Album',
-		notes_title: 'Notes'
+		notes_title: 'Books'
 	}
 
 });

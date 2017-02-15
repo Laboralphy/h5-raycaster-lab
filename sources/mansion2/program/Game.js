@@ -120,10 +120,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	initPopup: function() {
 		this.setPopupStyle({
-			background: 'rgba(128, 64, 10, 0.5)',
-			border: 'rgba(128, 32, 0, 0.25)',
-			shadow: 'rgb(0, 0, 0)',
-			text: 'rgb(255, 255, 255)',
+			background: 'rgb(240, 232, 220)',
+			border: 'rgba(32, 32, 32, 0.25)',
+			shadow: 'rgb(200, 202, 200)',
+			text: 'rgb(0, 0, 0)',
 			width: 320,
 			height: 32,
 			font: 'monospace 10',
