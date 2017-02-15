@@ -157,7 +157,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					ui.getWidget('album').showPrevPhoto();
 					break;
 				case 'mo_notes': 
-					ui.displayWidget('notes').loadTitles(ui, Object.keys(MANSION.NOTES));
+					ui.displayWidget('notes').loadTitles(ui, this.oLogic.getNotes());
 					ui.displayWidget('notes').displayList();
 					break;
 					
@@ -170,9 +170,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					ui.displayWidget('notes').displayDocument(MANSION.NOTES[oEvent.note], (function(oItem) {
-                        this.readSpellScroll(oItem);
-					}).bind(this));
+					ui.displayWidget('notes')
+						.displayDocument(this.oLogic.getNotes()[oEvent.note], (
+							function(oItem) {
+                        		this.readSpellScroll(oItem);
+                        		this.oLogic.setNoteFlag(oEvent.note, 'read', true);
+							}
+						).bind(this));
 					break;
 
 				default: 

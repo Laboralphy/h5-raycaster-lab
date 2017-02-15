@@ -10,7 +10,6 @@ O2.createObject('MANSION.NOTES.goules', [
     {
         type: 'title',
         content: 'Le Culte des Goules',
-        read: false
     },
     {
         type: 'text',

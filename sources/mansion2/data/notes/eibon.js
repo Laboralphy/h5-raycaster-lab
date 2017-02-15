@@ -9,7 +9,6 @@ O2.createObject('MANSION.NOTES.eibon', [
     {
         type: 'title',
         content: 'Liber Ivonis',
-        read: false
     },
     {
         type: 'text',

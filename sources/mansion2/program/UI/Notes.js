@@ -218,30 +218,48 @@ O2.extendClass('UI.Notes', UI.Window, {
 	      title: string, used for display
 	    }
 	 */
-	loadTitles: function(ui, aTitles) {
+	loadTitles: function(ui, oNotes) {
 		this._oList.clear();
-		aTitles.forEach((function(x, i) {
-			var aNote = MANSION.NOTES[x];
-			var oTitle = aNote.filter(function(n) {
-				return n.type === 'title';
-			}).shift();
-			console.log(oTitle);
-			var sTitle = oTitle.content;
-			this.appendTitle(ui, i, x, sTitle);
-		}).bind(this));
+        Object.keys(oNotes)
+			.filter(x => oNotes[x][0].found)
+			.sort(function (a, b) {
+				let ra = oNotes[a][0].read ? 10 : 0;
+				let rb = oNotes[b][0].read ? 1 : 0;
+				let r = ra + rb;
+				switch (r) {
+					case 11:
+					case 0: return 0;
+					case 1: return -1;
+					case 10: return 1;
+				}
+            })
+			.forEach((function(x, i) {
+				let aNote = oNotes[x];
+				if (aNote[0].found) {
+					let bRead = aNote[0].read;
+                    let oTitle = aNote.filter(n => n.type === 'title').shift();
+                    let sTitle = oTitle.content;
+                    this.appendTitle(ui, i, x, sTitle, bRead);
+                }
+			}).bind(this));
 	},
 
 	/**
 	 * Add a new title to the list
 	 */
-	appendTitle: function(ui, iRank, id, sTitle) {
+	appendTitle: function(ui, iRank, id, sTitle, bRead) {
 		var b = this._oList.linkControl(new H5UI.Button());
 		b.setSize(this._oList.width(), this.ITEM_HEIGHT);
 		b.oText.setAutosize(false);
 		b.oText.setSize(b.width() - this.PADDING, this.ITEM_HEIGHT);
 		b.oText.moveTo(this.PADDING >> 1, this.PADDING >> 1);
-		b.setColor('#666', '#999');
-		b.oText.font.setColor('#FFF');
+		if (bRead) {
+            b.setColor('#666', '#999');
+            b.oText.font.setColor('#CCC');
+        } else {
+            b.setColor('#474', '#7A7');
+            b.oText.font.setColor('#FFF');
+        }
 		b.setCaption(sTitle);
 		b.moveTo(0, iRank * this.ITEM_HEIGHT);
 		b.on('click', ui.commandFunction('note_read', {note: id}));

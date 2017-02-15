@@ -40,6 +40,7 @@ O2.createClass('MANSION.Logic', {
 	_oEffectProcessor: null,
 	_oPlayerEntity: null,  // An object containing all stats
 		// we can apply effects on it.
+	_oNotes: null,
 
 	/**
 	 * Game time transmission
@@ -396,9 +397,35 @@ O2.createClass('MANSION.Logic', {
 	getCapturedGhosts: function() {
 		return this._aCapturedGhosts;
 	},
-	
-	
 
+
+    /**
+	 * Returns all gathered notes
+     */
+	getNotes: function() {
+		if (this._oNotes === null) {
+            this._oNotes = JSON.parse(JSON.stringify(MANSION.NOTES));
+            for (var n in this._oNotes) {
+                this.setNoteFlag(n, 'read', false);
+                this.setNoteFlag(n, 'found', true);
+            }
+		}
+		return this._oNotes;
+	},
+
+	getFoundNoteList: function() {
+		return Object.keys(
+			this.getNotes()
+		).filter(n => this.getNoteFlag(n, 'found'));
+	},
+
+    setNoteFlag: function(sNote, sFlag, xValue) {
+        this._oNotes[sNote][0][sFlag] = xValue;
+    },
+
+    getNoteFlag: function(sNote, sFlag) {
+        return this._oNotes[sNote][0][sFlag];
+    },
 
 
     /*******************************************
@@ -406,7 +433,6 @@ O2.createClass('MANSION.Logic', {
      *******************************************/
 
     /**
-	 * @TODO : Terminer cette saloperie de Soul System
 	 * XXX 1) Lancer les Initialiser de Player, EffectProcessor
 	 * 2) Différencier Ghost et Player dans l'attribute change
 	 * 3) Ajouter ghostDamagesPlayer()
