@@ -1,6 +1,7 @@
 /* globals O2, O876, O876_Raycaster, CONFIG, Marker */
 /**
  * @class O876_Raycaster.GameAbstract
+ * @extends O876_Raycaster.Engine
  *
  */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
@@ -399,6 +400,10 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 
 	/**
 	 * sets or gets values from the map data array
+	 * @param x {int} block coordinates
+	 * @param y {int}
+	 * @param sVariable {string} variable name
+	 * @param xValue {*} variable value
 	 */
 	mapData: function(x, y, sVariable, xValue) {
 		var s = this.oRaycaster.nMapSize;
@@ -425,7 +430,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 				}
 			}
 		}
-	},
+	}
 });
 
 O2.mixin(O876_Raycaster.GameAbstract, O876.Mixin.Events);

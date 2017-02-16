@@ -1,6 +1,7 @@
 /** Gestion de la horde de sprite
  * L'indice des éléments de cette horde n'a pas d'importance.
  * O876 Raycaster project
+ * @class O876_Raycaster.Horde
  * @date 2012-01-01
  * @author Raphaël Marandet
  */

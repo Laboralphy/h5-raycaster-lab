@@ -1,3 +1,7 @@
+/**
+ * @class O876_Raycaster.Engine
+ * @extends O876_Raycaster.Transistate
+ */
 O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	// Juste une copie du TIME_FACTOR du raycaster
 	TIME_FACTOR : 50, // Doit être identique au TIME_FACTOR du raycaster

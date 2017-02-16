@@ -140,6 +140,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oContinueRay: null,
 	
 	// sprites
+    /**
+	 * @property oHorde {O876_Raycaster.Horde}
+     */
 	oHorde : null,
 	aScanSectors : null,
 	oMobileSectors : null,
