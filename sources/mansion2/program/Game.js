@@ -260,7 +260,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventEnterLevel: function() {
 		const rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
-		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
+		this.fadeIn('black', 1700);
 		this.configPlayerThinker();
 		this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
@@ -387,7 +387,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
      */
 	gameEventDeath: function(oEvent) {
 		var rc = this.oRaycaster;
-        rc.addGXEffect(O876_Raycaster.GXFade).fadeOut('#000', 3000).neverEnding();
+		this.fadeOut('black', 3000).neverEnding();
         // virer les fantomes
 		this.clearGhosts();
     },
@@ -633,7 +633,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oLoc = this.getLocator(sDest);
 		var p = this.getPlayer();
 		var rc = this.oRaycaster;
-		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.7);
+		this.fadeIn('black', 700);
 		var ps = rc.nPlaneSpacing;
 		var ps2 = ps >> 1;
 		p.setXY(oLoc.x * ps + ps2, oLoc.y * ps + ps2);
@@ -902,13 +902,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		let sSpell = oSection.action;
         // remove the section
 		oSection.disabled = true;
-		if (sSpell in MANSION.SPELLS) {
-			const SpellClass = MANSION.SPELLS[sSpell];
+		this.castSpell(sSpell)
+	},
+
+	castSpell: function(sSpell) {
+        if (sSpell in MANSION.SPELLS) {
+            const SpellClass = MANSION.SPELLS[sSpell];
             let spell = new SpellClass();
             spell.run(this);
-		} else {
+        } else {
             this.popupMessage('Unknown spell "' + sSpell + '" !');
-		}
+        }
 	},
 
 
@@ -1195,7 +1199,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	isDoorLocked: function(x, y) {
 		return !!this.mapData(x, y, 'locked-phys-code');
 	},
-	
+
+
+    fadeIn: function(sColor, fTime) {
+        return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeIn(sColor, fTime);
+    },
+
+    fadeOut: function(sColor, fTime) {
+        return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeOut(sColor, fTime);
+    },
+
 	
 	/** 
 	 * Lecture d'un son à la position x, y

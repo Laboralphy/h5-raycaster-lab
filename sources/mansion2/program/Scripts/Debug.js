@@ -3,16 +3,33 @@
  */
 O2.createClass('MANSION.Script.Debug', {
 
-	/**
-	 * Apparition d'un fantôme en face du joueur
-	 * data[0] = type de fantôme
-	 */
-	spawn: function(oEvent) {
-		/** <ghost> : will spawn a ghost. Type "ghosts" to get a list of available ghosts. **/
-		var g = oEvent.game;
-		var sGhost = oEvent.data[0];
-		g.spawnGhost(sGhost);
-	},
+    /**
+     * Apparition d'un fantôme en face du joueur
+     * data[0] = spell
+     */
+    cast: function(oEvent) {
+        /** <cast> : will cast a spell, type "spells" to get a list of available spells. **/
+        oEvent.game.castSpell(oEvent.data[0]);
+    },
+
+    /**
+     * Apparition d'un fantôme en face du joueur
+     */
+    spells: function(oEvent) {
+        /** <spells> : will print a list of available spells **/
+        oEvent.game.console().clear().print(Object.keys(MANSION.SPELLS).join('\n'));
+    },
+
+    /**
+     * Apparition d'un fantôme en face du joueur
+     * data[0] = type de fantôme
+     */
+    spawn: function(oEvent) {
+        /** <ghost> : will spawn a ghost. Type "ghosts" to get a list of available ghosts. **/
+        var g = oEvent.game;
+        var sGhost = oEvent.data[0];
+        g.spawnGhost(sGhost);
+    },
 
 	/**
 	 * Renvoie la liste des fantomes

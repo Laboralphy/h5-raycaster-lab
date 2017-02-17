@@ -19,5 +19,6 @@ O2.createClass('MANSION.SPELLS.Heal', {
         eHeal.setLevel(100);
         var ep = g.oLogic.getEffectProcessor();
         ep.applyEffect(eHeal);
+        g.fadeIn('rgba(255, 32, 96, 0.75)', 500);
     }
 });
