@@ -10,8 +10,6 @@ O2.createClass('MANSION.SPELLS.Heal', {
 
 
     run: function(g) {
-        // créer effet soin
-        // appliquer joueur
         var eHeal = new Effect.Heal();
         var p = g.oLogic.getPlayerSoul();
         eHeal.setSource(p);

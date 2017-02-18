@@ -1,5 +1,7 @@
 /** Effet graphique temporisé
  * O876 Raycaster project
+ * @class O876_Raycaster.GXAmbientLight
+ * @extends O876_Raycaster.GXEffect
  * @date 2012-01-01
  * @author Raphaël Marandet
  * 

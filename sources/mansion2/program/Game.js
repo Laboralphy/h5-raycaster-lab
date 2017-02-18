@@ -261,10 +261,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		const rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		this.fadeIn('black', 1700);
+        this.getPlayer().data({
+            'life': 100,
+            'speed': MANSION.CONST.SPEED_NORMAL
+        });
 		this.configPlayerThinker();
 		this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
-        this.getPlayer().data('life', 100);
 		this.oLogic.initPlayerSoul(this.getPlayer());
 	},
 	
@@ -727,7 +730,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
 				oPlayer.setXY(oPlayer.x, oPlayer.y);
-				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
+				oPlayer.setSpeed(oPlayer.data('speed'));
 				ct = oPlayer.getThinker();
 				ct.on('button0.down', (function() {
 					this.trigger('command0');
@@ -764,15 +767,30 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		var c = this.oCamera;
 		var l = this.oLogic;
-		if (c.isRaised()) {
+        var oPlayer = this.getPlayer();
+        var oSoul = oPlayer.data('soul');
+        if (c.isRaised()) {
 			c.hide();
 			l.cameraOff();
-			this.getPlayer().fSpeed = MANSION.CONST.SPEED_NORMAL;
+            if (oPlayer.data('cameraSpeedEffect')) {
+                oPlayer.data('cameraSpeedEffect').dispel();
+                oPlayer.data('cameraSpeedEffect', null);
+            }
 		} else {
 			c.show();
 			c.setEnergyGauges(0, l.getCameraMaxEnergy());
 			c.nCircleSize = l.getCameraCircleSize();
-			this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
+			//this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
+            var eSlow = new Effect.Bonus('speed');
+            eSlow.setTarget(oSoul);
+            eSlow.setSource(oSoul);
+            eSlow.setLevel(MANSION.CONST.SPEED_CAMERA_MODIFIER);
+            eSlow.setDuration(Infinity);
+            if (oPlayer.data('cameraSpeedEffect')) {
+                oPlayer.data('cameraSpeedEffect').dispel();
+            }
+            oPlayer.data('cameraSpeedEffect', eSlow);
+            l.getEffectProcessor().applyEffect(eSlow);
 		}
 	},
 
@@ -1285,5 +1303,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this._sPreviousAmbiance = pa;
 		}
 	},
+
+	rand: function() {
+		return this.oRandom.rand(...arguments);
+	}
 });
 

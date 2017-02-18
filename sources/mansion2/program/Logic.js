@@ -523,7 +523,12 @@ O2.createClass('MANSION.Logic', {
 				break;
 
 			case 'sight':
-				break;
+				if (bPlayer) {
+                    oMobile.oRaycaster
+                        .addGXEffect(O876_Raycaster.GXAmbientLight)
+                        .setLight(MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue, 1500);
+                }
+                break;
 		}
 	},
 
