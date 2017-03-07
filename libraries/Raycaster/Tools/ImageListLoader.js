@@ -1,6 +1,8 @@
 /**
- * Surveille le chargement de diverse images
- * Envoiue un évènement final lorsque les images sont toutes chargées
+ * @class O876_Raycaster.ImageListLoader
+ * Précharge une liste d'image
+ * Surveille le chargement des images
+ * Envoie un évènement final lorsque les images sont toutes chargées
  */
 O2.createClass('O876_Raycaster.ImageListLoader', {
 	aImg: null,
@@ -10,6 +12,10 @@ O2.createClass('O876_Raycaster.ImageListLoader', {
 		this.aImg = [];
 	},
 
+    /**
+	 * Ajoute une image à la liste
+     * @param sSrc url de l'image
+     */
 	addImage: function(sSrc) {
 		this.aImg.push({
 			src: sSrc,
@@ -17,9 +23,14 @@ O2.createClass('O876_Raycaster.ImageListLoader', {
 		});
 	},
 
+    /**
+	 * Chargement d'une image
+     * @param oImgItem.src source de l'image
+	 * @param oImgItem.img HTMLImage qui recevra le cojntenu de l'image (quand celle ci sera chargée)
+     */
 	loadOne: function(oImgItem) {
-		var sSrc = oImgItem.src;
-		var oImg;
+		let sSrc = oImgItem.src;
+		let oImg;
 		if (sSrc instanceof HTMLImageElement) {
 			oImg = sSrc;
 		} else if (sSrc instanceof HTMLCanvasElement) {
@@ -35,11 +46,18 @@ O2.createClass('O876_Raycaster.ImageListLoader', {
 		}
 	},
 
+    /**
+	 * Charge toutes les images précédement ajoutée par addImage
+     */
 	loadAll: function() {
 		this.aImg.forEach(i => this.loadOne(i));
 		this.imageLoaded();
 	},
 
+    /**
+	 * Callback appelé quand une image est chargée
+     * @param oEvent
+     */
 	imageLoaded: function(oEvent) {
 		if (this.bAllLoaded) {
 			return;

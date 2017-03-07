@@ -1,10 +1,15 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.SOUNDS_DATA
+ * Mansion sound database
+ */
 O2.createObject('MANSION.SOUNDS_DATA', {
 	ambiance: {
 		thunder: 'ambiance/thunder'
 	},
 	bgm: {
 		levels: {
-			tutorial: 'music/forest',
+			tutorial: 'music/inside',
 			ch1: 'music/forest',
 		},
 		woods: 'music/forest',
@@ -27,6 +32,15 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		charge: 'mechanisms/camera-charge',
 		ring: 'events/phone-ringtone',
 		fullcharge: 'mechanisms/camera-full-charge',
+		stress: [
+			'events/stress0',
+			'events/stress1',
+			'events/stress2',
+			'events/stress3',
+			'events/stress4',
+			'events/stress5',
+			'events/stress6',
+		]
 	},
 	pickup: {
 		key: 'pickup/key',

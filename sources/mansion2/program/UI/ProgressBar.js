@@ -1,5 +1,6 @@
 /** 
  * UI : Interface utilisateur
+ * @class UI.ProgressBar
  * @author raphael marandet
  * @date 2013-01-01
  *
@@ -14,7 +15,7 @@ O2.extendClass('UI.ProgressBar', H5UI.Box, {
 	sCaption: '',
 	oCaption: null,
 	
-	__construct: function(oParams) {
+	__construct: function() {
 		__inherited();
 		this.setColor(UI.clDARK_WINDOW, UI.clDARK_WINDOW);
 		this.setBorder(1, UI.clWINDOW_BORDER, UI.clWINDOW_BORDER);

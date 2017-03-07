@@ -1,5 +1,6 @@
 /** GXEffect : Classe de base pour les effets graphiques temporisés
  * O876 raycaster project
+ * @class O876_Raycaster.GXEffect
  * 2012-01-01 Raphaël Marandet
  */
 O2.createClass('O876_Raycaster.GXEffect', {

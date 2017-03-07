@@ -1,5 +1,7 @@
 /** Effet graphique temporisé
  * O876 Raycaster project
+ * @class O876_Raycaster.GXAmbientLight
+ * @extends O876_Raycaster.GXEffect
  * @date 2012-01-01
  * @author Raphaël Marandet
  * 
@@ -35,11 +37,12 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 
 	process: function() {
 		var e = this._oEasing;
-		this._bOver = e.f();
+		e.next();
+		this._bOver = e.over();
 	},
 
 	render: function() {
-		x = this._oEasing.x;
+		var x = this._oEasing.val();
 		if (x > 0) {
 			var rc = this.oRaycaster;
 			this._bOver = false;

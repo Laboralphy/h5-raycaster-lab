@@ -62,7 +62,7 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 	process: function() {
 		switch (this.nPhase) {
 			case 0:
-				if (this.oEasingAlpha.f()) {
+				if (this.oEasingAlpha.next().over()) {
 					++this.nPhase;
 				}
 			break;
@@ -75,7 +75,7 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 			break;
 			
 			case 2: 
-				if (this.oEasingAlpha.f()) {
+				if (this.oEasingAlpha.next().over()) {
 					++this.nPhase;
 				}
 			break;
@@ -88,7 +88,7 @@ O2.extendClass('MANSION.GX.SimpleText', O876_Raycaster.GXEffect, {
 		var cvs = this.oCanvas;
 		var ctx = this.oRaycaster.getRenderContext();
 		var fAlpha = ctx.globalAlpha;
-		ctx.globalAlpha = this.oEasingAlpha.x;
+		ctx.globalAlpha = this.oEasingAlpha.val();
 		ctx.drawImage(cvs, 0, 0);
 		ctx.globalAlpha = fAlpha;
 	},

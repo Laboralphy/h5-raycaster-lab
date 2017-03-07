@@ -1,5 +1,7 @@
 /** Effet graphique temporisé
  * O876 Raycaster project
+ * @class O876_Raycaster.GXFade
+ * @extends O876_Raycaster.GXEffect
  * @date 2012-01-01
  * @author Raphaël Marandet
  * 
@@ -30,7 +32,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	fade: function(sColor, fTime, fFrom, fTo) {
 		this.oColor = this.oRainbow.parse(sColor);
 		this.oEasing.from(fFrom).to(fTo).during(fTime / this.oRaycaster.TIME_FACTOR | 0).use('smoothstep');
-		this.bOver = fFrom != fTo;
+		this.bOver = fFrom == fTo;
 		return this;
 	},
 	
@@ -39,11 +41,21 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	fadeIn: function(sColor, fTime) {
-		return this.fade(sColor, fTime, 1, 0);
+		var c = this.oRainbow.parse(sColor);
+		var f = 1;
+		if (c.a) {
+			f = c.a;
+		}
+		return this.fade(sColor, fTime, f, 0);
 	},
 	
 	fadeOut: function(sColor, fTime) {
-		return this.fade(sColor, fTime, 0, 1);
+        var c = this.oRainbow.parse(sColor);
+        var f = 1;
+        if (c.a) {
+            f = c.a;
+        }
+		return this.fade(sColor, fTime, 0, f);
 	},
 	
 	isOver : function() {
@@ -55,8 +67,10 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	process : function() {
-		this.bOver = this.oEasing.f();
-		this.oColor.a = this.oEasing.x;
+		if (!this.bOver) {
+            this.bOver = this.oEasing.next().over();
+            this.oColor.a = this.oEasing.val();
+        }
 	},
 
 	render : function() {

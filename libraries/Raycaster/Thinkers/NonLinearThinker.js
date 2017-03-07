@@ -42,17 +42,17 @@ O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 	
 	thinkMove: function() {
 		if (this._oEasingX && this._oEasingY) {
-			var bx = this._oEasingX.f();
-			var by = this._oEasingY.f();
-			var x = this._oEasingX.x;
-			var y = this._oEasingY.x;		
+			var bx = this._oEasingX.next().over();
+			var by = this._oEasingY.next().over();
+			var x = this._oEasingX.val();
+			var y = this._oEasingY.val();
 			this.oMobile.setXY(x, y);
 			if (bx && by) {
 				this.think = this.thinkStop;
 			}
 		}
 	},
-	
+
 	thinkStop: function() {
 	},
 	

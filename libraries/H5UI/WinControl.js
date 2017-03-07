@@ -624,10 +624,10 @@ O2.createClass('H5UI.WinControl', {
 	 *            est supprimé
 	 */
 	align : function(sDoko) {
-		if (sDoko === undefined) {
-			this._callParentMethod('_unregisterAlignedControl', this);
-		} else {
+		if (sDoko in this._aAlignedControls) {
 			this._callParentMethod('_registerAlignedControl', this, sDoko);
+		} else {
+			this._callParentMethod('_unregisterAlignedControl', this);
 		}
 	},
 

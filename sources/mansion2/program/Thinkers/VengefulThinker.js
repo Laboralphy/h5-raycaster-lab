@@ -213,23 +213,15 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			}
 		}
 	},
-	
-	
-	
-	damage: function(nAmount, bCritical) {
-		var hp = this.oMobile.data('hp');
-		this.oMobile.data('hp', hp -= nAmount);
-		if (hp <= 0) {
-			this.setThink('Die');
-			return;
-		}
+
+	damage: function(bCritical) {
 		if (bCritical) {
 			this.setThink('Wounded', 30);
 		} else {
 			this.setThink('Wounded', 5);
 		}
 	},
-	
+
 	
 	
 	
@@ -574,6 +566,10 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 		this.oMobile.data('dead', true);
 		this.setExpireTime(30);
 		this.playSound('die');
+	},
+
+	die: function() {
+		this.setThink('Die');
 	},
 	
 	thinkDie: function() {

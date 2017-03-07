@@ -149,8 +149,8 @@ O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 	detectTag: function() {
 		var rc = this.oRaycaster;
 		var rcc = rc.oCamera;
-		x = rcc.xSector;
-		y = rcc.ySector;
+		var x = rcc.xSector;
+		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
 		if (sTag != this._sTag) {
 			if (this.onTagTriggered) {

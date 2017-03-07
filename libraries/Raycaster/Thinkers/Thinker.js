@@ -1,5 +1,6 @@
 /** Classe de déplacement automatisé et stupidité artificielle des mobiles
  * O876 Raycaster project
+ * @class O876_Raycaster.Thinker
  * @date 2012-01-01
  * @author Raphaël Marandet 
  * Classe de base pouvant être étendue
