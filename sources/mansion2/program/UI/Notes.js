@@ -79,58 +79,104 @@ O2.extendClass('UI.Notes', UI.Window, {
 	 * Please provide the text content.
 	 * The text object will be appended to the PAD
 	 * @param sText string : text content
+	 * @param sStyle string : text style like 'bold' or 'italic'
 	 */
-	createTextItem: function(sText) {
+	createTextItem: function(sText, sStyle) {
 		var oText = this._oPad.linkControl(new H5UI.Text());
 		oText._set('_nLineHeight', 4);
 		oText.moveTo(2, 2 + this._yCursor);
 		oText.setFontColor('#CCC');
 		oText.setFontFace('serif');
+		if (sStyle) {
+			oText.setFontStyle(sStyle);
+		}
 		oText.setFontSize(12);
 		oText.setWordWrap(true);
 		oText.setAutosize(true);
-		oText.setSize(this.oBG.width() - 8, 0);
+		oText.setSize(this.oBG.width() - this.PADDING, 0);
 		oText.setCaption(sText);
 		this._yCursor += oText.height() + 2;
 	},
 
-	createImageItem: function(oSrc) {
-		var oImg = this._oPad.linkControl(new H5UI.Image());
-		oImg.setSource(oSrc);
-		oImg.render();
-		oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
-		this._yCursor += oImg.height() + 2;
+    createImageItem: function(oSrc) {
+        let oImg = this._oPad.linkControl(new H5UI.Image());
+        oImg.setSource(oSrc);
+        oImg.render();
+        oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
+        this._yCursor += oImg.height() + 2;
+        return oImg;
+    },
+
+    createPhotoItem: function(oSrc) {
+        let oImg = this._oPad.linkControl(new H5UI.Image());
+        oImg._set('_nBorderWidth', 4);
+        oImg._set('_sColorBorder', '#FFF');
+        oImg.setSource(oSrc);
+        oImg.render();
+        oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
+        this._yCursor += oImg.height() + 2;
+		return oImg;
+    },
+
+    createButtonItem: function(sCaption, pClick) {
+		var oButton = this._oPad.linkControl(new H5UI.Button());
+		oButton.setSize(this.oBG.width() - this.PADDING * 2, 16);
+        oButton.moveTo((this.oBG.width() - oButton.width()) >> 1, 2 + this._yCursor);
+		oButton.setCaption(sCaption);
+		oButton.on('click', pClick);
+        this._yCursor += oButton.height() + 2;
 	},
 
 	/**
-	 * Display document
-	 * { type: text | image
+	 * Display a document
+	 * @param aItems Array of items (plain objects) describing the content of the document
+	 * @param pOnAction a callback invoked when actions are triggered (like clicking on a button)
 	 */
-	displayDocument: function(sTitle, aItems) {
-		this.setTitleCaption(sTitle);
+	displayDocument: function(aItems, pOnAction) {
 		this._oList.hide();
 		this._oPad.clear();
 		this._yCursor = 0;
 		var oLoader = new O876_Raycaster.ImageListLoader();
 		aItems
-			.filter(i => i.type === 'image')
+			.filter(i => (i.type === 'image') || (i.type === 'photo'))
 			.forEach(function(i) {
 				oLoader.addImage(i.src);
 			});
 		oLoader.on('load', (function(aImgList) {
 			aItems.forEach(function(oItem) {
+				if (('disabled' in oItem) && (oItem.disabled)) {
+					return;
+				}
 				switch (oItem.type) {
+					case 'title':
+                        this.setTitleCaption(oItem.content);
+                        break;
+
 					case 'text':
-						this.createTextItem(oItem.content);
+						this.createTextItem(oItem.content, oItem.style);
 						break;
 
-					case 'image':
-						// les image de aImgList, sont rangées dans le meme ordre
-						// que l'objet de définiton initial : aItems
-						this.createImageItem(aImgList.shift());
+                    case 'image':
+                        // les image de aImgList, sont rangées dans le meme ordre
+                        // que l'objet de definition initial : aItems
+                        this.createImageItem(aImgList.shift());
+                        break;
+
+                    case 'photo':
+                        // les image de aImgList, sont rangées dans le meme ordre
+                        // que l'objet de definition initial : aItems
+                        this.createPhotoItem(aImgList.shift());
+                        break;
+
+                    case 'button':
+						this.createButtonItem(oItem.caption, () => pOnAction(oItem));
+						if ('legend' in oItem) {
+                            this.createTextItem(oItem.legend, 'italic');
+                        }
 						break;
 				}
 			}, this);
+            this._oPad.scrollTo(0, 0);
 			this._oPad.show();
 			this.setScrollBarOwner(this._oPad);
 		}).bind(this));
@@ -172,24 +218,48 @@ O2.extendClass('UI.Notes', UI.Window, {
 	      title: string, used for display
 	    }
 	 */
-	loadTitles: function(ui, aTitles) {
+	loadTitles: function(ui, oNotes) {
 		this._oList.clear();
-		aTitles.forEach((function(x, i) {
-			this.appendTitle(ui, i, x.id, x.title);
-		}).bind(this));
+        Object.keys(oNotes)
+			.filter(x => oNotes[x][0].found)
+			.sort(function (a, b) {
+				let ra = oNotes[a][0].read ? 10 : 0;
+				let rb = oNotes[b][0].read ? 1 : 0;
+				let r = ra + rb;
+				switch (r) {
+					case 11:
+					case 0: return 0;
+					case 1: return -1;
+					case 10: return 1;
+				}
+            })
+			.forEach((function(x, i) {
+				let aNote = oNotes[x];
+				if (aNote[0].found) {
+					let bRead = aNote[0].read;
+                    let oTitle = aNote.filter(n => n.type === 'title').shift();
+                    let sTitle = oTitle.content;
+                    this.appendTitle(ui, i, x, sTitle, bRead);
+                }
+			}).bind(this));
 	},
 
 	/**
 	 * Add a new title to the list
 	 */
-	appendTitle: function(ui, iRank, id, sTitle) {
+	appendTitle: function(ui, iRank, id, sTitle, bRead) {
 		var b = this._oList.linkControl(new H5UI.Button());
 		b.setSize(this._oList.width(), this.ITEM_HEIGHT);
 		b.oText.setAutosize(false);
-		b.oText.setSize(b.width() - 8, this.ITEM_HEIGHT);
-		b.oText.moveTo(4, 4);
-		b.setColor('#666', '#999');
-		b.oText.font.setColor('#FFF');
+		b.oText.setSize(b.width() - this.PADDING, this.ITEM_HEIGHT);
+		b.oText.moveTo(this.PADDING >> 1, this.PADDING >> 1);
+		if (bRead) {
+            b.setColor('#666', '#999');
+            b.oText.font.setColor('#CCC');
+        } else {
+            b.setColor('#474', '#7A7');
+            b.oText.font.setColor('#FFF');
+        }
 		b.setCaption(sTitle);
 		b.moveTo(0, iRank * this.ITEM_HEIGHT);
 		b.on('click', ui.commandFunction('note_read', {note: id}));

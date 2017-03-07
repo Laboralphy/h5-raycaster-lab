@@ -108,7 +108,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 				});
 				if (lss.subjects && Array.isArray(lss.subjects)) {
 					lss.subjects.forEach(function(s) {
-						aShotStr.unshift(s);
+						aShotStr.unshift(MANSION.STRINGS_DATA.SUBJECTS[s].title);
 					});
 				}
 				aShotStr.push(MANSION.STRINGS_DATA.SHOTS.score + nScore.toString());
@@ -209,7 +209,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		
 		// flash
 		if (this.bFlash) {
-			if (this.oEasingHUD.f(++this.nFlashTime)) {
+			if (this.oEasingHUD.next(++this.nFlashTime).over()) {
 				this.bFlash = false;
 			} else {
 				var sFGCO = this.sFlashGCO;
@@ -218,7 +218,7 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 					sGCO = oScreenCtx.globalCompositeOperation;
 					oScreenCtx.globalCompositeOperation = sFGCO;
 				}
-				oScreenCtx.fillStyle = this.sFlashColor + this.oEasingHUD.x + ')';
+				oScreenCtx.fillStyle = this.sFlashColor + this.oEasingHUD.val() + ')';
 				oScreenCtx.fillRect(xNew, 0, wNew, ch);
 				if (sGCO) {
 					oScreenCtx.globalCompositeOperation = sGCO;
@@ -361,19 +361,19 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 			break;
 
 			case 11: // raising
-				this.oEasing.f(++this.nTimeIndex);
+				this.oEasing.next(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
 					this.nState = 0;
 				}
-				this.nRaise = this.oEasing.x;
+				this.nRaise = this.oEasing.val();
 			break;
 
 			case 21: // falling
-				this.oEasing.f(++this.nTimeIndex);
+				this.oEasing.next(++this.nTimeIndex);
 				if (this.nTimeIndex >= this.nMaxTimeIndex) {
 					this.nState = 0;
 				}
-				this.nRaise = this.oEasing.x;
+				this.nRaise = this.oEasing.val();
 				if (this.nState === 0 && this.onHidden) {
 					this.onHidden();
 					this.onHidden = null;

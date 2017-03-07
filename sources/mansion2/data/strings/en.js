@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.STRINGS_DATA_EN
+ * the displayable strings database in english
+ */
 O2.createObject('MANSION.STRINGS_DATA_EN', {
 	
 	// Message display during load level
@@ -23,8 +28,28 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 
 	SUBJECTS: {
 		// paintings
-		p_skull_monk: 'Skull masked monk',
-		p_blood_moon: 'Blood moon',
+		p_skull_monk: {
+			title: 'Skull masked monk',
+			description: 'Neither really a monk nor really a mask. A scholar who tried to obtain eternal life, but failed in the attempt.'
+		},
+		p_blood_moon: {
+			title: 'Blood moon',
+			description: 'The moon is pretty in red. And so think most nocturnal creatures.'
+		},
+		p_beatrice: {
+			title: 'Beatrice the witch',
+			description: 'A powerful sorceress, she claimed to have lived a thousand years.'
+		},
+		p_miku: {
+			title: 'Miku and her brother',
+			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
+		},
+		
+		// WRAITH
+		w_cowled_skull: {
+			title: 'Cowled skull',
+			description: 'He eagerly seeks in the afterlife the secret he could not recover during life.'
+		}
 	},
 
 	// something happened
@@ -74,11 +99,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		menu_title: 'Menu',
 		menu_options: {
 			mo_album: 'Album',
-			mo_notes: 'Notes',
+			mo_notes: 'Books',
 			mo_help: 'Help'
 		},
 		album_title: 'Album',
-		notes_title: 'Notes'
+		notes_title: 'Books'
 	}
 
 });

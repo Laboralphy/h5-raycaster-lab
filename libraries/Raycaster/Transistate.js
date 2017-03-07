@@ -1,3 +1,6 @@
+/**
+ * @class O876_Raycaster.Transistate
+ */
 O2.createClass('O876_Raycaster.Transistate', {
 	nInterval : 160,
 	oInterval : null,

@@ -1,6 +1,7 @@
 /** Gestion de la horde de sprite
  * L'indice des éléments de cette horde n'a pas d'importance.
  * O876 Raycaster project
+ * @class O876_Raycaster.Horde
  * @date 2012-01-01
  * @author Raphaël Marandet
  */
@@ -63,12 +64,19 @@ O2.createClass('O876_Raycaster.Horde',  {
 	},
 
 	/**
-	 * {id, tile, width, height, speed, rotspeed}
-	 *   
+	 * defines a new blueprint from a plain object of the worl definition
+	 * @param sId blueprint identifier
+	 * @param oData blueprint plain objet definition
 	 */
-	defineBlueprint : function(sId, aData) {
-		var oBP = new O876_Raycaster.Blueprint(aData);
-		oBP.oTile = this.oTiles[aData.tile];
+	defineBlueprint : function(sId, oData) {
+		var oBP = new O876_Raycaster.Blueprint(oData);
+		if (oData.tile in this.oTiles) {
+			oBP.oTile = this.oTiles[oData.tile];
+		} else if ('tile' in oData) {
+			throw new Error('this tile is unknown : "' + oData.tile + '" for blueprint ' + sId);
+		} else {
+			throw new Error('no tile is defined in "' + sId + '" data');
+		}
 		oBP.sId = sId;
 		this.oBlueprints[sId] = oBP;
 		this.oMobileDispenser.registerBlueprint(sId);

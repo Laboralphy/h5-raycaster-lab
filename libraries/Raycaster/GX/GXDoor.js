@@ -63,13 +63,13 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.nPhase++;	/** no break on the next line */
 
 			case 1: // la porte s'ouvre jusqu'a : offset > limite
-				if (this.oEasing.f()) {
+				if (this.oEasing.next().over()) {
 					this.fOffset = this.nLimit - 1;
 					r.setMapPhys(this.x, this.y, 0);
 					this.nPhase++;
 					this.oEasing.from(this.fOffset).to(0).during(this.fSpeed);
 				}
-				this.fOffset = this.oEasing.x | 0;
+				this.fOffset = this.oEasing.val() | 0;
 				break;
 
 			case 2: // la porte attend avant de se refermer   
@@ -86,10 +86,10 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				break;
 		
 			case 3: // la porte se referme
-				if (this.oEasing.f()) {
+				if (this.oEasing.next().over()) {
 					this.terminate();
 				}
-				this.fOffset = this.oEasing.x;
+				this.fOffset = this.oEasing.val();
 				break;
 		}
 		r.setMapOffs(this.x, this.y, this.fOffset | 0);

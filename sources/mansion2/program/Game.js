@@ -1,7 +1,15 @@
+/**
+ * @class MANSION.Game
+ *
+ *
+ */
+
+/* global MAIN */
+/* global CONFIG */
 O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oAudio: null,
-	_sAmbience: '',
-	_sAmbienceAfterFight: '',
+	_sAmbiance: '',
+	_sAmbianceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
 	_sLevelIndex: 'tutorial',
@@ -24,13 +32,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/****** INIT ****** INIT ****** INIT ******/
 
 	init: function() {
-		O2.createObject('MANSION.STRINGS_DATA', MANSION.STRINGS_DATA_EN);
+		MANSION.STRINGS_DATA = MANSION.STRINGS_DATA_EN;
 		this._oLocators = {};
 		this.oSnail = new O876.Snail();
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
 		this.initUI();
+		this.initHUD();
 		this.initRandom();
 		this._oConsole = new MANSION.Console();
 		this.on('leveldata', this.gameEventBuild.bind(this));
@@ -63,16 +72,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('command2', this.gameEventCommand2.bind(this));
 		this.on('activate', this.gameEventActivate.bind(this));
 		this.on('hit', this.gameEventHit.bind(this));
-		this.on('attack', this.gameEventAttack.bind(this));
-		
-		this.on('key.down', this.gameEventKey.bind(this));		
+        this.on('attack', this.gameEventAttack.bind(this));
+        this.on('death', this.gameEventDeath.bind(this));
+
+		this.on('key.down', this.gameEventKey.bind(this));
+
+
 	},
 
 	/**
-	 * Initialization of randm generator
+	 * Initialization of random generator
 	 */
 	initRandom: function() {
-		var r = new O876.Random();
+		const r = new O876.Random();
 		r.seed(Date.now() / 1000);
 		MAIN.rand = function(x, y) {
 			return r.rand(x, y);
@@ -84,15 +96,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Done once per game.
 	 */
 	initLogic: function() {
-		this.oLogic = new MANSION.Logic();
-		this.oLogic.setCameraCaptureRank(1);
+		let logic = new MANSION.Logic();
+		logic.setCameraCaptureRank(1);
+		logic.initEffectProcessor();
+		this.oLogic = logic;
 	},
 	
 	/**
 	 * Initializes audio system
 	 */
 	initAudio: function() {
-		var a = new O876.SoundSystem();
+		const a = new O876.SoundSystem();
 		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
 		this._oAudio = a;
 		a.setPath('resources/sounds');
@@ -106,10 +120,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	initPopup: function() {
 		this.setPopupStyle({
-			background: 'rgba(128, 64, 10, 0.5)',
-			border: 'rgba(128, 32, 0, 0.25)',
-			shadow: 'rgb(0, 0, 0)',
-			text: 'rgb(255, 255, 255)',
+			background: 'rgb(240, 232, 220)',
+			border: 'rgba(32, 32, 32, 0.25)',
+			shadow: 'rgb(200, 202, 200)',
+			text: 'rgb(0, 0, 0)',
 			width: 320,
 			height: 32,
 			font: 'monospace 10',
@@ -119,38 +133,31 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 	
 	initUI: function() {
-		var w;
-		var ui = this.oUI = new MANSION.UIManager();
+		let w;
+		const ui = this.oUI = new MANSION.UIManager();
 		ui.init();
 		ui.on('command', (function(oEvent) {
 			switch (oEvent.command) {
 				case 'mo_album':
-					w = ui.displayWidget('album');
-					w.loadPhotos(this.oLogic.getAlbum());
+					w = ui.displayWidget('albumBrowser');
+					w.loadPhotos(ui, this.oLogic.getAlbum());
 					break;
 				case 'main':
 					ui.displayWidget('menu');
 					break;
+				case 'album_view':
+					w = ui.displayWidget('album');
+					w.loadPhotos(this.oLogic.getAlbum());
+					w.showPhoto(oEvent.photo);
+					break;
 				case 'album_next':
-					ui.getWidget('album').showPhoto('next');
+					ui.getWidget('album').showNextPhoto();
 					break;
 				case 'album_prev':
-					ui.getWidget('album').showPhoto('prev');
+					ui.getWidget('album').showPrevPhoto();
 					break;
 				case 'mo_notes': 
-					ui.displayWidget('notes').loadTitles(ui, [
-						{id: 1, title: 'A black notepad'},
-						{id: 2, title: 'The dairy'},
-						{id: 3, title: 'A note left on the floor'},
-						{id: 4, title: 'Le culte des goules - Comte d\'Erlette'},
-						{id: 5, title: 'A shity world'},
-						{id: 6, title: 'Le nécronomicon pour les nuls'},
-						{id: 7, title: 'Bob l\'éponge contre Séphirot'},
-						{id: 8, title: 'Le Livre de Dysan'},
-						{id: 9, title: 'The ninth door'},
-						{id: 10, title: 'Once upon a time'},
-						{id: 11, title: 'W.T.F.'},
-					]);
+					ui.displayWidget('notes').loadTitles(ui, this.oLogic.getNotes());
 					ui.displayWidget('notes').displayList();
 					break;
 					
@@ -163,33 +170,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					}
 					break;
 				case 'note_read':
-					console.log('reading note', oEvent);
-					ui.displayWidget('notes').displayDocument("Do we need Redux ?", [
-						{
-							type: 'text',
-							content: "People often choose Redux before they need it. “What if our app doesn’t scale without it?” Later, developers frown at the indirection Redux introduced to their code. “Why do I have to touch three files to get a simple feature working?” Why indeed!\n\nPeople blame Redux, React, functional programming, immutability, and many other things for their woes, and I understand them. It is natural to compare Redux to an approach that doesn’t require “boilerplate” code to update the state, and to conclude that Redux is just complicated. In a way it is, and by design so."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_mansion.jpg',
-						},
-						{
-							type: 'text',
-							content: "If you don't share your database connection (session) between multiple threads for concurrent inserts, this is safe. If multiple threads insert on the same connection, this is unsafe, i.e. you might get either ID or a completely invalid ID."
-						},
-						{
-							type: 'image',
-							src: 'resources/ui/documents/photo_owl.png',
-						},
-						{
-							type: 'text',
-							content: "A simple class implementing the Bresenham algorithm with is historically used to draw lines of pixels on screen. This algorithm may have other uses."
-						},
-					]);
+					ui.displayWidget('notes')
+						.displayDocument(this.oLogic.getNotes()[oEvent.note], (
+							function(oItem) {
+                        		this.readSpellScroll(oItem);
+                        		this.oLogic.setNoteFlag(oEvent.note, 'read', true);
+							}
+						).bind(this));
 					break;
 
 				default: 
-					console.log('unknow ui command', oEvent.command, oEvent);
+					console.log('unknown ui command', oEvent.command, oEvent);
 					break;
 
 			}
@@ -197,7 +188,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.oSystem.oScreen.on('click', this.uiHide.bind(this));
 	},
 
+	initHUD: function() {
+		this.oHUD = new MANSION.HUD();
 
+	},
 
 
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
@@ -211,19 +205,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
 	gameEventBuild: function(wd) {
-		var data = LEVEL_DATA[this._sLevelIndex];
+		const data = LEVEL_DATA[this._sLevelIndex];
 		wd.data = data;
-		var s = '';
-		for (s in MANSION.TILES_DATA) {
+		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
+		for (let s in MANSION.WRAITH_TILES_DATA) {
+			data.tiles[s] = MANSION.WRAITH_TILES_DATA[s];
+		}
 		if (this._sLevelIndex in MANSION.LEVEL_TILES_DATA) {
-			for (s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
+			for (let s in MANSION.LEVEL_TILES_DATA[this._sLevelIndex]) {
 				data.tiles[s] = MANSION.LEVEL_TILES_DATA[this._sLevelIndex][s];
 			}
 		}
-		for (s in MANSION.BLUEPRINTS_DATA) {
+		for (let s in MANSION.BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.BLUEPRINTS_DATA[s];
+		}
+		for (let s in MANSION.WRAITH_BLUEPRINTS_DATA) {
+			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
 	},
 
@@ -235,16 +234,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * - max : int, valeur max de la progression
 	 */
 	gameEventLoad: function(oEvent) {
-		var s = oEvent.phase;
-		var n = oEvent.progress;
-		var nMax = oEvent.max;
-		var oCanvas = this.oRaycaster.getScreenCanvas();
-		var oContext = this.oRaycaster.getScreenContext();
+		let s = oEvent.phase;
+		let n = oEvent.progress;
+		let nMax = oEvent.max;
+		let oCanvas = this.oRaycaster.getScreenCanvas();
+		let oContext = this.oRaycaster.getScreenContext();
 		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
-		var sMsg = MANSION.STRINGS_DATA.RC['l_' + s];
-		var y = oCanvas.height >> 1;
-		var nPad = 96;
-		var xMax = oCanvas.width - (nPad << 1);
+		let sMsg = MANSION.STRINGS_DATA.RC['l_' + s];
+		let y = oCanvas.height >> 1;
+		let nPad = 96;
+		let xMax = oCanvas.width - (nPad << 1);
 		oContext.font = '10px monospace';
 		oContext.fillStyle = 'white';
 		oContext.fillText(sMsg, nPad, oCanvas.height >> 1);
@@ -259,12 +258,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * pas de paramètre
 	 */
 	gameEventEnterLevel: function() {
-		var rc = this.oRaycaster;
+		const rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
-		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 1700);
+		this.fadeIn('black', 1700);
+        this.getPlayer().data({
+            'life': 100,
+            'speed': MANSION.CONST.SPEED_NORMAL
+        });
 		this.configPlayerThinker();
-		this.playAmbience(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
+		this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
 		this._oGhostScreamer = rc.addGXEffect(MANSION.GX.GhostScreamer);
+		this.oLogic.initPlayerSoul(this.getPlayer());
 	},
 	
 	/**
@@ -364,7 +368,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Evènement déclenché lorsqu'une entitée est aggressée physiquement
 	 * par une autre (contact).
-	 * @param oEvent {t: entité cible, a: aggresseur}
+     * @param oEvent.t {O876_Raycaster.Mobile} entité cible
+     * @param oEvent.a {O876_Raycaster.Mobile} aggresseur
 	 */
 	gameEventAttack: function(oEvent) {
 		var oTarget = oEvent.t;
@@ -372,10 +377,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			// joueur touché par fantôme
 			this._oDarkHaze.startPulse();
 			oTarget.getThinker().ghostThreat(oEvent.a);
+			this.oLogic.ghostDamagesPlayer(oEvent.a, 20);
 		} else {
 			// ???
+			// un fantome qui attaquye une autre fantome ?
 		}
 	},
+
+    /**
+	 * Death of player -> game over
+     * @param oEvent
+     */
+	gameEventDeath: function(oEvent) {
+		var rc = this.oRaycaster;
+		this.fadeOut('black', 3000).neverEnding();
+        // virer les fantomes
+		this.clearGhosts();
+    },
 	
 
 	/**
@@ -414,7 +432,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		// discarded mobiles
 		var aDiscarded = this.oRaycaster.getDiscardedMobiles();
 		if (aDiscarded) {
-			this.checkGhostAmbience();
+			this.checkGhostAmbiance();
 		}
 		// update camera
 		var gl = this.oLogic;
@@ -422,6 +440,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.oCamera && this.oCamera.nRaise) {
 			this.oCamera.update(gl);
 		}
+		this.oHUD.update(gl);
 	},
 	
 	/**
@@ -431,6 +450,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventFrame: function(oEvent) {
 		this.oUI.render();
 		this._oConsole.render(this.oRaycaster.getScreenContext(), 4, 12);
+		this.oHUD.render();
 	},
 
 
@@ -591,7 +611,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var sZone = oEvent.data;
 		// changement d'ambiance sonore
 		if (sZone in MANSION.SOUNDS_DATA.bgm) {
-			this.playAmbience(MANSION.SOUNDS_DATA.bgm[sZone]);
+			this.playAmbiance(MANSION.SOUNDS_DATA.bgm[sZone]);
 		}
 	},
 	
@@ -616,7 +636,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oLoc = this.getLocator(sDest);
 		var p = this.getPlayer();
 		var rc = this.oRaycaster;
-		rc.addGXEffect(O876_Raycaster.GXFade).fadeIn('#000', 0.7);
+		this.fadeIn('black', 700);
 		var ps = rc.nPlaneSpacing;
 		var ps2 = ps >> 1;
 		p.setXY(oLoc.x * ps + ps2, oLoc.y * ps + ps2);
@@ -697,8 +717,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Will choose introThinker for the intro movie sequence
 	 */
 	configPlayerThinker: function() {
-		var oPlayer = this.getPlayer();
-		var ct;
+		let oPlayer = this.getPlayer();
+		let ct;
 		switch (this._sLevelIndex) {
 			case 'intro':
 				oPlayer.setThinker(new MANSION.IntroThinker());
@@ -706,19 +726,19 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				ct = oPlayer.getThinker();
 				O876_Raycaster.PointerLock.disable();
 			break;
-			
+
 			default:
 				oPlayer.setThinker(new MANSION.PlayerThinker());
 				oPlayer.setXY(oPlayer.x, oPlayer.y);
-				oPlayer.fSpeed = MANSION.CONST.SPEED_NORMAL;
+				oPlayer.setSpeed(oPlayer.data('speed'));
 				ct = oPlayer.getThinker();
-				ct.on('button0.down', (function() { 
+				ct.on('button0.down', (function() {
 					this.trigger('command0');
 				}).bind(this))
-				.on('button2.down', (function() { 
+				.on('button2.down', (function() {
 					this.trigger('command2');
 				}).bind(this))
-				.on('use.down', (function() { 
+				.on('use.down', (function() {
 					this.trigger('activate');
 				}).bind(this));
 				O876_Raycaster.PointerLock.enable();
@@ -747,15 +767,30 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		var c = this.oCamera;
 		var l = this.oLogic;
-		if (c.isRaised()) {
+        var oPlayer = this.getPlayer();
+        var oSoul = oPlayer.data('soul');
+        if (c.isRaised()) {
 			c.hide();
 			l.cameraOff();
-			this.getPlayer().fSpeed = MANSION.CONST.SPEED_NORMAL;
+            if (oPlayer.data('cameraSpeedEffect')) {
+                oPlayer.data('cameraSpeedEffect').dispel();
+                oPlayer.data('cameraSpeedEffect', null);
+            }
 		} else {
 			c.show();
 			c.setEnergyGauges(0, l.getCameraMaxEnergy());
 			c.nCircleSize = l.getCameraCircleSize();
-			this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
+			//this.getPlayer().fSpeed = MANSION.CONST.SPEED_CAMERA;
+            var eSlow = new Effect.Bonus('speed');
+            eSlow.setTarget(oSoul);
+            eSlow.setSource(oSoul);
+            eSlow.setLevel(MANSION.CONST.SPEED_CAMERA_MODIFIER);
+            eSlow.setDuration(Infinity);
+            if (oPlayer.data('cameraSpeedEffect')) {
+                oPlayer.data('cameraSpeedEffect').dispel();
+            }
+            oPlayer.data('cameraSpeedEffect', eSlow);
+            l.getEffectProcessor().applyEffect(eSlow);
 		}
 	},
 
@@ -779,10 +814,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			}
 		}
 		var oGhost = this.spawnWraith(sBlueprint, x, y, a);
+        this.oLogic.createSoul(oGhost);
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
-		oGhost.data('hp', oGhost.data('life'));
 		oGhost.data('dead', false);
-		this.playGhostAmbience(MANSION.SOUNDS_DATA.bgm.ghost);
+		this.playGhostAmbiance(MANSION.SOUNDS_DATA.bgm.ghost);
 		return oGhost;
 	},
 
@@ -798,15 +833,27 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Return the number of currently active and hostile ghosts
 	 */
 	getGhostCount: function() {
-		var aMobs = this.oRaycaster.oHorde.aMobiles;
-		var n = 0;
-		for (var i = 0, l = aMobs.length; i < l; ++i) {
-			if (aMobs[i].data('hp')) {
+		let aMobs = this.oRaycaster.oHorde.aMobiles;
+		let n = 0;
+		for (let i = 0, l = aMobs.length; i < l; ++i) {
+			if (aMobs[i].data('dead') === false) {
 				++n;
 			}
 		}
 		return n;
 	},
+
+	clearGhosts: function() {
+        let aMobs = this.oRaycaster.oHorde.aMobiles;
+        let n = 0;
+        for (let i = 0, l = aMobs.length; i < l; ++i) {
+            if (aMobs[i].data('dead') === false) {
+                aMobs[i].getThinker().vanish();
+            }
+        }
+	},
+
+
 
 	/**
 	 * Le mobile spécifié tire un missile
@@ -837,6 +884,54 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		return oVFX;
 	},
+	
+	
+	/**
+	 * Stores the current view (photo in the album)
+	 */
+	storePhoto: function(sSubjectRef, nScore) {
+		if (this.getPlayer().data('subject-' + sSubjectRef)) {
+			return;
+		}
+		var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
+		var oEvent = {
+			subject: sSubjectRef,
+			score: nScore,
+			photo: oPhoto
+		};
+		this.getPlayer().data('subject-' + sSubjectRef, true);
+		this.trigger('photo.subject', oEvent);
+		this.oLogic.setPhotoSubject(
+			sSubjectRef,
+			nScore,
+			oEvent.photo
+		);
+	},
+
+
+    /**
+	 * Cast a spell from a scroll, or a document.
+	 * This action has a drawback on the document itself : the spell beign read-once, the whole spell section (tag) will vanish.
+     * @param sSpell id of spell
+     */
+	readSpellScroll: function(oSection) {
+		this.uiHide();
+		// cast the spell
+		let sSpell = oSection.action;
+        // remove the section
+		oSection.disabled = true;
+		this.castSpell(sSpell)
+	},
+
+	castSpell: function(sSpell) {
+        if (sSpell in MANSION.SPELLS) {
+            const SpellClass = MANSION.SPELLS[sSpell];
+            let spell = new SpellClass();
+            spell.run(this);
+        } else {
+            this.popupMessage('Unknown spell "' + sSpell + '" !');
+        }
+	},
 
 
 	/**
@@ -844,6 +939,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * if a block tagged "photoscript" is targetted, the corresponding script is run
 	 */
 	cameraShoot: function() {
+		
+		function createPhoto(sSubjectRef, nScore, sData) {
+			var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
+			var oEvent = {
+				subject: sName,
+				score: nScore,
+				photo: oPhoto
+			};
+			this.getPlayer().data('subject-' + sName, true);
+			this.trigger('photo.subject', oEvent);
+			this.oLogic.setPhotoSubject(
+				sName,
+				nScore,
+				oEvent.photo
+			);
+		}
+		
 		var gl = this.oLogic;
 		if (gl.isCameraReady()) {
 			var b = this.getPlayer().getThinker().getFrontBlock();
@@ -871,19 +983,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					var aSubject = sPhotoSubject.split(' ');
 					var sName = aSubject.shift();
 					var nScore = aSubject.shift() | 0;
-					var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
-					var oEvent = {
-						subject: sName,
-						score: nScore,
-						photo: oPhoto
-					};
-					this.getPlayer().data('subject-' + sName, true);
-					this.trigger('photo.subject', oEvent);
-					this.oLogic.setPhotoSubject(
-						MANSION.STRINGS_DATA.SUBJECTS[sName], 
-						nScore,
-						oEvent.photo
-					);
+					this.storePhoto(sName, nScore);
 					this.mapData(b.x, b.y, 'subject', null);
 				}
 			}
@@ -894,6 +994,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var fDistance = g[2];
 				var fAngle = g[1];
 				var oGhost = g[0];
+				if (oGhost.data('subtype') === 'wraith') {
+					this.storePhoto(oGhost.getBlueprint().sId, oGhost.data('rank'));
+				}
 				this._oGhostScreamer.addGhost(oGhost);
 			}, this);
 		}
@@ -922,6 +1025,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	uiShow: function() {
 		var ui = this.oUI;
 		ui.show();
+		ui.displayWidget('menu');
 		O876_Raycaster.PointerLock.disable();
 		this.pause(true);
 	},
@@ -1046,8 +1150,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				nDistMax / ps | 0
 			)
 			.filter(
-				oSector => 
-					this.isSectorWalkable(
+				oSector => this.isSectorWalkable(
 						oSector.x + xMe, 
 						oSector.y + yMe
 					)
@@ -1114,15 +1217,24 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	isDoorLocked: function(x, y) {
 		return !!this.mapData(x, y, 'locked-phys-code');
 	},
-	
+
+
+    fadeIn: function(sColor, fTime) {
+        return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeIn(sColor, fTime);
+    },
+
+    fadeOut: function(sColor, fTime) {
+        return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeOut(sColor, fTime);
+    },
+
 	
 	/** 
 	 * Lecture d'un son à la position x, y
 	 * Le son est modifié en amplitude en fonction de la distance séparant le point sonore avec
 	 * la position de la caméra
-	 * @param string sFile fichier son à jouer
-	 * @param float x position de la source du son
-	 * @param float y
+	 * @param  sFile string fichier son à jouer
+	 * @param  x float position de la source du son
+	 * @param  y float
 	 */
 	playSound : function(sFile, x, y) {
 		var fDist = 0;
@@ -1151,45 +1263,49 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
 
-	_sPreviousAmbience: '',
+	_sPreviousAmbiance: '',
 	
 	/**
 	 * Lance le fichier musical d'ambiance
 	 * @param string sAmb nom du fichier
 	 */
-	playAmbience: function(sAmb) {
-		if (this._sPreviousAmbience) {
-			this._sPreviousAmbience = sAmb;
+	playAmbiance: function(sAmb) {
+		if (this._sPreviousAmbiance) {
+			this._sPreviousAmbiance = sAmb;
 			return;
 		}
-		if (this.sAmbience == sAmb) {
+		if (this.sAmbiance == sAmb) {
 			return;
-		} else if (this.sAmbience) {
+		} else if (this.sAmbiance) {
 			this._oAudio.crossFadeMusic(sAmb);
-			this.sAmbience = sAmb;
+			this.sAmbiance = sAmb;
 		} else {
 			this._oAudio.playMusic(sAmb);
-			this.sAmbience = sAmb;
+			this.sAmbiance = sAmb;
 		}
 	},
 
-	checkGhostAmbience: function() {
-		if (this._sPreviousAmbience && this.getGhostCount() === 0) {
-			var pa = this._sPreviousAmbience;
-			this._sPreviousAmbience = '';
-			this.playAmbience(pa);
+	checkGhostAmbiance: function() {
+		if (this._sPreviousAmbiance && this.getGhostCount() === 0) {
+			var pa = this._sPreviousAmbiance;
+			this._sPreviousAmbiance = '';
+			this.playAmbiance(pa);
 		}
 	},
 
 	/**
 	 * plays a ghost music
 	 */
-	playGhostAmbience: function(sGhostAmb) {
-		if (this._sPreviousAmbience === '') {
-			var pa = this.sAmbience;
-			this.playAmbience(sGhostAmb);
-			this._sPreviousAmbience = pa;
+	playGhostAmbiance: function(sGhostAmb) {
+		if (this._sPreviousAmbiance === '') {
+			var pa = this.sAmbiance;
+			this.playAmbiance(sGhostAmb);
+			this._sPreviousAmbiance = pa;
 		}
+	},
+
+	rand: function() {
+		return this.oRandom.rand(...arguments);
 	}
 });
 

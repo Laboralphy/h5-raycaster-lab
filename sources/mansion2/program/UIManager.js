@@ -1,11 +1,11 @@
 /**
+ * @class MANSION.UIManager
  * Cette classe est spécialisée dans la gestion de l'UI
  * Particulièrement dans la création des widgets
  */
 O2.createClass('MANSION.UIManager', {
 
 	oSystem: null,
-	
 	oWidgets: null,
 
 	init: function() {
@@ -17,8 +17,9 @@ O2.createClass('MANSION.UIManager', {
 		this.oWidgets = {};
 		this.oWidgets.menu = this.declareWidget(new UI.MainMenu(this));
 		this.oWidgets.album = this.declareWidget(new UI.Album(this));
+		this.oWidgets.albumBrowser = this.declareWidget(new UI.AlbumBrowser(this));
 		this.oWidgets.notes = this.declareWidget(new UI.Notes(this));
-		this.displayWidget('menu');
+        this.displayWidget('menu');
 		oSystem.hide();
 	},
 	

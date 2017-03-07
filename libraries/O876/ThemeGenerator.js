@@ -1,4 +1,5 @@
 /**
+ * @class O876.ThemeGenerator
  * Générateur de Thème CSS
  * Permet de définir un theme dynamiquement à partir d'une couleur.
  * L'objet theme fournit est un objet associatif dont les clé sont des selecteur CSS 
@@ -28,7 +29,7 @@ O2.createClass('O876.ThemeGenerator', {
 		var aDarken = oRainbow.spectrum(sColor, '#000000', 7);
 		var sName = '$color';
 	
-		var oCSS = {}
+		var oCSS = {};
 		oCSS[sName] = 'background-color : ' + sColor;
 		oCSS[sName + '-text'] = 'color : ' + sColor;
 		
@@ -44,7 +45,11 @@ O2.createClass('O876.ThemeGenerator', {
 		var aTheme = [];
 		
 		for (var sClass in oTheme) {
-			aTheme.push(sClass + ' { ' + oTheme[sClass].map(function(t) { return oCSS[t]; }).join('; ') + '; }');
+			if (oTheme.hasOwnProperty(sClass)) {
+                aTheme.push(sClass + ' { ' + oTheme[sClass].map(function (t) {
+                        return oCSS[t];
+                    }).join('; ') + '; }');
+            }
 		}
 	
 		

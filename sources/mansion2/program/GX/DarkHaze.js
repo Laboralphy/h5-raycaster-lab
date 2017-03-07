@@ -77,9 +77,9 @@ O2.extendClass('MANSION.GX.DarkHaze', O876_Raycaster.GXEffect, {
 
 	process: function() {
 		if (this.bPulse && this.nTimeIndex <= this.nTimeFinal) {
-			this.oEasing.f(this.nTimeIndex);
+			this.oEasing.next(this.nTimeIndex);
 			++this.nTimeIndex;
-			this.processDark(this.oEasing.x);
+			this.processDark(this.oEasing.val());
 			if (this.nTimeIndex === this.nTimeFinal) {
 				if (this.fDarkFinal != this.fMin) {
 					this.fDarkIndex = this.fDarkFinal;
