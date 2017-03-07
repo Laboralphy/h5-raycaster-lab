@@ -1,10 +1,10 @@
 /**
- * good to GIT
+ * @class O876.Mixin.Prop
  * Provide jquery like function to access private properties
  */
 O2.createClass('O876.Mixin.Prop', {
 
-	buildPropFunction: function(sProp) {
+	_buildPropFunction: function(sProp) {
 		return function(value) {
 			if (value === undefined) {
 				return this[sProp];
@@ -29,7 +29,7 @@ O2.createClass('O876.Mixin.Prop', {
 		for (var i in p.prototype) {
 			if (i.match(/^_/)) {
 				if (!(i.substr(1) in p.prototype) && typeof p.prototype[i] !== 'function') {
-					pProto[i.substr(1)] = this.buildPropFunction(i);
+					pProto[i.substr(1)] = this._buildPropFunction(i);
 				}
 			}
 		}

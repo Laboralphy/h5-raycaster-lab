@@ -1,5 +1,6 @@
 /** Interface de controle des mobile 
  * O876 Raycaster project
+ * @class O876.Easing
  * @date 2013-03-04
  * @author Raphaël Marandet 
  * Fait bouger un mobile de manière non-lineaire
@@ -10,22 +11,40 @@
 O2.createClass('O876.Easing', {	
 	xStart: 0,
 	xEnd: 0,
+    /**
+	 * @property x {number}
+     */
 	x: 0,
 	nTime: 0,
 	iTime: 0,
 	fWeight: 1,
 	pFunction: null,
-	
+
+    /**
+	 * Will define de starting value
+     * @param x {number}
+     * @returns {O876.Easing}
+     */
 	from: function(x) {
 		this.xStart = this.x = x;
 		return this;
 	},
 
+    /**
+	 * Will define the ending value
+     * @param x {number}
+     * @returns {O876.Easing}
+     */
 	to: function(x) {
 		this.xEnd = x;
 		return this;
 	},
 
+    /**
+	 * Will define the duration of the transition
+     * @param t {number} arbitrary unit
+     * @returns {O876.Easing}
+     */
 	during: function(t) {
 		this.nTime = t;
 		this.iTime = 0;
@@ -69,7 +88,7 @@ O2.createClass('O876.Easing', {
 	 * @param int t temps
 	 * si "t" est indéfini, utilise le timer interne 
 	 */
-	f: function(t) {
+	next: function(t) {
 		if (t === undefined) {
 			t = ++this.iTime;
 		} else {
@@ -81,7 +100,15 @@ O2.createClass('O876.Easing', {
 		}
 		var v = p(t / this.nTime);
 		this.x = this.xEnd * v + (this.xStart * (1 - v));
-		return t >= this.nTime;
+		return this;
+	},
+
+	val: function() {
+		return this.x;
+	},
+
+	over: function() {
+		return this.iTime >= this.nTime;
 	},
 
 	_linear: function(v) {

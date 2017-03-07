@@ -23,33 +23,37 @@ O2.createClass('MANSION.Logic', {
 	_bCameraFullCharge: false,
 	_bCameraFlash: false,
 	_aCameraSubjects: null,
+    _nCameraIntervalTime: 1000, // minimum time between two camera shots
+    _nCameraNextShotTime: 1000, // last time the camera took a photo
+    _aLastShotStats: null,
 
 	_aCapturedSubjects: null,  // list of all gathered evidences
-	
-	
-	_nTime: 0, 
-	_nCameraIntervalTime: 1000, // minimum time between two camera shots
-	_nCameraNextShotTime: 1000, // last time the camera took a photo
-	
-	_aCapturedGhosts: null,
-	_aLastShotStats: null,
-	
+    _aCapturedGhosts: null,
+
+	_nTime: 0,
+	_nChronoSeconds: 0,
+
 	_nScore: 0,
 
-	_nPhoneBattery: 100,
-	_nPhoneNetwork: 100,
-	_nPhoneClockH: 0,
-	_nPhoneClockM: 0,
-
 	_aAlbum: null,
-	
+
+	_oEffectProcessor: null,
+	_oPlayerEntity: null,  // An object containing all stats
+		// we can apply effects on it.
+	_oNotes: null,
 
 	/**
 	 * Game time transmission
 	 * for timed event
+	 * @param t {int} elapsed time in millisecond
 	 */
 	setTime: function(t) {
 		this._nTime = t;
+		// Periodic events
+		if (t >= this._nChronoSeconds) {
+            this._nChronoSeconds += (1 + (t - this._nChronoSeconds) / 1000 | 0) * 1000;
+            this.processEffects();
+		}
 	},
 	
 	/**
@@ -200,7 +204,7 @@ O2.createClass('MANSION.Logic', {
 						if (bFullEnergy) {
 							aTags.push('zero');
 						}
-						oGhost.getThinker().damage(e, bFullEnergy);
+						this.playerDamagesGhost(oGhost, e, bFullEnergy);
 						nTotalScore += e;
 						++nTotalShots;
 					}
@@ -314,7 +318,7 @@ O2.createClass('MANSION.Logic', {
 	/**
 	 * A photo of the specified subject is taken
 	 */
-	setPhotoSubject: function(sRef, nScore, oPhotoCanvas) {
+	setPhotoSubject: function(id, nScore, oPhotoCanvas) {
 		if (!this._aCameraSubjects) {
 			this._aCameraSubjects = [];
 		}
@@ -322,16 +326,16 @@ O2.createClass('MANSION.Logic', {
 			this._aTakenSubjects = [];
 		}
 		this._aCameraSubjects.push({
-			ref: sRef,
+			ref: id,
 			score: nScore
 		});
-		this._aTakenSubjects.push(sRef);
+		this._aTakenSubjects.push(id);
 		// post the photo in the album
 		if (!this._aAlbum) {
 			this._aAlbum = [];
 		}
 		this._aAlbum.push({
-			ref: sRef,
+			ref: id,
 			score: nScore,
 			data: oPhotoCanvas.toDataURL()
 		});
@@ -339,6 +343,16 @@ O2.createClass('MANSION.Logic', {
 
 	/**
 	 * retrevie all the photo in the album
+	 * the album has this format :
+	 * [{
+	 * 		// photo 0
+	 * 		ref: reference,
+	 * 		score: value
+	 * 		data: image content, base 64
+	 * }, {
+	 * 		// photo 1
+	 * 		// ...
+	 * ]
 	 */
 	getAlbum: function() {
 		return this._aAlbum;
@@ -383,34 +397,154 @@ O2.createClass('MANSION.Logic', {
 	getCapturedGhosts: function() {
 		return this._aCapturedGhosts;
 	},
-	
-	
-	
-	/***************************************
-	 *            PHONE STATE              *
-	 ***************************************/
-	
-	/**
-	 * Returns the network coverage indicator
-	 * @returns int between 0 and 100
-	 */
-	getNetworkIndicator: function() {
-		return this._nPhoneNetwork;
+
+
+    /**
+	 * Returns all gathered notes
+     */
+	getNotes: function() {
+		if (this._oNotes === null) {
+            this._oNotes = JSON.parse(JSON.stringify(MANSION.NOTES));
+            for (var n in this._oNotes) {
+                this.setNoteFlag(n, 'read', false);
+                this.setNoteFlag(n, 'found', true);
+            }
+		}
+		return this._oNotes;
 	},
 
-	/**
-	 * Returns the battery charge indicator
-	 * @returns int between 0 and 100
-	 */
-	getBatteryIndicator: function() {
-		return Math.min(99, Math.max(0, this._nPhoneBattery));
+	getFoundNoteList: function() {
+		return Object.keys(
+			this.getNotes()
+		).filter(n => this.getNoteFlag(n, 'found'));
 	},
-	
-	/**
-	 * Returns the time of night to be displayed
-	 * @returns string like "02:36"
-	 */
-	getClockTime: function() {
-		return {h: this._nPhoneClockH, m: this._nPhoneClockM};
+
+    setNoteFlag: function(sNote, sFlag, xValue) {
+        this._oNotes[sNote][0][sFlag] = xValue;
+    },
+
+    getNoteFlag: function(sNote, sFlag) {
+        return this._oNotes[sNote][0][sFlag];
+    },
+
+
+    /*******************************************
+	 * PLAYER ENTITY
+     *******************************************/
+
+    /**
+	 * XXX 1) Lancer les Initialiser de Player, EffectProcessor
+	 * 2) Différencier Ghost et Player dans l'attribute change
+	 * 3) Ajouter ghostDamagesPlayer()
+	 * 4) Vérifier le thinker du player pour voir si ca coince ou pas
+     */
+
+
+
+    /**
+	 * Process all temporary effects
+     */
+    processEffects: function() {
+    	this._oEffectProcessor.processEffects();
+	},
+
+    /**
+	 * An entity inflict damage to another entity
+     * @param oEntity {ADV.Creature} entity being damaged
+     * @param nAmount {int}
+	 * @param oDamager {ADV.Creature} entity who did damage
+     */
+    damageEntity: function(oEntity, nAmount, oDamager) {
+        var eDamage = new Effect.Damage();
+        eDamage.setLevel(nAmount);
+        eDamage.setSource(oDamager);
+        eDamage.setTarget(oEntity);
+        eDamage.setDuration(0);
+        this._oEffectProcessor.applyEffect(eDamage);
+    },
+
+    /**
+     * The player has damaged a ghost
+     * @param oGhost {O876_Raycaster.Mobile} entity being damaged
+     * @param nAmount {int}
+     * @param bCritical
+     */
+    playerDamagesGhost: function(oGhost, nAmount, bCritical) {
+        oGhost.getThinker().damage(bCritical);
+    	this.damageEntity(oGhost.data('soul'), nAmount, this.getPlayerSoul());
+    },
+
+    /**
+	 * The player is being damaged by a ghost
+     * @param oGhost {O876_Raycaster.Mobile} entity damaging the player
+     * @param nAmount {int}
+     */
+    ghostDamagesPlayer: function(oGhost, nAmount) {
+        this.damageEntity(this.getPlayerSoul(), nAmount, oGhost.data('soul'));
+    },
+
+    createSoul: function(oMobile) {
+    	var nHP = oMobile.data('life') | 0;
+        var p = new ADV.Creature();
+        var oBase = {
+            hpmax: 			nHP,
+            hp:				nHP,
+            power:			0,
+            resistance:		0,
+            speed:			0,
+			sight:			0,
+        };
+        for (var sAttr in oBase) {
+        	p.setAttribute(sAttr, oBase[sAttr]);
+		}
+        oMobile.data('soul', p);
+        p.data('mobile', oMobile);
+        p.on('attributechanged', this.attributeChanged.bind(this));
+        return p;
+    },
+
+	initEffectProcessor: function() {
+    	var ep = new ADV.EffectProcessor();
+    	this._oEffectProcessor = ep;
+	},
+
+	attributeChanged: function(sAttribute, nValue, nPrev, oSoul) {
+		var oMobile = oSoul.data('mobile');
+		var bPlayer = oMobile.getType() === RC.OBJECT_TYPE_PLAYER;
+		switch (sAttribute) {
+			case 'hp':
+				if (nValue <= 0) {
+                    oMobile.getThinker().die();
+				}
+				break;
+
+			case 'speed':
+				oMobile.setSpeed(oMobile.data('speed') * ((100 + nValue) / 100));
+				break;
+
+			case 'sight':
+				if (bPlayer) {
+                    oMobile.oRaycaster
+                        .addGXEffect(O876_Raycaster.GXAmbientLight)
+                        .setLight(MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue, 1500);
+                }
+                break;
+		}
+	},
+
+	initPlayerSoul: function(oPlayer) {
+        this._oPlayerEntity = this.createSoul(oPlayer);
+	},
+
+	getPlayerSoul: function() {
+		return this._oPlayerEntity;
+	},
+
+    /**
+	 *
+     * @returns {ADV.EffectProcessor}
+     */
+	getEffectProcessor: function() {
+        return this._oEffectProcessor;
 	}
 });

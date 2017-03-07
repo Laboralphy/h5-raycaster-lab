@@ -58,8 +58,8 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	/**
 	 * Déplace la position de scrolling
 	 * 
-	 * @param x,
-	 *            y nouvelle position de scroll
+	 * @param x nouvelle position de scroll
+	 * @param y nouvelle position de scroll
 	 */
 	scrollTo : function(x, y) {
 		if (x != this._xScroll || y != this._yScroll) {

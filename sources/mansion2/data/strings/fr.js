@@ -1,3 +1,8 @@
+/**
+ * @const MANSION
+ * @property {object} MANSION.STRINGS_DATA_FR
+ * the displayable strings database in french
+ */
 O2.createObject('MANSION.STRINGS_DATA_FR', {
 	
 	// Message display during load level

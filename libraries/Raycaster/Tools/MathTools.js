@@ -54,6 +54,16 @@ var MathTools = {
 	distance : function(dx, dy) {
 		return Math.sqrt((dx * dx) + (dy * dy));
 	},
+
+    /**
+	 * Limit le nombre aux deux bornes spécifiées
+	 * @param n {number} nombre
+     * @param nMin {number} min
+     * @param nMax {number} max
+     */
+	bound: function(nMin, n, nMax) {
+		return Math.min(nMax, Math.max(nMin, n));
+	},
 	
 	/**
 	 * Détermine si un point (xTarget, yTarget) se situe à l'intérieur de l'angle 

@@ -1,4 +1,5 @@
 /**
+ * @class O876.Random
  * a FALSE random very false...
  * generated random numbers, with seed
  * used for predictable landscape generation
@@ -7,6 +8,14 @@
 O2.createClass('O876.Random', {
 
 	_seed: 1,
+
+	__construct: function() {
+		this._seed = Math.random();
+	},
+
+	seed: function(x) {
+    	return this.prop('_seed', x);
+	},
 
 
 	_rand: function() {
