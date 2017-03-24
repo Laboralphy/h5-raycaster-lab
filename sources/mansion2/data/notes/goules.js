@@ -20,7 +20,7 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'photo',
-        src: 'resources/ui/documents/note_culte_goules.jpg',
+        src: 'resources/ui/documents/note_goules.jpg',
     },
     {
         type: 'text',

@@ -26,7 +26,7 @@ O2.createObject('MANSION.NOTES.mutus', [
     },
     {
         type: 'button',
-        action: ['Heal', 'Power'],
+        action: ['Light', 'Power'],
         caption: 'Read formula',
         legend: ''
     }

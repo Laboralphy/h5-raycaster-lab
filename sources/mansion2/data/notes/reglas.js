@@ -28,6 +28,6 @@ O2.createObject('MANSION.NOTES.reglas', [
         type: 'button',
         action: 'Horror',
         caption: 'Read formula',
-        legend: 'This book is so depressing...'
+        legend: 'Reading this book is so depressing...'
     }
 ]);
