@@ -18,9 +18,8 @@ O2.createObject('MANSION.NOTES.kulten', [
     },
     {
         type: 'text',
-            content: 'The text contains information on cults that worship pre-human deities such as Ghatanothoa ' +
-            'and includes hieroglyphs relating to the latter. There is also information on more recent cults including ' +
-            'that of Bran, The Dark Man.'
+            content: 'The text contains information on cults that worship pre-human deities, and their long ' +
+            'forgotten temples scattered throughout the world.'
     },
     {
         type: 'photo',
@@ -28,8 +27,8 @@ O2.createObject('MANSION.NOTES.kulten', [
     },
     {
         type: 'text',
-            content: 'The book describes secret items used as keys to gains access to treasures hidden in mysterious place ' +
-                'such as the Black Stone and the Temple of the Toad (possibly associated with Tsathoggua) in Honduras.'
+            content: 'The book describes secret items used as keys to gains access to treasures hidden in ancient ' +
+            'temples and other worshipping spots such as the Black Stone and the Temple of the Toad in Honduras.'
     },
     {
         type: 'button',

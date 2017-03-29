@@ -25,7 +25,7 @@ O2.createObject('MANSION.NOTES.eibon', [
         type: 'text',
         content: 'How did Eibon fought so many monsters and lived to tell the story ? ' +
         'The book is itself an amazing peace of adventure. Eibon describes the ' +
-        'spells he used during his journeys, he wrote glyphs and sigils. ' +
+        'spells he used during his journeys, the pages are full of  glyphs and sigils. ' +
         'Most of the incantations are unreadable but some scholar wrote ' +
         'translation of a few formula.'
     },

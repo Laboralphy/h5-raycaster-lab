@@ -25,7 +25,7 @@ O2.createObject('MANSION.NOTES.goules', [
     {
         type: 'text',
         content: 'This tome depicts gruesome facts about an ancient and secret ' +
-        'society whose members name themselves "les goules". ' +
+        'society whose members name themselves "les goules" (the ghouls). ' +
         'These cultists were among the most dreadful and cruel. ' +
         'The book depicts practices, abductions, tortures and evil rituals. ' +
         'The text is extremely shocking and the pictures are totally disturbing.'

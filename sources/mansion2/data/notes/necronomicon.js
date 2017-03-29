@@ -12,7 +12,8 @@ O2.createObject('MANSION.NOTES.necronomicon', [
     },
     {
         type: 'text',
-        content: 'Written by Abdul Alhazred, the Mad Arab. This tome contains many sigils and incantations to summon various deities. '
+        content: 'Written by Abdul Alhazred, the Mad Arab. This tome contains many sigils and incantations to summon ' +
+            'various demons and elder deities. '
     },
     {
         type: 'photo',
@@ -20,12 +21,14 @@ O2.createObject('MANSION.NOTES.necronomicon', [
     },
     {
         type: 'text',
-        content: 'Alhazred is said to have been a worshipper of ancien and evil deities such as Yog-Sothoth and Cthulhu. He described in the Necronomicon ' +
-        'how he found strange forgotten places like the ruins of babylon or the strange subterranean nameless city below the city of Irem.'
+        content: 'Alhazred is said to have been a worshipper of ancient and evil deities such as Yog-Sothoth and ' +
+        'Cthulhu. He described in the Necronomicon how he found strange forgotten places like the ruins of babylon or ' +
+        'the strange subterranean nameless tombs below the city of Irem.'
     },
     {
         type: 'text',
-        content: 'Alhazred died horribly. Eaten alive by an invisible creature in daylight. The scene was witnessed by many poeple.'
+        content: 'Alhazred died horribly. Eaten alive by an invisible creature in daylight. The scene was witnessed ' +
+        'by many poeple.'
     },
     {
         type: 'button',
