@@ -22,7 +22,7 @@ O2.extendClass('MANSION.HUD', UI.System, {
     update: function(oLogic) {
         var player = oLogic.getPlayerSoul();
         var hp = player.getAttribute('hp');
-        var hpmax = player.getAttribute('hpmax');
+        var hpmax = player.getAttribute('vitality');
         var hpbar = this.oWidgets.hpbar;
         hpbar.setMax(hpmax);
         hpbar.setProgress(hp);

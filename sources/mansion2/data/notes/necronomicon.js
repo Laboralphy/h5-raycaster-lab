@@ -3,7 +3,8 @@
  * @const MANSION
  * @property MANSION.NOTES.necronomicon
  * The Necronomicon
- * Effect : HORROR + WOUND or HEAL + PROTECT
+ * Effect : RANDOM
+ * The more books read, the more beneficial
  */
 O2.createObject('MANSION.NOTES.necronomicon', [
     {

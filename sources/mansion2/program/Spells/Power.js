@@ -3,18 +3,20 @@
  */
 /**
  * Created by ralphy on 24/01/17.
+ * this spell will increase the player's fire power
+ * duration : 60 seconds
  * @class MANSION.SPELLS.Power
  */
 
 O2.createClass('MANSION.SPELLS.Power', {
     run: function(g) {
         var ep = g.oLogic.getEffectProcessor();
-        var ePower = new Effect.Bonus('resistance');
+        var ePower = new Effect.Bonus('power');
         var p = g.oLogic.getPlayerSoul();
         ePower.setSource(p);
         ePower.setTarget(p);
         ePower.setLevel(40);
-        ePower.setDuration(60);
+        ePower.setDuration(MANSION.CONST.SPELL_DURATION_COMBAT);
         ep.applyEffect(ePower);
         g.fadeIn('rgba(250, 100, 100, 0.5)', 1000);
         g.fadeIn('rgba(250, 200, 100, 0.75)', 500);
