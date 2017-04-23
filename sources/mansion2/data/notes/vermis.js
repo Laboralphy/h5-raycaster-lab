@@ -13,9 +13,7 @@ O2.createObject('MANSION.NOTES.vermis', [
     {
         type: 'text',
         content: 'This book, written by Ludwig Prinn, contains spells and enchantments for summoning and bindings ' +
-            'otherworldly entities. But it is unwise to cast such spells without extensive ' +
-            'knowledge of the summoned creature as aforementionned creature could easily ' +
-            'feed on its summoner.'
+            'otherworldly entities.'
     },
     {
         type: 'photo',
@@ -23,8 +21,8 @@ O2.createObject('MANSION.NOTES.vermis', [
     },
     {
         type: 'text',
-        content: 'There should be no surprise : All entities that can be summoned with ' +
-            'this book are utterly evil.',
+        content: 'It is unwise to cast such spells without extensive ' +
+            'knowledge of the summoned creature.',
     },
     {
         type: 'button',

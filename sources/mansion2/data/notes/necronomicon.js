@@ -27,11 +27,6 @@ O2.createObject('MANSION.NOTES.necronomicon', [
         'the strange subterranean nameless tombs below the city of Irem.'
     },
     {
-        type: 'text',
-        content: 'Alhazred died horribly. Eaten alive by an invisible creature in daylight. The scene was witnessed ' +
-        'by many poeple.'
-    },
-    {
         type: 'button',
         action: 'Random',
         caption: 'Read Incantation',

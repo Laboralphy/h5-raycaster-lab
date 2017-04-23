@@ -20,8 +20,7 @@ O2.createObject('MANSION.NOTES.voynich', [
     },
     {
         type: 'text',
-        content: 'Because of the numerous drawing of plants and body parts, you believe this manuscript is about Medecine or Alchemy. ' +
-            'The commentaries written in margins confirm your speculations.'
+        content: 'Because of the numerous drawing of plants and body parts, you believe this manuscript is about Medecine or Alchemy.'
     },
     {
         type: 'button',

@@ -13,22 +13,17 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'text',
-        content: 'A forbidden book written by french author Comte d\'Erlette. ' +
-        'Like many book of itd kind, this one is rare and hold many secrets. '
-
-
+        content: 'Writen by a french author, August Comte d\'Erlette.'
     },
     {
         type: 'photo',
         src: 'resources/ui/documents/note_goules.jpg',
     },
     {
-        type: 'text',
-        content: 'This tome depicts gruesome facts about an ancient and secret ' +
-        'society whose members name themselves "les goules" (the ghouls). ' +
-        'These cultists were among the most dreadful and cruel. ' +
-        'The book depicts practices, abductions, tortures and evil rituals. ' +
-        'The text is extremely shocking and the pictures are totally disturbing.'
+		type: 'text',
+		content: 'the book depicts practices, '+
+        'abductions, tortures and evil rituals performed a secret society ' +
+        'whose members name themselves "les goules" (the ghouls).'
     },
     {
         type: 'button',

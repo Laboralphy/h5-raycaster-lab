@@ -21,7 +21,7 @@ O2.createObject('MANSION.NOTES.xarces', [
     {
         type: 'text',
         content: 'The book also holds various magical incantations and rituals, which can be used to open a portal to ' +
-        'Paradise... or not. The four artifact that are required to open such gate are extremely unlikely to be found.'
+        'Paradise... or not. The four artifact that are required to open such gate are extremely unlikely to be found nowadays.'
     },
     {
         type: 'button',
