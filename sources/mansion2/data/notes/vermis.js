@@ -26,8 +26,8 @@ O2.createObject('MANSION.NOTES.vermis', [
     },
     {
         type: 'button',
-        action: 'Summon',
+        action: 'Random curse',
         caption: 'Read a passage',
-        legend: '... at your own risks.'
+        legend: 'Don\'t do that'
     }
 ]);

@@ -27,8 +27,8 @@ O2.createObject('MANSION.NOTES.kulten', [
     },
     {
         type: 'button',
-        action: 'Summon',
-        caption: 'Summon an entity',
-        legend: '... at your own risks.'
+        action: 'Random curse curse',
+        caption: 'Read incantation',
+        legend: 'Dark gods of chaos reward wall those who cast such incantations.'
     }
 ]);

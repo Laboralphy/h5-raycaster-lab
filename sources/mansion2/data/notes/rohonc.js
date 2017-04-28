@@ -26,7 +26,7 @@ O2.createObject('MANSION.NOTES.rohonc', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Random buff',
         caption: 'Try to read',
         legend: 'It gives headache.'
     }

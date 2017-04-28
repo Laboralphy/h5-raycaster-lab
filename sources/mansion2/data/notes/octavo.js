@@ -26,6 +26,6 @@ O2.createObject('MANSION.NOTES.octavo', [
         type: 'button',
         action: 'Heal',
         caption: 'Read "formula"',
-        legend: 'This book is vibrating which is quite disturbing.'
+        legend: 'This book is warm and vibrates as it was alive.'
     }
 ]);

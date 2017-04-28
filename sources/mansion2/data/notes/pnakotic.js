@@ -22,12 +22,12 @@ O2.createObject('MANSION.NOTES.pnakotic', [
     {
         type: 'text',
             content: 'A variety of subjects, including descriptions of ' +
-            'greater and lesser dark deities and their rituals'
+            'greater and lesser dark deities and their rituals.'
     },
     {
         type: 'button',
         action: 'Haste',
-        caption: 'Summon an entity',
-        legend: '... at your own risks.'
+        caption: 'Read formula',
+        legend: 'This will slightly increase your walking speed.'
     }
 ]);

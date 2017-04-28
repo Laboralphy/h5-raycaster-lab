@@ -917,17 +917,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	readSpellScroll: function(oSection) {
 		this.uiHide();
 		// cast the spell
-		let sSpell = oSection.action;
+		var aAction = oSection.action.split(' ');
+		var sSpell = aAction.shift();
         // remove the section
 		oSection.disabled = true;
-		this.castSpell(sSpell)
+		this.castSpell(sSpell, aAction);
 	},
 
-	castSpell: function(sSpell) {
+	castSpell: function(sSpell, oOptions) {
         if (sSpell in MANSION.SPELLS) {
             const SpellClass = MANSION.SPELLS[sSpell];
             let spell = new SpellClass();
-            spell.run(this);
+            spell.run(this, oOptions);
         } else {
             this.popupMessage('Unknown spell "' + sSpell + '" !');
         }

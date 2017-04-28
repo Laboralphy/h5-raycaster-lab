@@ -30,7 +30,7 @@ O2.createObject('MANSION.NOTES.deathnote', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Random curse blessing',
         caption: 'Write a name',
         legend: 'This will attract a God of Death\'s attention.'
     }

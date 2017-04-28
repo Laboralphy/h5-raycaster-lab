@@ -598,6 +598,8 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			s.nAlpha = 0;
 			s.bTranslucent = false;
 			m.bActive = false;
+			var nKills = this.oGame.getPlayer().data('kills') || 0;
+            this.oGame.getPlayer().data('kills', ++nKills);
 			// unlocking door blocked by the spirit
 			var sHD = this.oMobile.data('hold-door');
 			if (sHD) {

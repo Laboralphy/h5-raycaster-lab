@@ -8,11 +8,11 @@
  */
 
 O2.createClass('MANSION.SPELLS.Random', {
-    run: function(g) {
+
+    run: function(g, aTypes) {
         // available spells for the random spell
         var SPELLS = {
             curse: [
-                'Horror',
                 'Weakness',
                 'Darkness',
                 'Slow'
@@ -47,31 +47,6 @@ O2.createClass('MANSION.SPELLS.Random', {
             }
         }
 
-        var nMerit = 1;
-        var aSpells = [];
-        switch (nMerit) {
-            case 0:
-                aSpells = choose(['curse', 'curse', 'curse']);
-                break;
-            case 1:
-                aSpells = choose(['curse', 'curse']);
-                break;
-            case 2:
-                aSpells = choose(['curse', 'buff']);
-                break;
-            case 3:
-                aSpells = choose(['buff']);
-                break;
-            case 4:
-                aSpells = choose(['buff', 'buff']);
-                break;
-            case 5:
-                aSpells = choose(['buff', 'blessing']);
-                break;
-            case 6:
-                aSpells = choose(['buff', 'buff', 'blessing']);
-                break;
-        }
-        aSpells.forEach(g.castSpell);
+        choose(aTypes).forEach(g.castSpell);
     }
 });

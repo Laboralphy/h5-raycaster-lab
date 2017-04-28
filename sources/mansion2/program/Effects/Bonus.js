@@ -5,7 +5,7 @@
  * @class Effect.Bonus
  */
 
-O2.extendClass('Effect.Bonus', ADV.Effect, {
+O2.extendClass('Effect.Bonus', Effect.Abstract, {
     __construct: function(sBonus) {
         __inherited('Bonus');
         this.addTag(sBonus);

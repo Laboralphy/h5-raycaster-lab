@@ -4,7 +4,7 @@
 /**
  * Created by ralphy on 24/01/17.
  * this spell will increase the player's fire power
- * duration : 60 seconds
+ * duration : until ghost killed
  * @class MANSION.SPELLS.Power
  */
 
@@ -12,6 +12,7 @@ O2.createClass('MANSION.SPELLS.Power', {
     run: function(g) {
         var ep = g.oLogic.getEffectProcessor();
         var ePower = new Effect.Bonus('power');
+        ePower.combatEffect();
         var p = g.oLogic.getPlayerSoul();
         ePower.setSource(p);
         ePower.setTarget(p);

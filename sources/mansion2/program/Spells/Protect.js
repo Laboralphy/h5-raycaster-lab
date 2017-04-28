@@ -9,6 +9,8 @@
 O2.createClass('MANSION.SPELLS.Protect', {
     run: function(g) {
         var eProtect = new Effect.Bonus('resistance');
+        eProtect.combatEffect();
+
         var p = g.oLogic.getPlayerSoul();
         eProtect.setSource(p);
         eProtect.setTarget(p);

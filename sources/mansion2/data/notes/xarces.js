@@ -25,9 +25,9 @@ O2.createObject('MANSION.NOTES.xarces', [
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'Random blessing',
         caption: 'Read formula',
-        legend: 'You notice that someone wrote annotations and compiled a formula. It seems like a Healing incantation.'
+        legend: 'You notice that someone wrote annotations and compiled a formula.'
     }
 ]);
 
