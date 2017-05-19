@@ -47,6 +47,6 @@ O2.createClass('MANSION.SPELLS.Random', {
             }
         }
 
-        choose(aTypes).forEach(g.castSpell);
+        choose(aTypes).forEach(g.castSpell, g);
     }
 });

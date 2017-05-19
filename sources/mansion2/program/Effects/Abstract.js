@@ -26,5 +26,12 @@ O2.extendClass('Effect.Abstract', ADV.Effect, {
             this._bExpired |= this._nKills < this.getTarget().data('kills');
         }
         return __inherited(nTimestamp);
+    },
+
+    /**
+     * l'effet peut se transformer en texte descriptif
+     */
+    text: function() {
+        return '';
     }
 });

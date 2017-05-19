@@ -20,5 +20,11 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
     expire: function(ep) {
         var oTarget = this.getTarget();
         oTarget.modifyAttribute(this.getTag(1), -this.getLevel());
+    },
+
+    text: function() {
+        var sAttr = MANSION.STRINGS_DATA.attributes(this.getTag(1));
+        var sUntil = this._bCombat ? '--' : this._nTime;
+        return ([sAttr, this.getLevel().toString(), sUntil]).join(' ');
     }
 });

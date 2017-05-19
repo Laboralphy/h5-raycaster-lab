@@ -90,7 +90,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 			var sSpace;
 			oSurface.textBaseline = 'top';
 			var aParas = this._sCaption.split('\n');
-			for (var iPara = 0; iPara < aParas.length; iPara++) {
+			for (var iPara = 0, nParaCount = aParas.length; iPara < nParaCount; ++iPara) {
 				aWords = aParas[iPara].split(' ');
 				while (aWords.length) {
 					sWord = aWords.shift();

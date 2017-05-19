@@ -394,7 +394,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
         // virer les fantomes
 		this.clearGhosts();
     },
-	
 
 	/**
 	 * Event triggered when a key is pressed
@@ -924,11 +923,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.castSpell(sSpell, aAction);
 	},
 
-	castSpell: function(sSpell, oOptions) {
+	castSpell: function(sSpell, aOptions) {
         if (sSpell in MANSION.SPELLS) {
             const SpellClass = MANSION.SPELLS[sSpell];
             let spell = new SpellClass();
-            spell.run(this, oOptions);
+            spell.run(this, aOptions);
         } else {
             this.popupMessage('Unknown spell "' + sSpell + '" !');
         }

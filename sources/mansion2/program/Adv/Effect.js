@@ -23,6 +23,7 @@ O2.createClass('ADV.Effect', {
 		this._nExpirationTime = 0;
 		this._nLevel = 0;
 		this._bTerm = false ; // quand true cet effet ne doit plus agir
+		this._nTime = 0;
 
 		this.DURATION_TYPE_INSTANT = 0;
 		this.DURATION_TYPE_TEMPORARY = 1;
@@ -38,7 +39,7 @@ O2.createClass('ADV.Effect', {
 		});
 		this._aTags = aTags;
 	},
-	
+
 	/**
 	 * Getters, Setters, Removers et Hasers pour tous !
 	 */
@@ -107,7 +108,7 @@ O2.createClass('ADV.Effect', {
 	setExpirationTime: function(t) {
 		this._nExpirationTime = t;
 	},
-	
+
 	getExpirationTime: function() {
 		return this._nExpirationTime;
 	},
@@ -133,6 +134,9 @@ O2.createClass('ADV.Effect', {
 	 * Renvoie true si la duration a expiré
 	 */
 	isExpired: function(nTimeStamp) {
+		if (nTimeStamp !== undefined) {
+			this._nTime = nTimeStamp;
+		}
 		if (this._bExpired) {
 			return true;
 		}
@@ -144,7 +148,7 @@ O2.createClass('ADV.Effect', {
 				return this._bExpired = true;
 				
 			default:
-				return this._bExpired = nTimeStamp >= this._nExpirationTime;
+				return this._bExpired = this._nTime >= this._nExpirationTime;
 		}
 	},
 	
