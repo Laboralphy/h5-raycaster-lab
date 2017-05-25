@@ -91,14 +91,13 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	 * @param oTarget cible qu'on cherche à voir
 	 * @param xMe (optionel) coord secteur source
 	 * @param yMe (optionel) coord secteur source
-	 * @return bool
+	 * @return boolean
 	 */
 	isEntityVisible : function(oTarget, xMe, yMe) {
 		var oMe = this.oMobile;
 		xMe = xMe !== undefined ? xMe : oMe.xSector;
 		yMe = yMe !== undefined ? yMe : oMe.ySector;
 		if (!this.testWalkable(xMe, yMe)) {
-			console.log('isEntityVisible : not walkable here', xMe, yMe, oMe.xSector, oMe.ySector);
 			return false;
 		}
 		var xTarget = oTarget.xSector;
@@ -590,6 +589,7 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 	},
 	
 	thinkDead: function() {
+		var g = this.oGame;
 		var m = this.oMobile;
 		var s = m.oSprite;
 		++s.nAlpha;
@@ -598,15 +598,16 @@ O2.extendClass('MANSION.VengefulThinker', MANSION.GhostThinker, {
 			s.nAlpha = 0;
 			s.bTranslucent = false;
 			m.bActive = false;
-			var nKills = this.oGame.getPlayer().data('kills') || 0;
-            this.oGame.getPlayer().data('kills', ++nKills);
+			var p = g.oLogic.getPlayerSoul();
+			var nKills = p.data('kills') || 0;
+            p.data('kills', nKills + 1);
 			// unlocking door blocked by the spirit
-			var sHD = this.oMobile.data('hold-door');
+			var sHD = m.data('hold-door');
 			if (sHD) {
 				sHD.split(' ').forEach(function(sDoorLocator) {
-					var oDoor = this.oGame.getLocator(sDoorLocator);
+					var oDoor = g.getLocator(sDoorLocator);
 					if (oDoor) {
-						this.oGame.unlockDoor(oDoor.x, oDoor.y);
+						g.unlockDoor(oDoor.x, oDoor.y);
 					}
 				}, this);
 			}

@@ -17,7 +17,6 @@ O2.createClass('MANSION.SPELLS.Power', {
         ePower.setSource(p);
         ePower.setTarget(p);
         ePower.setLevel(40);
-        ePower.setDuration(MANSION.CONST.SPELL_DURATION_COMBAT);
         ep.applyEffect(ePower);
         g.fadeIn('rgba(250, 100, 100, 0.5)', 1000);
         g.fadeIn('rgba(250, 200, 100, 0.75)', 500);

@@ -9,9 +9,14 @@
 
 O2.createClass('MANSION.SPELLS.PermaVitality', {
     run: function(g) {
+        var ePerma = new Effect.PermaBonus('vitality');
         var p = g.oLogic.getPlayerSoul();
-        var nVitality = p.getAttribute('vitality');
-        p.setAttribute('vitality', nVitality + MANSION.CONST.SPELL_VITALITY_UP);
+        ePerma.setSource(p);
+        ePerma.setTarget(p);
+        ePerma.setLevel(MANSION.CONST.SPELL_POWER_UP);
+        ePerma.setDuration(10);
+        var ep = g.oLogic.getEffectProcessor();
+        ep.applyEffect(ePerma);
         g.castSpell('Heal');
     }
 });

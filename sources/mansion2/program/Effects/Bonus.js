@@ -13,7 +13,6 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
 
     cast: function(ep) {
         var oTarget = this.getTarget();
-        console.log(oTarget);
         oTarget.modifyAttribute(this.getTag(1), this.getLevel());
     },
 
@@ -23,8 +22,25 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
     },
 
     text: function() {
-        var sAttr = MANSION.STRINGS_DATA.attributes(this.getTag(1));
-        var sUntil = this._bCombat ? '--' : this._nTime;
-        return ([sAttr, this.getLevel().toString(), sUntil]).join(' ');
+        var sAttr = MANSION.STRINGS_DATA.ATTRIBUTES[this.getTag(1)];
+        // ⚔ fight
+        // ⌚ watch
+        // ⌛ hourglass
+        // ∞ infinity
+        var sUntil = '';
+        if (this._bCombat) {
+            sUntil += '⚔';
+        } else {
+            switch (this._nDurationType) {
+                case 1:
+                    sUntil += '⌛ ' + this.getRemainingTime() + 's.';
+                    break;
+
+                case 2:
+                    sUntil += '⌛ ∞';
+            }
+        }
+        var nLevel = this.getLevel();
+        return ([sAttr, (nLevel >= 0 ? '+' : '') + this.getLevel().toString() + '%', sUntil]).join(' ');
     }
 });

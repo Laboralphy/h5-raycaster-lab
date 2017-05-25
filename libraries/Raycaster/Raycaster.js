@@ -1466,7 +1466,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 
 		// floor
 		if (this.bFloor) {
-			if (this.bCeil && this.fViewHeight != 1) {
+			if (this.bCeil && this.fViewHeight !== 1) {
 				this.drawFloorAndCeil();
 			} else {
 				this.drawFloor();

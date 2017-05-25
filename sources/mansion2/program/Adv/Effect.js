@@ -112,6 +112,10 @@ O2.createClass('ADV.Effect', {
 	getExpirationTime: function() {
 		return this._nExpirationTime;
 	},
+
+	getRemainingTime: function() {
+		return this._nExpirationTime - this._nTime;
+	},
 	
 	
 	setSource: function(o) {
@@ -148,7 +152,7 @@ O2.createClass('ADV.Effect', {
 				return this._bExpired = true;
 				
 			default:
-				return this._bExpired = this._nTime >= this._nExpirationTime;
+				return this._bExpired = this.getRemainingTime() <= 0;
 		}
 	},
 	

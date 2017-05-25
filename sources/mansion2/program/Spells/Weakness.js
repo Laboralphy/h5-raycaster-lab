@@ -15,7 +15,6 @@ O2.createClass('MANSION.SPELLS.Weakness', {
         eWeakness.setSource(p);
         eWeakness.setTarget(p);
         eWeakness.setLevel(-25);
-        eWeakness.setDuration(MANSION.CONST.SPELL_DURATION_COMBAT);
         ep.applyEffect(eWeakness);
 
         eWeakness = new Effect.Bonus('power');
@@ -23,7 +22,6 @@ O2.createClass('MANSION.SPELLS.Weakness', {
         eWeakness.setSource(p);
         eWeakness.setTarget(p);
         eWeakness.setLevel(-25);
-        eWeakness.setDuration(MANSION.CONST.SPELL_DURATION_COMBAT);
         ep.applyEffect(eWeakness);
 
         g.fadeIn('rgba(220, 220, 220, 0.75)', 500);

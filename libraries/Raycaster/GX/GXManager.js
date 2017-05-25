@@ -29,6 +29,10 @@ O2.createClass('O876_Raycaster.GXManager', {
 		this.aEffects.push(oEffect);
 		return oEffect;
 	},
+
+	getEffects: function() {
+		return this.aEffects;
+	},
 	
 	/**
 	 * Suppression d'un effet GX

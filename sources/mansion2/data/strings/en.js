@@ -103,7 +103,16 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			mo_help: 'Help'
 		},
 		album_title: 'Album',
-		notes_title: 'Books'
+		notes_title: 'Books',
+		perm_bonus: '[permanent effect]'
+	},
+
+	ATTRIBUTES: {
+        resistance: 'Defense',
+		power: 'Power',
+		vitality: 'Vitality',
+		speed: 'Speed',
+		sight: 'Sight',
 	}
 
 });

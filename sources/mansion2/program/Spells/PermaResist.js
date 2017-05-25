@@ -9,9 +9,14 @@
 
 O2.createClass('MANSION.SPELLS.PermaResist', {
     run: function(g) {
+        var ePerma = new Effect.PermaBonus('resistance');
         var p = g.oLogic.getPlayerSoul();
-        var nResist = p.getAttribute('resistance');
-        p.setAttribute('resistance', nResist + MANSION.CONST.SPELL_RESISTANCE_UP);
+        ePerma.setSource(p);
+        ePerma.setTarget(p);
+        ePerma.setLevel(MANSION.CONST.SPELL_POWER_UP);
+        ePerma.setDuration(10);
+        var ep = g.oLogic.getEffectProcessor();
+        ep.applyEffect(ePerma);
         g.fadeIn('rgba(220, 220, 220, 0.75)', 750);
     }
 });

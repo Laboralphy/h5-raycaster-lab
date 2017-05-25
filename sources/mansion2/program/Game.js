@@ -35,6 +35,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		MANSION.STRINGS_DATA = MANSION.STRINGS_DATA_EN;
 		this._oLocators = {};
 		this.oSnail = new O876.Snail();
+		this.oRandom = new O876.Random();
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
@@ -1304,6 +1305,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 	},
 
+    /**
+	 * Returns a random number
+     * @returns {*}
+     */
 	rand: function() {
 		return this.oRandom.rand(...arguments);
 	}
