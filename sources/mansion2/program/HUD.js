@@ -23,7 +23,6 @@ O2.extendClass('MANSION.HUD', UI.System, {
         var effPad = new UI.EffectPad();
         this.declareWidget(effPad);
         this.cornerWidget(effPad, 7, 4, 12);
-//        effPad.setCaption('Vitality +15\n');
 
         this.oWidgets = {};
         this.oWidgets.hpbar = hpBar;
