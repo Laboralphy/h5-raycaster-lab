@@ -13,10 +13,9 @@
 
         .main {
             color: #CCC;
-            background-color: black;
+            background-image: url(resources/splashes/gameover/gameover.jpg);
             font-family: monospace;
             font-size: 14px;
-            border: solid thin #CCC;
             width: 960px;
             height: 480px;
             margin-top: calc(50vh - 240px);
@@ -27,7 +26,7 @@
             animation-name: kf-mansion-appear;
             animation-duration: 2.5s;
             animation-iteration-count: 1;
-            animation-timing-function: linear;
+            animation-timing-function: ease-out;
         }
 
         a, a:visited {
@@ -43,11 +42,18 @@
             max-width: 960px;
             text-align: center
         }
+
+        .replay {
+            font-weight: bold;
+        }
+
+        .replay.reload {
+            font-size: 1.4em;
+        }
     </style>
     <div class="main appear">
-        <h1><span>Game Over<span></h1>
         <div class="text">
-            <button type="button">Replay</button>
+            <a href="javascript:window.location.reload()"><span class="replay reload">↻</span><span class="replay caption"> Replay</span></a>
         </div>
     </div>
 </main>

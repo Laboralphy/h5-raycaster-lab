@@ -1275,7 +1275,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this._sPreviousAmbiance = sAmb;
 			return;
 		}
-		if (this.sAmbiance == sAmb) {
+		if (this.sAmbiance === sAmb) {
 			return;
 		} else if (this.sAmbiance) {
 			this._oAudio.crossFadeMusic(sAmb);
@@ -1311,6 +1311,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
      */
 	rand: function() {
 		return this.oRandom.rand(...arguments);
+	},
+
+    /**
+	 * Arrète le jeu et affiche un écran de fin
+	 * @param {string} sScreenURL url duy xml defin
+     */
+	end: function(sScreenURL) {
+        this.playAmbiance('music/manor');
+        this._halt();
+        O876_Raycaster.PointerLock.disable();
+        var xhr = new O876.XHR();
+        xhr.get('resources/ui/screens/gameover.xml', (function(data) {
+            document.querySelector('#' + CONFIG.raycaster.canvas).remove();
+            var d = new DocumentFragment();
+            d.innerHTML = data;
+            document.body.appendChild(d);
+        }).bind(this));
 	}
 });
 

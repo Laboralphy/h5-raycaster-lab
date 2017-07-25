@@ -3698,6 +3698,7 @@ O2.createClass('O876.SoundSystem', {
 	 * le programme d'ambience est reseté par cette manip
 	 */
 	crossFadeMusic: function(sFile) {
+        console.log('PM1', sFile);
 		if (this.bCrossFading) {
 			this.sCrossFadeTo = sFile;
 			return;
@@ -3712,12 +3713,14 @@ O2.createClass('O876.SoundSystem', {
 			iVolume += nVolumeDelta;
 			this.oMusicChan.volume = iVolume / 100;
 			if (iVolume <= 0) {
+                console.log('PM2', sFile);
 				this.playMusic(sFile);
 				this.oMusicChan.volume = 1;
 				window.clearInterval(this.oInterval);
 				this.oInterval = null;
 				this.bCrossFading = false;
 				if (this.sCrossFadeTo) {
+					console.log('CF to', this.sCrossFadeTo);
 					this.crossFadeMusic(this.sCrossFadeTo);
 					this.sCrossFadeTo = '';
 				}
