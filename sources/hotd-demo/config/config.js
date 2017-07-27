@@ -5,7 +5,7 @@ O2.createObject('CONFIG', {
 		doomLoop: 'raf',
 		fullScreen: false,
 		fpsControl: true,
-		//controlThinker: 'MANSION.PlayerThinker',
+		controlThinker: 'HOTD.PlayerCamThinker',
 		mute: true
 	},
 	raycaster: {

@@ -9,26 +9,40 @@
 O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 	_oEasingX: null,
 	_oEasingY: null,
+	_oEasingA: null,
 
 	_aStart: 0,
-	
-	setMove: function(x, y, a, dx, dy, t, s) {
+
+	/**
+	 * Initie un déplacement
+	 * @param x coord de départ
+	 * @param y ...
+	 * @param a angle départ
+	 * @param dx coord relative arrivée
+	 * @param dy ...
+	 * @param t temps requies pour effectué le déplacement
+	 * @param s fonction easing
+	 */
+	setMove: function(x, y, a, dx, dy, fa, t, s) {
 		if (x === null || x === undefined) {
 			x = this.oMobile.x;
 		}
 		if (y === null || y === undefined) {
 			y = this.oMobile.y;
 		}
+		if (a === null || a === undefined) {
+			a = this.oMobile.fTheta;
+		}
+		if (fa === null || fa === undefined) {
+			fa = this.oMobile.fTheta;
+		}
 		this._oEasingX = this._oEasingX || new O876.Easing();
 		this._oEasingY = this._oEasingY || new O876.Easing();
-		if (a !== null && a !== undefined) {
-			this._aStart = a;
-		} else {
-			this._aStart = this.oMobile.fTheta;
-		}
+		this._oEasingA = this._oEasingA || new O876.Easing();
 		var tf = this.oGame.oRaycaster.TIME_FACTOR;
 		this._oEasingX.from(x).to(x + dx).during(t / tf | 0).use(s || 'smoothstep');
 		this._oEasingY.from(y).to(y + dy).during(t / tf | 0).use(s || 'smoothstep');
+		this._oEasingA.from(a).to(fa).during(t / tf | 0).use(s || 'smoothstep');
 	},
 
 	think : function() {
@@ -46,7 +60,9 @@ O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 			var by = this._oEasingY.next().over();
 			var x = this._oEasingX.val();
 			var y = this._oEasingY.val();
+			var a = this._oEasingA.next().val();
 			this.oMobile.setXY(x, y);
+			this.oMobile.setAngle(a);
 			if (bx && by) {
 				this.think = this.thinkStop;
 			}

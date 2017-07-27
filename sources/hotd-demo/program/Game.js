@@ -9,12 +9,14 @@
 O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 
 
+	_oLocators: null,
 
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
 
 	init: function() {
+		this._oLocators = {};
 		this.on('leveldata', function(wd) {
 			wd.data = LEVEL_DATA.level1;
 		});
@@ -24,11 +26,10 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.light', this.tagEventLight.bind(this));
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
-		// this.on('itag.locator', this.tagEventLocator.bind(this));
+		this.on('itag.locator', this.tagEventLocator.bind(this));
 		// this.on('itag.lock', this.tagEventLock.bind(this));
-		// this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
-		// this.on('itag.subject', this.tagEventSubject.bind(this));
 
+		this.on('enter', this.gameEventEnterLevel.bind(this));
 
 		/*
 		// activable
@@ -51,8 +52,20 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 
 	},
 
+/*
 
 
+déplacement automatique de la caméra
+	la camera se déplace automatiquement suivant un script
+
+
+	move locator
+	angle a
+	wait
+
+
+
+*/
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
@@ -176,28 +189,6 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 		oEvent.remove = true;
 	},
 	
-	/**
-	 * Gestionaire de porte verouillée
-	 */
-	tagEventLock: function(oEvent) {
-		var x = oEvent.x;
-		var y = oEvent.y;
-		this.lockDoor(x, y);
-	},
-
-	/**
-	 * Gestion des block photographiable
-	 * La variable photo-script est explotée par cameraShoot
-	 */
-	tagEventPhotoScript: function(oEvent) {
-		var x = oEvent.x;
-		var y = oEvent.y;
-		this.mapData(x, y, 'photo-script', oEvent.data);
-		oEvent.remove = true;
-	},
-
-
-	
 	tagEventMessage: function(oEvent) {
 		var sTag = oEvent.data;
 		var sLevel = this.getLevel();
@@ -234,6 +225,35 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 			oEvent.game = this;
 			oInstance[sAction].apply(oInstance, [oEvent]);
 		}
+	},
+
+
+	getPlayer: function() {
+		return this.oRaycaster.oCamera;
+	},
+
+
+	/**
+	 * Evènement déclenché lorsqu'on entre dans un niveau
+	 * pas de paramètre
+	 */
+	gameEventEnterLevel: function() {
+		const rc = this.oRaycaster;
+		this._oDarkHaze = rc.addGXEffect(HOTD.GX.DarkHaze);
+		this.fadeIn('black', 1700);
+		let oPlayer = this.getPlayer();
+		oPlayer.setXY(oPlayer.x, oPlayer.y);
+		//this.configPlayerThinker();
+		//this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
+	},
+
+
+	fadeIn: function(sColor, fTime) {
+		return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeIn(sColor, fTime);
+	},
+
+	fadeOut: function(sColor, fTime) {
+		return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeOut(sColor, fTime);
 	},
 
 });
