@@ -17,9 +17,9 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 
 	init: function() {
 		this._oLocators = {};
-		this.on('leveldata', function(wd) {
-			wd.data = LEVEL_DATA.level1;
-		});
+		this.on('leveldata', this.gameEventLevelData.bind(this));
+		this.on('load', this.gameEventLoad.bind(this));
+		this.on('enter', this.gameEventEnterLevel.bind(this));
 
 
 		// initialisable
@@ -29,7 +29,6 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.locator', this.tagEventLocator.bind(this));
 		// this.on('itag.lock', this.tagEventLock.bind(this));
 
-		this.on('enter', this.gameEventEnterLevel.bind(this));
 
 		/*
 		// activable
@@ -70,7 +69,55 @@ déplacement automatique de la caméra
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 
+	gameEventLevelData: function(wd) {
+		let data = LEVEL_DATA.level1;
+		const monsters = HOTD.TILES_MONSTERS;
+		for (let s in monsters) {
+			data.tiles[s] = monsters[s];
+		}
+		wd.data = data;
+	},
 
+	/**
+	 * Evènement déclenché lorsque le niveau est un cours de chargement
+	 * l'objet passé en paramètre contient les données suivante
+	 * - phase : string, nom de la phase de chargement
+	 * - progress : int, progression
+	 * - max : int, valeur max de la progression
+	 */
+	gameEventLoad: function(oEvent) {
+		let s = oEvent.phase;
+		let n = oEvent.progress;
+		let nMax = oEvent.max;
+		let oCanvas = this.oRaycaster.getScreenCanvas();
+		let oContext = this.oRaycaster.getScreenContext();
+		oContext.clearRect(0, 0, oCanvas.width, oCanvas.height);
+		let sMsg = 'loading ' + (100 * n / nMax | 0) + '%';
+		let y = oCanvas.height >> 1;
+		let nPad = 96;
+		let xMax = oCanvas.width - (nPad << 1);
+		oContext.font = '10px monospace';
+		oContext.fillStyle = 'white';
+		oContext.fillText(sMsg, nPad, oCanvas.height >> 1);
+		oContext.fillStyle = 'rgb(48, 0, 0)';
+		oContext.fillRect(nPad, y + 12, xMax, 8);
+		oContext.fillStyle = 'rgb(255, 48, 48)';
+		oContext.fillRect(nPad, y + 12, n * xMax / nMax, 8);
+	},
+
+	/**
+	 * Evènement déclenché lorsqu'on entre dans un niveau
+	 * pas de paramètre
+	 */
+	gameEventEnterLevel: function() {
+		const rc = this.oRaycaster;
+		this._oDarkHaze = rc.addGXEffect(HOTD.GX.DarkHaze);
+		this.fadeIn('black', 1700);
+		let oPlayer = this.getPlayer();
+		oPlayer.setXY(oPlayer.x, oPlayer.y);
+		//this.configPlayerThinker();
+		//this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
+	},
 
 	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/
 	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/
@@ -233,19 +280,7 @@ déplacement automatique de la caméra
 	},
 
 
-	/**
-	 * Evènement déclenché lorsqu'on entre dans un niveau
-	 * pas de paramètre
-	 */
-	gameEventEnterLevel: function() {
-		const rc = this.oRaycaster;
-		this._oDarkHaze = rc.addGXEffect(HOTD.GX.DarkHaze);
-		this.fadeIn('black', 1700);
-		let oPlayer = this.getPlayer();
-		oPlayer.setXY(oPlayer.x, oPlayer.y);
-		//this.configPlayerThinker();
-		//this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
-	},
+
 
 
 	fadeIn: function(sColor, fTime) {
