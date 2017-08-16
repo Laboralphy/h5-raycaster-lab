@@ -28,11 +28,10 @@ O2.createClass('O876_Raycaster.Sprite',  {
 	/**
 	 * Change l'animation en cours
 	 * 
-	 * @param n
-	 *            numero de la nouvelle animation
+	 * @param n {Number} numero de la nouvelle animation
 	 */
 	playAnimation : function(n) {
-		if (n == this.nAnimation) {
+		if (n === this.nAnimation) {
 			return;
 		}
 		var aBTA = this.oBlueprint.oTile.aAnimations;

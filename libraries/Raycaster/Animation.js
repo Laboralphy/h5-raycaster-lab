@@ -12,8 +12,10 @@ O2.createClass('O876_Raycaster.Animation',  {
 	nFrame: 0, // Frame actuellement affichée
 	
 	nDirLoop: 1,  // direction de la boucle (pour yoyo)
+	bOver: false,
 	
 	assign: function(a) {
+		this.bOver = false;
 		if (a) {
 			this.nStart = a.nStart;
 			this.nCount = a.nCount;
@@ -47,6 +49,13 @@ O2.createClass('O876_Raycaster.Animation',  {
 		}
 		
 		switch (this.nLoop) {
+			case 0:
+				if (this.nIndex >= this.nCount) {
+					this.nIndex = this.nCount - 1;
+					this.bOver = true;
+				}
+				break;
+
 			case 1:
 				if (this.nIndex >= this.nCount) {
 					this.nIndex = 0;
@@ -77,5 +86,10 @@ O2.createClass('O876_Raycaster.Animation',  {
 		this.nIndex = 0;
 		this.nTime = 0;
 		this.nDirLoop = 1;
+		this.bOver = false;
+	},
+
+	isOver: function() {
+		return this.bOver;
 	}
 });
