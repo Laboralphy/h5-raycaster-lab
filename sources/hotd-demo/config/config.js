@@ -4,7 +4,7 @@ O2.createObject('CONFIG', {
 		interval: 40,
 		doomLoop: 'raf',
 		fullScreen: false,
-		fpsControl: true,
+		fpsControl: false,
 		controlThinker: 'HOTD.PlayerCamThinker',
 		mute: true
 	},

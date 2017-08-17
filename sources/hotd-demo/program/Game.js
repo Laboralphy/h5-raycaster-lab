@@ -69,11 +69,17 @@ déplacement automatique de la caméra
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 	/****** GAME EVENTS ****** GAME EVENTS ****** GAME EVENTS ******/
 
+
+
 	gameEventLevelData: function(wd) {
 		let data = LEVEL_DATA.level1;
-		const monsters = HOTD.TILES_MONSTERS;
-		for (let s in monsters) {
-			data.tiles[s] = monsters[s];
+		const monsterTiles = HOTD.TILES_MONSTERS;
+		const monsterBP = HOTD.BLUEPRINTS_MONSTERS;
+		for (let s in monsterTiles) {
+			data.tiles[s] = monsterTiles[s];
+		}
+		for (let s in monsterBP) {
+			data.blueprints[s] = monsterBP[s];
 		}
 		wd.data = data;
 	},
@@ -99,9 +105,9 @@ déplacement automatique de la caméra
 		oContext.font = '10px monospace';
 		oContext.fillStyle = 'white';
 		oContext.fillText(sMsg, nPad, oCanvas.height >> 1);
-		oContext.fillStyle = 'rgb(48, 0, 0)';
+		oContext.fillStyle = 'rgb(0, 0, 64)';
 		oContext.fillRect(nPad, y + 12, xMax, 8);
-		oContext.fillStyle = 'rgb(255, 48, 48)';
+		oContext.fillStyle = 'rgb(0, 64, 255)';
 		oContext.fillRect(nPad, y + 12, n * xMax / nMax, 8);
 	},
 
@@ -290,6 +296,23 @@ déplacement automatique de la caméra
 	fadeOut: function(sColor, fTime) {
 		return this.oRaycaster.addGXEffect(O876_Raycaster.GXFade).fadeOut(sColor, fTime);
 	},
+
+	spawnMob: function(sBlueprint, x, y) {
+		var ps = this.oRaycaster.nPlaneSpacing;
+		var ps2 = ps >> 1;
+		var oMob = this.spawnMobile(sBlueprint, ps * x + ps2, ps * y + ps2, 0);
+		oMob.getThinker().spawn();
+		oMob.data('dead', false);
+		return oMob;
+	},
+
+	getLocator: function(sLocator) {
+		if (sLocator in this._oLocators) {
+			return this._oLocators[sLocator]
+		} else {
+			throw new Error('no locator named : ' + sLocator);
+		}
+	}
 
 });
 

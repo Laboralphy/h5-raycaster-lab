@@ -10,9 +10,23 @@ O2.createObject('HOTD.BLUEPRINTS_MONSTERS', {
 		data: {
 			sounds: {
 			},
-			speed: 3
+			speed: 5
 		},
 		tile: 'm_zomb',
-		thinker: 'HOTD.Monster',
+		thinker: 'HOTD.Zombie',
+	},
+
+	m_skull: {
+		type: RC.OBJECT_TYPE_MOB,
+		width: 40,
+		height: 96,
+		fx: RC.FX_LIGHT_SOURCE,
+		data: {
+			sounds: {
+			},
+			speed: 3
+		},
+		tile: 'm_skull',
+		thinker: 'HOTD.Zombie',
 	}
 });

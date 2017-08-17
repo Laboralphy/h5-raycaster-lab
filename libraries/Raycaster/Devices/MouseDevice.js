@@ -23,20 +23,42 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		this.aEvents = [];
 	},
 
-	eventMouseUp: function(e) {
-		var oEvent = window.event ? window.event : e;
+	getElementPosition: function() {
+		var e = this.oElement;
+		var x = e.offsetLeft;
+		var y = e.offsetTop;
+		while (e.offsetParent) {
+			e = e.offsetParent;
+			x += e.offsetLeft;
+			y += e.offsetTop;
+		}
+		return {x: x, y: y};
+	},
+
+	getMousePosition: function(oEvent) {
+		var p = this.getElementPosition();
+		var x = oEvent.clientX - p.x;
+		var y = oEvent.clientY - p.y;
+		var e = this.oElement;
+		var xReal = x * e.width / e.offsetWidth | 0;
+		var yReal = y * e.height / e.offsetHeight | 0;
+		return {x: xReal, y: yReal};
+	},
+
+	eventMouseUp: function(oEvent) {
 		this.nButtons = oEvent.buttons;
 		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
+			var p = this.getMousePosition(oEvent);
+			this.aEvents.push([0, p.x, p.y, oEvent.button]);
 		}
 		return false;
 	},
 
-	eventMouseDown: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseDown: function(oEvent) {
 		this.nButtons = oEvent.buttons;
 		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
+			var p = this.getMousePosition(oEvent);
+			this.aEvents.push([1, p.x, p.y, oEvent.button]);
 		}
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
@@ -47,8 +69,7 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		return false;
 	},
 	
-	eventMouseClick: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseClick: function(oEvent) {
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
 				oEvent.stopPropagation();

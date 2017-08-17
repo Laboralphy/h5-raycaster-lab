@@ -6,7 +6,7 @@ O2.createObject('HOTD.TILES_MONSTERS', {
 		src: 'resources/sprites/m_zomb.png',
 		width: 128,
 		height: 192,
-		scale: 2,
+		scale: 0.5,
 		frames: 28,
 		animations: [
 			[[13, 13, 13, 13, 13, 13, 13, 13], 1, 0, 0],		// stand
@@ -26,8 +26,8 @@ O2.createObject('HOTD.TILES_MONSTERS', {
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 0, 0],				// stand
 			[[0, 0, 0, 0, 0, 0, 0, 0], 3, 100, 1],   			// walk
 			[[0, 0, 0, 0, 0, 0, 0, 0], 3, 40, 1],				// attack
-			[[3, 3, 3, 3, 3, 3, 3, 3], 10, 100, 1],    			// death
-			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 0, 0]					// spawn
+			[[3, 3, 3, 3, 3, 3, 3, 3], 10, 100, 0],    			// death
+			[[0, 0, 0, 0, 0, 0, 0, 0], 3, 100, 0]				// spawn
 		]
 	}
 });

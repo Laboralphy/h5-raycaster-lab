@@ -21,6 +21,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		if ('init' in this) {
 			this.init();
 		}
+		this.trigger('init');
 	},
 
 	

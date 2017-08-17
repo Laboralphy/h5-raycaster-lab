@@ -6,7 +6,6 @@ O2.createClass('HOTD.StalkerHelper', {
 	_oBresenham: null, // bresenham resolver to determine if an entity is visible
 
 	__construct: function() {
-		__inherited();
 		this._oBresenham = new O876.Bresenham();
 	},
 

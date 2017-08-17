@@ -13,7 +13,6 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 	ANIM_SPAWN: 4,
 
 	__construct: function() {
-		__inherited();
 		this._oStalker = new HOTD.StalkerHelper();
 	},
 
@@ -23,13 +22,13 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 	 * @param xSector {number}
 	 * @param ySector {number}
 	 */
-	spawn: function(xSector, ySector) {
+	spawn: function() {
 		/**
 		 * @var m
 		 * @type {O876_Raycaster.Mobile}
 		 */
 		var m = this.oMobile;
-		m.setXY(xSector * ps + (ps >> 1), ySector * ps + (ps >> 1));
+		var ps = this.oGame.oRaycaster.nPlaneSpacing;
 		m.oSprite.playAnimationType(this.ANIM_SPAWN);
 		this.think = this.thinkSpawning;
 	},
@@ -60,7 +59,8 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 		var m = this.oMobile;
 		var ps = this.oGame.oRaycaster.nPlaneSpacing;
 		var oPlayer = g.getPlayer();
-		m.setAngle(this._oStalker.getAngle(m, oPlayer) + (PI / 2));
+		m.setAngle(this._oStalker.getDirection(m, oPlayer));
+		m.setSpeed(m.data('speed'));
 		this.think = this.thinkChasing;
 		this.until(400);
 	},
@@ -79,6 +79,7 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 			return;
 		}
 		var m = this.oMobile;
+		m.moveForward();
 		var d = this._oStalker.getDistance(m, this.oGame.getPlayer());
 		if (d < 40) {
 			m.oSprite.playAnimationType(this.ANIM_ATTACK);
