@@ -32,11 +32,11 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
     this.oRaycaster = new O876_Raycaster.Raycaster();
     if (this.oKbdDevice == null) {
       this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-      this.oKbdDevice.plugEvents();
+      this.oKbdDevice.plugHandlers();
     }
     if (this.oMotionDevice == null) {
       this.oMotionDevice = new O876_Raycaster.MotionDevice();
-      this.oMotionDevice.plugEvents();
+      this.oMotionDevice.plugHandlers();
     }
 	
     this.oRaycaster.setConfig(CONFIG.raycaster);

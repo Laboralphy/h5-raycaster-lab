@@ -4384,7 +4384,7 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	 * @param sEvent DOM Event name
 	 * @param pHandler event handler function
 	 */
-	plugEvent: function(sEvent, pHandler) {
+	plugHandler: function(sEvent, pHandler) {
 		var p = pHandler.bind(this);
 		this.oHandlers[sEvent] = p;
 		document.addEventListener(sEvent, p, false);
@@ -4395,7 +4395,7 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	 * Will do nothing if handler has not been previously added
 	 * @param sEvent DOM event name
 	 */
-	unplugEvent: function(sEvent) {
+	unplugHandler: function(sEvent) {
 		if (sEvent in this.oHandlers) {
 			var p = this.oHandlers[sEvent];
 			document.removeEventListener(sEvent, p);
@@ -4403,14 +4403,14 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 		}
 	},
 
-	plugEvents: function() {
-		this.plugEvent('keyup', this.eventKeyUp);
-		this.plugEvent('keydown', this.eventKeyDown);
+	plugHandlers: function() {
+		this.plugHandler('keyup', this.eventKeyUp);
+		this.plugHandler('keydown', this.eventKeyDown);
 	},
 	
-	unplugEvents: function() {
-		this.unplugEvent('keyup');
-		this.unplugEvent('keydown');
+	unplugHandlers: function() {
+		this.unplugHandler('keyup');
+		this.unplugHandler('keydown');
 	}
 });
 
@@ -4519,12 +4519,12 @@ O2.createClass('O876_Raycaster.MotionDevice', {
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
-	plugEvents: function(oElement) {
+	plugHandlers: function(oElement) {
 		this.boundHandleMotion = this['handleMotion' + this.sMode].bind(this);
 		window.addEventListener('devicemotion', this.boundHandleMotion, false);
 	},
 	
-	unplugEvents: function() {
+	unplugHandlers: function() {
 		window.removeEventListener('devicemotion', this.boundHandleMotion);
 	},
 });
@@ -4582,7 +4582,7 @@ O2.createClass('O876_Raycaster.MotionDeviceRange', {
  */
 O2.createClass('O876_Raycaster.MouseDevice', {
 	nButtons: 0,
-	aEvents: null,
+	aEventBuffer: null,
 	nKeyBufferSize: 16,
 	bUseBuffer: true,
 	nSecurityDelay: 0,
@@ -4591,19 +4591,19 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	oHandlers: null,
 	
 	__construct: function() {
-		this.aEvents = [];
+		this.aEventBuffer = [];
 		this.oHandlers = {};
 	},
 	
 	clearBuffer: function() {
-		this.aEvents = [];
+		this.aEventBuffer = [];
 	},
 
 	eventMouseUp: function(e) {
 		var oEvent = window.event ? window.event : e;
 		this.nButtons = oEvent.buttons;
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
+			this.aEventBuffer.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
 		}
 		return false;
 	},
@@ -4611,8 +4611,8 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	eventMouseDown: function(e) {
 		var oEvent = window.event ? window.event : e;
 		this.nButtons = oEvent.buttons;
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
+			this.aEventBuffer.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
 		}
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
@@ -4643,13 +4643,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * nUpOrDown vaut 0 quand le bouton de la souris est relaché et vaut 1 quand le bouton est enfoncé
 	 * il vaut 3 quand la molette de la souris est roulée vers le haut, et -3 vers le bas 
 	 */
-	inputMouse: function() {
+	readMouse: function() {
 		if (this.nSecurityDelay > 0) {
 			--this.nSecurityDelay;
 			this.clearBuffer();
 			return null;
 		} else {
-			return this.aEvents.shift();
+			return this.aEventBuffer.shift();
 		}
 	},
 	
@@ -4661,13 +4661,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		} else {
 			nDelta = -40 * oEvent.detail;
 		}
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
 			if (e.wheelDelta) {
 				nDelta = oEvent.wheelDelta > 0 ? 3 : -3; 
-				this.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEventBuffer.push([nDelta, 0, 0, 3]);
 			} else {
 				nDelta = oEvent.detail > 0 ? -3 : 3;
-				this.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEventBuffer.push([nDelta, 0, 0, 3]);
 			}
 		}
 	},
@@ -4677,7 +4677,7 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * @param sEvent DOM Event name
 	 * @param pHandler event handler function
 	 */
-	plugEvent: function(sEvent, pHandler) {
+	plugHandler: function(sEvent, pHandler) {
 		var p = pHandler.bind(this);
 		this.oHandlers[sEvent] = p;
 		this.oElement.addEventListener(sEvent, p, false);
@@ -4688,7 +4688,7 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * Will do nothing if handler has not been previously added
 	 * @param sEvent DOM event name
 	 */
-	unplugEvent: function(sEvent) {
+	unplugHandler: function(sEvent) {
 		if (sEvent in this.oHandlers) {
 			var p = this.oHandlers[sEvent];
 			this.oElement.removeEventListener(sEvent, p);
@@ -4699,21 +4699,21 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
-	plugEvents: function(oElement) {
+	plugHandlers: function(oElement) {
 		this.oElement = oElement;
-		this.plugEvent('mousedown', this.eventMouseDown);
-		this.plugEvent('click', this.eventMouseClick);
-		this.plugEvent('mouseup', this.eventMouseUp);
-		this.plugEvent('mousewheel', this.mouseWheel);
-		this.plugEvent('DOMMouseScroll', this.mouseWheel);
+		this.plugHandler('mousedown', this.eventMouseDown);
+		this.plugHandler('click', this.eventMouseClick);
+		this.plugHandler('mouseup', this.eventMouseUp);
+		this.plugHandler('mousewheel', this.mouseWheel);
+		this.plugHandler('DOMMouseScroll', this.mouseWheel);
 	},
 	
-	unplugEvents: function() {
-		('mousedown click mouseup mousewheel DOMMouseScroll').split(' ').forEach(this.unplugEvent.bind(this));
+	unplugHandlers: function() {
+		('mousedown click mouseup mousewheel DOMMouseScroll').split(' ').forEach(this.unplugHandler.bind(this));
 	},
 	
 	clearEvents: function() {
-		this.aEvents = [];
+		this.aEventBuffer = [];
 	}
 });
 
@@ -10623,10 +10623,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this.pause();
 		this.setDoomloop('stateEnd');
 		if (this.oKbdDevice) {
-			this.oKbdDevice.unplugEvents();
+			this.oKbdDevice.unplugHandlers();
 		}
 		if (this.oMouseDevice) {
-			this.oMouseDevice.unplugEvents();
+			this.oMouseDevice.unplugHandlers();
 		}
 	},
 
@@ -10638,7 +10638,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	getKeyboardDevice : function() {
 		if (this.oKbdDevice === null) {
 			this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-			this.oKbdDevice.plugEvents();
+			this.oKbdDevice.plugHandlers();
 		}
 		return this.oKbdDevice;
 	},
@@ -10649,7 +10649,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				throw new Error('no target element specified for the mouse device');
 			}
 			this.oMouseDevice = new O876_Raycaster.MouseDevice();
-			this.oMouseDevice.plugEvents(oElement);
+			this.oMouseDevice.plugHandlers(oElement);
 		}
 		return this.oMouseDevice;
 	},
@@ -10657,7 +10657,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	getMotionDevice: function() {
 		if (this.oMotionDevice === null) {
 			this.oMotionDevice = new O876_Raycaster.MotionDevice();
-			this.oMotionDevice.plugEvents();
+			this.oMotionDevice.plugHandlers();
 		}
 		return this.oMotionDevice;
 	},
@@ -11935,7 +11935,7 @@ O2.extendClass('O876_Raycaster.MotionThinker', O876_Raycaster.Thinker,
 		md.getAngleRange('beta', 1).setRange(nMin, nMax, false);
 		md.getAngleRange('gamma', 0).setRange(-nMin, -nMax, true);
 		md.getAngleRange('gamma', 1).setRange(nMin, nMax, false);
-		md.plugEvents();
+		md.plugHandlers();
 		this.oMotionDevice = md;
 	},
 
@@ -12078,7 +12078,7 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 			}
 		}
 		var oMouse = this.oGame.getMouseDevice();
-		while (aButton = oMouse.inputMouse()) {
+		while (aButton = oMouse.readMouse()) {
 			nKey = aButton[3];
 			sEvent = 'button' + nKey;
 			sProc = '';

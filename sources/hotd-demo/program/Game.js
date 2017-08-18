@@ -12,6 +12,7 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
     _sPreviousAmbiance: '',
     _oAudio: null,
 	_oLocators: null,
+	_oGXMouse: null,
 
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
@@ -133,11 +134,11 @@ déplacement automatique de la caméra
 	gameEventEnterLevel: function() {
 		const rc = this.oRaycaster;
 		this._oDarkHaze = rc.addGXEffect(HOTD.GX.DarkHaze);
+		this._oGXMouse = rc.addGXEffect(HOTD.GX.MouseCursor);
 		this.fadeIn('black', 1700);
 		let oPlayer = this.getPlayer();
 		oPlayer.setXY(oPlayer.x, oPlayer.y);
-		//this.configPlayerThinker();
-		//this.playAmbiance(MANSION.SOUNDS_DATA.bgm.levels[this.getLevel()]);
+
 	},
 
 	/****** TAG EVENTS ****** TAG EVENTS ****** TAG EVENTS ******/

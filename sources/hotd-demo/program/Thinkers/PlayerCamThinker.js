@@ -75,6 +75,11 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 
 	click: function(x, y) {
 		// on touche un mob ?
+		this.oGame.playSound('mechanisms/pistol-shot');
+		this.oGame.oRaycaster.addGXEffect(HOTD.GX.GunFlash);
+		if (!this._aMobs) {
+			return;
+		}
 		var oHit = this._aMobs.filter(function(m) {
 			var ls = m.oSprite.aLastRender;
 			var xMob = ls[5];
@@ -88,24 +93,25 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 		}).shift();
 		if (oHit) {
 			// on a touché un mob
-			console.log('Hit !');
 			oHit.getThinker().die();
 			this.mobDied(oHit);
 		}
 	},
 
 	clearMouse: function() {
-		this.oGame.getMouseDevice().clearEvents();
+		this.oGame.getMouseDevice().clearBuffer();
 	},
 
 	updateMouse: function() {
 		var oMouse = this.oGame.getMouseDevice();
 		var aButton;
-		while (aButton = oMouse.inputMouse()) {
+		while (aButton = oMouse.readMouse()) {
 			if (aButton[0] === 1 && aButton[3] === 0) {
 				this.click(aButton[1], aButton[2]);
 			}
 		}
+		var p = oMouse.getPixelPointer();
+		this.oGame._oGXMouse.moveTo(p.x, p.y);
 	},
 
 	thinkInit: function() {
@@ -389,6 +395,11 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 		];
 		this.setMove(null, null, null, 0, 0, 0, 1500);
 		__inherited();
+	},
+
+	thinkMove: function() {
+		__inherited();
+		this.updateMouse();
 	},
 
 	thinkStop: function() {

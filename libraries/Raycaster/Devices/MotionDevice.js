@@ -102,12 +102,12 @@ O2.createClass('O876_Raycaster.MotionDevice', {
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
-	plugEvents: function(oElement) {
+	plugHandlers: function(oElement) {
 		this.boundHandleMotion = this['handleMotion' + this.sMode].bind(this);
 		window.addEventListener('devicemotion', this.boundHandleMotion, false);
 	},
 	
-	unplugEvents: function() {
+	unplugHandlers: function() {
 		window.removeEventListener('devicemotion', this.boundHandleMotion);
 	},
 });

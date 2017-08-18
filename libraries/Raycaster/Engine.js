@@ -94,10 +94,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this.pause();
 		this.setDoomloop('stateEnd');
 		if (this.oKbdDevice) {
-			this.oKbdDevice.unplugEvents();
+			this.oKbdDevice.unplugHandlers();
 		}
 		if (this.oMouseDevice) {
-			this.oMouseDevice.unplugEvents();
+			this.oMouseDevice.unplugHandlers();
 		}
 	},
 
@@ -109,7 +109,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	getKeyboardDevice : function() {
 		if (this.oKbdDevice === null) {
 			this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-			this.oKbdDevice.plugEvents();
+			this.oKbdDevice.plugHandlers();
 		}
 		return this.oKbdDevice;
 	},
@@ -120,7 +120,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				throw new Error('no target element specified for the mouse device');
 			}
 			this.oMouseDevice = new O876_Raycaster.MouseDevice();
-			this.oMouseDevice.plugEvents(oElement);
+			this.oMouseDevice.plugHandlers(oElement);
 		}
 		return this.oMouseDevice;
 	},
@@ -128,7 +128,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	getMotionDevice: function() {
 		if (this.oMotionDevice === null) {
 			this.oMotionDevice = new O876_Raycaster.MotionDevice();
-			this.oMotionDevice.plugEvents();
+			this.oMotionDevice.plugHandlers();
 		}
 		return this.oMotionDevice;
 	},
