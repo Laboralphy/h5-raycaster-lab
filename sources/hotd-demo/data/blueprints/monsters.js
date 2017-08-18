@@ -9,6 +9,8 @@ O2.createObject('HOTD.BLUEPRINTS_MONSTERS', {
 		fx: 0,
 		data: {
 			sounds: {
+				die: ['monsters/zomb-die', 'monsters/zomb-die-2', 'monsters/zomb-die-3'],
+				spawn: 'monsters/zomb-moan-2'
 			},
 			speed: 5
 		},
@@ -23,6 +25,8 @@ O2.createObject('HOTD.BLUEPRINTS_MONSTERS', {
 		fx: RC.FX_LIGHT_SOURCE,
 		data: {
 			sounds: {
+                die: 'monsters/ghost-burn',
+                spawn: 'monsters/zomb-moan'
 			},
 			speed: 3
 		},

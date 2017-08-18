@@ -27,7 +27,27 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 		var m = this.oMobile;
 		var vDoor = m.getFrontCellXY();
 		g.openDoor(vDoor.x, vDoor.y, true);
+		var sNoise = 'mechanisms/door-open';
+		var rc = this.oGame.oRaycaster;
+		switch (rc.getMapPhys(vDoor.x, vDoor.y)) {
+            case rc.PHYS_CURT_SLIDING_UP:
+                sNoise = 'mechanisms/push-stone';
+				break;
+
+            case rc.PHYS_SECRET_BLOCK:
+                sNoise = 'mechanisms/push-stone';
+                break;
+		}
+        this.oGame.playSound(sNoise, vDoor.x * 64, vDoor.y * 64);
 	},
+
+    text: function(aText) {
+        var rc = this.oGame.oRaycaster;
+        var rcc = rc.getScreenCanvas();
+        var oText = rc.addGXEffect(HOTD.GX.SimpleText);
+        oText.text(aText, rcc.width >> 1, rcc.height >> 1);
+    },
+
 
 	spawnMob: function(sBP, sLoc) {
 		if (!this._aMobs) {
@@ -97,6 +117,9 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 
 		this._movements = [
 
+			['bgm', 'music/atrium'],
+			['text', '- La Cabane aux Milles Zombies -'],
+
 			// move 1
 			// move 1
 			// move 1
@@ -151,6 +174,7 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 			// go to entrance door
 			['move', 0, -7, null, 7000],
 			['open'],
+            ['bgm', 'music/manor'],
 			['wait', 1000],
 
 
@@ -170,45 +194,26 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 			 // ambush 4 : first room
 			 // ambush 4 : first room
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 500 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 500 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 500 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 1500 + rnd(0, 100)],
+			['wait', 2500],
 
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 500 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 400 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 300 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 1500 + rnd(0, 100)],
-
+			['wait', 200 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 150 + rnd(0, 200)],
 			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
-			['spawn', 'm_skull', 'spawn-4-' + rnd(1, 8)],
-			['wait', 400 + rnd(0, 100)],
+			['wait', 100 + rnd(0, 200)],
 
 			['wait', 'clear'],
 
@@ -313,7 +318,7 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 			['wait', 100],
 			['spawn', 'm_zomb', 'spawn-10-3'],
 			['wait', 'clear'],
-			['wait', 500],
+            ['wait', 500],
 
 
 			// checkout the picture
@@ -379,8 +384,8 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 			['wait', 1500],
 			['wait', 'clear'],
 
-
-
+            ['wait', 1500],
+            ['text', 'Fin de la démo', 'Merci d\'avoir joué.']
 		];
 		this.setMove(null, null, null, 0, 0, 0, 1500);
 		__inherited();
@@ -421,7 +426,15 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 					this.openFrontDoor();
 					break;
 
-				default:
+                case 'bgm':
+                    this.oGame.playAmbiance(m[0]);
+                    break;
+
+                case 'text':
+                    this.text(m);
+                    break;
+
+                default:
 					console.warn('bad PlayerCamThinker command', m);
 					this.think = this.thinkIdle;
 					break;

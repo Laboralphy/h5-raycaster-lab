@@ -8,14 +8,29 @@
 /* global CONFIG */
 O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 
-
+	_sAmbiance: '',
+    _sPreviousAmbiance: '',
+    _oAudio: null,
 	_oLocators: null,
 
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
 	/****** INIT ****** INIT ****** INIT ******/
+    /**
+     * Initializes audio system
+     */
+    initAudio: function() {
+        const a = new O876.SoundSystem();
+        a.setChannelCount(8);
+        this._oAudio = a;
+        a.setPath('resources/sounds');
+        if (CONFIG.game.mute) {
+            a.mute();
+        }
+    },
 
 	init: function() {
+    	this.initAudio();
 		this._oLocators = {};
 		this.on('leveldata', this.gameEventLevelData.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
@@ -312,7 +327,60 @@ déplacement automatique de la caméra
 		} else {
 			throw new Error('no locator named : ' + sLocator);
 		}
-	}
+	},
 
+    /**
+     * Lance le fichier musical d'ambiance
+     * @param string sAmb nom du fichier
+     */
+    playAmbiance: function(sAmb) {
+        if (this._sPreviousAmbiance) {
+            this._sPreviousAmbiance = sAmb;
+            return;
+        }
+        if (this.sAmbiance === sAmb) {
+            return;
+        } else if (this.sAmbiance) {
+            this._oAudio.crossFadeMusic(sAmb);
+            this.sAmbiance = sAmb;
+        } else {
+            this._oAudio.playMusic(sAmb);
+            this.sAmbiance = sAmb;
+        }
+    },
+
+    /**
+     * Lecture d'un son à la position x, y
+     * Le son est modifié en amplitude en fonction de la distance séparant le point sonore avec
+     * la position de la caméra
+     * @param  sFile string fichier son à jouer
+     * @param  x float position de la source du son
+     * @param  y float
+     */
+    playSound : function(sFile, x, y) {
+        var fDist = 0;
+        if (x !== undefined) {
+            var oPlayer = this.getPlayer();
+            fDist = MathTools.distance(
+                oPlayer.x - x,
+                oPlayer.y - y);
+        }
+        var fVolume = 1;
+        var nMinDist = 64;
+        var nMaxDist = 512;
+        if (fDist > nMaxDist) {
+            fVolume = 0;
+        } else if (fDist <= nMinDist) {
+            fVolume = 1;
+        } else {
+            fVolume = 1 - (fDist  / nMaxDist);
+        }
+        if (fVolume > 1) {
+            fVolume = 1;
+        }
+        if (fVolume > 0.01) {
+            this._oAudio.play(sFile, fVolume);
+        }
+    },
 });
 

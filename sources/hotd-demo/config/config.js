@@ -6,7 +6,7 @@ O2.createObject('CONFIG', {
 		fullScreen: false,
 		fpsControl: false,
 		controlThinker: 'HOTD.PlayerCamThinker',
-		mute: true
+		mute: false
 	},
 	raycaster: {
 		canvas: 'screen',

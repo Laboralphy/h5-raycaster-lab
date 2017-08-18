@@ -12,6 +12,8 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 	ANIM_DEATH: 3,
 	ANIM_SPAWN: 4,
 
+
+
 	__construct: function() {
 		this._oStalker = new HOTD.StalkerHelper();
 	},
@@ -31,6 +33,8 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 		var ps = this.oGame.oRaycaster.nPlaneSpacing;
 		m.oSprite.playAnimationType(this.ANIM_SPAWN);
 		this.think = this.thinkSpawning;
+        var m = this.oMobile;
+        this.oGame.playSound(m.getData('sounds').spawn, m.x, m.y);
 	},
 
 	until: function(n) {
@@ -52,6 +56,14 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 	die: function() {
 		this.animate(this.ANIM_DEATH);
 		this.think = this.thinkDie;
+		var m = this.oMobile;
+		var sCry, xSounds = m.getData('sounds').die;
+		if (Array.isArray(xSounds)) {
+			sCry = MathTools.rndChoose(xSounds);
+		} else {
+			sCry = xSounds;
+		}
+        this.oGame.playSound(sCry, m.x, m.y);
 	},
 
 	chase: function() {
@@ -95,7 +107,8 @@ O2.extendClass('HOTD.ZombieThinker', O876_Raycaster.Thinker, {
 
 	thinkDie: function() {
 		if (this.animationIsOver()) {
-			this.oMobile.gotoLimbo();
+			var m = this.oMobile;
+			m.gotoLimbo();
 			this.think = this.thinkDead;
 		}
 	},
