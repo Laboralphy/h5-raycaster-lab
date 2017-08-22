@@ -89,7 +89,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		r.seed(Date.now() / 1000);
 		MAIN.rand = function(x, y) {
 			return r.rand(x, y);
-		}
+		};
 	},
 
 	/**
@@ -1015,7 +1015,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	prompt: function(sCaption, sDefault) {
 		this.pause(true);
-		var s = prompt(sCaption, sDefault)
+		var s = prompt(sCaption, sDefault);
 		this.resume();
 		return s;
 	},

@@ -124,7 +124,7 @@ O2.extendClass('HOTD.PlayerCamThinker', O876_Raycaster.NonLinearThinker, {
 		this._movements = [
 
 			['bgm', 'music/atrium'],
-			['text', '- La Cabane aux Milles Zombies -'],
+			['text', '- La Cabane aux Mille Zombies -'],
 
 			// move 1
 			// move 1

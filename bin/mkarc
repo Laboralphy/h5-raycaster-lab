@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# a tool for archiving module projects into .tar.gz files.
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+projectPack() {
+	local sProject="$1"
+	if [ -z "$sProject" ]
+	then
+		echo "Please specify a modules project."
+		echo "Choose one of these : "
+		ls $sScriptDir/../modules
+		return
+	fi
+	local sModuleDir="$sScriptDir/../modules/$sProject"
+	local sPackDir="$sScriptDir/../packed-modules"
+	local sPackFile="$sPackDir/$sProject.tar.xz"
+	local myPwd=`pwd`
+
+	if [ ! -e "$sPackDir" ]
+	then
+	    echo "creating output directory"
+	    mkdir -p "$sPackDir"
+    fi
+
+	if [ -f "$sPackFile" ]
+	then
+	    echo "removing previous archive."
+	    rm "$sPackFile"
+	fi
+
+	if [ ! -d "$sModuleDir" ]
+	then
+		echo "There is no source project named : $sProject"
+	else
+		cd "$sModuleDir"
+		echo "archiving $sProject ..."
+		tar -cJf "$sPackFile" *
+		cd "$myPwd"
+		echo "done."
+	fi
+}
+
+projectPack "$1"

@@ -324,7 +324,7 @@ déplacement automatique de la caméra
 
 	getLocator: function(sLocator) {
 		if (sLocator in this._oLocators) {
-			return this._oLocators[sLocator]
+			return this._oLocators[sLocator];
 		} else {
 			throw new Error('no locator named : ' + sLocator);
 		}
