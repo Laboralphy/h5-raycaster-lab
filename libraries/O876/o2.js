@@ -156,12 +156,6 @@ O2.loadObject = function(s, oContext) {
 	}
 };
 
-O2._loadObject = function(s, oContext) {
-	console.warn('O2._loadObject is deprecated. Use the brand new O2.loadObject, which do the same thing, but without this "_" in front of the name.');
-	console.trace();
-	return O2.loadObject(s, oContext);
-};
-
 /** Creation d'une classe avec support namespace
  * le nom de la classe suit la syntaxe de la fonction O2.createObject() concernant les namespaces.
  * @param sName string, nom de la classe
