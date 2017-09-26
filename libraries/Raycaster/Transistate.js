@@ -22,25 +22,18 @@ O2.createClass('O876_Raycaster.Transistate', {
 	 * @param sProc nom de la méthode de l'objet à lancer
 	 */
 	setDoomloop : function(sProc, sType) {
+		console.log(sProc);
 		this.sDoomloopType = sType;
 		if (!(sProc in this)) {
 			throw new Error('"' + sProc + '" is not a valid timer proc');
 		}
-		this.pDoomloop = this[this._sState = sProc].bind(this);
-		this.stopTimers();
-		switch (sType) {
-			case 'interval':
-				this.oInterval = window.setInterval(this.pDoomloop, this.nInterval);
-			break;
-			
-			case 'raf':
-				this.oRafInterval = window.requestAnimationFrame(this.pDoomloop);
-			break;
-			
-			default:
-				this.setDoomloop(sProc, this.sDefaultDoomloopType);
-			break;
+		try {
+            this.pDoomloop = this[this._sState = sProc].bind(this);
+        } catch (e) {
+			console.log(sProc, this[this._sState = sProc]);
 		}
+		this.stopTimers();
+		this.oInterval = window.setInterval(this.pDoomloop, this.nInterval);
 	},
 
 	/**

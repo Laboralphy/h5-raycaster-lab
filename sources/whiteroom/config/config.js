@@ -4,10 +4,10 @@
  */
 O2.createObject('CONFIG', {
 	game: {
-    		urlLaby: '../../dynamics/laby/laby.php?g=whiteroom&s=',   /* laby generation request locator */
+		urlLaby: '../../dynamics/laby/laby.php?g=whiteroom&s=',   /* laby generation request locator */
 		namespace: 'WHITEROOM',		/* game namespace */
 		interval: 40,			/* timer interval (ms). you should not change this value */
-		doomLoop: 'raf',		/* doomloop type "raf" or "interval". "raf" is very cpu intensive but is ok for a game, "interval" is a cool method but with some mouse glitches */
+		doomLoop: 'interval',		/* doomloop type "raf" or "interval". "raf" is very cpu intensive but is ok for a game, "interval" is a cool method but with some mouse glitches */
 		fullScreen: false, 	/* fullscreen flag. if true, clicking on screen will switch the game to fullscreen mode */
 		fpsControl: false, 	/* fps control (mouse + keyboard WASD) flag */
 		controlThinker: '',		/* custom control thinker */

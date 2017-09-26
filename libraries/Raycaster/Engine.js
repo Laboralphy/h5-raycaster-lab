@@ -21,6 +21,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_oConfig: null,
 	
 	__construct : function() {
+        this.subStateRender = this.subStateRender.bind(this);
+        this.subStateUpdate = this.subStateUpdate.bind(this);
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
@@ -289,20 +291,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this._callGameEvent('onInitialize');
 		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
 		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
-		switch (this._oConfig.game.doomloop) {
-			case 'interval':
-				this.stateRunning = this.stateRunningInt;
-				break;
-
-			case 'raf':
-				if (this.initRequestAnimationFrame()) {
-					this.stateRunning = this.stateRunningRAF;
-				} else {
-					this._oConfig.game.doomloop = 'interval';
-					this.stateRunning = this.stateRunningInt;
-				}
-				break;
-		}
 		this.setDoomloop('stateMenuLoop');
 		this.resume();
 	},
@@ -389,73 +377,51 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		}
 		// this._callGameEvent('onLoading', 'shd', 1, 1);
 		this._oFrameCounter = new O876_Raycaster.FrameCounter();
-		this.setDoomloop('stateRunning', this._oConfig.game.doomloop);
+		this.setDoomloop('stateRunning', 'interval');
 		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
 	},
 
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunning : null,
-
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunningInt : function() {
-		var nNowTimeStamp = performance.now();
-		var nFrames = 0;
-		while (this._nTimeStamp < nNowTimeStamp) {
-			this.oRaycaster.frameProcess();
-			this._callGameEvent('onDoomLoop');
-			this._nTimeStamp += this.nInterval;
-			nFrames++;
-			if (nFrames > 10) {
-				// too much frames, the window has been minimized for too long
-				// restore time stamp
-				this._nTimeStamp = nNowTimeStamp;
-			}
-		}
-		if (nFrames) {
-			var fc = this._oFrameCounter;
-			this.oRaycaster.frameRender();
-			this._callGameEvent('onFrameRendered');
-			if (fc.check(nNowTimeStamp)) {
-				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-			}
-		}
+    stateRunning: function() {
+        this.setDoomloop('subStateUpdate', 'interval');
 	},
 
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunningRAF : function(nTime) {
-		var nFrames = 0;
-		var rc = this.oRaycaster;
-		if (this._nTimeStamp === null) {
-			this._nTimeStamp = nTime;
-		}
-		while (this._nTimeStamp < nTime) {
-			rc.frameProcess();
-			this._callGameEvent('onDoomLoop');
-			this._nTimeStamp += this.nInterval;
-			nFrames++;
-			if (nFrames > 10) {
-				// too much frames, the window has been minimized for too long
-				// restore time stamp
-				this._nTimeStamp = nTime;
-			}
-		}
-		if (nFrames) {
-			rc.frameRender();
-			this._callGameEvent('onFrameRendered');
-			var fc = this._oFrameCounter;
-			if (fc.check(nTime | 0)) {
-				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-			}
-		}
-		this.oRafInterval = window.requestAnimationFrame(this.pDoomloop);
+    subStateUpdate: function() {
+		var nTime = performance.now();
+        var nFrames = 0;
+        var rc = this.oRaycaster;
+        if (this._nTimeStamp === null) {
+            this._nTimeStamp = nTime;
+        }
+        while (this._nTimeStamp < nTime) {
+            rc.frameProcess();
+            this._callGameEvent('onDoomLoop');
+            this._nTimeStamp += this.nInterval;
+            nFrames++;
+            if (nFrames > 10) {
+                // too much frames, the window has been minimized for too long
+                // restore time stamp
+                this._nTimeStamp = nTime;
+            }
+        }
+        if (nFrames) {
+        	requestAnimationFrame(this.subStateRender);
+        }
 	},
+
+	subStateRender: function() {
+        var rc = this.oRaycaster;
+        rc.frameRender();
+        this._callGameEvent('onFrameRendered');
+        requestAnimationFrame(function() {
+        	rc.flipBuffer();
+		});
+//        var fc = this._oFrameCounter;
+//        if (fc.check(nTime | 0)) {
+//            this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
+//        }
+	},
+
 
 	/**
 	 * Fin du programme

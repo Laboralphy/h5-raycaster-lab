@@ -97,7 +97,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	_oContext : null,
 	_oRenderCanvas : null,
 	_oRenderContext : null,
-	
+    _o3DBufferCanvas: null, // holds the stereoscopic left buffer screen
+    _o3DBufferContext: null, // holds the stereoscopic left buffer screen
+
 	b3d: false, // active l'option 3D
 	i3dFrame: 0, // what frame is being rendered
 	x3dOfs: 0, // offset 3D
@@ -196,6 +198,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.oUpper.xLimitL = this.xScrSize * 0.25 | 0;
 				this.oUpper.xLimitR = this.xScrSize * 0.75 | 0;
 			}
+			this._o3DBufferCanvas = O876.CanvasFactory.cloneCanvas(this._oRenderCanvas);
+			this._o3DBufferContext = this._o3DBufferCanvas.getContext('2d');
 		} else {
 			this.b3d = false;
 			if (this.oUpper) {
@@ -346,23 +350,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.i3dFrame = 0;
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
+			this.flipBuffer(true);
 			this.i3dFrame = 1;
 			c.x = cxr;
 			c.y = cyr;
 			this.i3dFrame = 1;
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
+			this.flipBuffer(true);
 			c.x = cx;
 			c.y = cy;
 		} else {
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
 		}
 	},
-	
+
 	/**
 	 * Retreive a tile
 	 */
@@ -1485,14 +1488,17 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	
 	/**
 	 * Transfere le contenu du buffer mémoire vers le buffer écran
+	 * @param bPrerender {boolean} effectue le rendu dans un buffer intermediaire
 	 */
-	flipBuffer: function() {
+	flipBuffer: function(bPrerender) {
 		var rc = this._oRenderCanvas;
 		if (this.bUseVideoBuffer) {
-			if (this.b3d) {
+			var b3d = this.b3d;
+			if (b3d && bPrerender) {
+				// rendu stereo + pre rendu
 				var rcw2 = rc.width >> 1;
-				this._oContext.drawImage(
-					rc, 
+                this._o3DBufferContext.drawImage(
+					rc,
 					this.xLimitL,
 					0, 
 					rcw2, 
@@ -1502,8 +1508,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					rcw2, 
 					rc.height
 				);
+			} else if (b3d) {
+                // rendu stereo + rendu normal
+				this._oContext.drawImage(this._o3DBufferCanvas, 0, 0);
 			} else {
-				this._oContext.drawImage(rc, 0, 0);
+                this._oContext.drawImage(rc, 0, 0);
 			}
 		}
 	},
