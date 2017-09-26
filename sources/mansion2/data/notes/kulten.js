@@ -17,24 +17,18 @@ O2.createObject('MANSION.NOTES.kulten', [
         content: 'Unaussprechliche Kulten is believed to have been written by Friedrich Wilhelm von Junzt.'
     },
     {
-        type: 'text',
-            content: 'The text contains information on cults that worship pre-human deities such as Ghatanothoa ' +
-            'and includes hieroglyphs relating to the latter. There is also information on more recent cults including ' +
-            'that of Bran, The Dark Man.'
-    },
-    {
         type: 'photo',
         src: 'resources/ui/documents/note_kulten.jpg',
     },
     {
         type: 'text',
-            content: 'The book describes secret items used as keys to gains access to treasures hidden in mysterious place ' +
-                'such as the Black Stone and the Temple of the Toad (possibly associated with Tsathoggua) in Honduras.'
+            content: 'The text contains information on cults that worship pre-human deities, and their long ' +
+            'forgotten temples and relics scattered throughout the world.'
     },
     {
         type: 'button',
-        action: 'Summon',
-        caption: 'Summon an entity',
-        legend: '... at your own risks.'
+        action: 'Random curse curse',
+        caption: 'Read incantation',
+        legend: 'Dark gods of chaos reward wall those who cast such incantations.'
     }
 ]);

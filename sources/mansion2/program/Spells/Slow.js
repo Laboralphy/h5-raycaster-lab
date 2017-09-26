@@ -13,7 +13,7 @@ O2.createClass('MANSION.SPELLS.Slow', {
         eSlow.setSource(p);
         eSlow.setTarget(p);
         eSlow.setLevel(-25);
-        eSlow.setDuration(30);
+        eSlow.setDuration(MANSION.CONST.SPELL_DURATION_MEDIUM);
         var ep = g.oLogic.getEffectProcessor();
         ep.applyEffect(eSlow);
         g.fadeIn('rgba(180, 180, 128, 0.75)', 500);

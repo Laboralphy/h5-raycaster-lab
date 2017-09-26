@@ -1,6 +1,7 @@
 O2.extendClass('LaserThinker', O876_Raycaster.MissileThinker, {
   thinkHit: function() {
     var nMin, nMax;
+      var G = MAIN.game;
     if (this.nExplosionTime === 0) { // Au tout début de l'explosion
       if (this.oLastHitMobile != null) { // J'ai touché un truc ?
         nMin = this.oMobile.getBlueprint('mindamage'); 

@@ -121,6 +121,7 @@ O2.extendClass('PlayerKeyboardThinker', EntityKeyboardThinker, {
   },
 
   fireDown: function() {
+      var G = MAIN.game;
     G.spawnMissile(this.oMobile, 'l1');
   },
 
@@ -132,6 +133,7 @@ O2.extendClass('PlayerKeyboardThinker', EntityKeyboardThinker, {
   },
 
   thinkDying: function() {
+      var G = MAIN.game;
     this.nDeadTime--;
     if (this.nDeadTime <= 0) {
       this.think = this.thinkDead;

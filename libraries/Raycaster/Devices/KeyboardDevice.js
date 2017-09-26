@@ -78,7 +78,7 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	 * @param sEvent DOM Event name
 	 * @param pHandler event handler function
 	 */
-	plugEvent: function(sEvent, pHandler) {
+	plugHandler: function(sEvent, pHandler) {
 		var p = pHandler.bind(this);
 		this.oHandlers[sEvent] = p;
 		document.addEventListener(sEvent, p, false);
@@ -89,7 +89,7 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	 * Will do nothing if handler has not been previously added
 	 * @param sEvent DOM event name
 	 */
-	unplugEvent: function(sEvent) {
+	unplugHandler: function(sEvent) {
 		if (sEvent in this.oHandlers) {
 			var p = this.oHandlers[sEvent];
 			document.removeEventListener(sEvent, p);
@@ -97,14 +97,14 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 		}
 	},
 
-	plugEvents: function() {
-		this.plugEvent('keyup', this.eventKeyUp);
-		this.plugEvent('keydown', this.eventKeyDown);
+	plugHandlers: function() {
+		this.plugHandler('keyup', this.eventKeyUp);
+		this.plugHandler('keydown', this.eventKeyDown);
 	},
 	
-	unplugEvents: function() {
-		this.unplugEvent('keyup');
-		this.unplugEvent('keydown');
+	unplugHandlers: function() {
+		this.unplugHandler('keyup');
+		this.unplugHandler('keydown');
 	}
 });
 

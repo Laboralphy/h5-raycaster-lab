@@ -13,7 +13,7 @@ O2.extendClass('Effect.Heal', ADV.Effect, {
         var oSource = this.getSource();
         var nHeal = this.getLevel();
         var nHP = oTarget.getAttribute('hp');
-        var nHPMax = oTarget.getAttribute('hpmax');
+        var nHPMax = oTarget.getAttribute('vitality');
         oTarget.setAttribute('hp', MathTools.bound(0, nHP + nHeal, nHPMax));
     },
 

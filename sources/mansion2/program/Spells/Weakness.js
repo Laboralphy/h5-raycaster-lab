@@ -10,18 +10,18 @@ O2.createClass('MANSION.SPELLS.Weakness', {
     run: function(g) {
         var ep = g.oLogic.getEffectProcessor();
         var eWeakness = new Effect.Bonus('resistance');
+        eWeakness.combatEffect();
         var p = g.oLogic.getPlayerSoul();
         eWeakness.setSource(p);
         eWeakness.setTarget(p);
         eWeakness.setLevel(-25);
-        eWeakness.setDuration(60);
         ep.applyEffect(eWeakness);
 
         eWeakness = new Effect.Bonus('power');
+        eWeakness.combatEffect();
         eWeakness.setSource(p);
         eWeakness.setTarget(p);
         eWeakness.setLevel(-25);
-        eWeakness.setDuration(60);
         ep.applyEffect(eWeakness);
 
         g.fadeIn('rgba(220, 220, 220, 0.75)', 500);

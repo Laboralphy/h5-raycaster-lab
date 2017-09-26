@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # a tool for archiving a raycaster distribution
 # including libraries, editor, examples

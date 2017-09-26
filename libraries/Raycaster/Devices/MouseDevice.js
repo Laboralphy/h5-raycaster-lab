@@ -6,37 +6,62 @@
  */
 O2.createClass('O876_Raycaster.MouseDevice', {
 	nButtons: 0,
-	aEvents: null,
+	aEventBuffer: null,
 	nKeyBufferSize: 16,
 	bUseBuffer: true,
 	nSecurityDelay: 0,
 	oElement: null,
-	
+	vMouse: null,
 	oHandlers: null,
 	
 	__construct: function() {
-		this.aEvents = [];
+		this.aEventBuffer = [];
 		this.oHandlers = {};
+		this.vMouse = {clientX: 0, clientY: 0};
 	},
 	
 	clearBuffer: function() {
-		this.aEvents = [];
+		this.aEventBuffer = [];
 	},
 
-	eventMouseUp: function(e) {
-		var oEvent = window.event ? window.event : e;
+	getElementPosition: function() {
+		var e = this.oElement;
+		var x = e.offsetLeft;
+		var y = e.offsetTop;
+		while (e.offsetParent) {
+			e = e.offsetParent;
+			x += e.offsetLeft;
+			y += e.offsetTop;
+		}
+		return {x: x, y: y};
+	},
+
+	getMousePosition: function(oEvent) {
+		var cx = oEvent.clientX || oEvent.x;
+		var cy = oEvent.clientY || oEvent.y;
+		var p = this.getElementPosition();
+		var x = cx - p.x;
+		var y = cy - p.y;
+		var e = this.oElement;
+		var xReal = x * e.width / e.offsetWidth | 0;
+		var yReal = y * e.height / e.offsetHeight | 0;
+		return {x: xReal, y: yReal};
+	},
+
+	eventMouseUp: function(oEvent) {
 		this.nButtons = oEvent.buttons;
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
+			var p = this.getMousePosition(oEvent);
+			this.aEventBuffer.push([0, p.x, p.y, oEvent.button]);
 		}
 		return false;
 	},
 
-	eventMouseDown: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseDown: function(oEvent) {
 		this.nButtons = oEvent.buttons;
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
-			this.aEvents.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
+			var p = this.getMousePosition(oEvent);
+			this.aEventBuffer.push([1, p.x, p.y, oEvent.button]);
 		}
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
@@ -46,9 +71,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		}
 		return false;
 	},
+
+	eventMouseMove: function(oEvent) {
+		this.vMouse.x = oEvent.clientX;
+		this.vMouse.y = oEvent.clientY;
+	},
 	
-	eventMouseClick: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseClick: function(oEvent) {
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
 				oEvent.stopPropagation();
@@ -57,7 +86,14 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		}
 		return false;
 	},
-	
+
+	/**
+	 * Renvoie la position du curseur de la souris dans le context du canvas associé
+	 * @return {*}
+	 */
+	getPixelPointer: function() {
+		return this.getMousePosition(this.vMouse);
+	},
 	
 	/** 
 	 * Renvoie le prochain message souris précédemment empilé
@@ -67,13 +103,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * nUpOrDown vaut 0 quand le bouton de la souris est relaché et vaut 1 quand le bouton est enfoncé
 	 * il vaut 3 quand la molette de la souris est roulée vers le haut, et -3 vers le bas 
 	 */
-	inputMouse: function() {
+	readMouse: function() {
 		if (this.nSecurityDelay > 0) {
 			--this.nSecurityDelay;
 			this.clearBuffer();
 			return null;
 		} else {
-			return this.aEvents.shift();
+			return this.aEventBuffer.shift();
 		}
 	},
 	
@@ -85,13 +121,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		} else {
 			nDelta = -40 * oEvent.detail;
 		}
-		if (this.bUseBuffer && this.aEvents.length < this.nKeyBufferSize) {
+		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
 			if (e.wheelDelta) {
 				nDelta = oEvent.wheelDelta > 0 ? 3 : -3; 
-				this.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEventBuffer.push([nDelta, 0, 0, 3]);
 			} else {
 				nDelta = oEvent.detail > 0 ? -3 : 3;
-				this.aEvents.push([nDelta, 0, 0, 3]);
+				this.aEventBuffer.push([nDelta, 0, 0, 3]);
 			}
 		}
 	},
@@ -101,7 +137,7 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * @param sEvent DOM Event name
 	 * @param pHandler event handler function
 	 */
-	plugEvent: function(sEvent, pHandler) {
+	plugHandler: function(sEvent, pHandler) {
 		var p = pHandler.bind(this);
 		this.oHandlers[sEvent] = p;
 		this.oElement.addEventListener(sEvent, p, false);
@@ -112,7 +148,7 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	 * Will do nothing if handler has not been previously added
 	 * @param sEvent DOM event name
 	 */
-	unplugEvent: function(sEvent) {
+	unplugHandler: function(sEvent) {
 		if (sEvent in this.oHandlers) {
 			var p = this.oHandlers[sEvent];
 			this.oElement.removeEventListener(sEvent, p);
@@ -123,21 +159,18 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	/**
 	 * Branche le handler de leture souris à l"élément spécifié
 	 */
-	plugEvents: function(oElement) {
+	plugHandlers: function(oElement) {
 		this.oElement = oElement;
-		this.plugEvent('mousedown', this.eventMouseDown);
-		this.plugEvent('click', this.eventMouseClick);
-		this.plugEvent('mouseup', this.eventMouseUp);
-		this.plugEvent('mousewheel', this.mouseWheel);
-		this.plugEvent('DOMMouseScroll', this.mouseWheel);
+		this.plugHandler('mousedown', this.eventMouseDown);
+		this.plugHandler('click', this.eventMouseClick);
+		this.plugHandler('mouseup', this.eventMouseUp);
+		this.plugHandler('mousewheel', this.mouseWheel);
+		this.plugHandler('DOMMouseScroll', this.mouseWheel);
+		this.plugHandler('mousemove', this.eventMouseMove);
 	},
 	
-	unplugEvents: function() {
-		('mousedown click mouseup mousewheel DOMMouseScroll').split(' ').forEach(this.unplugEvent.bind(this));
-	},
-	
-	clearEvents: function() {
-		this.aEvents = [];
+	unplugHandlers: function() {
+		('mousedown click mouseup mousewheel DOMMouseScroll mousemove').split(' ').forEach(this.unplugHandler.bind(this));
 	}
 });
 

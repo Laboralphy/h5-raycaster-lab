@@ -25,7 +25,7 @@ O2.createClass('MANSION.Script.Debug', {
      * data[0] = type de fantôme
      */
     spawn: function(oEvent) {
-        /** <ghost> : will spawn a ghost. Type "ghosts" to get a list of available ghosts. **/
+        /** <ghost> : will spawn a ghost. Type "ghosts" to get a list of spawned ghosts. Type "bp" to get a list of available ghost blueprints **/
         var g = oEvent.game;
         var sGhost = oEvent.data[0];
         g.spawnGhost(sGhost);
@@ -53,6 +53,7 @@ O2.createClass('MANSION.Script.Debug', {
 		var g = oEvent.game;
 		var horde = g.oRaycaster.oHorde.aMobiles;
 		var aList = horde.map(ghost => ghost.getBlueprint() && ghost.getBlueprint('subtype') == 'ghost' ? horde.indexOf(ghost) + ' : ' + ghost.getBlueprint('name') : null);
+		console.log(horde);
 		g.console().clear().print(aList.join('\n'));
 	},
 	
@@ -65,6 +66,12 @@ O2.createClass('MANSION.Script.Debug', {
 				ghost.getThinker()._bDebug = iGhost === id;
 			}
 		});
+	},
+
+	die: function(oEvent) {
+		/** : kills the player character **/
+        oEvent.game.getPlayer().data('soul').setAttribute('hp', 0);
+		oEvent.game.getPlayer().getThinker().die();
 	},
 
 	help: function(oEvent) {

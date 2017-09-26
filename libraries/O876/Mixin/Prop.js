@@ -12,7 +12,7 @@ O2.createClass('O876.Mixin.Prop', {
 				this[sProp] = value;
 				return this;
 			}
-		}
+		};
 	},
 
 	mixin: function(p) {

@@ -81,7 +81,7 @@ O2.createClass('O876.Perlin', {
 		var r;
 		var nSamplePeriod = 1 << nOctave;
 		var fSampleFreq = 1 / nSamplePeriod;
-		var xs = [], ys = []
+		var xs = [], ys = [];
 		var hBlend, vBlend, fTop, fBottom;
 		for (var x, y = 0; y < h; ++y) {
       		ys[0] = (y / nSamplePeriod | 0) * nSamplePeriod;
@@ -93,8 +93,8 @@ O2.createClass('O876.Perlin', {
       			xs[1] = (xs[0] + nSamplePeriod) % w;
       			vBlend = (x - xs[0]) * fSampleFreq;
 
-      			fTop = this._interpolate(aBaseNoise[ys[0]][xs[0]], aBaseNoise[ys[1]][xs[0]], hBlend)
-      			fBottom = this._interpolate(aBaseNoise[ys[0]][xs[1]], aBaseNoise[ys[1]][xs[1]], hBlend)
+      			fTop = this._interpolate(aBaseNoise[ys[0]][xs[0]], aBaseNoise[ys[1]][xs[0]], hBlend);
+      			fBottom = this._interpolate(aBaseNoise[ys[0]][xs[1]], aBaseNoise[ys[1]][xs[1]], hBlend);
      			
      			r.push(this._interpolate(fTop, fBottom, vBlend));
       		}

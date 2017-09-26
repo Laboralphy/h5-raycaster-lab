@@ -18,6 +18,7 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
 
     __construct: function() {
       __inherited('stateInitialize');
+      //this.resume();
     },
 
     setConfig: function() {},
@@ -32,11 +33,11 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
     this.oRaycaster = new O876_Raycaster.Raycaster();
     if (this.oKbdDevice == null) {
       this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-      this.oKbdDevice.plugEvents();
+      this.oKbdDevice.plugHandlers();
     }
     if (this.oMotionDevice == null) {
       this.oMotionDevice = new O876_Raycaster.MotionDevice();
-      this.oMotionDevice.plugEvents();
+      this.oMotionDevice.plugHandlers();
     }
 	
     this.oRaycaster.setConfig(CONFIG.raycaster);
@@ -72,9 +73,11 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
     this.oRaycaster.oThinkerManager = new O876_Raycaster.ThinkerManager();
     this.oRaycaster.oThinkerManager.oGameInstance = this;
     this.oRaycaster.buildLevel();
-    var oCT = new PlayerKeyboardThinker(); 
-    oCT.oGame = this;
-    this.oRaycaster.oCamera.setThinker(oCT);
+    if (!this.oRaycaster.oCamera.getThinker()) {
+        var oCT = new PlayerKeyboardThinker();
+        oCT.oGame = this;
+        this.oRaycaster.oCamera.setThinker(oCT);
+    }
     if (this.oPlayerData) {
       this.oRaycaster.oCamera.setData('score', this.oPlayerData.score);
     }
@@ -99,6 +102,7 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
     //this.runTimeDelta(this.oRaycaster, 'frameProcess');
     this.oRaycaster.frameProcess();
     this.oRaycaster.frameRender();
+    this.oRaycaster.flipBuffer();
     this.updateHUD();
   },
 
@@ -331,8 +335,3 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   }
 });
 
-
-function main() {
-  window.G = new WHITEROOM.Game('stateInitialize');
-  G.resume();
-}

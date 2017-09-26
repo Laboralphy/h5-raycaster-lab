@@ -487,7 +487,7 @@ O2.createClass('MANSION.Logic', {
     	var nHP = oMobile.data('life') | 0;
         var p = new ADV.Creature();
         var oBase = {
-            hpmax: 			nHP,
+            vitality: 		nHP,
             hp:				nHP,
             power:			0,
             resistance:		0,
@@ -533,8 +533,9 @@ O2.createClass('MANSION.Logic', {
 	},
 
 	initPlayerSoul: function(oPlayer) {
-        this._oPlayerEntity = this.createSoul(oPlayer);
-	},
+        var p = this.createSoul(oPlayer);
+        this._oPlayerEntity = p;
+    },
 
 	getPlayerSoul: function() {
 		return this._oPlayerEntity;

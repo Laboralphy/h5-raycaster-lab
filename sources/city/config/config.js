@@ -2,7 +2,7 @@ O2.createObject('CONFIG', {
 	game: {
 		namespace: 'STUB',
 		interval: 40,
-		doomLoop: 'raf',
+		doomLoop: 'interval',
 		fullScreen: false,
 		fpsControl: true,
 		controlThinker: ''

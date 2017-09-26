@@ -25,11 +25,16 @@ O2.createClass('ADV.Creature', {
         this.checkAttributeChanged(sAttribute, nPrev);
     },
 
+    getBaseAttribute: function(sAttribute) {
+        return sAttribute in this._oAttributes ? this._oAttributes[sAttribute] : 0;
+    },
+
+    getBonus: function(sAttribute) {
+        return sAttribute in this._oBonuses ? this._oBonuses[sAttribute] : 0;
+    },
+
     getAttribute: function(sAttribute) {
-        var n = 0;
-        n += sAttribute in this._oAttributes ? this._oAttributes[sAttribute] : 0;
-        n += sAttribute in this._oBonuses ? this._oBonuses[sAttribute] : 0;
-        return n;
+        return this.getBaseAttribute(sAttribute) + this.getBonus(sAttribute);
     },
 
     modifyAttribute: function(sAttribute, nValue) {

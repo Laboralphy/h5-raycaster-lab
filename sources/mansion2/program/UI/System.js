@@ -53,13 +53,17 @@ O2.createClass('UI.System', {
 		w.moveTo((this.oScreen._nWidth - w._nWidth) >> 1, (this.oScreen._nHeight - w._nHeight) >> 1);
 	},
 
-	cornerWidget : function(w, nCorner, nMargin) {
-		var xLeft = nMargin;
-		var yTop = nMargin;
+	cornerWidget : function(w, nCorner, xLeft, yTop) {
+		if (yTop === undefined) {
+			yTop = xLeft || 0;
+		}
+		if (xLeft === undefined) {
+			xLeft = 0;
+		}
 		var xCenter = (this.oScreen._nWidth - w._nWidth) >> 1;
 		var yCenter = (this.oScreen._nHeight - w._nHeight) >> 1;
-		var xRight = this.oScreen._nWidth - w._nWidth - nMargin;
-		var yBottom = this.oScreen._nHeight - w._nHeight - nMargin;
+		var xRight = this.oScreen._nWidth - w._nWidth - xLeft;
+		var yBottom = this.oScreen._nHeight - w._nHeight - yTop;
 		switch (nCorner) {
 		case 1:
 			w.moveTo(xLeft, yBottom);
@@ -100,9 +104,9 @@ O2.createClass('UI.System', {
 	 */
 	declareWidget : function(w) {
 		if (this.oWidget) {
-			this.clear();
+			//this.clear();
 		}
-		this.oWidget = w;
+		//this.oWidget = w;
 		this.oScreen.linkControl(w);
 		this.oScreen.show();
 		this.oScreen.invalidate();

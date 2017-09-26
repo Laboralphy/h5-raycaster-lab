@@ -12,7 +12,7 @@ O2.createObject('MANSION.NOTES.reglas', [
     },
     {
         type: 'text',
-        content: 'This book describes the Great Old One Kassogtha, sister and incestuous bride of Cthulhu.'
+        content: 'This book foretells the coming of a messiah of destruction.'
     },
     {
         type: 'photo',
@@ -20,14 +20,13 @@ O2.createObject('MANSION.NOTES.reglas', [
     },
     {
         type: 'text',
-        content: 'The book also foretells of the coming of a messiah of destruction, ' +
-        'who would be born in the western land of the red savage across the great ocean in Columbus\' ' +
-        'New World, a man that shall set the Great Old One free from her stellar prison.'
+        content: 'The events foretold in this book are extremely pessimistic. ' +
+        'Mad cultists are very fond of these kind of writings.'
     },
     {
         type: 'button',
         action: 'Horror',
         caption: 'Read formula',
-        legend: 'This book is so depressing...'
+        legend: 'Reading this book is so depressing...'
     }
 ]);

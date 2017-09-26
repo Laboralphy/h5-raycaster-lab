@@ -3,7 +3,7 @@
  * @const MANSION
  * @property MANSION.NOTES.voynich
  * the voynich manuscript
- * Effect : HEAL
+ * Effect : VITALITY UP
  */
 O2.createObject('MANSION.NOTES.voynich', [
     {
@@ -20,12 +20,11 @@ O2.createObject('MANSION.NOTES.voynich', [
     },
     {
         type: 'text',
-        content: 'Because of the numerous drawing of plants and body parts, you believe this manuscript is about Medecine or Alchemy. ' +
-            'The commentaries written in margins confirm your speculations.'
+        content: 'Because of the numerous drawing of plants and body parts, you believe this manuscript is about Medecine or Alchemy.'
     },
     {
         type: 'button',
-        action: 'Heal',
+        action: 'PermaVitality',
         caption: 'Read formula',
         legend: 'You notice that someone wrote annotations and compiled a formula. It seems like a Healing incantation.'
     }

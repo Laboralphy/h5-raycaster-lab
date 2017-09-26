@@ -89,7 +89,7 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 			}
 		}
 		var oMouse = this.oGame.getMouseDevice();
-		while (aButton = oMouse.inputMouse()) {
+		while (aButton = oMouse.readMouse()) {
 			nKey = aButton[3];
 			sEvent = 'button' + nKey;
 			sProc = '';

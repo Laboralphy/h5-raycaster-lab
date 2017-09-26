@@ -16,7 +16,7 @@ O2.extendClass('O876_Raycaster.MotionThinker', O876_Raycaster.Thinker,
 		md.getAngleRange('beta', 1).setRange(nMin, nMax, false);
 		md.getAngleRange('gamma', 0).setRange(-nMin, -nMax, true);
 		md.getAngleRange('gamma', 1).setRange(nMin, nMax, false);
-		md.plugEvents();
+		md.plugHandlers();
 		this.oMotionDevice = md;
 	},
 
