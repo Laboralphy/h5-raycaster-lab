@@ -1,5 +1,6 @@
 /**
  * Created by ralphy on 24/01/17.
+ * This spell will frighten the players
  * @class MANSION.SPELLS.Horror
  */
 

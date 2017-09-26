@@ -3,6 +3,7 @@
  */
 /**
  * Created by ralphy on 24/01/17.
+ * This spell heals 100 points on player
  * @class MANSION.SPELLS.Heal
  */
 

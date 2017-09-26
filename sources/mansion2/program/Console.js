@@ -41,7 +41,7 @@ O2.createClass('MANSION.Console', {
 			if (this._nTime < 10) {
 				oContext.globalAlpha = this._nTime / 10;
 			}
-			oContext.drawImage(this._oText._oCanvas, 0, 0);
+			oContext.drawImage(this._oText._oCanvas, x, y);
 			oContext.globalAlpha = fGlobalAlpha;
 			--this._nTime;
 		}
@@ -58,4 +58,4 @@ O2.createClass('MANSION.Console', {
 		return this;
 	}
 
-})
+});

@@ -12,8 +12,7 @@ O2.createObject('MANSION.NOTES.octavo', [
     },
     {
         type: 'text',
-        content: 'The Octavo contains the great eight spells which the Creator himself used to create the "Discworld".' +
-            'Unfortunately, the Discworld being an imaginary world, there is no chance the aforementioned spells are working.'
+        content: 'The Octavo contains the great eight spells which the Creator himself used to create the "Discworld".'
     },
     {
         type: 'photo',
@@ -27,6 +26,6 @@ O2.createObject('MANSION.NOTES.octavo', [
         type: 'button',
         action: 'Heal',
         caption: 'Read "formula"',
-        legend: 'This is a regular book... And a funny one at that.'
+        legend: 'This book is warm and vibrates as it was alive.'
     }
 ]);

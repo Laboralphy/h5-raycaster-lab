@@ -15,7 +15,7 @@ O2.extendClass('Effect.Damage', ADV.Effect, {
         var nPower = oSource.getAttribute('power');
         var nDamage = this.getLevel() * ((100 + nPower - nResist) / 100) | 0;
         var nHP = oTarget.getAttribute('hp');
-        var nHPMax = oTarget.getAttribute('hpmax');
+        var nHPMax = oTarget.getAttribute('vitality');
         oTarget.setAttribute('hp', MathTools.bound(0, nHP - nDamage, nHPMax));
     },
 

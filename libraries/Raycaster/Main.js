@@ -89,7 +89,5 @@ O2.createObject('MAIN', {
 });
 
 window.addEventListener('load', function() {
-	if ('CONFIG' in window) {
-		MAIN.run();
-	}
+	MAIN.run();
 });

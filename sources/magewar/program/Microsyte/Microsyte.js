@@ -13,7 +13,7 @@ O2.createObject('MW.Microsyte', {
 			MW.Microsyte.close();
 		}
 		if ('G' in window) {
-			G.getKeyboardDevice().unplugEvents();
+			G.getKeyboardDevice().unplugHandlers();
 		}
 		MW.Microsyte.oMicrosyte = new O876.Microsyte('page');
 		MW.Microsyte.bOpen = true;
@@ -36,7 +36,7 @@ O2.createObject('MW.Microsyte', {
 		m.hide();
 		MW.Microsyte.bOpen = false;
 		if ('G' in window) {
-			G.getKeyboardDevice().plugEvents();
+			G.getKeyboardDevice().plugHandlers();
 		}
 	},
 	

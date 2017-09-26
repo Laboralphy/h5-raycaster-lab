@@ -85,6 +85,7 @@ O2.extendClass('SkullThinker', O876_Raycaster.Thinker, {
   thinkFire: function() {
     this.nTime++;
     if (this.nLastFireTime <= this.nTime) {
+        var G = MAIN.game;
       G.spawnMissile(this.oMobile, 'l3');
       this.oMobile.oSprite.playAnimationType(1);
       this.think = this.thinkFollow;
@@ -100,6 +101,7 @@ O2.extendClass('SkullThinker', O876_Raycaster.Thinker, {
   },
 
   thinkDying: function() {
+      var G = MAIN.game;
     this.nDeadTime -= G.TIME_FACTOR;
     if (this.nDeadTime <= 0) {
       this.oMobile.gotoLimbo();

@@ -35,6 +35,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		MANSION.STRINGS_DATA = MANSION.STRINGS_DATA_EN;
 		this._oLocators = {};
 		this.oSnail = new O876.Snail();
+		this.oRandom = new O876.Random();
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
@@ -88,7 +89,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		r.seed(Date.now() / 1000);
 		MAIN.rand = function(x, y) {
 			return r.rand(x, y);
-		}
+		};
 	},
 
 	/**
@@ -394,7 +395,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
         // virer les fantomes
 		this.clearGhosts();
     },
-	
 
 	/**
 	 * Event triggered when a key is pressed
@@ -917,17 +917,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	readSpellScroll: function(oSection) {
 		this.uiHide();
 		// cast the spell
-		let sSpell = oSection.action;
+		var aAction = oSection.action.split(' ');
+		var sSpell = aAction.shift();
         // remove the section
 		oSection.disabled = true;
-		this.castSpell(sSpell)
+		this.castSpell(sSpell, aAction);
 	},
 
-	castSpell: function(sSpell) {
+	castSpell: function(sSpell, aOptions) {
         if (sSpell in MANSION.SPELLS) {
             const SpellClass = MANSION.SPELLS[sSpell];
             let spell = new SpellClass();
-            spell.run(this);
+            spell.run(this, aOptions);
         } else {
             this.popupMessage('Unknown spell "' + sSpell + '" !');
         }
@@ -1014,7 +1015,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	prompt: function(sCaption, sDefault) {
 		this.pause(true);
-		var s = prompt(sCaption, sDefault)
+		var s = prompt(sCaption, sDefault);
 		this.resume();
 		return s;
 	},
@@ -1274,7 +1275,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this._sPreviousAmbiance = sAmb;
 			return;
 		}
-		if (this.sAmbiance == sAmb) {
+		if (this.sAmbiance === sAmb) {
 			return;
 		} else if (this.sAmbiance) {
 			this._oAudio.crossFadeMusic(sAmb);
@@ -1304,8 +1305,29 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 	},
 
+    /**
+	 * Returns a random number
+     * @returns {*}
+     */
 	rand: function() {
 		return this.oRandom.rand(...arguments);
+	},
+
+    /**
+	 * Arrète le jeu et affiche un écran de fin
+	 * @param {string} sScreenURL url duy xml defin
+     */
+	end: function(sScreenURL) {
+        this.playAmbiance('music/manor');
+        this._halt();
+        O876_Raycaster.PointerLock.disable();
+        var xhr = new O876.XHR();
+        xhr.get('resources/ui/screens/gameover.xml', (function(data) {
+            document.querySelector('#' + CONFIG.raycaster.canvas).remove();
+            var d = new DocumentFragment();
+            d.innerHTML = data;
+            document.body.appendChild(d);
+        }).bind(this));
 	}
 });
 

@@ -3,6 +3,9 @@
  */
 /**
  * Created by ralphy on 24/01/17.
+ * this spell will lower the ambiant lighting
+ * duration : 30 seconds
+ *
  * @class MANSION.SPELLS.Darkness
  */
 
@@ -13,7 +16,7 @@ O2.createClass('MANSION.SPELLS.Darkness', {
         eDark.setSource(p);
         eDark.setTarget(p);
         eDark.setLevel(-25);
-        eDark.setDuration(30);
+        eDark.setDuration(MANSION.CONST.SPELL_DURATION_MEDIUM);
         var ep = g.oLogic.getEffectProcessor();
         ep.applyEffect(eDark);
     }
