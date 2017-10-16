@@ -399,13 +399,13 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
             this._nTimeStamp += this.nInterval;
             nFrames++;
             if (nFrames > 10) {
-                // too much frames, the window has been minimized for too long
+                // too many frames, the window has been minimized for too long
                 // restore time stamp
                 this._nTimeStamp = nTime;
             }
         }
         if (nFrames) {
-        	requestAnimationFrame(this.subStateRender);
+        	this.subStateRender();
         }
 	},
 
