@@ -8,11 +8,11 @@ O2.createClass('MANSION.UIManager', {
 	oSystem: null,
 	oWidgets: null,
 
-	init: function() {
+	init: function(oCanvas) {
 		H5UI.font.defaultFont = 'monospace';
 		H5UI.font.defaultSize = 10;
 		var oSystem = new UI.System();
-		oSystem.setRenderCanvas(document.getElementById(CONFIG.raycaster.canvas));
+		oSystem.setRenderCanvas(oCanvas);
 		this.oSystem = oSystem;
 		this.oWidgets = {};
 		this.oWidgets.menu = this.declareWidget(new UI.MainMenu(this));

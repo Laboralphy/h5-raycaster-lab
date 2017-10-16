@@ -39,8 +39,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
-		this.initUI();
-		this.initHUD();
 		this.initRandom();
 		this._oConsole = new MANSION.Console();
 		this.on('leveldata', this.gameEventBuild.bind(this));
@@ -133,10 +131,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		});
 	},
 	
-	initUI: function() {
-		let w;
-		const ui = this.oUI = new MANSION.UIManager();
-		ui.init();
+	initUI: function(oCanvas) {
+		var w;
+		var ui = this.oUI = new MANSION.UIManager();
+		ui.init(oCanvas);
 		ui.on('command', (function(oEvent) {
 			switch (oEvent.command) {
 				case 'mo_album':
@@ -189,9 +187,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.oSystem.oScreen.on('click', this.uiHide.bind(this));
 	},
 
-	initHUD: function() {
-		this.oHUD = new MANSION.HUD();
-
+	initHUD: function(oCanvas) {
+        this.oHUD = new MANSION.HUD();
+        this.oHUD.init(oCanvas);
 	},
 
 
@@ -260,6 +258,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	gameEventEnterLevel: function() {
 		const rc = this.oRaycaster;
+        this.initUI(rc.getRenderCanvas());
+        this.initHUD(rc.getRenderCanvas());
 		this._oDarkHaze = rc.addGXEffect(MANSION.GX.DarkHaze);
 		this.fadeIn('black', 1700);
         this.getPlayer().data({
@@ -440,7 +440,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.oCamera && this.oCamera.nRaise) {
 			this.oCamera.update(gl);
 		}
-		this.oHUD.update(gl);
+		var hud = this.oHUD;
+		if (hud) {
+			hud.update(gl);
+        }
 	},
 	
 	/**
@@ -449,7 +452,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	gameEventFrame: function(oEvent) {
 		this.oUI.render();
-		this._oConsole.render(this.oRaycaster.getScreenContext(), 4, 12);
+		this._oConsole.render(this.oRaycaster.getRenderContext(), 4, 12);
 		this.oHUD.render();
 	},
 
@@ -1029,6 +1032,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.displayWidget('menu');
 		O876_Raycaster.PointerLock.disable();
 		this.pause(true);
+        ui.oSystem.listenToMouseEvents(MAIN.screen);
 	},
 	
 	/**
@@ -1036,6 +1040,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	uiHide: function() {
 		var ui = this.oUI;
+        ui.oSystem.deafToMouseEvents(MAIN.screen);
 		ui.hide();
 		O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
 		this.resume();

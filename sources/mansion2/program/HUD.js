@@ -5,11 +5,9 @@
 
 O2.extendClass('MANSION.HUD', UI.System, {
 
-    __construct: function () {
-        __inherited();
+    init: function (oCanvas) {
         this.oScreen.fAlpha = 0;
-        this.setRenderCanvas(document.getElementById(CONFIG.raycaster.canvas));
-
+        this.setRenderCanvas(oCanvas);
         // hp bar
         var hpBar = new UI.ProgressBar();
         hpBar.setBarColor('red');
@@ -32,6 +30,9 @@ O2.extendClass('MANSION.HUD', UI.System, {
     update: function(oLogic) {
 
         var player = oLogic.getPlayerSoul();
+        if (!player) {
+            return;
+        }
         var hp = player.getAttribute('hp');
         var hpmax = player.getAttribute('vitality');
         var hpbar = this.oWidgets.hpbar;
