@@ -14,6 +14,7 @@ O2.extendClass('UI.EffectPad', H5UI.Text, {
         this.setFontSize(UI.FONT_SIZE * 0.75 | 0);
         this.setAutosize(true);
         this.setWordWrap(true);
+        this._set('_bUseColorCodes', true);
     },
 
     update: function(ep) {
@@ -21,10 +22,22 @@ O2.extendClass('UI.EffectPad', H5UI.Text, {
             function() {
                 return true;
             }).map(function(e) {
-                return e.text();
+                var s;
+                switch (e.goodOrEvil()) {
+					case -1:
+						s = '{#FCC}';
+						break;
+					case 1:
+						s = '{#CFC}';
+						break;
+					default:
+						s = '{#CCC}';
+						break;
+                }
+                return s + e.text();
             }
         ).join('\n');
-        if (sRender != this._sLastUpdateString) {
+        if (sRender !== this._sLastUpdateString) {
             this._sLastUpdateString = sRender;
             this.setCaption(sRender);
         }

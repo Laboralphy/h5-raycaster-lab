@@ -38,9 +38,19 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
 
                 case 2:
                     sUntil += '⌛ ∞';
+                    break;
             }
         }
         var nLevel = this.getLevel();
-        return ([sAttr, (nLevel >= 0 ? '+' : '') + this.getLevel().toString() + '%', sUntil]).join(' ');
+        var sLevel = nLevel.toString();
+        var sColor;
+        if (nLevel < 0) {
+            sColor = '{#FAA}';
+		} else if (nLevel > 0) {
+			sColor = '{#AFA}';
+		} else {
+			sColor = '{#CCC}';
+        }
+        return '{#CCC}' + sAttr + sColor + (nLevel > 0 ? '+' : '') + sLevel + '%{#CCC} ' + sUntil;
     }
 });

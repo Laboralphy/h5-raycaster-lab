@@ -1,22 +1,22 @@
 /**
  * Created by ralphy on 16/01/17.
  * @const MANSION
- * @property MANSION.NOTES.crexas
- * the mysterium crexas
+ * @property MANSION.NOTES.xarces
+ * the mysterium xarces
  * Effect : ...
  */
-O2.createObject('MANSION.NOTES.crexas', [
+O2.createObject('MANSION.NOTES.xarces', [
     {
         type: 'title',
-        content: 'The Crexas Infernal Tome'
+        content: 'The Mysterium Xarces'
     },
     {
         type: 'text',
-        content: 'The Crexas Infernal Tome is a mysterious book rumoured to be written by a demonic entity.'
+        content: 'The Mysterium Xarces is a mysterious book rumoured to be written by a demonic entity.'
     },
     {
         type: 'photo',
-        src: 'resources/ui/documents/note_crexas.jpg',
+        src: 'resources/ui/documents/note_xarces.jpg',
     },
     {
         type: 'text',
@@ -30,6 +30,3 @@ O2.createObject('MANSION.NOTES.crexas', [
         legend: 'You notice that someone wrote annotations and compiled a formula.'
     }
 ]);
-
-
-

@@ -53,7 +53,6 @@ O2.createClass('MANSION.Script.Debug', {
 		var g = oEvent.game;
 		var horde = g.oRaycaster.oHorde.aMobiles;
 		var aList = horde.map(ghost => ghost.getBlueprint() && ghost.getBlueprint('subtype') == 'ghost' ? horde.indexOf(ghost) + ' : ' + ghost.getBlueprint('name') : null);
-		console.log(horde);
 		g.console().clear().print(aList.join('\n'));
 	},
 	

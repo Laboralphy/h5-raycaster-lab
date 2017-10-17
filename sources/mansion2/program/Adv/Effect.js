@@ -45,11 +45,11 @@ O2.createClass('ADV.Effect', {
 	 */
 	addTag: function(s) {
 		if (Array.isArray(s)) {
-			s.forEach(function(x) {
+			s.forEach((function(x) {
 				if (!this.hasTag(x)) {
 					this._aTags.push(x);
 				}
-			});
+			}).bind(this));
 		} else {
 			this.addTag(s.split(' '));
 		}

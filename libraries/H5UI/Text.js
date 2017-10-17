@@ -11,7 +11,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 	_nTextWidth: 0,	
 	_nLineHeight: 0,
 	_yLastWritten: 0,
-	
+	_bUseColorCodes: false,
 
 	// propriété publique
 	font : null,
@@ -57,7 +57,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		}
 		this.render();
 		this.invalidate();
-		this.render();
+		this.render(); // pourquoi deux render ? je ne me rapelle plus
 	},
 
 
@@ -75,6 +75,39 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 	 */
 	setWordWrap : function(b) {
 		this._set('_bWordWrap', b);
+	},
+
+	multiColorLineRender: function (oSurface, sLine, x, y) {
+		// découper la chaine en tronçons
+		var i = 0, segm, color = '{#000}', t, r = /\{#[0-9A-Fa-f]+\}/g;
+		var aResult = [];
+		do {
+			t = r.exec(sLine);
+			if (t) {
+				segm = {
+					i: i,
+					t: sLine.substr(i, t.index - i),
+					c: color.substr(1, color.length - 2)
+				};
+				color = t[0];
+				i = t.index + color.length;
+			} else {
+				segm = {
+					i: i,
+					t: sLine.substr(i),
+					c: color.substr(1, color.length - 2)
+				};
+			}
+			aResult.push(segm);
+		} while (t);
+		i = 0;
+		aResult.forEach((function(s) {
+			var w = oSurface.measureText(s.t).width;
+			oSurface.fillStyle = s.c;
+			oSurface.fillText(s.t, x + i, y);
+			i += w;
+		}).bind(this));
+		return aResult;
 	},
 
 	renderSelf : function() {
@@ -116,12 +149,17 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 			if (this._bAutosize) {
 				this.setSize(this.width(), y + this.font._nFontSize);
 			}
-			oSurface.fillStyle= '#FFF';
+
 			aRenderLines.forEach((function(s, i) {
+				var x = 0, y = i * (this.font._nFontSize + this._nLineHeight);
 				if (this.font._bOutline) {
-					oSurface.strokeText(s, 0, i * (this.font._nFontSize + this._nLineHeight));
+					oSurface.strokeText(s, x, y);
 				}
-				oSurface.fillText(s, 0, i * (this.font._nFontSize + this._nLineHeight));
+				if (this._bUseColorCodes) {
+					this.multiColorLineRender(oSurface, s, x, y);
+				} else {
+					oSurface.fillText(s, x, y);
+				}
 			}).bind(this));
 		} else {
 			if (this._bAutosize) {

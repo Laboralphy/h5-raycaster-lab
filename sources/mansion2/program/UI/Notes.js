@@ -55,6 +55,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		
 		// Pad : the zone on where the text is written
 		var oPad = this.linkControl(new H5UI.ScrollBox());
+		oPad.setColor('#A97');
 		oPad.setSize(oBG.width(), BG_HEIGHT - 2);
 		oPad.moveTo(this.PADDING, this.START_Y);
 		oPad.hide();
@@ -85,7 +86,7 @@ O2.extendClass('UI.Notes', UI.Window, {
 		var oText = this._oPad.linkControl(new H5UI.Text());
 		oText._set('_nLineHeight', 4);
 		oText.moveTo(2, 2 + this._yCursor);
-		oText.setFontColor('#CCC');
+		oText.setFontColor('#000');
 		oText.setFontFace('serif');
 		if (sStyle) {
 			oText.setFontStyle(sStyle);
@@ -110,7 +111,7 @@ O2.extendClass('UI.Notes', UI.Window, {
     createPhotoItem: function(oSrc) {
         let oImg = this._oPad.linkControl(new H5UI.Image());
         oImg._set('_nBorderWidth', 4);
-        oImg._set('_sColorBorder', '#FFF');
+        oImg._set('_sColorBorder', '#000');
         oImg.setSource(oSrc);
         oImg.render();
         oImg.moveTo((this.oBG.width() - oImg.width()) >> 1, 2 + this._yCursor);
