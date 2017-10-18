@@ -37,6 +37,14 @@ O2.extendClass('Effect.Abstract', ADV.Effect, {
         return '';
     },
 
+    display: function() {
+        return {
+            label: 'Default effect',
+            amp: 0,
+            dur: '0s'
+        };
+    },
+
 	/**
      * Renvoie 1 si l'effet est bénéfique,
      * Renvoie 0 si l'effet est neutre

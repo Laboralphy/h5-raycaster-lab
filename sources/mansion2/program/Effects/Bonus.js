@@ -13,7 +13,8 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
 
     cast: function(ep) {
         var oTarget = this.getTarget();
-        oTarget.modifyAttribute(this.getTag(1), this.getLevel());
+		var sAttr = this.getTag(1);
+        oTarget.modifyAttribute(sAttr, this.getLevel());
     },
 
     expire: function(ep) {
@@ -21,8 +22,13 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
         oTarget.modifyAttribute(this.getTag(1), -this.getLevel());
     },
 
-    text: function() {
+    display: function() {
         var sAttr = MANSION.STRINGS_DATA.ATTRIBUTES[this.getTag(1)];
+        var oResult = __inherited();
+		var nLevel = this.getLevel();
+		var sLevel = nLevel.toString();
+        oResult.label = sAttr;
+        oResult.amp = (nLevel > 0 ? '+' : '') + sLevel;
         // ⚔ fight
         // ⌚ watch
         // ⌛ hourglass
@@ -41,16 +47,7 @@ O2.extendClass('Effect.Bonus', Effect.Abstract, {
                     break;
             }
         }
-        var nLevel = this.getLevel();
-        var sLevel = nLevel.toString();
-        var sColor;
-        if (nLevel < 0) {
-            sColor = '{#FAA}';
-		} else if (nLevel > 0) {
-			sColor = '{#AFA}';
-		} else {
-			sColor = '{#CCC}';
-        }
-        return '{#CCC}' + sAttr + sColor + (nLevel > 0 ? '+' : '') + sLevel + '%{#CCC} ' + sUntil;
+        oResult.dur = sUntil;
+        return oResult;
     }
 });

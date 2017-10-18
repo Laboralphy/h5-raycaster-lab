@@ -12,16 +12,20 @@ O2.extendClass('Effect.PermaBonus', Effect.Abstract, {
     },
 
     cast: function(ep) {
+		var oTarget = this.getTarget();
         var sAttr = this.getTag(1);
-        var oTarget = this.getTarget();
         var nValue = oTarget.getBaseAttribute(sAttr);
         oTarget.setAttribute(sAttr, nValue + this.getLevel());
     },
 
-    text: function() {
+    display: function() {
         var sAttr = MANSION.STRINGS_DATA.ATTRIBUTES[this.getTag(1)];
         var sUntil = MANSION.STRINGS_DATA.UI.perm_bonus;
         var nLevel = this.getLevel();
-        return ([sAttr, (nLevel >= 0 ? '+' : '') + this.getLevel().toString() + '%', sUntil]).join(' ');
+        var oResult = __inherited();
+        oResult.label = sAttr;
+        oResult.amp = (nLevel >= 0 ? '+' : '') + this.getLevel().toString() + '%';
+        oResult.dur = sUntil;
+        return oResult;
     }
 });

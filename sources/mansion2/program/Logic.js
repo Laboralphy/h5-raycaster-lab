@@ -523,10 +523,17 @@ O2.createClass('MANSION.Logic', {
 				break;
 
 			case 'sight':
+				// deux effets GXAmbientLight en même temps... ça le fait pas
 				if (bPlayer) {
+					// eliminer un ancien GX
+					oMobile.oRaycaster.oEffects.getEffects().filter(function (e) {
+							return e.sClass === 'AmbientLight';
+						}).forEach(function(e) {
+							e.terminate();
+						});
                     oMobile.oRaycaster
                         .addGXEffect(O876_Raycaster.GXAmbientLight)
-                        .setLight(MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue, 1500);
+                        .setLight(Math.max(10, MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue), 1500);
                 }
                 break;
 		}

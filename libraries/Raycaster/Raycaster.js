@@ -403,6 +403,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oEffects.addEffect(g);
 		return g;
 	},
+
 	
 	/** Rendu graphique de l'arme
 	 * canvas : référence du canvas source

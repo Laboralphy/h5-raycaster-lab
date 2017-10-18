@@ -5,6 +5,7 @@
 O2.extendClass('UI.EffectPad', H5UI.Text, {
     _sClass: 'UI.EffectPad',
     _sLastUpdateString: '',
+	_COLORS: null,
 
     __construct: function() {
         __inherited();
@@ -15,26 +16,33 @@ O2.extendClass('UI.EffectPad', H5UI.Text, {
         this.setAutosize(true);
         this.setWordWrap(true);
         this._set('_bUseColorCodes', true);
+        this._COLORS = {
+			gray: '{#CCC}',
+			red: '{#F88}',
+			green: '{#8F8}',
+		};
     },
 
     update: function(ep) {
+    	var COLORS = this._COLORS;
         var sRender = ep.selectEffects(
             function() {
                 return true;
             }).map(function(e) {
-                var s;
+                var sColor;
                 switch (e.goodOrEvil()) {
 					case -1:
-						s = '{#FCC}';
+						sColor = COLORS.red;
 						break;
 					case 1:
-						s = '{#CFC}';
+						sColor = COLORS.green;
 						break;
 					default:
-						s = '{#CCC}';
+						sColor = COLORS.gray;
 						break;
                 }
-                return s + e.text();
+                var d = e.display();
+                return '{#CCC}' + d.label + ' ' + sColor + d.amp + '% {#CCC}' + d.dur;
             }
         ).join('\n');
         if (sRender !== this._sLastUpdateString) {
