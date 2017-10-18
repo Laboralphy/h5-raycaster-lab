@@ -20,7 +20,7 @@ O2.extendClass('MANSION.HUD', UI.System, {
         // effects
         var effPad = new UI.EffectPad();
         this.declareWidget(effPad);
-        this.cornerWidget(effPad, 7, 4, 12);
+        this.cornerWidget(effPad, 7, 4, 20);
 
         // terror Icon
         var oTerrorIcon = new H5UI.Image();

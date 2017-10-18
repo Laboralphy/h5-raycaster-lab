@@ -100,8 +100,9 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		menu_options: {
 			mo_album: 'Album',
 			mo_notes: 'Books',
-			mo_help: 'Help'
+			mo_status: 'Status'
 		},
+		statuspad_title: 'Status',
 		album_title: 'Album',
 		notes_title: 'Books',
 		perm_bonus: '[permanent effect]'
@@ -110,7 +111,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	ATTRIBUTES: {
         resistance: 'Defense',
 		power: 'Power',
-		vitality: 'Vitality',
+		vitality: 'Sanity',
 		speed: 'Speed',
 		sight: 'Sight',
 	}

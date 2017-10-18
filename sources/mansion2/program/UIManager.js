@@ -18,7 +18,8 @@ O2.createClass('MANSION.UIManager', {
 		this.oWidgets.menu = this.declareWidget(new UI.MainMenu(this));
 		this.oWidgets.album = this.declareWidget(new UI.Album(this));
 		this.oWidgets.albumBrowser = this.declareWidget(new UI.AlbumBrowser(this));
-		this.oWidgets.notes = this.declareWidget(new UI.Notes(this));
+        this.oWidgets.notes = this.declareWidget(new UI.Notes(this));
+        this.oWidgets.statuspad = this.declareWidget(new UI.StatusPad(this));
         this.displayWidget('menu');
 		oSystem.hide();
 	},

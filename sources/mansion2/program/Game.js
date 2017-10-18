@@ -159,7 +159,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					ui.displayWidget('notes').loadTitles(ui, this.oLogic.getNotes());
 					ui.displayWidget('notes').displayList();
 					break;
-					
+
+				case 'mo_status':
+					var oPS = this.oLogic.getPlayerSoul();
+					ui.displayWidget('statuspad')
+                        .setIndicatorValue('vitality', oPS.getBonus('vitality'))
+                        .setIndicatorValue('power', oPS.getBonus('power'))
+						.setIndicatorValue('resistance', oPS.getBonus('resistance'));
+                    break;
+
 				case 'note_back':
 					w = ui.displayWidget('notes');
 					if (w._oPad.isVisible()) {

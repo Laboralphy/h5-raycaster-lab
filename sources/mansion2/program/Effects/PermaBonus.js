@@ -24,7 +24,7 @@ O2.extendClass('Effect.PermaBonus', Effect.Abstract, {
         var nLevel = this.getLevel();
         var oResult = __inherited();
         oResult.label = sAttr;
-        oResult.amp = (nLevel >= 0 ? '+' : '') + this.getLevel().toString() + '%';
+        oResult.amp = (nLevel >= 0 ? '+' : '') + nLevel.toString();
         oResult.dur = sUntil;
         return oResult;
     }
