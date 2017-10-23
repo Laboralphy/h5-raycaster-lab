@@ -1,0 +1,134 @@
+/*
+ #####
+#     #   ####   #        ####   #####    ####
+#        #    #  #       #    #  #    #  #
+#        #    #  #       #    #  #    #   ####
+#        #    #  #       #    #  #####        #
+#     #  #    #  #       #    #  #   #   #    #
+ #####    ####   ######   ####   #    #   ####
+*/
+
+
+/* This stylesheet is aimed at configuring colors, backgrounds, shadows... */
+
+body {
+	background-color: #CCC;
+}
+
+/****** Containers ****** Containers ****** Containers ******/
+/****** Containers ****** Containers ****** Containers ******/
+/****** Containers ****** Containers ****** Containers ******/
+
+.card {
+	box-shadow: 0.1em 0.1em 0.4em rgba(0, 0, 0, 0.4);
+	border-color: #777;
+	background-color: #AAA;
+}
+
+
+
+
+/****** Buttons ****** Buttons ****** Buttons ****** Buttons ******/
+/****** Buttons ****** Buttons ****** Buttons ****** Buttons ******/
+/****** Buttons ****** Buttons ****** Buttons ****** Buttons ******/
+
+button, a.btn {
+	background-color: #888;
+	text-shadow: 0.1em 0.1em 0 rgba(0, 0, 0, 0.5);
+	color: #FFF;
+}
+
+button:hover, a.btn:hover {
+	background-color: #666;
+	color: #FFF;
+	text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.8);
+	box-shadow: 0.1em 0.1em 0.4em rgba(0, 0, 0, 0.5);
+}
+
+button.disabled, a.disabled.btn, button.disabled:hover, a.disabled.btn:hover {
+	background-color: #888;
+	text-shadow: 0.1em 0.1em 0 rgba(0, 0, 0, 0.5);
+	color: #FFF;
+	opacity: 0.5;
+	cursor: default;
+	box-shadow: none;
+}
+
+/****** Title ****** Title ****** Title ****** Title ****** Title ******/
+/****** Title ****** Title ****** Title ****** Title ****** Title ******/
+/****** Title ****** Title ****** Title ****** Title ****** Title ******/
+
+h1 {
+	text-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+	text-shadow: 0.15em 0.15em 0.25em rgba(0, 0, 0, 0.3);
+}
+
+h3 {
+	text-shadow: 0.10em 0.10em 0.20em rgba(0, 0, 0, 0.3);
+}
+
+h4 {
+	text-shadow: 0.07em 0.07em 0.17em rgba(0, 0, 0, 0.3);
+}
+
+h5 {
+	text-shadow: 0.05em 0.05em 0.15em rgba(0, 0, 0, 0.3);
+}
+
+.title {
+	text-shadow: 0.15em 0.15em 0.25em rgba(0, 0, 0, 0.5);
+}
+
+.title.blue {
+	background: linear-gradient(45deg, rgb(0, 0, 128), rgb(0, 0, 96));
+	border: solid thin rgb(0, 0, 96);
+	color: #DDDDFF;
+	text-shadow: 0 0 0.2em rgba(128, 128, 255, 1), 0.15em 0.15em 0.25em rgba(0, 0, 255, 1);
+}
+
+.title.purple {
+	background: linear-gradient(45deg, rgb(128, 0, 128), rgb(96, 0, 96));
+	border: solid thin rgb(96, 0, 96);
+	color: #FFDDFF;
+	text-shadow: 0 0 0.2em rgba(255, 128, 255, 1), 0.15em 0.15em 0.25em rgba(255, 0, 255, 1);
+}
+
+.title.red {
+	background: linear-gradient(45deg, rgb(128, 0, 0), rgb(96, 0, 0));
+	border: solid thin rgb(96, 0, 0);
+	color: #FFDDDD;
+	text-shadow: 0 0 0.2em rgba(255, 128, 128, 1), 0.15em 0.15em 0.25em rgba(255, 0, 0, 1);
+}
+
+.title.orange {
+	background: linear-gradient(45deg, rgb(128, 64, 0), rgb(96, 48, 0));
+	border: solid thin rgb(96, 48, 0);
+	color: #FFDDDD;
+	text-shadow: 0 0 0.2em rgba(255, 192, 128, 1), 0.15em 0.15em 0.25em rgba(255, 128, 0, 1);
+}
+
+.title.golden {
+	background: linear-gradient(45deg, rgb(192, 128, 0), rgb(128, 96, 0));
+	/* previous : background-color: rgb(192, 128, 0); */
+	/* previous : background-color: rgba(192, 128, 0, 0.75); */
+	border: solid thin rgb(128, 64, 0);
+	color: #FFDDDD;
+	text-shadow: 0 0 0.2em rgba(255, 192, 128, 1), 0.15em 0.15em 0.25em rgba(255, 128, 0, 1);
+}
+
+.title.green {
+	background: linear-gradient(45deg, rgb(0, 112, 0), rgb(0, 64, 0));
+	border: solid thin rgb(0, 88, 0);
+	color: #DDFFDD;
+	text-shadow: 0 0 0.2em rgba(96, 240, 96, 1), 0.15em 0.15em 0.25em rgba(0, 192, 0, 1);
+}
+
+.title.gray, .title.grey {
+	background: linear-gradient(45deg, rgb(32, 32, 32), rgb(24, 24, 24));
+	border: solid thin rgb(12, 12, 12);
+	color: #DDFFDD;
+	text-shadow: 0 0 0.2em rgba(150, 150, 150, 1), 0.15em 0.15em 0.25em rgba(128, 128, 128, 1);
+}
