@@ -19,7 +19,6 @@
 					<nav>
 						<ul>
 							<li><a class="btn" href="http://www.laboralphy.tech/">Laboralphy.tech</a></li>
-							<li><a class="btn" href="index.html">Sources</a></li>
 							<li><a class="btn" href="dynamics/rcwe">Editor</a></li>
 						</ul>
 					</nav>
@@ -29,34 +28,14 @@
 		<div class="row">
 			<div class="col lg-12">
 				<div class="card">
-					<figure>
-						<img src="sources/whiteroom/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The White Room</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/mansion/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The Mansion (demo)</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/mansion2/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The Mansion II (game)</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/stub/thumbnail.png" />
-						<figcaption><a class="btn" href="#">Stub project</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/village/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The village (demo)</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/city/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The street of rage</a></figcaption>
-					</figure>
-					<figure>
-						<img src="sources/hotd-demo/thumbnail.png" />
-						<figcaption><a class="btn" href="#">The house of the dead</a></figcaption>
-					</figure>
+<?php
+require_once 'dynamics/website/source-figure.php';
+foreach(scandir('sources') as $sDir) {
+    if (substr($sDir, 0, 1) !== '.') {
+        printSource($sDir, $sDir);
+    }
+}
+?>
 				</div>
 			</div>
 		</div>
