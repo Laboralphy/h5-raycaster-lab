@@ -186,6 +186,18 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 						).bind(this));
 					break;
 
+				case 'alb_sort_date':
+					w = ui.displayWidget('albumBrowser');
+					w.sortPhotosBy(0);
+					w.loadPhotos(ui, this.oLogic.getAlbum());
+					break;
+
+				case 'alb_sort_type':
+					w = ui.displayWidget('albumBrowser');
+					w.sortPhotosBy(1);
+					w.loadPhotos(ui, this.oLogic.getAlbum());
+					break;
+
 				default: 
 					console.log('unknown ui command', oEvent.command, oEvent);
 					break;
@@ -900,7 +912,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Stores the current view (photo in the album)
 	 */
-	storePhoto: function(sSubjectRef, nScore) {
+	storePhoto: function(sSubjectRef, nScore, nType) {
 		if (this.getPlayer().data('subject-' + sSubjectRef)) {
 			return;
 		}
@@ -915,7 +927,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.oLogic.setPhotoSubject(
 			sSubjectRef,
 			nScore,
-			oEvent.photo
+			oEvent.photo,
+			nType
 		);
 	},
 
@@ -964,7 +977,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.oLogic.setPhotoSubject(
 				sName,
 				nScore,
-				oEvent.photo
+				oEvent.photo,
+				0
 			);
 		}
 		
@@ -995,7 +1009,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					var aSubject = sPhotoSubject.split(' ');
 					var sName = aSubject.shift();
 					var nScore = aSubject.shift() | 0;
-					this.storePhoto(sName, nScore);
+					this.storePhoto(sName, nScore, MANSION.CONST.PHOTO_TYPE_PAINTING);
 					this.mapData(b.x, b.y, 'subject', null);
 				}
 			}
@@ -1007,7 +1021,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var fAngle = g[1];
 				var oGhost = g[0];
 				if (oGhost.data('subtype') === 'wraith') {
-					this.storePhoto(oGhost.getBlueprint().sId, oGhost.data('rank'));
+					this.storePhoto(oGhost.getBlueprint().sId, oGhost.data('rank'), MANSION.CONST.PHOTO_TYPE_WRAITH);
 				}
 				this._oGhostScreamer.addGhost(oGhost);
 			}, this);

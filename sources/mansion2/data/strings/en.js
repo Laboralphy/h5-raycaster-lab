@@ -105,7 +105,13 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		statuspad_title: 'Status',
 		album_title: 'Album',
 		notes_title: 'Books',
-		perm_bonus: '[permanent effect]'
+		perm_bonus: '[permanent effect]',
+		sort: {
+			dateAsc: '▲date',
+			typeAsc: '▲type',
+			dateDesc: '▼date',
+			typeDesc: '▼type'
+		}
 	},
 
 	ATTRIBUTES: {

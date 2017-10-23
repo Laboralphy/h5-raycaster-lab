@@ -318,7 +318,7 @@ O2.createClass('MANSION.Logic', {
 	/**
 	 * A photo of the specified subject is taken
 	 */
-	setPhotoSubject: function(id, nScore, oPhotoCanvas) {
+	setPhotoSubject: function(id, nScore, oPhotoCanvas, nType) {
 		if (!this._aCameraSubjects) {
 			this._aCameraSubjects = [];
 		}
@@ -337,7 +337,9 @@ O2.createClass('MANSION.Logic', {
 		this._aAlbum.push({
 			ref: id,
 			score: nScore,
-			data: oPhotoCanvas.toDataURL()
+			data: oPhotoCanvas.toDataURL(),
+			type: nType,
+			date: Date.now()
 		});
 	},
 

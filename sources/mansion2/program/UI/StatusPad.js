@@ -5,7 +5,7 @@
 
 
 O2.extendClass('UI.StatusPad', UI.Window, {
-    WINDOW_WIDTH: 256,
+    WINDOW_WIDTH: 128,
     WINDOW_HEIGHT: 192,
 
     oIndicators: null,
@@ -34,7 +34,11 @@ O2.extendClass('UI.StatusPad', UI.Window, {
             'resources/ui/windows/i-stat-defense.png',
             MANSION.STRINGS_DATA.ATTRIBUTES.resistance
         );
-    },
+		var S = MANSION.STRINGS_DATA.UI;
+		this.setCommands([
+			[S.back, ui.commandFunction('main'), 0]
+        ]);
+	},
 
     setIndicatorValue: function(sIndic, nValue) {
         var oValue = this.oIndicators[sIndic].value;
