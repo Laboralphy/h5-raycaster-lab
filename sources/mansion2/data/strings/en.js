@@ -27,7 +27,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	},
 
 	SUBJECTS: {
-		// paintings
+		// PAINTINGS
 		p_skull_monk: {
 			title: 'Skull masked monk',
 			description: 'Neither really a monk nor really a mask. A scholar who tried to obtain eternal life, but failed in the attempt.'
@@ -43,6 +43,12 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		p_miku: {
 			title: 'Miku and her brother',
 			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
+		},
+
+		// CLUES
+		c_sigils_exit: {
+			title: 'A strange book',
+			description: 'A strange book appeared on the sigil photo, the two things could be related.'
 		},
 		
 		// WRAITH

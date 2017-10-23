@@ -10,10 +10,19 @@
  */
 O2.extendClass('UI.Screen', H5UI.WinControl, {
 	_sClass: 'UI.Screen',
+	oBackground: null,
 	fAlpha: 0.333,
+
+	setBackground: function(c) {
+		this.oBackground = O876.CanvasFactory.cloneCanvas(c);
+	},
 	
 	renderSelf: function() {
-		this._oContext.clearRect(0, 0, this._nWidth, this._nHeight);
+		if (this.oBackground) {
+			this._oContext.drawImage(this.oBackground, 0, 0);
+		} else {
+			this._oContext.clearRect(0, 0, this._nWidth, this._nHeight);
+		}
 		if (this.fAlpha > 0) {
 			this._oContext.fillStyle = 'rgba(0, 0, 0, ' + this.fAlpha.toString() + ')';
 			this._oContext.fillRect(0, 0, this._nWidth, this._nHeight);

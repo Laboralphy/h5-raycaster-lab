@@ -56,7 +56,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
 		this.on('itag.locator', this.tagEventLocator.bind(this));
 		this.on('itag.lock', this.tagEventLock.bind(this));
-		this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
+		//this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
 		this.on('itag.subject', this.tagEventSubject.bind(this));
 
 		// activable
@@ -533,12 +533,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Gestion des block photographiable
 	 * La variable photo-script est explotée par cameraShoot
 	 */
-	tagEventPhotoScript: function(oEvent) {
+/*	tagEventPhotoScript: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
 		this.mapData(x, y, 'photo-script', oEvent.data);
 		oEvent.remove = true;
-	},
+	},*/
 
 	/**
 	 * Gestionnaire de tag
@@ -916,6 +916,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (this.getPlayer().data('subject-' + sSubjectRef)) {
 			return;
 		}
+		// screenshot de la photo
 		var oPhoto = O876.CanvasFactory.cloneCanvas(this.screenShot(192));
 		var oEvent = {
 			subject: sSubjectRef,
@@ -986,6 +987,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (gl.isCameraReady()) {
 			var b = this.getPlayer().getThinker().getFrontBlock();
 			if (b.x !== null && b.y !== null) {
+				/*
 				var sPhotoScript = this.mapData(b.x, b.y, 'photo-script');
 				if (sPhotoScript) {
 					var aPhotoScript = sPhotoScript.split(' ');
@@ -1003,7 +1005,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					if (oEvent.remove) {
 						this.mapData(b.x, b.y, 'photo-script', null);
 					}		
-				}
+				}*/
 				var sPhotoSubject = this.mapData(b.x, b.y, 'subject');
 				if (sPhotoSubject) {
 					var aSubject = sPhotoSubject.split(' ');
@@ -1050,7 +1052,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	uiShow: function() {
 		var ui = this.oUI;
+		this.oHUD.hide();
 		ui.show();
+		ui.oSystem.oScreen.setBackground(this.oRaycaster.getRenderCanvas());
 		ui.displayWidget('menu');
 		O876_Raycaster.PointerLock.disable();
 		this.pause(true);
@@ -1062,6 +1066,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	uiHide: function() {
 		var ui = this.oUI;
+		this.oHUD.show();
         ui.oSystem.deafToMouseEvents(MAIN.screen);
 		ui.hide();
 		O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());

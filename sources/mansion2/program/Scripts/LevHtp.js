@@ -1,7 +1,7 @@
 O2.createClass('MANSION.Script.LevHtp', {
 
 	/**
-	 * si la page du necronomicon a été rammassée on lache un fantome
+	 * dalle : si la page du necronomicon a été rammassée on lache un fantome
 	 */
 	pickupNecPage1: function(oEvent) {
 		var g = oEvent.game;
@@ -16,6 +16,9 @@ O2.createClass('MANSION.Script.LevHtp', {
 		}
 	},
 
+	/**
+	 * porte : ouverture de la porte = apparition de spectre
+	 */
 	wraithSkullMonk: function(oEvent) {
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
@@ -30,7 +33,10 @@ O2.createClass('MANSION.Script.LevHtp', {
 			oEvent.remove = true;
 		}
 	},
-	
+
+	/**
+	 * dalle : apparition de medusa à l'approche de la sortie
+	 */
 	wraithExit: function(oEvent) {
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
@@ -40,7 +46,10 @@ O2.createClass('MANSION.Script.LevHtp', {
 		gt.setLifespan(2000);
 		oEvent.remove = true;
 	},
-	
+
+	/**
+	 * porte : sortie du niveau
+	 */
 	endOfLevel: function(oEvent) {
 		var g = oEvent.game;
 		var rc = g.oRaycaster;
