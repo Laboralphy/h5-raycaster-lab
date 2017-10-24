@@ -65,5 +65,9 @@ O2.createClass('MANSION.Script.LevHtp', {
 				document.body.innerHTML = data;
 			});
 		}, 1700);
+	},
+
+	sigilExit: function(oEvent) {
+		console.log('sigil exit');
 	}
 });

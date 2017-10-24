@@ -165,6 +165,12 @@ O2.extendClass('UI.AlbumBrowser', UI.Window, {
 	appendPhoto: function(ui, iRank, oPhoto) {
 		var PHOTO_WIDTH = 54;
 		var PHOTO_HEIGHT = 30;
+		if (!('ref' in oPhoto)) {
+			throw new Error('append photo : this photo has no reference...');
+		}
+		if (!(oPhoto.ref in MANSION.STRINGS_DATA.SUBJECTS)) {
+			throw new Error('this photo ' + oPhoto.ref + ' has no entry in Subject section of MANSION.STRINGS.');
+		}
 		var id = oPhoto.ref, sTitle = MANSION.STRINGS_DATA.SUBJECTS[oPhoto.ref].title;
 		var b = this._oList.linkControl(new H5UI.Button());
 		b.setSize(this._oList.width(), this.ITEM_HEIGHT);
@@ -181,7 +187,7 @@ O2.extendClass('UI.AlbumBrowser', UI.Window, {
 		var sIcon;
 		switch (oPhoto.type) {
 			case 1: // ghost
-				sIcon = 'i-alb-proof';
+				sIcon = 'i-alb-wraith';
 				break;
 
 			case 2: // painting

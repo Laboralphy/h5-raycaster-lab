@@ -55,6 +55,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		w_cowled_skull: {
 			title: 'Cowled skull',
 			description: 'He eagerly seeks in the afterlife the secret he could not recover during life.'
+		},
+
+		w_petrified_medusa: {
+			title: 'The Medusa',
+			description: 'A representation of the infamous gorgon.'
 		}
 	},
 

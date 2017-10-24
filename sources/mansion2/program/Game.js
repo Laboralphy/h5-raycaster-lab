@@ -56,7 +56,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
 		this.on('itag.locator', this.tagEventLocator.bind(this));
 		this.on('itag.lock', this.tagEventLock.bind(this));
-		//this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
+		this.on('itag.photoscript', this.tagEventPhotoScript.bind(this));
 		this.on('itag.subject', this.tagEventSubject.bind(this));
 
 		// activable
@@ -720,6 +720,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oEvent.remove = true;
 	},
 
+	tagEventPhotoScript: function(oEvent) {
+		this.mapData(oEvent.x, oEvent.y, 'photo-script', oEvent.data);
+		console.log(oEvent);
+		oEvent.remove = true;
+	},
+
 
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
 	/****** GAME LIFE ****** GAME LIFE ****** GAME LIFE ******/
@@ -987,7 +993,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (gl.isCameraReady()) {
 			var b = this.getPlayer().getThinker().getFrontBlock();
 			if (b.x !== null && b.y !== null) {
-				/*
+
 				var sPhotoScript = this.mapData(b.x, b.y, 'photo-script');
 				if (sPhotoScript) {
 					var aPhotoScript = sPhotoScript.split(' ');
@@ -1005,7 +1011,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 					if (oEvent.remove) {
 						this.mapData(b.x, b.y, 'photo-script', null);
 					}		
-				}*/
+				}
 				var sPhotoSubject = this.mapData(b.x, b.y, 'subject');
 				if (sPhotoSubject) {
 					var aSubject = sPhotoSubject.split(' ');
