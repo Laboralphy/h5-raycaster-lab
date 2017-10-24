@@ -18,6 +18,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 
 	/**
 	 * porte : ouverture de la porte = apparition de spectre
+	 * s'active si on est a coté ouest et si on a photographié le sujet
+	 * p_skull_monk
 	 */
 	wraithSkullMonk: function(oEvent) {
 		var g = oEvent.game;
@@ -67,7 +69,16 @@ O2.createClass('MANSION.Script.LevHtp', {
 		}, 1700);
 	},
 
+    /**
+	 * sigil de la derniere pièce
+	 * le photographier fait apparaitre un indice
+     * @param oEvent
+     */
 	sigilExit: function(oEvent) {
-		console.log('sigil exit');
+		var g = oEvent.game;
+		var rc = g.oRaycaster;
+		g.screenShot();
+
+		oEvent.remove = true;
 	}
 });

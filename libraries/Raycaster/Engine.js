@@ -21,8 +21,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_oConfig: null,
 	
 	__construct : function() {
-        this.subStateRender = this.subStateRender.bind(this);
-        this.subStateUpdate = this.subStateUpdate.bind(this);
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
@@ -383,15 +381,22 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	},
 
     stateRunning: function() {
-        this.setDoomloop('subStateUpdate', 'interval');
+        this.setDoomloop('stateUpdate', 'interval');
 	},
 
-    subStateUpdate: function() {
+	bDebugTime: false,
+    stateUpdate: function() {
 		var nTime = performance.now();
+		if (this.bDebugTime) {
+			console.group('update');
+        }
         var nFrames = 0;
         var rc = this.oRaycaster;
         if (this._nTimeStamp === null) {
             this._nTimeStamp = nTime;
+        }
+        if (this.bDebugTime) {
+            console.log('while start', performance.now() - nTime);
         }
         while (this._nTimeStamp < nTime) {
             rc.frameProcess();
@@ -404,23 +409,29 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
                 this._nTimeStamp = nTime;
             }
         }
+        if (this.bDebugTime) {
+            console.log('while finished', performance.now() - nTime);
+        }
         if (nFrames) {
-        	this.subStateRender();
+            rc.frameRender();
+            if (this.bDebugTime) {
+                console.log('frame render finished', performance.now() - nTime);
+            }
+            this._callGameEvent('onFrameRendered');
+            if (this.bDebugTime) {
+                console.log('fr event finished', performance.now() - nTime);
+            }
+            requestAnimationFrame(function() {
+                rc.flipBuffer();
+            });
+        }
+        if (this.bDebugTime) {
+        	console.log('end', performance.now() - nTime);
+            console.groupEnd('update');
+            this.bDebugTime = false;
         }
 	},
 
-	subStateRender: function() {
-        var rc = this.oRaycaster;
-        rc.frameRender();
-        this._callGameEvent('onFrameRendered');
-        requestAnimationFrame(function() {
-        	rc.flipBuffer();
-		});
-//        var fc = this._oFrameCounter;
-//        if (fc.check(nTime | 0)) {
-//            this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-//        }
-	},
 
 
 	/**

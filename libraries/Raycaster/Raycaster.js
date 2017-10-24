@@ -1431,7 +1431,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		lb[7] = nLast;
 		aZ.push(lb);
 		
-		this.aZBuffer = aZ;
+		zb = this.aZBuffer = aZ;
 		this.drawHorde();
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
@@ -1477,9 +1477,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 		}
 		
-		zbl = this.aZBuffer.length;
+		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
-			this.drawImage(i);
+			this.drawImage(zb[i]);
 		}
 		if (this.oConfig.drawMap) {
 			this.drawMap();
@@ -2086,9 +2086,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	/** Rendu de l'image stackée dans le Z Buffer
 	 * @param i rang de l'image
 	 */
-	drawImage : function(i) {
+	drawImage : function(zbi) {
 		var rc = this._oRenderContext;
-		var aLine = this.aZBuffer[i];
+		var aLine = zbi;
 		var sGCO = '';
 		var fGobalAlphaSave = 0;
 		var nFx = aLine[10];

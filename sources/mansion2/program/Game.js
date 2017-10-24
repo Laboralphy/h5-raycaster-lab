@@ -533,12 +533,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Gestion des block photographiable
 	 * La variable photo-script est explotée par cameraShoot
 	 */
-/*	tagEventPhotoScript: function(oEvent) {
+	tagEventPhotoScript: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
 		this.mapData(x, y, 'photo-script', oEvent.data);
 		oEvent.remove = true;
-	},*/
+	},
 
 	/**
 	 * Gestionnaire de tag
@@ -585,7 +585,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		aDir.forEach(function(a, ia) {
 			var xd = x + a[0], yd = y + a[1];
 			nPhys = rc.getMapPhys(xd, yd);
-			if (nPhys != rc.PHYS_NONE && nPhys != rc.PHYS_INVISIBLE) {
+			if (nPhys !== rc.PHYS_NONE && nPhys !== rc.PHYS_INVISIBLE_BLOCK) {
 				rc.cloneWall(xd, yd, ia, pDrawFunc);
 			}
 		});
@@ -722,7 +722,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 	tagEventPhotoScript: function(oEvent) {
 		this.mapData(oEvent.x, oEvent.y, 'photo-script', oEvent.data);
-		console.log(oEvent);
 		oEvent.remove = true;
 	},
 
@@ -1341,6 +1340,41 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.playAmbiance(sGhostAmb);
 			this._sPreviousAmbiance = pa;
 		}
+	},
+
+    /**
+	 * prend une photo a l'endroit spécifé
+     */
+	takeLocatorPhoto: function(sMoveAtLocator, sLookAtLocator) {
+        var rc = this.oRaycaster;
+        var oPhoto0 = this.screenShot();
+		var p0 = this.getLocator(sMoveAtLocator);
+		var p1 = this.getLocator(sLookAtLocator);
+		var ps = rc.nPlaneSpacing;
+		var ps2 = ps >> 1;
+		var pos0 = {
+			x: p0.x * ps + ps2,
+			y: p0.y * ps + ps2
+		};
+		var pos1 = {
+            x: p1.x * ps + ps2,
+            y: p1.y * ps + ps2
+        };
+		var oPlayer = this.getPlayer();
+		var pSave = {
+			x: oPlayer.x,
+			y: oPlayer.y,
+			a: oPlayer.fTheta
+        }
+		oPlayer.setXY(pos0.x, pos0.y);
+		oPlayer.fTheta = Math.atan2(pos0.x - pos1.x, pos0.y - pos1.y);
+		rc.frameRender();
+		var oPhoto1 = this.screenShot();
+		oPlayer.setXY(pSave.x, pSave.y);
+		oPlayer.fTheta = pSave.a;
+        rc.frameRender();
+        var oPola = rc.addGXEffect(MANSION.GX.Polaroid);
+        oPola.setPhotos(oPhoto0, oPhoto1);
 	},
 
     /**
