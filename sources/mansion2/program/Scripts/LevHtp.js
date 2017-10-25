@@ -26,12 +26,12 @@ O2.createClass('MANSION.Script.LevHtp', {
 		var oPlayer = g.getPlayer();
 		// est-ce qu'on est bien à gauche de la porte ?
 		if (oPlayer.xSector < oEvent.x && oPlayer.data('subject-p_skull_monk')) {
-			var p = g.getLocator('w-skull-monk');
+			var p = g.getLocator('w_skull_monk');
 			var oGhost = g.spawnWraith('w_cowled_skull', p.x, p.y, 0);
 			var gt = oGhost.getThinker();
 			gt.setLifespan(3000);
 			gt.move('n', 1);
-			g.unlockSecretBlock('sp-n');
+			g.unlockSecretBlock('sp_n');
 			oEvent.remove = true;
 		}
 	},
@@ -42,7 +42,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 	wraithExit: function(oEvent) {
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
-		var p = g.getLocator('w-exit-boo'); // w_sadako
+		var p = g.getLocator('w_exit_boo'); // w_sadako
 		var oGhost = g.spawnWraith('w_petrified_medusa', p.x, p.y, 0);
 		var gt = oGhost.getThinker();
 		gt.setLifespan(2000);

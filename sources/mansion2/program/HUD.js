@@ -22,6 +22,11 @@ O2.extendClass('MANSION.HUD', UI.System, {
         this.declareWidget(effPad);
         this.cornerWidget(effPad, 7, 4, 20);
 
+        // score
+        var oScorePad = new UI.ScorePad();
+        this.declareWidget(oScorePad);
+        this.cornerWidget(oScorePad, 9, 7);
+
         // terror Icon
         var oTerrorIcon = new H5UI.Image();
         oTerrorIcon.setSource('resources/ui/hud/terror.png');
@@ -32,9 +37,14 @@ O2.extendClass('MANSION.HUD', UI.System, {
         this.oWidgets.hpbar = hpBar;
         this.oWidgets.effpad = effPad;
 		this.oWidgets.terror = oTerrorIcon;
+        this.oWidgets.score = oScorePad;
     },
 
     update: function(oLogic) {
+        var w = this.oWidgets;
+        // le score
+        var score = w.score;
+        score.update(oLogic);
 
         var player = oLogic.getPlayerSoul();
         if (!player) {
@@ -42,11 +52,11 @@ O2.extendClass('MANSION.HUD', UI.System, {
         }
         var hp = player.getAttribute('hp');
         var hpmax = player.getAttribute('vitality');
-        var hpbar = this.oWidgets.hpbar;
+        var hpbar = w.hpbar;
         hpbar.setMax(hpmax);
         hpbar.setProgress(hpmax - hp);
 
-        var effpad = this.oWidgets.effpad;
+        var effpad = w.effpad;
         effpad.update(oLogic.getEffectProcessor());
 
     }

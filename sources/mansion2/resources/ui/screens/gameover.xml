@@ -55,6 +55,9 @@
         <div class="text">
             <a href="javascript:window.location.reload()"><span class="replay reload">↻</span><span class="replay caption"> Replay</span></a>
         </div>
+        <div class="text">
+            <p><span>Your score : </span><span id="game_over_score">x</span></p>
+        </div>
     </div>
 </main>
 

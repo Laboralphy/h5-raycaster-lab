@@ -58,7 +58,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		},
 
 		w_petrified_medusa: {
-			title: 'The Medusa',
+			title: 'Medusa',
 			description: 'A representation of the infamous gorgon.'
 		}
 	},
@@ -69,7 +69,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		locked: "This door is locked. You need : $item",
 		curselocked: "This door is blocked by a mysterious force.",
 		unlock: "You unlocked the door with : $item",
-		mystphoto: "The mysterious photo has been stored in your album."
+		mystphoto: "You store the mysterious photo in your album."
 	},
 
 	// The names of all items
@@ -98,7 +98,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			hint_exit: "Left-click to exit level.",
 			hint_left_click: "Left-click is used to open doors, and pick up items.",
 			hint_see_exit: "You found the exit !",
-			hint_pickup: "Left-click to pick up this item."
+			hint_pickup: "Left-click to pick up this item.",
+
+            desc_rotten_clothes: "Lots of stinking clothes in this drawer.",
+            desc_vase: "A dusty empty vase.",
+            desc_budd_face: "A multifaced buddha statue."
 		}
 	},
 	

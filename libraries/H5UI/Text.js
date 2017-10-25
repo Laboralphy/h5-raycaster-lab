@@ -55,9 +55,6 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 			var oMetrics = this.getSurface().measureText(this._sCaption);
 			this.setSize(oMetrics.width, this.font._nFontSize);
 		}
-		this.render();
-		this.invalidate();
-		this.render(); // pourquoi deux render ? je ne me rapelle plus
 	},
 
 

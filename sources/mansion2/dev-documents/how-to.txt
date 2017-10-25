@@ -24,6 +24,7 @@ Cette méthode renvoie un tableau à indice numérique, dont chaque élément es
 	ref: référence du sujet tel que défini dans le fichier de chaine,
 	score: nombre de points obtenu pour la photo,
 	data: contenu de la photo (base 64)
+	type: numérique 1=tableau ; 2=spectre ; 3=indice
 }
 
 
@@ -32,4 +33,21 @@ Cette méthode renvoie un tableau à indice numérique, dont chaque élément es
 
 Comment créer un thinker de fantome vengeur
 -------------------------------------------
-Le thinker n'a besoin que d'une seule fonction thinkIdle qui sera lancée chaque fois que le fantôme n'a plus rien à faire. 
+Le thinker n'a besoin que d'une seule fonction thinkIdle qui sera lancée chaque fois que le fantôme n'a plus rien à faire.
+
+
+
+Comment créer une note accrochée au mur
+---------------------------------------
+On veut ajouter le livre ou le parchemon identifié par "xxx"
+Créer une entrée dans MANSION.STRING_DATA.SUBJECTS.xxx
+Tagger un mur "item book_xxx", ou "item note_xxx" ajouter un decal.
+Créer un fichier xxx.js dans data/notes contenant le json de description
+Ce json doit créer l'entrée MANSION.NOTES.xxx
+remplir correctement le json, prendre exemple sur d'autres json de notes.
+
+
+Comment ajouter un texte d'ambiance quand on active un bloc ou qu'on traverse une case
+--------------------------------------------------------------------------------------
+Sur le bloc ou la case tagger "message xxx"
+Ajouter une entrée dans MANSION.LEVELS.(nom du niveau).xxx

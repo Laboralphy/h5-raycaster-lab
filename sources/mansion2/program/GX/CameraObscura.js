@@ -225,10 +225,6 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 				}
 			}
 		}
-/*
-		oScreenCtx.fillStyle = '#000';
-		oScreenCtx.fillRect(0, 0, xNew, ch);
-		oScreenCtx.fillRect(cw - xNew, 0, xNew, ch);*/
 	},
 	
 	flash: function() {
@@ -315,6 +311,15 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		return this.getStatus() === 'visible';
 	},
 
+    /**
+	 * Returns true of the camera is COMPLETLY hidden
+	 * return false otherwise (when partially visible)
+	 * @return {boolean}
+     */
+	isHidden: function() {
+        return this.getStatus() === 'hidden';
+	},
+
 	/**
 	 * Returns the phone status
 	 * regarding its visibility
@@ -348,6 +353,8 @@ O2.extendClass('MANSION.GX.CameraObscura', O876_Raycaster.GXEffect, {
 		if (this.nRaise === 1) {
 			return;
 		} else if (this.nState === 0) {
+            this.nDisplayScoreTime = 0;
+            this.aDisplayScore = null;
 			this.nState = 10;
 		}
 	},

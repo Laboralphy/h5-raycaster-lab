@@ -413,7 +413,7 @@ O2.createClass('MANSION.Logic', {
             this._oNotes = JSON.parse(JSON.stringify(MANSION.NOTES));
             for (var n in this._oNotes) {
                 this.setNoteFlag(n, 'read', false);
-                this.setNoteFlag(n, 'found', true);
+                this.setNoteFlag(n, 'found', false);
             }
 		}
 		return this._oNotes;
@@ -426,11 +426,11 @@ O2.createClass('MANSION.Logic', {
 	},
 
     setNoteFlag: function(sNote, sFlag, xValue) {
-        this._oNotes[sNote][0][sFlag] = xValue;
+        this.getNotes()[sNote][0][sFlag] = xValue;
     },
 
     getNoteFlag: function(sNote, sFlag) {
-        return this._oNotes[sNote][0][sFlag];
+        return this.getNotes()[sNote][0][sFlag];
     },
 
 

@@ -682,9 +682,17 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			$item: sItemStr
 		});
 		var aItem = sItem.split('_');
-		var sSound = aItem.shift();
-		if (sSound in MANSION.SOUNDS_DATA.pickup) {
-			this.playSound(MANSION.SOUNDS_DATA.pickup[sSound]);
+		var sItemType = aItem.shift();
+		var sItemRemain = aItem.join('_');
+		// playing the right sound according to item type
+		if (sItemType in MANSION.SOUNDS_DATA.pickup) {
+			this.playSound(MANSION.SOUNDS_DATA.pickup[sItemType]);
+		}
+		// adding a note
+		switch (sItemType) {
+            case 'book':
+            case 'note':
+				this.oLogic.setNoteFlag(sItemRemain, 'found', true);
 		}
 		oEvent.remove = true;
 	},
@@ -827,7 +835,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
                 oPlayer.data('cameraSpeedEffect').dispel();
                 oPlayer.data('cameraSpeedEffect', null);
             }
-		} else {
+		} else if (c.isHidden()) {
 			c.show();
 			c.setEnergyGauges(0, l.getCameraMaxEnergy());
 			c.nCircleSize = l.getCameraCircleSize();
@@ -1420,9 +1428,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
     /**
 	 * Arrète le jeu et affiche un écran de fin
-	 * @param {string} sScreenURL url duy xml defin
      */
-	end: function(sScreenURL) {
+	end: function() {
         this.playAmbiance('music/manor');
         this._halt();
         O876_Raycaster.PointerLock.disable();
@@ -1432,6 +1439,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
             var d = new DocumentFragment();
             d.innerHTML = data;
             document.body.appendChild(d);
+            //document.getElementById('game_over_score').innerHTML = this.oLogic._nScore;
         }).bind(this));
 	}
 });

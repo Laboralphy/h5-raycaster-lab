@@ -384,19 +384,12 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
         this.setDoomloop('stateUpdate', 'interval');
 	},
 
-	bDebugTime: false,
     stateUpdate: function() {
 		var nTime = performance.now();
-		if (this.bDebugTime) {
-			console.group('update');
-        }
         var nFrames = 0;
         var rc = this.oRaycaster;
         if (this._nTimeStamp === null) {
             this._nTimeStamp = nTime;
-        }
-        if (this.bDebugTime) {
-            console.log('while start', performance.now() - nTime);
         }
         while (this._nTimeStamp < nTime) {
             rc.frameProcess();
@@ -409,26 +402,12 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
                 this._nTimeStamp = nTime;
             }
         }
-        if (this.bDebugTime) {
-            console.log('while finished', performance.now() - nTime);
-        }
         if (nFrames) {
             rc.frameRender();
-            if (this.bDebugTime) {
-                console.log('frame render finished', performance.now() - nTime);
-            }
             this._callGameEvent('onFrameRendered');
-            if (this.bDebugTime) {
-                console.log('fr event finished', performance.now() - nTime);
-            }
             requestAnimationFrame(function() {
                 rc.flipBuffer();
             });
-        }
-        if (this.bDebugTime) {
-        	console.log('end', performance.now() - nTime);
-            console.groupEnd('update');
-            this.bDebugTime = false;
         }
 	},
 

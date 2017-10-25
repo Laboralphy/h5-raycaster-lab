@@ -188,13 +188,7 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
     thinkDead: function() {
 		var g = this.oGame;
         setTimeout(function() {
-            g.playAmbiance('music/manor');
-            g._halt();
-            O876_Raycaster.PointerLock.disable();
-            var xhr = new O876.XHR();
-            xhr.get('resources/ui/screens/gameover.xml', function(data) {
-                document.body.innerHTML = data;
-            });
+            g.end();
         }, 1000);
     },
 });
