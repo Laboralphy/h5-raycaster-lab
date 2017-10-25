@@ -16,6 +16,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_oLocators: null,
 	_oConsole: null,
 
+
+	_bCameraDisabled: false,
+
 	oCamera: null,
 	oLogic: null,
 	oUI: null,
@@ -783,13 +786,33 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return this.oCamera && this.oCamera.isRaised();
 	},
 
-	
+	/**
+	 * Disable camera,
+	 * The camera can not be used anymore until it is enabled back.
+	 */
+	disableCamera: function() {
+		if (this.isCameraActive()) {
+			this.toggleCamera();
+		}
+		this._bCameraDisabled = true;
+	},
+
+	/**
+	 * If the camera has been disabled, this function will enable it
+	 */
+	enableCamera: function() {
+		this._bCameraDisabled = false;
+	},
+
 	/**
 	 * puts the camera obscura on and off
 	 * useful for application that open and close using the same button
 	 * like the camera
 	 */
 	toggleCamera: function() {
+		if (this._bCameraDisabled) {
+			return;
+		}
 		if (!this.oCamera) {
 			this.oCamera = this.oRaycaster.addGXEffect(MANSION.GX.CameraObscura);
 		}
@@ -1343,11 +1366,14 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	},
 
     /**
-	 * prend une photo a l'endroit spécifé
+	 * Le joueur prend une photo, mais c'est un autre endroit qui est montré sur la photo
+	 * La transition entre la photo et l'endroit mystère est assurée par un GX
      */
-	takeLocatorPhoto: function(sMoveAtLocator, sLookAtLocator) {
+	takeLocatorPhoto: function(sSubject, sMoveAtLocator, sLookAtLocator) {
+		this.disableCamera();
+		this.getPlayer().getThinker().freeze();
         var rc = this.oRaycaster;
-        var oPhoto0 = this.screenShot();
+        var oPhoto0 = this.screenShot(256);
 		var p0 = this.getLocator(sMoveAtLocator);
 		var p1 = this.getLocator(sLookAtLocator);
 		var ps = rc.nPlaneSpacing;
@@ -1365,16 +1391,23 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			x: oPlayer.x,
 			y: oPlayer.y,
 			a: oPlayer.fTheta
-        }
+        };
 		oPlayer.setXY(pos0.x, pos0.y);
 		oPlayer.fTheta = Math.atan2(pos0.x - pos1.x, pos0.y - pos1.y);
 		rc.frameRender();
-		var oPhoto1 = this.screenShot();
+		this.storePhoto(sSubject, 1, 3);
+		var oPhoto1 = this.screenShot(256);
 		oPlayer.setXY(pSave.x, pSave.y);
 		oPlayer.fTheta = pSave.a;
         rc.frameRender();
         var oPola = rc.addGXEffect(MANSION.GX.Polaroid);
         oPola.setPhotos(oPhoto0, oPhoto1);
+        oPola.whenDone((function() {
+			this.enableCamera();
+			this.getPlayer().getThinker().thaw();
+			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.mystphoto);
+		}).bind(this));
+        this.playSound('events/chimes-long');
 	},
 
     /**

@@ -55,7 +55,7 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 		var m = this.oMobile;
 		var xMe = m.x, yMe = m.y;
 		var aMobiles = [], fAngle, fDist, fMyAngle = m.getAngle();
-		var sLogType, nType;
+		var nType;
 		var pi2 = 2 * PI;
 		for (var i = 0, l = vm.length; i < l; ++i) {
 			m = vm[i];
@@ -131,8 +131,8 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	},
 	
 	processGameLogic: function() {
-		var gl = this.oGame.oLogic;
 		if (this.oGame.isCameraActive()) {
+			var gl = this.oGame.oLogic;
 			var aMobs = this.getVisibleMobiles();
 			gl.setVisibleMobiles(aMobs);
 			if (gl.isCameraBuzzing()) {
@@ -147,6 +147,9 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
 	},
 	
 	think: function() {
+		if (this.bFrozen) {
+			return;
+		}
 		if (this.oEasingAngle) {
 			this.processAngle();
 		}

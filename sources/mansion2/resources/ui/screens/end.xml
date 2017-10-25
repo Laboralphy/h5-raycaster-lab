@@ -30,10 +30,10 @@ div.text {
 }
 	</style>
 	<div class="main">
-		<h1><span>Mansion II<span></h1>
+		<h1><span>Mansion II</span></h1>
 		<h2><span>(Tutorial level)</span></h2>
 		<div class="text">I Hope you have enjoyed playing this demo. The complete game will be available soon... You'll find yourself exploring a huge manor, with lots of vengeful spirits and other nasty surprises.</div><br />
-		<div class="text">Please visit <a href="http://www.laboralphy.org/raycaster/">Laboralphy.org</a>, and have a look at my <b>work in progress</b> ; you'll find videos about raycasting games and demos.</div><br />
+		<div class="text">Please visit <a href="http://www.laboralphy.tech/raycaster/">Laboralphy.tech</a>, and have a look at my <b>work in progress</b> ; you'll find videos about raycasting games and demos.</div><br />
 		<div class="album">
 			<img src="resources/ui/screens/img/scrmansion-0.png" />
 			<img src="resources/ui/screens/img/scrmansion-1.png" />

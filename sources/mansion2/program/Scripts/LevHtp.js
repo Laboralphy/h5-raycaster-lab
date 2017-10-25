@@ -76,9 +76,7 @@ O2.createClass('MANSION.Script.LevHtp', {
      */
 	sigilExit: function(oEvent) {
 		var g = oEvent.game;
-		var rc = g.oRaycaster;
-		g.screenShot();
-
+		g.takeLocatorPhoto('c_sigil_exit', 'c_sigil_exit_0', 'c_sigil_exit_1');
 		oEvent.remove = true;
 	}
 });

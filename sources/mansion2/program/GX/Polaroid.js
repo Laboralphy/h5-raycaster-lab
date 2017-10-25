@@ -21,6 +21,8 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
     PHASE_FIRST_TO_SECOND: 2,
     PHASE_SECOND_TO_TRANS: 3,
 
+    aCircles: null,
+
     __construct: function(oRaycaster) {
         __inherited(oRaycaster);
         this.nPhase = 0;
@@ -29,11 +31,53 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, this.WIDTH, this.HEIGHT);
         this.oCanvas = cvs;
+        var fFactor = 0.5;
+        this.aCircles = [
+			{
+				x: Math.random() * 100 | 0,
+				y: Math.random() * 100 | 0,
+				s: 1 * fFactor, // vitesse
+				a: 0.08 * fFactor, // acceleration
+				r: 0, // radius init
+                d: 0
+			},
+			{
+				x: Math.random() * 100 | 0,
+				y: Math.random() * 100 | 0,
+				s: 1 * fFactor, // vitesse
+				a: 0.1 * fFactor, // acceleration
+				r: 0, // radius init
+				d: Math.random() * 10 + 10,
+			},
+			{
+				x: Math.random() * 100 | 0,
+				y: Math.random() * 100 | 0,
+				s: 1 * fFactor, // vitesse
+				a: 0.12 * fFactor, // acceleration
+				r: 0, // radius init
+				d: Math.random() * 10 + 15,
+			},
+			{
+				x: Math.random() * 100 | 0,
+				y: Math.random() * 100 | 0,
+				s: 1 * fFactor, // vitesse
+				a: 0.14 * fFactor, // acceleration
+				r: 0, // radius init
+				d: Math.random() * 10 + 20,
+			},
+        ];
     },
 
     setPhotos: function(oFromPhoto, oToPhoto) {
         this.oFromPhoto = oFromPhoto;
         this.oToPhoto = oToPhoto;
+    },
+
+	/**
+     * La fonction spécifée se déclenche après la fin de l'effet
+	 */
+	whenDone: function(p) {
+	    this.done = p;
     },
 
     /**
@@ -59,7 +103,6 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
         if (++this.nTime >= n) {
             ++this.nPhase;
             this.nTime = 0;
-            console.log('phase', this.nPhase);
             return true;
         } else {
             return false;
@@ -72,6 +115,8 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
     process: function() {
         var cvs = this.oCanvas;
         var ctx = cvs.getContext('2d');
+        var W = this.WIDTH;
+        var H = this.HEIGHT;
         switch (this.nPhase) {
             case this.PHASE_TRANS_TO_BLACK: // transparent vers noir
                 this.fade(0.1);
@@ -105,27 +150,52 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
                     this.oFromPhoto.height,
                     0,
                     0,
-                    this.WIDTH,
-                    this.HEIGHT
+                    W,
+                    H
                 );
-                ctx.globalAlpha = this.fAlpha;
-                ctx.drawImage(
-                    this.oToPhoto,
-                    0,
-                    0,
-                    this.oToPhoto.width,
-                    this.oToPhoto.height,
-                    0,
-                    0,
-                    this.WIDTH,
-                    this.HEIGHT
-                );
-                this.fade(0.01);
-                this.nextPhase(100);
+				ctx.strokeStyle = 'rgb(192, 0, 0)';
+				ctx.lineWidth = 4;
+				ctx.beginPath();
+				this.aCircles.forEach(function(c) {
+				    --c.d;
+                });
+				var aCircles = this.aCircles.filter(function(c) {
+				    return c.d <= 0;
+                });
+				aCircles.forEach(function(c) {
+					c.s += c.a;
+					c.r += c.s;
+					ctx.moveTo(W * c.x / 100 | 0, H * c.y / 100 | 0);
+					ctx.arc(W * c.x / 100 | 0, H * c.y / 100 | 0, c.r + 2| 0, 0, Math.PI * 2);
+				});
+				ctx.stroke();
+                ctx.save();
+				ctx.beginPath();
+                aCircles.forEach(function(c) {
+                    ctx.moveTo(W * c.x / 100 | 0, H * c.y / 100 | 0);
+                    ctx.arc(W * c.x / 100 | 0, H * c.y / 100 | 0, c.r | 0, 0, Math.PI * 2);
+                });
+                ctx.clip();
+				ctx.drawImage(
+					this.oToPhoto,
+					0,
+					0,
+					this.oToPhoto.width,
+					this.oToPhoto.height,
+					0,
+					0,
+					W,
+					H
+				);
+				ctx.restore();
+                if (this.nextPhase(150)) {
+                    this.fade(1);
+                }
                 break;
 
             case this.PHASE_SECOND_TO_TRANS: // oToPhoto vers transparence
-                this.nextPhase(1);
+				this.fade(-0.1);
+				this.nextPhase(10);
                 break;
         }
     },
@@ -139,31 +209,50 @@ O2.extendClass('MANSION.GX.Polaroid', O876_Raycaster.GXEffect, {
         var rcw = rcvs.width;
         var rch = rcvs.height;
 
+        // filler
+		var fAlpha = this.fAlpha;
+        var xs = (rcw - this.WIDTH) >> 1;
+        var ys = (rch - this.HEIGHT) >> 1;
+        var nPadding = 8;
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+		ctx.fillRect(0, 0, rcvs.width, rcvs.height);
+
+		var fSaveAlpha;
+
         switch (this.nPhase) {
-            case this.PHASE_TRANS_TO_BLACK:
-            case this.PHASE_SECOND_TO_TRANS:
-                var fSaveAlpha = ctx.globalAlpha;
-                ctx.globalAlpha = this.fAlpha;
-                ctx.drawImage(cvs, (rcw - this.WIDTH) >> 1, (rch - this.HEIGHT) >> 1);
-                ctx.globalAlpha = fSaveAlpha;
-                break;
+			case this.PHASE_TRANS_TO_BLACK:
+				fSaveAlpha = ctx.globalAlpha;
+				ctx.globalAlpha = fAlpha;
+				ctx.fillStyle = 'rgba(255, 255, 255, ' + fAlpha + ' )';
+				ctx.fillRect(xs - nPadding, ys - nPadding + (32 * (1 - fAlpha) | 0), cvs.width + nPadding * 2, cvs.height + nPadding * 2);
+				ctx.clearRect(xs, ys + (32 * (1 - fAlpha) | 0), cvs.width, cvs.height);
+				ctx.drawImage(cvs, xs, ys + (32 * (1 - fAlpha) | 0));
+				ctx.globalAlpha = fSaveAlpha;
+				break;
 
-            case this.PHASE_BLACK_TO_FIRST:
+			case this.PHASE_BLACK_TO_FIRST:
             case this.PHASE_FIRST_TO_SECOND:
-                ctx.drawImage(cvs, (rcw - this.WIDTH) >> 1, (rch - this.HEIGHT) >> 1);
+				ctx.fillStyle = 'rgb(255, 255, 255)';
+				ctx.fillRect(xs - nPadding, ys - nPadding, cvs.width + nPadding * 2, cvs.height + nPadding * 2);
+                ctx.drawImage(cvs, xs, ys);
                 break;
-        }
 
-
-
+			case this.PHASE_SECOND_TO_TRANS:
+				fSaveAlpha = ctx.globalAlpha;
+				ctx.globalAlpha = fAlpha;
+				ctx.fillStyle = 'rgba(255, 255, 255, ' + fAlpha + ' )';
+				ctx.fillRect(xs - nPadding, ys - nPadding + (32 * (1 - fAlpha) | 0), cvs.width + nPadding * 2, cvs.height + nPadding * 2);
+				ctx.clearRect(xs, ys + (32 * (1 - fAlpha) | 0), cvs.width, cvs.height);
+				ctx.drawImage(cvs, xs, ys + (32 * (1 - fAlpha) | 0));
+				ctx.globalAlpha = fSaveAlpha;
+				break;
+		}
     },
 
     /** Fonction appelée lorsque l'effet se termine de lui même
      * ou stoppé par un clear() du manager
      */
-    done: function() {
-        this.terminate();
-    },
+    done: function() {},
 
     /** Permet d'avorter l'effet
      * Il faut coder tout ce qui est nécessaire pour terminer proprement l'effet

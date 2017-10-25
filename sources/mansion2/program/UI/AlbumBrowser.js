@@ -194,7 +194,7 @@ O2.extendClass('UI.AlbumBrowser', UI.Window, {
 				sIcon = 'i-alb-paint';
 				break;
 
-			case 3:
+			case 3: // clue
 				sIcon = 'i-alb-clue';
 				break;
 

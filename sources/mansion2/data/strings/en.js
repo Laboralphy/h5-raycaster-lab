@@ -46,7 +46,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		},
 
 		// CLUES
-		c_sigils_exit: {
+		c_sigil_exit: {
 			title: 'A strange book',
 			description: 'A strange book appeared on the sigil photo, the two things could be related.'
 		},
@@ -69,6 +69,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		locked: "This door is locked. You need : $item",
 		curselocked: "This door is blocked by a mysterious force.",
 		unlock: "You unlocked the door with : $item",
+		mystphoto: "The mysterious photo has been stored in your album."
 	},
 
 	// The names of all items

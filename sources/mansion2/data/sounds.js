@@ -9,7 +9,7 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 	},
 	bgm: {
 		levels: {
-			tutorial: 'music/inside',
+			tutorial: 'music/forest',
 			ch1: 'music/forest',
 		},
 		woods: 'music/forest',

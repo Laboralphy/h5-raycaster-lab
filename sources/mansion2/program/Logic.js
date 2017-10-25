@@ -317,6 +317,10 @@ O2.createClass('MANSION.Logic', {
 
 	/**
 	 * A photo of the specified subject is taken
+	 * @param id {string} subject identifier
+	 * @param nScore {integer} reward value
+	 * @param oPhotoCanvas {HTML5CanvasElement} photo content
+	 * @param nType {integer} painting = 1, wraith = 2, clue = 3
 	 */
 	setPhotoSubject: function(id, nScore, oPhotoCanvas, nType) {
 		if (!this._aCameraSubjects) {
