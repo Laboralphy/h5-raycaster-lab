@@ -14,6 +14,8 @@
         .main {
             color: #CCC;
             background-image: url(resources/splashes/gameover/gameover.jpg);
+            background-position: center center;
+            background-repeat: no-repeat;
             font-family: monospace;
             font-size: 14px;
             width: 960px;
@@ -29,6 +31,19 @@
             animation-timing-function: ease-out;
         }
 
+        .score span {
+            text-shadow: 0 0 16px #A00;
+            font-size: 3em;
+            font-family: underneath;
+            font-weight: bold;
+        }
+
+        .game-over span {
+            text-shadow: 0 0 16px #8CF;
+            font-size: 5em;
+            font-family: underneath;
+            font-weight: bold;
+        }
         a, a:visited {
             color: white;
         }
@@ -53,10 +68,17 @@
     </style>
     <div class="main appear">
         <div class="text">
-            <a href="javascript:window.location.reload()"><span class="replay reload">↻</span><span class="replay caption"> Replay</span></a>
+            <p class="game-over"><span>GAME OVER</span></p>
+        </div>
+        <br/><br/><br/><br/>
+        <br/><br/><br/><br/>
+        <br/><br/><br/><br/>
+        <br/><br/><br/><br/>
+        <div class="text">
+            <p class="score"><span>Your score : </span><span id="game_over_score">x</span></p>
         </div>
         <div class="text">
-            <p><span>Your score : </span><span id="game_over_score">x</span></p>
+            <a href="javascript:window.location.reload()"><span class="replay reload">↻</span><span class="replay caption"> Replay</span></a>
         </div>
     </div>
 </main>

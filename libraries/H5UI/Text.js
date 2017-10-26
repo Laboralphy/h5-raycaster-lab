@@ -54,6 +54,8 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		if (this._bAutosize && this._bInvalid && !this._bWordWrap) {
 			var oMetrics = this.getSurface().measureText(this._sCaption);
 			this.setSize(oMetrics.width, this.font._nFontSize);
+		} else {
+			this.renderSelf();
 		}
 	},
 
@@ -106,6 +108,8 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		}).bind(this));
 		return aResult;
 	},
+
+
 
 	renderSelf : function() {
 		var oSurface = this.getSurface();

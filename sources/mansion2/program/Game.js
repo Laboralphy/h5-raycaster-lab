@@ -1426,21 +1426,31 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return this.oRandom.rand(...arguments);
 	},
 
+	/**
+	 * Efface l'écran et affiche un XML
+	 */
+	displayXML: function(sURL) {
+		this._halt();
+		O876_Raycaster.PointerLock.disable();
+		var oCvs = document.querySelector('#' + CONFIG.raycaster.canvas);
+		if (oCvs) {
+			oCvs.remove();
+		}
+		var xhr = new O876.XHR();
+		xhr.get(sURL, (function(data) {
+			var d = document.createElement('div');
+			d.innerHTML = data;
+			document.body.appendChild(d);
+			document.getElementById('game_over_score').innerHTML = this.oLogic._nScore;
+		}).bind(this));
+	},
+
     /**
 	 * Arrète le jeu et affiche un écran de fin
      */
 	end: function() {
         this.playAmbiance('music/manor');
-        this._halt();
-        O876_Raycaster.PointerLock.disable();
-        var xhr = new O876.XHR();
-        xhr.get('resources/ui/screens/gameover.xml', (function(data) {
-            document.querySelector('#' + CONFIG.raycaster.canvas).remove();
-            var d = new DocumentFragment();
-            d.innerHTML = data;
-            document.body.appendChild(d);
-            //document.getElementById('game_over_score').innerHTML = this.oLogic._nScore;
-        }).bind(this));
+        this.displayXML('resources/ui/screens/gameover.xml')
 	}
 });
 

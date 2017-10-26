@@ -99,6 +99,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			hint_left_click: "Left-click is used to open doors, and pick up items.",
 			hint_see_exit: "You found the exit !",
 			hint_pickup: "Left-click to pick up this item.",
+			hint_shoot_clue: "Take a photo of strange symbols and sigils to get clues.",
 
             desc_rotten_clothes: "Lots of stinking clothes in this drawer.",
             desc_vase: "A dusty empty vase.",

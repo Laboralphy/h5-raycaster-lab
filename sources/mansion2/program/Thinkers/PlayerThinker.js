@@ -182,13 +182,13 @@ O2.extendClass('MANSION.PlayerThinker', O876_Raycaster.FirstPersonThinker, {
         this.oGame.oRaycaster.fViewHeight = this._oDeathEasing.val();
         if (bOver) {
             this.think = this.thinkDead;
+			var g = this.oGame;
+			setTimeout(function() {
+				g.end();
+			}, 1000);
         }
     },
 
     thinkDead: function() {
-		var g = this.oGame;
-        setTimeout(function() {
-            g.end();
-        }, 1000);
     },
 });
