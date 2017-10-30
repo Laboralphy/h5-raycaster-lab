@@ -27,6 +27,12 @@
  * - speed optimization.
  * - raster effects.
  * - ...
+ *
+ *
+ * Second storey
+ * in upper map :
+ * - all blocks above a ceiling must be ray-blocking except when explicitly defined
+ *
  */
 
 
@@ -38,6 +44,11 @@
  *   canvas: string | HTMLCanvasElement,   // canvas id or canvas instance
  *   drawMap: boolean,   // drawing map or not
  * }
+ *
+ *
+ *
+ *
+ *
  */
  
 /* jshint undef: false, unused: true */
@@ -165,6 +176,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oConfig : null,
 	
 	oUpper: null,
+
+	aChronoStat: null,
 	
 	/**
 	 * Set Raycaster Configuration
@@ -186,8 +199,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.oConfig[i] = oConfig[i];
 			}
 		}
+		this.aChronoStat = [];
 	},
-	
+
 	setVR: function(b) {
 		if (b) {
 			this.b3d = true;
@@ -822,6 +836,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.buildSecondFloor();
 		}
 	},
+
+
 	
 	backgroundRedim: function() {
 		var oBackground = this.oBackground;
@@ -848,6 +864,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if ('uppermap' in oData) {
 			var SELF = this.constructor;
 			var urc = new SELF();
+			urc.nRayLimit = 16;
 			urc.TIME_FACTOR = this.TIME_FACTOR;
 			urc.setConfig(this.oConfig);
 			urc.bUseVideoBuffer = false;
@@ -950,7 +967,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var nMapSize = this.nMapSize;
 		var nScale = this.nPlaneSpacing;
 
-		//raycount++;
 		var xi, yi, xt, dxt, yt, dyt, t, dxi, dyi, xoff, yoff, cmax = oData.nRayLimit;
 		
 		var oContinue = oData.oContinueRay;
@@ -1009,8 +1025,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		var sameOffsetWall = this.sameOffsetWall;
 		var BF = O876_Raycaster.BF;
-		var BF_getPhys = BF.getPhys;
-		var BF_getOffs = BF.getOffs;
 		
 		while (done === 0) {
 			if (xt < yt) {
@@ -1026,7 +1040,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					if (nPhys >= nPHYS_FIRST_DOOR && nPhys <= nPHYS_LAST_DOOR) {
 						// entre PHYS_FIRST_DOOR et PHYS_LAST_DOOR
 						nOfs = nScale >> 1;
-					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
+					} else if (nPhys === nPHYS_SECRET_BLOCK || nPhys === nPHYS_TRANSPARENT_BLOCK || nPhys === nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
 						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
@@ -1039,7 +1053,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						if (sameOffsetWall(nOfs, xint, yint, xi, yi, dx, dy, nScale)) { // Même mur -> porte
 							nTOfs = (dxt / nScale) * nOfs;
 							yint = y + yScale * (xt + nTOfs);
-							if (((yint / nScale | 0)) != yi) {
+							if (((yint / nScale | 0)) !== yi) {
 								nPhys = nText = 0;
 							}
 							if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
@@ -1133,7 +1147,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		if (c < cmax) {
 			oData.nWallPanel = map[yi][xi];
-			oData.bSideWall = side == 1;
+			oData.bSideWall = side === 1;
 			oData.nSideWall = side - 1;
 			oData.nWallPos = oData.bSideWall ? yint % oData.xTexture
 					: xint % oData.xTexture;
@@ -1336,6 +1350,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	drawScreen : function() {
+		var nTimeStart = performance.now();
+
 		// phase 1 raycasting
 		
 		var wx1 = Math.cos(this.oCamera.fTheta - this.fViewAngle);
@@ -1370,7 +1386,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			fBx += dx;
 			fBy += dy;
 		}
-		
+		var nTimeCast = performance.now();
 		// Optimisation ZBuffer -> suppression des drawImage inutile, élargissement des drawImage utiles.
 		// si le last est null on le rempli
 		// sinon on compare last et current
@@ -1406,12 +1422,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		for (i = 0; i < zbl; i++) {
 			b = zb[i];
-			// tant que c'est la même source de texture
-			if (b[10] == lb[10] && b[0] == lb[0] && b[1] == lb[1] && abs(b[9] - lb[9]) < 8) { 
+			// tant que c'est la même source de texture=
+			if (b[10] === lb[10] && b[0] === lb[0] && b[1] === lb[1] && abs(b[9] - lb[9]) < 8) {
 				nLast += z;
-			} else if (b[10] == llb[10] && b[0] == llb[0] && b[1] == llb[1] && abs(b[9] - llb[9]) < 8) {
+			} else if (b[10] === llb[10] && b[0] === llb[0] && b[1] === llb[1] && abs(b[9] - llb[9]) < 8) {
 				nLLast += z;
-			} else if (b[10] == lllb[10] && b[0] == lllb[0] && b[1] == lllb[1] && abs(b[9] - lllb[9]) < 8) {
+			} else if (b[10] === lllb[10] && b[0] === lllb[0] && b[1] === lllb[1] && abs(b[9] - lllb[9]) < 8) {
 				nLLLast += z;
 			} else {
 				lllb[7] = nLLLast;
@@ -1435,6 +1451,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.drawHorde();
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
+		var nTimeSort = performance.now();
 		
 		var rctx = this._oRenderContext;
 		
@@ -1462,12 +1479,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				rctx.fillRect(0, (this._oCanvas.height >> 1), this._oCanvas.width, this._oCanvas.height >> 1);
 			}
 		}
-		
+		var nTimeBG = performance.now();
 		// 2ndFloor
 		if (this.oUpper) {
 			this.drawUpper();
 		}
-
+		var nTimeSecond = performance.now();
 		// floor
 		if (this.bFloor) {
 			if (this.bCeil && this.fViewHeight !== 1) {
@@ -1476,15 +1493,74 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.drawFloor();
 			}
 		}
-		
+		var nTimeFlat = performance.now();
 		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
 			this.drawImage(zb[i]);
 		}
+		var nTimeRender = performance.now();
 		if (this.oConfig.drawMap) {
 			this.drawMap();
 		}
-		//this.drawWeapon();
+		var nTimeMap = performance.now();
+		var oPerf = {
+			start: nTimeStart,
+			cast: nTimeCast,
+			sort: nTimeSort,
+			bg: nTimeBG,
+			upper: nTimeSecond,
+			flat: nTimeFlat,
+			render: nTimeRender,
+			map: nTimeMap
+		};
+		var cs = this.aChronoStat;
+		cs.push(oPerf);
+		while (cs.length > 10) {
+			cs.shift();
+		}
+	},
+
+	stats: function() {
+		function oneStat(a) {
+			return {
+				cast: a.cast - a.start,
+				sort: a.sort - a.cast,
+				bg: a.bg - a.sort,
+				upper: a.upper - a.bg,
+				flat: a.flat - a.upper,
+				render: a.render - a.flat,
+				map: a.map - a.render,
+				total: a.map - a.start
+			};
+		}
+		var oStat = this
+			.aChronoStat
+			.map(oneStat)
+			.reduce(function(oPrev, a) {
+				var oRes = {};
+				for (var x in oPrev) {
+					oRes[x] = a[x] + oPrev[x];
+				}
+				return oRes;
+			}, {
+				cast: 0,
+				sort: 0,
+				bg: 0,
+				upper: 0,
+				flat: 0,
+				render: 0,
+				map: 0,
+				total: 0
+			})
+		;
+		for (var x in oStat) {
+			oStat[x] = Math.floor(oStat[x]) / 10;
+
+		}
+		if (this.oUpper) {
+			oStat.upperdet = this.oUpper.stats();
+		}
+		return oStat;
 	},
 	
 	/**
