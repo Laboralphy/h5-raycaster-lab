@@ -176,9 +176,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oConfig : null,
 	
 	oUpper: null,
-
-	aChronoStat: null,
-	
 	/**
 	 * Set Raycaster Configuration
 	 * 	{
@@ -199,7 +196,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.oConfig[i] = oConfig[i];
 			}
 		}
-		this.aChronoStat = [];
 	},
 
 	setVR: function(b) {
@@ -1350,8 +1346,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	drawScreen : function() {
-		var nTimeStart = performance.now();
-
 		// phase 1 raycasting
 		
 		var wx1 = Math.cos(this.oCamera.fTheta - this.fViewAngle);
@@ -1386,7 +1380,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			fBx += dx;
 			fBy += dy;
 		}
-		var nTimeCast = performance.now();
 		// Optimisation ZBuffer -> suppression des drawImage inutile, élargissement des drawImage utiles.
 		// si le last est null on le rempli
 		// sinon on compare last et current
@@ -1451,7 +1444,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.drawHorde();
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
-		var nTimeSort = performance.now();
 		
 		var rctx = this._oRenderContext;
 		
@@ -1479,12 +1471,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				rctx.fillRect(0, (this._oCanvas.height >> 1), this._oCanvas.width, this._oCanvas.height >> 1);
 			}
 		}
-		var nTimeBG = performance.now();
 		// 2ndFloor
 		if (this.oUpper) {
 			this.drawUpper();
 		}
-		var nTimeSecond = performance.now();
 		// floor
 		if (this.bFloor) {
 			if (this.bCeil && this.fViewHeight !== 1) {
@@ -1493,30 +1483,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.drawFloor();
 			}
 		}
-		var nTimeFlat = performance.now();
 		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
 			this.drawImage(zb[i]);
 		}
-		var nTimeRender = performance.now();
 		if (this.oConfig.drawMap) {
 			this.drawMap();
-		}
-		var nTimeMap = performance.now();
-		var oPerf = {
-			start: nTimeStart,
-			cast: nTimeCast,
-			sort: nTimeSort,
-			bg: nTimeBG,
-			upper: nTimeSecond,
-			flat: nTimeFlat,
-			render: nTimeRender,
-			map: nTimeMap
-		};
-		var cs = this.aChronoStat;
-		cs.push(oPerf);
-		while (cs.length > 10) {
-			cs.shift();
 		}
 	},
 

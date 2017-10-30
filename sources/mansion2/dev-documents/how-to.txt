@@ -51,3 +51,29 @@ Comment ajouter un texte d'ambiance quand on active un bloc ou qu'on traverse un
 --------------------------------------------------------------------------------------
 Sur le bloc ou la case tagger "message xxx"
 Ajouter une entrée dans MANSION.LEVELS.(nom du niveau).xxx
+
+
+
+Comment modifier la musique d'ambiance
+--------------------------------------
+bgm [music]
+liste des musiques disponibles :
+
+atrium
+combat
+cthulhu
+forest
+inside
+jail
+manor
+
+
+
+Comment verrouiller une porte et accrocher une clé quelque part
+---------------------------------------------------------------
+Soit la clé key_special.
+Accrocher la clé en "décal" sur un mur et tagger le block comme ceci :
+- item key_special
+Ajouter un décal sur la porte, mais "tourner" à 90° (sens horaire)
+Ajouter le tag
+- lock key_special
