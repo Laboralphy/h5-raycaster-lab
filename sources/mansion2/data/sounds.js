@@ -14,7 +14,8 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		},
 		woods: 'music/forest',
 		atrium: 'music/atrium',
-		mansion: 'music/inside',
+		inside: 'music/inside',
+		jail: 'music/jail',
 		cellar: 'music/manor',
 		ghost: 'music/combat',
 		cthulhu: 'music/cthulhu'

@@ -12,7 +12,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbianceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_sLevelIndex: 'tutorial',
+	_sLevelIndex: 'ch1',
 	_oLocators: null,
 	_oConsole: null,
 

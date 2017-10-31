@@ -77,3 +77,4 @@ Accrocher la clé en "décal" sur un mur et tagger le block comme ceci :
 Ajouter un décal sur la porte, mais "tourner" à 90° (sens horaire)
 Ajouter le tag
 - lock key_special
+Ajouter une entrée dans le fichier de chaines (data/Strings/en.js)

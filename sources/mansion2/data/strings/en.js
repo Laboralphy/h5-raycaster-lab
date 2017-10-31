@@ -45,6 +45,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
 		},
 
+		p_slenderman: {
+			title: 'Slenderman',
+			description: 'A supernatural creature with nebulously defined characteristics and abilities.'
+		},
+
 		// CLUES
 		c_sigil_exit: {
 			title: 'A strange book',
@@ -76,6 +81,7 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 	ITEMS: {
 		// keys
 		key_cabin_s: 'Cabin key',
+		key_main_door: 'Main door key',
 
 		// book
 		book_sigils: 'Tome of Sigils',
