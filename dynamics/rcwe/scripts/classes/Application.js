@@ -734,7 +734,7 @@ O2.createClass('RCWE.Application', {
 	},
 	
 	cmd_labygrid_viewblock: function() {
-		$('#mapgrid_cmd_draw').trigger('click');
+		$('#mapgrid_cmd_select').trigger('click');
 		this.showPanel('blockbrowser');
 	},
 	
