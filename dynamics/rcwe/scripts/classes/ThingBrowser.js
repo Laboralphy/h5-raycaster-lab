@@ -148,9 +148,6 @@ O2.extendClass('RCWE.ThingBrowser', RCWE.Window, {
 				if (sData != 'image') {			// each prop except 'image' can be copied
 					oData[sData] = oDataSrc[sData];
 				}
-				if (sData === 'loop') {
-					console.log(oDataSrc[sData]);
-				}
 			}
 			oData.image = oDataSrc.image.src; // image must be converted to base64 encoded data
 			oData.width = oDataSrc.image.width;
