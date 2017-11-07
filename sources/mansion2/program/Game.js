@@ -713,13 +713,13 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
 			});
-			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType == 'key' ? 'doorunlock' : 'sigilunlock']);
+			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType === 'key' ? 'doorunlock' : 'sigilunlock']);
 			oEvent.remove = true;
 		} else {
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.locked, {
 				$item: sItemStr
 			});
-			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType == 'key' ? 'doorlocked' : 'sigillocked']);
+			this.playSound(MANSION.SOUNDS_DATA.events[sKeyType === 'key' ? 'doorlocked' : 'sigillocked']);
 		}
 	},
 

@@ -44,11 +44,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			title: 'Miku and her brother',
 			description: 'She could not save him. He disappeared in the depths of the Himuro mansion.'
 		},
-
 		p_slenderman: {
 			title: 'Slenderman',
 			description: 'A supernatural creature with nebulously defined characteristics and abilities.'
 		},
+
 
 		// CLUES
 		c_sigil_exit: {
@@ -85,6 +85,8 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 
 		// book
 		book_sigils: 'Tome of Sigils',
+		book_reglas: 'Las Reglas de Ruina'
+
 	},
 
 	INTRO: {

@@ -78,3 +78,8 @@ Ajouter un décal sur la porte, mais "tourner" à 90° (sens horaire)
 Ajouter le tag
 - lock key_special
 Ajouter une entrée dans le fichier de chaines (data/Strings/en.js)
+
+
+Comment vérifier que le joueur possède un item
+----------------------------------------------
+verifier que la data "item-Identifiant_de_la_clé" soit bien à true

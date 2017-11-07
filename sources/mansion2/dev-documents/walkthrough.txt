@@ -1,5 +1,24 @@
-1) La clé de la porte d'entrée se trouve dans le fond du bosquet ouest.
+La porte d'entrée est verrouillée
+La clé de la porte d'entrée se trouve dans le fond du bosquet Ouest.
+Se diriger vers le bosquet ouest
+Rammasser la clé "key_front_door"
+
+event : stray_dancer
+stray_dancer apparaitra sur son point de spawn
+
+après la front door
+la pièce de gauche contient un livre : "las reglas de ruina"
+la pièce de droite contient un tableau : "blood moon"
 
 
-2) La clé du portail Est est dans la cabane
+
+
+la porte menant aux escaliers est fermée à clé ("key_stair_case")
+
+
+
+
+2) La clé du portail Est est dans la cabane Est
+
+
 
