@@ -1,10 +1,18 @@
 O2.createClass('MANSION.Script.Abstract', {
+	removeEvent: function() {
+		this._event.remove = true;
+	},
+
+	game: function() {
+		return this._event.game;
+	},
+
     playerHasItem: function(sKey) {
-        return this._event
-            .game
+        return this.game()
             .getPlayer()
             .data('item-' + sKey);
     },
+
 
     /**
      * Fait apparaitre un spectre à la position spécifiée
@@ -22,7 +30,7 @@ O2.createClass('MANSION.Script.Abstract', {
      * @return Mobile
      */
     spawnWraithAtLocator: function(sWraith, sLocator, oOptions) {
-        var g = this._event.game;
+        var g = this.game();
         var oLoc = g.getLocator(sLocator);
         var oWraith = g.spawnWraith(sWraith, oLoc.x, oLoc.y, 0);
         var gt = oWraith.getThinker();
@@ -52,8 +60,7 @@ O2.createClass('MANSION.Script.Abstract', {
          *
          */
     spawnGhost: function(sGhost, oOptions) {
-        var oEvent = this._event;
-        var g = oEvent.game;
+        var g = this.game();
         var oGhost = g.spawnGhost(sGhost);
         oOptions = oOptions || {};
         if ('lock' in oOptions) {
@@ -62,8 +69,4 @@ O2.createClass('MANSION.Script.Abstract', {
             g.lockDoor(oDoor.x, oDoor.y);
         }
     },
-
-    removeEvent: function() {
-        this._event.remove = true;
-    }
 });

@@ -55,6 +55,7 @@ O2.createObject('MANSION.GGB', function (
             power: nPower,
             life: nHP,
 	        name: sResRef,
+			level: nLevel
         },
 	    tile: sResRef,
         thinker: 'MANSION.G' + oThinkers[sThinker],
@@ -121,5 +122,6 @@ MANSION.GGB('g_eyeball',		3.4, 'tr', 'life', 'b40');
 MANSION.GGB('g_old_ghoul',		3, 'c', 'power life', 'm80');
 
 MANSION.GGB('g_hardy',			4, 'z', '', 'm40');
+
 MANSION.GGB('g_triple',			5, 'ztr', '', 'triple');
 

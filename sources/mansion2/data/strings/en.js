@@ -70,6 +70,16 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		w_petrified_medusa: {
 			title: 'Medusa',
 			description: 'A representation of the infamous gorgon.'
+		},
+
+		w_twisted_novellist: {
+			title: 'Twisted novellist',
+			description: 'He wrote quite a lot about evil books and dark rituals... He died violently while reading the Vermis Mysterii.'
+		},
+
+		w_stray_dancer: {
+			title: 'Stray dancer',
+			description: 'She ventured too far in the woods during and dark and misty night. She still searches how to get out.'
 		}
 	},
 

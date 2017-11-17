@@ -32,6 +32,9 @@ O2.createClass('MANSION.Logic', {
 
 	_nTime: 0,
 	_nChronoSeconds: 0,
+	_nAutoSpawnDelayBetweenGhosts: 10,
+	_nAutoSpawnMaxLevel: 1,
+	_bClearAutoSpawn: false,
 
 	_nScore: 0,
 
@@ -561,4 +564,7 @@ O2.createClass('MANSION.Logic', {
 	getEffectProcessor: function() {
         return this._oEffectProcessor;
 	}
+
+
+
 });

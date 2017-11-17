@@ -24,7 +24,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	oUI: null,
 	oSnail: null,
 	oRandom: null,
-
+	oScheduler: null,
 
 	console: function() {
 		return this._oConsole;
@@ -39,6 +39,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this._oLocators = {};
 		this.oSnail = new O876.Snail();
 		this.oRandom = new O876.Random();
+		this.oScheduler = new O876_Raycaster.Scheduler();
+		this.oScheduler.schedule(0);
 		this.initLogic();
 		this.initAudio();
 		this.initPopup();
@@ -468,6 +470,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		if (hud) {
 			hud.update(gl);
         }
+        this.oScheduler.schedule(this.getTime());
 	},
 	
 	/**
@@ -885,7 +888,38 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		oGhost.getThinker().setSpeed(oGhost.data('speed'));
 		oGhost.data('dead', false);
 		this.playGhostAmbiance(MANSION.SOUNDS_DATA.bgm.ghost);
+		//garder trace du temps
+		this.getPlayer().data('last-ghost-spawn-time', this.getTime());
 		return oGhost;
+	},
+
+
+	/**
+	 * Demarre le cycle autospawn des fantome
+	 */
+	startAutoSpawn: function() {
+		this.autoSpawnProcedure();
+	},
+
+	autoSpawnProcedure: function() {
+		if (this.oLogic._bClearAutoSpawn) {
+			this.oLogic._bClearAutoSpawn = false;
+			return;
+		}
+		var dbg = this.oLogic._nAutoSpawnDelayBetweenGhosts;
+		var dbgMax = dbg + (dbg >> 1);
+		var nNextGhostTime = this.oRandom.rand(dbg, dbgMax);
+		this.oScheduler.delay((function() {
+			var aGhostList = [];
+			var nMaxLevel = this.oLogic._nAutoSpawnMaxLevel;
+			for (var ghost in MANSION.BLUEPRINTS_DATA) {
+				if (ghost.match(/^g_/) && MANSION.BLUEPRINTS_DATA[ghost].data.level <= nMaxLevel) {
+					aGhostList.push(ghost);
+				}
+			}
+			this.spawnGhost(this.oRandom.rand(aGhostList));
+			this.autoSpawnProcedure();
+		}).bind(this), nNextGhostTime);
 	},
 
 	spawnWraith: function(sBlueprint, x, y, a) {
@@ -1314,6 +1348,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param  y float
 	 */
 	playSound : function(sFile, x, y) {
+		if (sFile === '') {
+			return;
+		}
 		var fDist = 0;
 		if (x !== undefined) {
 			var oPlayer = this.getPlayer();
