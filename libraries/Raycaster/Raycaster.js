@@ -1401,6 +1401,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// dh  8
 		// z   9
 		// fx  10
+		// id  11 identifiant image
 		
 		var zb = this.aZBuffer;
 		var zbl = zb.length;
@@ -2152,16 +2153,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// Si xStart est négatif c'est qu'on est sur un coté de block dont la texture est indéfinie (-1)
 		// Firefox refuse de dessiner des textures "négative" dont on skipe le dessin
 		if (xStart >= 0) {
-			rc.drawImage(
-				aLine[0], 
-				aLine[1] | 0,
-				aLine[2] | 0,
-				aLine[3] | 0,
-				aLine[4] | 0,
-				aLine[5] | 0,
-				aLine[6] | 0,
-				aLine[7] | 0,
-				aLine[8] | 0);
+			try {
+                rc.drawImage(
+                    aLine[0],
+                    aLine[1] | 0,
+                    aLine[2] | 0,
+                    aLine[3] | 0,
+                    aLine[4] | 0,
+                    aLine[5] | 0,
+                    aLine[6] | 0,
+                    aLine[7] | 0,
+                    aLine[8] | 0);
+            } catch (e) {}
 		}
 		if (sGCO !== '') {
 			rc.globalCompositeOperation = sGCO;

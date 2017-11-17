@@ -49,6 +49,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			description: 'A supernatural creature with nebulously defined characteristics and abilities.'
 		},
 
+		p_nyarlathotep : {
+			title: 'Nyarlathotep',
+			description: 'A monstrous figure, a messenger of unspeakable unholy entities from beyond our space and time.'
+		},
+
 
 		// CLUES
 		c_sigil_exit: {
@@ -82,11 +87,11 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		// keys
 		key_cabin_s: 'Cabin key',
 		key_main_door: 'Main door key',
+		key_backyard: 'Backyard key',
 
 		// book
 		book_sigils: 'Tome of Sigils',
 		book_reglas: 'Las Reglas de Ruina'
-
 	},
 
 	INTRO: {

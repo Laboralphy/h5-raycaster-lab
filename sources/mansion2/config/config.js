@@ -6,7 +6,7 @@ O2.createObject('CONFIG', {
 		fullScreen: false,
 		fpsControl: true,
 		controlThinker: 'MANSION.PlayerThinker',
-		mute: true
+		mute: false
 	},
 	raycaster: {
 		canvas: 'screen',

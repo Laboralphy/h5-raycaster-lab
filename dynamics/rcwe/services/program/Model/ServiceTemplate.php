@@ -3,8 +3,10 @@ use O876\MVC as M;
 
 class ServiceTemplate {
 	
+	use PleaseFilePutContents;
+
 	const BASE_PATH = '../server.storage/templates/';
-	
+
 	protected function _checkPermissions($s) {
 		$sDir = self::BASE_PATH;
 		if ($s) {
@@ -25,13 +27,6 @@ class ServiceTemplate {
 		if (count($a)) {
 			throw new Exception(implode(' and ', $a). ' permission denied');
 		}
-	}
-
-	public function filePutContents($sFile, $sContent) {
-	    if (file_exists($sFile) && !is_writable($sFile)) {
-	        throw new Exception('could not create this file : "' . basename($sFile) . '". permission denied');
-        }
-        file_put_contents($sFile, $sContent);
 	}
 
 	

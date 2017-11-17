@@ -69,6 +69,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.on('tag.teleport', this.tagEventTeleport.bind(this));
 		this.on('tag.item', this.tagEventItem.bind(this));
 		this.on('tag.lock', this.tagEventUnlock.bind(this));
+		this.on('tag.sound', this.tagEventSound.bind(this));
 
 		this.on('command0', this.gameEventCommand0.bind(this));
 		this.on('command2', this.gameEventCommand2.bind(this));
@@ -652,7 +653,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var oInstance = this.getScript(sScript);
 		if (sAction in oInstance) {
 			oEvent.game = this;
-			oInstance[sAction].apply(oInstance, [oEvent]);
+			oEvent.player = this.getPlayer();
+			oInstance._event = oEvent;
+			oInstance[sAction]();
 		}
 	},
 
@@ -733,6 +736,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 	tagEventPhotoScript: function(oEvent) {
 		this.mapData(oEvent.x, oEvent.y, 'photo-script', oEvent.data);
+		oEvent.remove = true;
+	},
+
+	tagEventSound: function(oEvent) {
+		this.playSound(oEvent.data);
 		oEvent.remove = true;
 	},
 

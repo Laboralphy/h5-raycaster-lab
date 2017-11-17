@@ -3,7 +3,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 	/**
 	 * dalle : si la page du necronomicon a été rammassée on lache un fantome
 	 */
-	pickupNecPage1: function(oEvent) {
+	pickupNecPage1: function() {
+        var oEvent = this._event;
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
 		if (oPlayer.data('item-book_sigils')) {
@@ -21,7 +22,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 	 * s'active si on est a coté ouest et si on a photographié le sujet
 	 * p_skull_monk
 	 */
-	wraithSkullMonk: function(oEvent) {
+	wraithSkullMonk: function() {
+		var oEvent = this._event;
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
 		// est-ce qu'on est bien à gauche de la porte ?
@@ -39,7 +41,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 	/**
 	 * dalle : apparition de medusa à l'approche de la sortie
 	 */
-	wraithExit: function(oEvent) {
+	wraithExit: function() {
+        var oEvent = this._event;
 		var g = oEvent.game;
 		var oPlayer = g.getPlayer();
 		var p = g.getLocator('w_exit_boo'); // w_sadako
@@ -52,7 +55,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 	/**
 	 * porte : sortie du niveau
 	 */
-	endOfLevel: function(oEvent) {
+	endOfLevel: function() {
+        var oEvent = this._event;
 		var g = oEvent.game;
 		var rc = g.oRaycaster;
 		var oFade = rc.addGXEffect(O876_Raycaster.GXFade);
@@ -74,7 +78,8 @@ O2.createClass('MANSION.Script.LevHtp', {
 	 * le photographier fait apparaitre un indice
      * @param oEvent
      */
-	sigilExit: function(oEvent) {
+	sigilExit: function() {
+        var oEvent = this._event;
 		var g = oEvent.game;
 		g.takeLocatorPhoto('c_sigil_exit', 'c_sigil_exit_0', 'c_sigil_exit_1');
 		oEvent.remove = true;

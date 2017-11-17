@@ -286,7 +286,7 @@ O2.createObject('MANSION.WRAITH_BLUEPRINTS_DATA', {
 			rank: 1,
 			sounds: {
 				spawn: '',
-				seen: '',
+				seen: 'events/stress6',
 			},
 		},
 	},
@@ -303,7 +303,7 @@ O2.createObject('MANSION.WRAITH_BLUEPRINTS_DATA', {
 			subtype: 'wraith',
 			rank: 1,
 			sounds: {
-				spawn: '',
+				spawn: 'ambiance/azathoth-flute',
 				seen: '',
 			},
 		},
