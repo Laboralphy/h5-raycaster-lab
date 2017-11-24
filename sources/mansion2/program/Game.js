@@ -448,16 +448,15 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				var aCommand = sCommand.split(' ');
 				var sScript = 'Debug';
 				var sAction = aCommand.shift();
-				try {
-					var oScript = this.getScript(sScript);
-					if (sAction in oScript) {
-						oScript[sAction].call(oScript, {
-							game: this,
-							data: aCommand
-						});
-					}
-				} catch (e) {
-					this.console().print(e);
+
+				var oScript = this.getScript(sScript);
+				if (sAction in oScript) {
+					oScript._event = {
+						game: this,
+						player: this.getPlayer(),
+						data: aCommand
+					};
+					oScript[sAction]();
 				}
 			break;
 
