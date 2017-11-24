@@ -306,18 +306,32 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	gameEventDoor: function(oEvent) {
 		var x = oEvent.x;
 		var y = oEvent.y;
-		var ps = this.oRaycaster.nPlaneSpacing;
+		var r = this.oRaycaster;
+		var ps = r.nPlaneSpacing;
 		var ps2 = ps >> 1;
 		var oEffect = oEvent.door;
-		switch (oEffect.sClass) {
-			case 'Door':
+		var nDoorType = r.getMapPhys(x, y);
+		switch (nDoorType) {
+            case r.PHYS_DOOR_SLIDING_DOUBLE:
+            case r.PHYS_DOOR_SLIDING_DOWN:
+            case r.PHYS_DOOR_SLIDING_LEFT:
+            case r.PHYS_DOOR_SLIDING_RIGHT:
+            case r.PHYS_DOOR_SLIDING_UP:
 				this.playSound(MANSION.SOUNDS_DATA.events.dooropen, x * ps + ps2, y * ps + ps2);
 				oEffect.done = (function() {
 					this.playSound(MANSION.SOUNDS_DATA.events.doorclose, x * ps + ps2, y * ps + ps2);
 				}).bind(this);
 				break;
-				
-			case 'Secret':
+
+            case r.PHYS_CURT_SLIDING_DOWN:
+            case r.PHYS_CURT_SLIDING_UP:
+                this.playSound(MANSION.SOUNDS_DATA.events.curtainopen, x * ps + ps2, y * ps + ps2);
+                oEffect.done = (function() {
+                    this.playSound(MANSION.SOUNDS_DATA.events.curtainclose, x * ps + ps2, y * ps + ps2);
+                }).bind(this);
+                break;
+
+			case r.PHYS_SECRET_BLOCK:
 				this.playSound(MANSION.SOUNDS_DATA.events.secret, x * ps + ps2, y * ps + ps2);
 				break;
 		}
@@ -893,11 +907,53 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return oGhost;
 	},
 
+    /**
+	 * Fait apparaitre un fantome aléatoire en fonction de paramètre de logic
+	 * parfois un second fantome poeut apparaitre
+     */
+	spawnRandomGhost: function() {
+        var aGhostList = [];
+        var nMaxLevel = this.oLogic._nAutoSpawnMaxLevel;
+        var fSecondProb = 0;
+        switch (nMaxLevel) {
+            case 2:
+                fSecondProb = 0.03;
+                break;
+
+            case 3:
+                fSecondProb = 0.07;
+                break;
+
+            case 4:
+                fSecondProb = 0.12;
+                break;
+
+            case 5:
+                fSecondProb = 0.18;
+                break;
+		}
+        for (var ghost in MANSION.BLUEPRINTS_DATA) {
+            if (ghost.match(/^g_/) && MANSION.BLUEPRINTS_DATA[ghost].data.level <= nMaxLevel) {
+                aGhostList.push(ghost);
+            }
+        }
+        var spawn = (function() {
+            var nIndex = this.oRandom.rand(0, aGhostList.length - 1);
+            var sChosen = aGhostList.splice(nIndex, 1);
+            this.spawnGhost(sChosen);
+		}).bind(this);
+
+        spawn();
+        if (this.oRandom.rand() < fSecondProb) {
+            spawn();
+		}
+	},
+
 
 	/**
 	 * Demarre le cycle autospawn des fantome
 	 */
-	startAutoSpawn: function() {
+	autoSpawnStart: function() {
 		this.autoSpawnProcedure();
 	},
 
@@ -910,14 +966,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var dbgMax = dbg + (dbg >> 1);
 		var nNextGhostTime = this.oRandom.rand(dbg, dbgMax);
 		this.oScheduler.delay((function() {
-			var aGhostList = [];
-			var nMaxLevel = this.oLogic._nAutoSpawnMaxLevel;
-			for (var ghost in MANSION.BLUEPRINTS_DATA) {
-				if (ghost.match(/^g_/) && MANSION.BLUEPRINTS_DATA[ghost].data.level <= nMaxLevel) {
-					aGhostList.push(ghost);
-				}
-			}
-			this.spawnGhost(this.oRandom.rand(aGhostList));
+			if (this.getGhostCount() === 0) {
+                this.spawnRandomGhost();
+            }
 			this.autoSpawnProcedure();
 		}).bind(this), nNextGhostTime);
 	},
@@ -944,6 +995,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return n;
 	},
 
+    /**
+	 * remove all ghosts
+     */
 	clearGhosts: function() {
         let aMobs = this.oRaycaster.oHorde.aMobiles;
         let n = 0;

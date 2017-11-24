@@ -116,10 +116,13 @@ MANSION.GGB('g_dark_tears',		2, 'z', 'power', 'f30');
 MANSION.GGB('g_dementia',		2, 'zr', 'power life', 'f50');
 MANSION.GGB('g_half_skull',		2, 'zr', '', 'm50');
 MANSION.GGB('g_spooky_doll',	2, 'tr', '', 'doll');
+MANSION.GGB('g_smilie',			2, 'zr', '', 'f15');
+
 
 MANSION.GGB('g_blond_child',	3, 'zr', 'speed', 'f10');
 MANSION.GGB('g_eyeball',		3.4, 'tr', 'life', 'b40');
 MANSION.GGB('g_old_ghoul',		3, 'c', 'power life', 'm80');
+MANSION.GGB('g_snow_white',		3, 'e', 'power life', 'f45');
 
 MANSION.GGB('g_hardy',			4, 'z', '', 'm40');
 

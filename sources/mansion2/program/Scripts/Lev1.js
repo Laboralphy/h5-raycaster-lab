@@ -3,9 +3,9 @@ O2.extendClass('MANSION.Script.Lev1', MANSION.Script.Abstract, {
 	/**
      * On active l'auto spawn
 	 */
-	startAutoSpawn: function() {
+	autoSpawnStart: function() {
 		this.removeEvent();
-	    this.game().startAutoSpawn();
+	    this.game().autoSpawnStart();
     },
 
     /**

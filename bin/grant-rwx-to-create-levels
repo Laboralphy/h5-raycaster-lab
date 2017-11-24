@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# a tool for granting write permission on server.storage
+
+sScriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+chmod -R 777 dynamics/rcwe/server.storage
+chmod -R 777 sources/*/data/levels
+chmod -R 777 sources/*/resources/tiles
+

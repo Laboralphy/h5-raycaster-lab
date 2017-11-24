@@ -1,0 +1,25 @@
+w_blind_cultist
+w_conserved_painter
+w_cowled_skull
+w_crimson_hood
+w_dark_scholar
+w_demented_knife
+w_electric_fairy
+w_gothic_witch
+w_grim_reaper
+w_mad_folklorist
+w_mischevious_doll
+w_noble_cultist
+w_penitentia
+w_petrified_medusa
+w_pole_of_skulls
+
+w_stray_dancer : dans le bosquet ouest, apparait une fois la clé de la porte d'entrée est ramassée.
+
+w_tormented_grudge
+
+w_twisted_novellist : apparait quand on s'approche de la fenetre à l'ouest de la porte d'entrée.
+apparait derrière cette fenetre, à l'interieur du manoir,  tandis que le joueur est à l'extérieur.
+
+w_voracious_clown
+w_wicked_crone

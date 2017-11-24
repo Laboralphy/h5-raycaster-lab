@@ -18,7 +18,8 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		jail: 'music/jail',
 		cellar: 'music/manor',
 		ghost: 'music/combat',
-		cthulhu: 'music/cthulhu'
+		cthulhu: 'music/cthulhu',
+		strangehold: 'music/strangehold'
 	},
 	events: {
 		// mechanical events
@@ -26,6 +27,8 @@ O2.createObject('MANSION.SOUNDS_DATA', {
 		doorclose: 'mechanisms/door-close-2',
 		doorlocked: 'mechanisms/door-locked',
 		doorunlock: 'mechanisms/door-unlock',
+        curtainopen: 'mechanisms/curtain-open',
+        curtainclose: 'mechanisms/curtain-close',
 		sigillocked: 'magic/magic-chime-low',
 		sigilunlock: 'magic/magic-chime',
 		secret: 'mechanisms/push-stone',
