@@ -39,7 +39,6 @@ O2.createClass('O876.SoundSystem', {
 		this.oBase = document.body;
 		this.aChans = [];
 		this.aAmbient = [];
-		this.aChans = [];
 		this._createMusicChannel();
 	},
 	
@@ -133,10 +132,9 @@ O2.createClass('O876.SoundSystem', {
 	 * Music tracks are play in a separated channel
 	 * @param sFile new file
 	 */
-	playMusic : function(sFile, bOverride) {
-		var oChan = this.oMusicChan;
-		oChan.loop = true;
-		this._setChanSource(oChan, sFile);
+	playMusic : function(sFile) {
+		var oChan = this._setChanSource(this.oMusicChan, sFile);
+        oChan.loop = true;
 		oChan.load();
 		if (!this.bMute) {
 			oChan.play();
@@ -199,7 +197,7 @@ O2.createClass('O876.SoundSystem', {
 			return -1;
 		}
 		// case : music channel -> redirect to playMusic
-		if (nChan == this.CHAN_MUSIC) {
+		if (nChan === this.CHAN_MUSIC) {
 			this.playMusic(sFile);
 			return nChan;
 		} else if (this._hasChan()) { 
@@ -216,9 +214,9 @@ O2.createClass('O876.SoundSystem', {
 		}
 		if (oChan !== null) {
 			// we got a channel
-			if (oChan.__file != sFile) {
+			if (oChan.__file !== sFile) {
 				// new file
-				this._setChanSource(oChan, sFile);
+				oChan = this._setChanSource(oChan, sFile);
 				oChan.__file = sFile;
 				oChan.load();
 			} else if (oChan.readyState > this.HAVE_NOTHING) {
@@ -259,10 +257,20 @@ O2.createClass('O876.SoundSystem', {
 	 * @param sSrc what file to play (neither path nor extension)
 	 */
 	_setChanSource: function(oChan, sSrc) {
-		if (sSrc == undefined) {
+		if (sSrc === undefined) {
 			throw new Error('undefined sound');
 		}
+		var iChan = this.aChans.indexOf(oChan);
+		if (iChan >= 0) {
+			console.log("remove chan", iChan);
+			oChan.remove();
+            oChan = this._addChan(iChan);
+		} else if (oChan === this.oMusicChan) {
+            console.log("remove music chan");
+            oChan = this._createMusicChannel();
+		}
 		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
+		return oChan;
 	},
 	
 	
@@ -281,12 +289,16 @@ O2.createClass('O876.SoundSystem', {
 	 * Adds and initializes a new Audio channel
 	 * @return HTMLAudioElement
 	 */
-	_addChan : function() {
+	_addChan : function(i) {
 		var oChan = this._createChan();
 		oChan.setAttribute('preload', 'auto');
 		oChan.setAttribute('autoplay', 'autoplay');
 		oChan.__file = '';
-		this.aChans.push(oChan);
+		if (i === undefined) {
+            this.aChans.push(oChan);
+        } else {
+			this.aChans[i] = oChan;
+		}
 		this.bAllUsed = false;
 		return oChan;
 	},
@@ -356,6 +368,7 @@ O2.createClass('O876.SoundSystem', {
 		} else {
 			throw new Error('neither ogg nor mp3 can be played back by this browser');
 		}
+		return this.oMusicChan;
 	}
 
 });

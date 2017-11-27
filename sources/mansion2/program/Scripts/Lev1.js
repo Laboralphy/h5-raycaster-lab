@@ -1,11 +1,19 @@
 O2.extendClass('MANSION.Script.Lev1', MANSION.Script.Abstract, {
 
-	/**
+    /**
      * On active l'auto spawn
-	 */
-	autoSpawnStart: function() {
-		this.removeEvent();
-	    this.game().autoSpawnStart();
+     */
+    autoSpawnStart: function() {
+        this.removeEvent();
+        this.game().autoSpawnStart();
+    },
+
+    /**
+     * On active l'auto spawn
+     */
+    autoSpawnStop: function() {
+        this.removeEvent();
+        this.game().autoSpawnStop();
     },
 
     /**
@@ -19,6 +27,13 @@ O2.extendClass('MANSION.Script.Lev1', MANSION.Script.Abstract, {
             });
             this.removeEvent();
         }
+    },
+
+    wraithDementedKnife: function() {
+        this.spawnWraithAtLocator('w_demented_knife', 'sp_demented_knife', {
+            boo: true
+        });
+        this.removeEvent();
     },
 
     /**

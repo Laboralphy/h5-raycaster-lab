@@ -35,6 +35,7 @@ O2.createClass('MANSION.Logic', {
 	_nAutoSpawnDelayBetweenGhosts: 10,
 	_nAutoSpawnMaxLevel: 1,
 	_bClearAutoSpawn: false,
+    _bPauseAutoSpawn: false,
 
 	_nScore: 0,
 

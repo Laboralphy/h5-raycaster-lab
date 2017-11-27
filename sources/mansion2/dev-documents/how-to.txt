@@ -83,3 +83,17 @@ Ajouter une entrée dans le fichier de chaines (data/Strings/en.js)
 Comment vérifier que le joueur possède un item
 ----------------------------------------------
 verifier que la data "item-Identifiant_de_la_clé" soit bien à true
+
+
+
+
+comment créer une porte verrouillée par un glyphe
+-------------------------------------------------
+un glyphe est comme une clé
+mais on peut photographier le glyphe pour avoir un indice sur la localisation
+du fantome qui le bloque.
+1) sur le glyphe placer un tag "lock glyph_ggg; photoscript Zzz yyy"
+pour que le block soit verrouillée et photographiable
+2) placer deux locators "loc1" et "loc2" aux bon endroit pour créer une photo.
+3) au moment opportun faire : game.playerAcquireItem('glyph_ggg')
+4) dans le photoscript utiliser "takeLocatorPhoto"

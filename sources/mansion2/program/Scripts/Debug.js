@@ -39,26 +39,23 @@ O2.createClass('MANSION.Script.Debug', {
 	 */
 	bp: function() {
 		/** : displays a list of available ghosts. Use "spawn" to spawn a ghosts. **/
-		var oEvent = this._event;
-		var g = oEvent.game;
-		var aList = [];
-		var e;
-		for (var gh in MANSION.BLUEPRINTS_DATA) {
-			e = MANSION.BLUEPRINTS_DATA[gh];
-			if ('data' in e && 'subtype' in e.data && e.data.subtype === 'ghost') {
-				aList.push(gh);
-			}
-		}
+		var aList = Object.keys(MANSION.BLUEPRINTS_DATA).filter(
+			gh => this._event.game.isGhostRef(gh)
+		);
 		g.console().clear().print(aList.join(', '));
 	},
 	
 	ghosts: function() {
 		/** : lists all active ghosts **/
 		var oEvent = this._event;
-		console.log(oEvent);
 		var g = oEvent.game;
 		var horde = g.oRaycaster.oHorde.aMobiles;
-		var aList = horde.map(ghost => ghost.getBlueprint() && ghost.getBlueprint('subtype') == 'ghost' ? horde.indexOf(ghost) + ' : ' + ghost.getBlueprint('name') : null);
+		var aList = horde.map(ghost =>
+			ghost.getBlueprint() &&
+			ghost.getBlueprint('subtype') === 'ghost' ?
+				horde.indexOf(ghost) + ' : ' + ghost.getBlueprint('name') :
+				null
+		);
 		g.console().clear().print(aList.join('\n'));
 	},
 	

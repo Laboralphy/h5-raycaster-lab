@@ -111,12 +111,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Initializes audio system
 	 */
 	initAudio: function() {
-		const a = new O876.SoundSystem();
-		a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
-		this._oAudio = a;
-		a.setPath('resources/sounds');
-		if (CONFIG.game.mute) {
-			a.mute();
+		if (!CONFIG.game.mute) {
+            const a = new O876.SoundSystem();
+            a.setChannelCount(MANSION.CONST.SOUND_CHANNELS);
+            this._oAudio = a;
+            a.setPath('resources/sounds');
 		}
 	},
 	
@@ -696,7 +695,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.oRaycaster.cloneWall(x, y, false, false);
 		var sItem = this.getBlockTag(oEvent.x, oEvent.y, 'item');
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sItem];
-		this.getPlayer().data('item-' + sItem, true);
+		this.playerAcquireItem(sItem);
 		this.popupMessage(MANSION.STRINGS_DATA.EVENTS.item, {
 			$item: sItemStr
 		});
@@ -727,7 +726,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		var sKeyType = this.getItemType(sKey);
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
-		if (this.getPlayer().data('item-' + sKey)) {
+		if (this.hasItem(sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
@@ -877,6 +876,16 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 	},
 
+    /**
+	 * renvoie vrai si le resref spécifié est un ghost
+	 * @param sResRef {string} référence du blueprint
+	 * @return {boolean}
+     */
+	isGhostRef: function(sResRef) {
+        var e = MANSION.BLUEPRINTS_DATA[gh];
+        return  'data' in e && 'subtype' in e.data && e.data.subtype === 'ghost'
+	},
+
 	/**
 	 * A hostile ghost is spawned.
 	 * If no coordinates are given : use random location near player
@@ -952,11 +961,37 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	/**
 	 * Demarre le cycle autospawn des fantome
 	 */
-	autoSpawnStart: function() {
-		this.autoSpawnProcedure();
-	},
+    autoSpawnStart: function() {
+        if (this.oLogic._bPauseAutoSpawn) {
+            this.oLogic._bPauseAutoSpawn = false;
+        } else {
+            this.autoSpawnProcedure();
+        }
+    },
 
-	autoSpawnProcedure: function() {
+    /**
+	 * Arrete définitivement l'auto spawner
+     */
+    autoSpawnStop: function() {
+        this.oLogic._bClearAutoSpawn = true;
+    },
+
+    /**
+	 * Mets le cycle d'autospawn en pause;
+	 * peut etre repis avec autoSpawnResume
+     */
+    autoSpawnPause: function() {
+        this.oLogic._bPauseAutoSpawn = true;
+    },
+
+    /**
+     * reprend le cycle d'auto spawn mis en pause par autoSpawnPause
+     */
+    autoSpawnResume: function() {
+        this.oLogic._bPauseAutoSpawn = false;
+    },
+
+    autoSpawnProcedure: function() {
 		if (this.oLogic._bClearAutoSpawn) {
 			this.oLogic._bClearAutoSpawn = false;
 			return;
@@ -965,7 +1000,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		var dbgMax = dbg + (dbg >> 1);
 		var nNextGhostTime = this.oRandom.rand(dbg, dbgMax);
 		this.oScheduler.delay((function() {
-			if (this.getGhostCount() === 0) {
+			if (this.getGhostCount() === 0 && !this.oLogic._bPauseAutoSpawn) {
                 this.spawnRandomGhost();
             }
 			this.autoSpawnProcedure();
@@ -1254,8 +1289,25 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	getPlayer: function() {
 		return this.oRaycaster.oCamera;
 	},
-	
-	/**
+
+    /**
+     * Le joueur obtien l'objet
+     * @param sItem
+     */
+    playerAcquireItem: function(sItem) {
+        this.getPlayer().data('item-' + sItem, true);
+    },
+
+    /**
+     * Le joueur obtien l'objet ? renvoie true, sinon renvoie false
+     * @param sItem
+     */
+    playerHasItem: function(sItem) {
+        return this.getPlayer().data('item-' + sItem);
+    },
+
+
+    /**
 	 * Renvoie true si l'endroit spécifié est traversable par un mobile
 	 * Renvoie false si le secteur spécifié est hors carte
 	 * @param x coordoonées secteur
@@ -1401,6 +1453,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param  y float
 	 */
 	playSound : function(sFile, x, y) {
+		if (CONFIG.game.mute) {
+			return;
+		}
 		if (sFile === '') {
 			return;
 		}
@@ -1437,6 +1492,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * @param string sAmb nom du fichier
 	 */
 	playAmbiance: function(sAmb) {
+        if (CONFIG.game.mute) {
+            return;
+        }
 		if (this._sPreviousAmbiance) {
 			this._sPreviousAmbiance = sAmb;
 			return;

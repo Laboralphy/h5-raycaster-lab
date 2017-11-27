@@ -6,8 +6,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 	pickupNecPage1: function() {
         var oEvent = this._event;
 		var g = oEvent.game;
-		var oPlayer = g.getPlayer();
-		if (oPlayer.data('item-book_sigils')) {
+		if (g.playerHasItem('book_sigils')) {
 			oEvent.remove = true;
 			var oGhost = g.spawnGhost('g_bashed_boy');
 			var oDoor = g.getLocator('door_ghost');

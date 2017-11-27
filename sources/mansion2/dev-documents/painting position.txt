@@ -1,6 +1,14 @@
+p-karen : dans la pièce bleue au Sud
+p-nyarlathotep : dans le vestibule d'entrée Ouest
+p-maya : dans la pièce bleue au Nord
+p-slenderman : cabane Est
+p-dorian : double passage secret nord
+p-zoidberg : passage secret dans la cage d'escalier menant au premier étage
+p-thunder : dans la bibliothèque
+
+
 p-blood-moon
 p-crosses
-p-dorian
 p-grim-reaper
 p-innsmouth-1
 p-innsmouth-2
@@ -8,18 +16,11 @@ p-innsmouth-3
 p-innsmouth-port
 p-jeff
 
-p-karen : dans la pièce bleue au sud
-
-p-maya : dans la pièce bleue au nord
 
 p-medusa
 p-nightmare
 
-p-nyarlathotep : dans le vestibule d'entrée ouest
 
 p-pyramid-head
 p-skull-monk
-p-slenderman
 p-succubus
-p-thunder
-p-zoidberg

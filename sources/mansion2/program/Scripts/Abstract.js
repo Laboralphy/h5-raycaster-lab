@@ -7,13 +7,6 @@ O2.createClass('MANSION.Script.Abstract', {
 		return this._event.game;
 	},
 
-    playerHasItem: function(sKey) {
-        return this.game()
-            .getPlayer()
-            .data('item-' + sKey);
-    },
-
-
     /**
      * Fait apparaitre un spectre à la position spécifiée
      * le tableau d'otion permet de regler le movement, la vitesse et la durée
