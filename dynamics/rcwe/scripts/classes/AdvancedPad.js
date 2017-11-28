@@ -2,15 +2,16 @@
 
 O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	_id: 'advancedpad',
+	oLevelOptions: null,
 	
 	build: function() {
 		__inherited('Advanced Pad');
 		this.getContainer().addClass('AdvancedPad');
-		
+		this.oLevelOptions = {};
 		this.addCommand('<span class="icon-enlarge" style="-webkit-transform: rotate(45deg); display: block; float:left"></span>&nbsp;', 'Shift map', this.cmd_viewshift.bind(this));
 		this.addCommand('<span class="icon-stop2"></span>', 'Block tools', this.cmd_blocktools.bind(this));
 		this.addCommand('<span class="icon-wrench"></span>', 'Build game', this.cmd_buildgame.bind(this));
-		this.addCommand('<span class="icon-download"></span>', 'Export level', this.cmd_exportlevel.bind(this));
+		this.addCommand('<span class="icon-download"></span>', 'Level options', this.cmd_leveloptions.bind(this));
 		//this.addCommand('⚙', 'Restart with plugins', this.cmd_viewplugins.bind(this));
 		
 		this.getBody().empty();
@@ -194,10 +195,33 @@ O2.extendClass('RCWE.AdvancedPad', RCWE.Window, {
 	},
 
 	/**
-	 * Exports the level in a downloadable way
-	 * Starts the download of a json file
-	 */
-	cmd_exportlevel: function(oEvent) {
 
+	 */
+    cmd_leveloptions: function(oEvent) {
+        this.cmd_selectOneCommand(oEvent);
+        this.getBody().empty();
+
+        var $form = $('<div class="leveloption"><p><b>Level options</b></p><p>You can set level options here.</p></div>');
+
+        var $table;
+
+        $table = $('<table>' +
+            '<tr><th>stretch upper textures</th><td><input id="advancedpad_option_stretched" type="checkbox" /></td></tr>' +
+            '<tr><td><button id="advancedpad_option_save" type="button">Save options</button></td id="advancedpad_option_done" ><td> </td></tr>' +
+			'</table>');
+
+        var $opStretch = $('#advancedpad_option_stretched', $table);
+        var $opSave = $('#advancedpad_option_save', $table);
+        var $opDone = $('#advancedpad_option_done', $table);
+        $opStretch.prop('checked', !!this.oLevelOptions.stretch);
+        $opSave.on('click', (function() {
+        	this.oLevelOptions = {
+        		stretch: $opStretch.prop('checked')
+            };
+        	this.doAction('leveloptionsdone');
+		}).bind(this));
+
+		$form.append($table);
+        this.getBody().append($form);
 	}
 });

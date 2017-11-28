@@ -98,6 +98,10 @@ levelData = {
     [ int, int, int, ... ],
     ...  
   ],
+
+  options: {                    // options
+    stretch: boolean,           // si true, etire les texture du premier etage
+  },
       
   visual: {                       // Données visuelle d'ambiance
     ceilColor: {r: int, g: int, b: int},      // couleur du plafond
