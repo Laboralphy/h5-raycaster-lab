@@ -161,7 +161,7 @@ O2.createClass('RCWE.Application', {
 				
 		var oThingGrid = new RCWE.ThingGrid();
 		this.oThingGrid = oThingGrid;
-		
+
 		this.oHintBox = oHintBox;
 		this.oMapGrid = oMapGrid;
 		this.oBlockEditor = oBlockEditor;
@@ -1255,12 +1255,16 @@ O2.createClass('RCWE.Application', {
 			}
 		}).bind(this));
 	},
-	
-	cmd_advancedpad_importlevel: function() {
-		//window.prompt('filename');
-		//this.showMainScreen('fileimport');
-	},
-	
+
+    cmd_advancedpad_importlevel: function() {
+        //window.prompt('filename');
+        //this.showMainScreen('fileimport');
+    },
+
+    cmd_advancedpad_leveloptionsdone: function() {
+		this.popup('Confirm', 'Options have been saved...');
+    },
+
 	// startingpointlocator
 	
 	cmd_startpointlocator_gridclick: function(x, y) {
@@ -1361,7 +1365,8 @@ O2.createClass('RCWE.Application', {
 			grid: this.oMapGrid.serialize(),
 			visuals: this.oSkyEditor.serialize(),
 			blueprints: this.oThingBrowser.serialize(),
-			things: this.oThingGrid.serialize()
+			things: this.oThingGrid.serialize(),
+			options: this.oAdvancedPad.oLevelOptions
 		};
 	},
 
@@ -1373,6 +1378,7 @@ O2.createClass('RCWE.Application', {
 			this.oSkyEditor.unserialize(oData.visuals);
 			this.oThingBrowser.unserialize(oData.blueprints);
 			this.oThingGrid.unserialize(oData.things);
+			this.oAdvancedPad.oLevelOptions = 'options' in oData ? oData.options : {};
 			this.redrawMap();
 		}).bind(this));
 	},

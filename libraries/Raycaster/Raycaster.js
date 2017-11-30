@@ -136,6 +136,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * @property fViewHeight {number}
      */
 	fViewHeight: 1,
+	bDoubleHeight: false, // texture will be double plus high
 
 	// Rendu des murs
 	nRayLimit: 100,
@@ -732,6 +733,20 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 
+    /**
+	 * Renvoie la valeur de l'option spécifiée
+	 * si elle est défini dans la définition du niveau
+     * @param sOption
+     */
+	getWorldOption: function(sOption) {
+		var oOptions = this.aWorld.options || {};
+		if (sOption in oOptions) {
+			return oOptions[sOption];
+		} else {
+			return undefined;
+		}
+	},
+
 	/** Construction de la map avec les donnée contenues dans aWorld
 	 */
 	buildMap : function() {
@@ -828,8 +843,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oXMap = new O876_Raycaster.XMap();
 		this.oXMap.setBlockSize(this.xTexture, this.yTexture);
 		this.oXMap.setSize(this.nMapSize, this.nMapSize);
+
 		if ('uppermap' in oData && !!oData.uppermap) {
 			this.buildSecondFloor();
+            this.oUpper.bDoubleHeight = !!this.getWorldOption('stretch');
 		}
 	},
 
@@ -2126,6 +2143,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			case this.PHYS_INVISIBLE_BLOCK:
 				aData[0] = null;
 				break;
+		}
+		if (this.bDoubleHeight) {
+			aData[6] -= aData[8];
+            aData[8] <<= 1;
 		}
 		if (aData[0]) {
 			this.aZBuffer.push(aData);
