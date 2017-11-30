@@ -1,3 +1,4 @@
+"use strict";
 /** O2: Fonctionalités Orientées Objets pour Javascript
  * 2010 Raphaël Marandet
  * ver 1.0 10.10.2010
@@ -7,32 +8,6 @@
  */
 
 var O2 = {};
-
-/** Remplace dans une chaine "inherited(" par "inherited(this"
- * @param s Chaine à remplacer
- * @return nouvelle chaine remplacée
- */
-function __inheritedThisMacroString(s) {
-	return s.toString().replace(/__inherited\s*\(/mg,
-			'O2.parent(this, ').replace(
-			/O2.parent\s*\(\s*this,\s*\)/mg, 'O2.parent(this)');
-}
-
-/** Invoque la methode parente
- * @param This appelant, + Paramètres normaux de la methode parente.
- * @return Retour normal de la methode parente.
- */
-O2.parent = function() {
-	var fCaller = O2.parent.caller;
-	var oThis = arguments[0];
-	var aParams;
-	if ('__inherited' in fCaller) {
-		aParams = Array.prototype.slice.call(arguments, 1);
-		return fCaller.__inherited.apply(oThis, aParams);
-	} else {
-		throw new Error('o2: no __inherited');
-	}
-};
 
 /** Creation d'une nouvelle classe
  * @example NouvelleClasse = Function.createClass(function(param1) { this.data = param1; });
@@ -55,6 +30,19 @@ Function.prototype.createClass = function(pPrototype) {
 	}
 };
 
+O2._superizeFunction = function(f, fParent) {
+	var fNew;
+	var s = 'fNew = function() {\n' +
+		'var __inherited = (function() {\n' +
+		'	return fParent.apply(this, arguments);\n' +
+		'}).bind(this);\n' +
+		'var __function = ' +
+		f.toString() + ';' +
+		'\nreturn __function.apply(this, arguments);\n' +
+	'}\n';
+	return eval(s);
+};
+
 /** Mécanisme d'extention de classe.
  * Cette fonction accepte un ou deux paramètres
  * Appel avec 1 paramètre :
@@ -65,21 +53,26 @@ Function.prototype.createClass = function(pPrototype) {
  * @return Instance de lui-même.
  */
 Function.prototype.extendPrototype = function(aDefinition) {
-	var iProp = '', f, fInherited;
+	var iProp = '', f, fInherited, f2;
 	if (aDefinition instanceof Function) {
 		aDefinition = aDefinition.prototype;
 	}
 	for (iProp in aDefinition) {
 		f = aDefinition[iProp];
-		if (iProp in this.prototype	&& (this.prototype[iProp] instanceof Function)) {
+		if (iProp in this.prototype && (this.prototype[iProp] instanceof Function)) {
 			// Sauvegarde de la méthode en cours : elle pourrait être héritée
 			fInherited = this.prototype[iProp];
 			// La méthode en cour est déja présente dans la super classe
 			if (f instanceof Function) {
 				// completion des __inherited
-				eval('f = ' + __inheritedThisMacroString(f.toString()));
-				this.prototype[iProp] = f;
-				this.prototype[iProp].__inherited = fInherited;
+				// Ancien code
+				//eval('f = ' + __inheritedThisMacroString(f.toString()));
+				//this.prototype[iProp] = f;
+				//this.prototype[iProp].__inherited = fInherited;
+
+				// Nouveau code
+				this.prototype[iProp] = O2._superizeFunction(f, fInherited);
+
 			} else {
 				// On écrase probablement une methode par une propriété : Erreur
 				throw new Error(
@@ -142,7 +135,7 @@ O2.createObject = function(sName, oObject) {
  * @param s string, nom de la classe
  * @return pointer vers la Classe
  */
-O2._loadObject = function(s, oContext) {
+O2.loadObject = function(s, oContext) {
 	var aClass = s.split('.');
 	var pBase = oContext || window;
 	var sSub, sAlready = '';
@@ -180,7 +173,7 @@ O2.createClass = function(sName, pPrototype) {
  */
 O2.extendClass = function(sName, pParent, pPrototype) {
 	if (typeof pParent === 'string') {
-		pParent = O2._loadObject(pParent);
+		pParent = O2.loadObject(pParent);
 	}
 	return O2.createObject(sName, Function.extendClass(pParent, pPrototype));
 };
@@ -192,137 +185,198 @@ O2.extendClass = function(sName, pParent, pPrototype) {
  * @param pMixin mixin lui même
  */
 O2.mixin = function(pPrototype, pMixin) {
+	var oMixin;
 	if (typeof pPrototype == 'string') {
-		pPrototype = O2._loadObject(pPrototype);
+		pPrototype = O2.loadObject(pPrototype);
 	}
-	pPrototype.extendPrototype(pMixin);
+	if (typeof pMixin === 'function') {
+		oMixin = new pMixin();
+		oMixin.mixin(pPrototype);
+	} else {
+		oMixin = pMixin;
+		pPrototype.extendPrototype(oMixin);
+	}
 };
 
 
 /**
- * good to GIT
+ * @class O876.Mixin.Events
+ * This class is a mixin
+ * it will add custom events management functions to an existing prototype
  */
-(function(O2) {
+O2.createClass('O876.Mixin.Events', {
+	mixin: function(p) {
+		p.extendPrototype({
+			
+			_WeirdEventHandlers: null,
 
-	var WEHName = '_WeirdEventHandlers';
-
-	O2.createClass('O876.Mixin.Events', {
-
-		on: function(sEvent, pCallback) {
-			if (this[WEHName] === null) {
-				this[WEHName] = {};
-			}
-			var weh = this[WEHName];
-			if (!(sEvent in weh)) {
-				weh[sEvent] = [];
-			}
-			weh[sEvent].push(pCallback);
-			return this;
-		},
-
-		one: function(sEvent, pCallback) {
-			var pCallbackOnce;
-			pCallbackOnce = (function() {
-				pCallback.apply(this, Array.prototype.slice.call(arguments, 0));
-				this.off(sEvent, pCallbackOnce);
-				pCallbackOnce = null;
-			}).bind(this);
-			return this.on(sEvent, pCallbackOnce);
-		},
-
-		off: function(sEvent, pCallback) {
-			if (this[WEHName] === null) {
-				throw new Error('no event "' + sEvent + '" defined');
-			}
-			if (sEvent === undefined) {
-				this[WEHName] = {};
-			} else if (!(sEvent in this[WEHName])) {
-				throw new Error('no event "' + sEvent + '" defined');
-			}
-			var weh = this[WEHName];
-			var wehe, n;
-			if (pCallback !== undefined) {
-				wehe = weh[sEvent];
-				n = wehe.indexOf(pCallback);
-				if (n < 0) {
-					throw new Error('this handler is not defined for event "' + sEvent + '"');
-				} else {
-					wehe.splice(n, 1);
+            /**
+			 * Will declare an event handler
+             * @param sEvent event name
+             * @param pCallback function to be called when the event is triggered
+             * @returns {*}
+             */
+			on: function(sEvent, pCallback) {
+				if (this._WeirdEventHandlers === null) {
+					this._WeirdEventHandlers = {};
 				}
-			} else {
-				weh[sEvent] = [];
-			}
-			return this;
-		},
+				var weh = this._WeirdEventHandlers;
+				if (!(sEvent in weh)) {
+					weh[sEvent] = [];
+				}
+				weh[sEvent].push(pCallback);
+				return this;
+			},
 
-		trigger: function(sEvent) {
-			if (this[WEHName] === null) {
+            /**
+             * Will declare an event handler. The handler will be called
+			 * at most one time.
+             * @param sEvent event name
+             * @param pCallback function to be called when the event is triggered
+             * @returns {*}
+             */
+			one: function(sEvent, pCallback) {
+				var pCallbackOnce;
+				pCallbackOnce = (function() {
+					pCallback.apply(this, Array.prototype.slice.call(arguments, 0));
+					this.off(sEvent, pCallbackOnce);
+					pCallbackOnce = null;
+				}).bind(this);
+				return this.on(sEvent, pCallbackOnce);
+			},
+
+            /**
+             * Will remove an event handler.
+			 * If pCallback is specified, this pCallback only will be remove
+			 * if no callback is specified, all the handlers will be removed for that
+			 * event.
+			 * if neither sEvent nor pCallback are specified, all events and all handler
+			 * will be removed.
+             * @param sEvent event name
+             * @param pCallback function to be called when the event is triggered
+             * @returns {*}
+             */
+			off: function(sEvent, pCallback) {
+				if (this._WeirdEventHandlers === null) {
+					throw new Error('no event "' + sEvent + '" defined');
+				}
+				if (sEvent === undefined) {
+					this._WeirdEventHandlers = {};
+				} else if (!(sEvent in this._WeirdEventHandlers)) {
+					throw new Error('no event "' + sEvent + '" defined');
+				}
+				var weh = this._WeirdEventHandlers;
+				var wehe, n;
+				if (pCallback !== undefined) {
+					wehe = weh[sEvent];
+					n = wehe.indexOf(pCallback);
+					if (n < 0) {
+						throw new Error('this handler is not defined for event "' + sEvent + '"');
+					} else {
+						wehe.splice(n, 1);
+					}
+				} else {
+					weh[sEvent] = [];
+				}
+				return this;
+			},
+
+            /**
+			 * Triggers an event.
+			 * Will call all callback associated with that event.
+			 * All parameters following sEvent will be passed to
+			 * the event handler.
+             * @param sEvent event name
+             * @returns {trigger}
+             */
+			trigger: function(sEvent) {
+				if (this._WeirdEventHandlers === null) {
+					return this;
+				}
+				var weh = this._WeirdEventHandlers;
+				if (!(sEvent in weh)) {
+					return this;
+				}
+				var aArgs = Array.prototype.slice.call(arguments, 1);
+				weh[sEvent].forEach(function(pCallback) {
+					pCallback.apply(this, aArgs);
+				}, this);
 				return this;
 			}
-			var weh = this[WEHName];
-			if (!(sEvent in weh)) {
-				return this;
-			}
-			var aArgs = Array.prototype.slice.call(arguments, 1);
-			weh[sEvent].forEach(function(pCallback) {
-				pCallback.apply(this, aArgs);
-			}, this);
-			return this;
-		}
-	});
-
-	O876.Mixin.Events.prototype[WEHName] = null;
-})(O2);
+		});
+	}
+});
 
 /**
- * good to GIT
+ * @class O876.Mixin.Data
+ * This is a mixin.
+ * It adds custom "data" management functions to an existing prototype
+ * it adds "getData", "setData", and "data" methods
  */
-(function(O2) {
-
-	var DCName = '_DataContainer';
-
-	O2.createClass('O876.Mixin.Data', {
-		_DataContainer: null,
-
-		setData: function(s, v) {
-			return this.data(s, v);
-		},
-
-		getData: function(s) {
-			return this.data(s);
-		},
+O2.createClass('O876.Mixin.Data', {
+	
+	mixin: function(p) {
+		p.extendPrototype({
 		
-		data: function(s, v) {
-			if (this[DCName] === null) {
-				this[DCName] = {};
-			}
-			var D = this[DCName];
-			if (v === undefined) { // get data
-				if (s === undefined) {
-					return D; // getting all data
-				} else if (typeof s === 'object') {
-					for (var x in s) { // setting many pairs of key values
-						D[x] = s[x];
-					}
-				} else if (s in D) { // getting one key
-					return D[s]; // found !
-				} else {
-					return null; // not found
-				}
-			} else { // set data
-				// setting one pair on key value
-				D[s] = v;
-			}
-			return this;
-		}
-	});
+			_DataContainer: null,
 
-	O876.Mixin.Data.prototype[DCName] = null;
-})(O2);
+            /**
+			 * Sets a custom variable
+             * @param s variable name
+             * @param v new value
+             * @returns {*}
+             */
+			setData: function(s, v) {
+				return this.data(s, v);
+			},
+
+            /**
+			 * Get a previously set value
+             * @param s variable name
+             * @returns {*}
+             */
+			getData: function(s) {
+				return this.data(s);
+			},
+
+            /**
+			 * This method is a synthesis between getData and setData
+			 * with 2 parameters the setData method will be called
+			 * with 1 parameter the getData method will be called
+             * @param s variable name
+             * @param v (optional) value
+             * @returns {*}
+             */
+			data: function(s, v) {
+				if (this._DataContainer === null) {
+					this._DataContainer = {};
+				}
+				var D = this._DataContainer;
+				if (v === undefined) { // get data
+					if (s === undefined) {
+						return D; // getting all data
+					} else if (typeof s === 'object') {
+						for (var x in s) { // setting many pairs of key values
+							D[x] = s[x];
+						}
+					} else if (s in D) { // getting one key
+						return D[s]; // found !
+					} else {
+						return null; // not found
+					}
+				} else { // set data
+					// setting one pair on key value
+					D[s] = v;
+				}
+				return this;
+			}
+		});
+	}
+});
 
 O2.createClass('H5UI.Font', {
 	_sStyle: '',
-	_sFont : 'monospace',
+	_sFont : '',
 	_nFontSize : 10,
 	_sColor : 'rgb(255, 255, 255)',
 	_oControl : null,
@@ -330,6 +384,9 @@ O2.createClass('H5UI.Font', {
 	_bOutline: false,
 
 	__construct : function(oControl) {
+		this._sFont = H5UI.font.defaultFont;
+		this._nFontSize = H5UI.font.defaultSize;
+		this._sColor = H5UI.font.defaultColor;
 		if (oControl === undefined) {
 			throw new Error('h5ui.font: no specified control');
 		}
@@ -541,6 +598,11 @@ O2.createObject('H5UI', {
 	canvasDispenser: [],
 	handle : 0,
 	
+	font: {
+		defaultFont: 'monospace',
+		defaultSize: 12,
+		defaultColor: '#000'
+	},
 	
 	root: null,
 
@@ -617,7 +679,7 @@ O2.createClass('H5UI.WinControl', {
 			center : []
 		};
 		this._aHideControls = [];
-		this.buildSurface();
+		this._buildSurface();
 		this.invalidate();
 	},
 
@@ -637,33 +699,24 @@ O2.createClass('H5UI.WinControl', {
 		H5UI.data.destroyedCanvases++;
 	},
 
-	/**
-	 *  Détruit tous les controles enfant
-	 */
-	clear : function() {
-		while (this._aControls.length) {
-			this.unlinkControl(0);
-		}
-	},
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
+	/** ************ Métodes privées ************** */
 
 	/**
 	 * Methode de construction du canvas
 	 * 
 	 */
-	buildSurface : function() {
+	_buildSurface : function() {
 		this._oCanvas = H5UI.getCanvas();
 		H5UI.data.buildCanvases++;
 		this._oContext = this._oCanvas.getContext('2d');
 	},
-
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
-	/** ************ Métodes privées ************** */
 
 	/**
 	 * Fonction protégée de modification de propriété conduisant à une
@@ -688,7 +741,7 @@ O2.createClass('H5UI.WinControl', {
 	 * l'alignement. Cete méthode à pour préfixe "moveTo" Un réalignement
 	 * intervient lorsque le controle parent change de place ou de taille.
 	 */
-	realignControls : function() {
+	_realignControls : function() {
 		var n, a, sDokoMethod;
 		for ( var sDoko in this._aAlignedControls) {
 			sDokoMethod = 'moveTo' + sDoko.substr(0, 1).toUpperCase() + sDoko.substr(1).toLowerCase();
@@ -709,11 +762,11 @@ O2.createClass('H5UI.WinControl', {
 	 * @param nDoko
 	 *            Où doit etre aligner le controle ('center')
 	 */
-	registerAlignedControl : function(oControl, sDoko) {
+	_registerAlignedControl : function(oControl, sDoko) {
 		oControl.render();
-		this.unregisterAlignedControl(oControl);
-		this.pushArrayItem(this._aAlignedControls[sDoko], oControl);
-		this.realignControls();
+		this._unregisterAlignedControl(oControl);
+		this._pushArrayItem(this._aAlignedControls[sDoko], oControl);
+		this._realignControls();
 	},
 
 	/**
@@ -722,9 +775,9 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            control, dont il faut supprimer l'alignement
 	 */
-	unregisterAlignedControl : function(oControl) {
+	_unregisterAlignedControl : function(oControl) {
 		for ( var sDoko in this._aAlignedControls) {
-			this.removeArrayItem(this._aAlignedControls[sDoko], oControl);
+			this._removeArrayItem(this._aAlignedControls[sDoko], oControl);
 		}
 	},
 
@@ -741,7 +794,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @param sIndex
 	 *            optionnel, clé de l'index à mettre à jour
 	 */
-	removeArrayItem : function(oArray, xItem, sIndex) {
+	_removeArrayItem : function(oArray, xItem, sIndex) {
 		var nItem;
 		if (typeof xItem == 'object') {
 			nItem = oArray.indexOf(xItem);
@@ -773,7 +826,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            optionnel, clé de l'index à mettre à jour
 	 * @return item
 	 */
-	pushArrayItem : function(oArray, oItem, sIndex) {
+	_pushArrayItem : function(oArray, oItem, sIndex) {
 		var nLen, nItem = oArray.indexOf(oItem);
 		if (nItem < 0) {
 			nLen = oArray.length;
@@ -794,8 +847,8 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            control qui se cache
 	 */
-	hideControl : function(oControl) {
-		this.pushArrayItem(this._aHideControls, oControl);
+	_hideControl : function(oControl) {
+		this._pushArrayItem(this._aHideControls, oControl);
 	},
 
 	/**
@@ -804,95 +857,10 @@ O2.createClass('H5UI.WinControl', {
 	 * @param oControl
 	 *            controle à rendre visible
 	 */
-	showControl : function(oControl) {
-		this.removeArrayItem(this._aHideControls, oControl);
+	_showControl : function(oControl) {
+		this._removeArrayItem(this._aHideControls, oControl);
 	},
 
-	/**
-	 * Gestion des évènement souris (click, mousein, mouseout, mousemove,
-	 * mousedown, mouseup) La méthode exécute une methode déléguée "on....."
-	 * puis transmet l'évènement à l'élément pointé par la souris
-	 * 
-	 * @param sEvent
-	 *            nom de l'évènement (Click, MouseIn, MouseOut, MouseMove,
-	 *            MouseDown, MouseUp)
-	 * @param x,
-	 *            y coordonnée de la souris lors de l'évènement
-	 * @param nButton
-	 *            bouton appuyé
-	 */
-	doMouseEvent : function(sEvent, x, y, nButton, oClicked) {
-		if (this._oDraggedControl !== null) {
-			this.doDragDropEvent(sEvent, x, y, nButton);
-			return;
-		}
-		if (oClicked === undefined) {
-			oClicked = this.getControlAt(x, y);
-		}
-		if (oClicked != this._oPointedControl) {
-			if (this._oPointedControl !== null) {
-				this.doMouseEvent('MouseOut', x, y, nButton,
-						this._oPointedControl);
-			}
-			this._oPointedControl = oClicked;
-			this.doMouseEvent('MouseIn', x, y, nButton, oClicked);
-		}
-		var sMouseEventMethod = 'on' + sEvent;
-		var pMouseEventMethod;
-		if (oClicked !== null) {
-			if (sMouseEventMethod in oClicked) {
-				pMouseEventMethod = oClicked[sMouseEventMethod];
-				pMouseEventMethod.apply(oClicked, [ x - oClicked._x,
-						y - oClicked._y, nButton ]);
-			}
-			oClicked.doMouseEvent(sEvent, x - oClicked._x, y - oClicked._y,
-					nButton);
-		}
-	},
-	
-	/**
-	 * Renvoie la position relative du controle spécifié Intervien lors du drag
-	 * n drop
-	 */
-	getControlRelativePosition : function(oControl) {
-		var oPos = {
-			x : 0,
-			y : 0
-		};
-		while (oControl != this && oControl !== null) {
-			oPos.x += oControl._x;
-			oPos.y += oControl._y;
-			oControl = oControl._oParent;
-		}
-		return oPos;
-	},
-
-	doDragDropEvent : function(sEvent, x, y, nButton) {
-		var oPos = this.getControlRelativePosition(this._oDraggedControl);
-		switch (sEvent) {
-		case 'MouseMove':
-			this._oDraggedControl.callEvent('onDragging', x - oPos.x, y - oPos.y, nButton);
-			break;
-
-		case 'MouseUp': // fin du drag n drop
-			this._oDraggedControl.callEvent('onEndDragging', x - oPos.x, y - oPos.y, nButton);
-			this._oDraggedControl = null;
-			break;
-		}
-	},
-
-	/**
-	 * Initialise le drag n drop appelle le gestionnaire de DragDrop, s'il n'y
-	 * en a pas, appelle le parent
-	 */
-	startDragObject : function(oTarget, x, y, b) {
-		if (this._bDragHandler) {
-			this._oDraggedControl = oTarget;
-			oTarget.callEvent('onStartDragging', x, y, b);
-		} else {
-			this.callParentMethod('startDragObject', oTarget, x, y, b);
-		}
-	},
 
 	/**
 	 * Transforme un objet d'arguments en tableau (spécificité webkit)
@@ -901,7 +869,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            args
 	 * @return array
 	 */
-	argObjectToArray : function(a) {
+	_argObjectToArray : function(a) {
 		var i = '';
 		var aArgs = [];
 		if ('length' in a) {
@@ -925,11 +893,11 @@ O2.createClass('H5UI.WinControl', {
 	 *            method
 	 * @return retourn de la methode
 	 */
-	callParentMethod : function() {
+	_callParentMethod : function() {
 		if (this._oParent === null) {
 			return null;
 		}
-		var aArgs = this.argObjectToArray(arguments);
+		var aArgs = this._argObjectToArray(arguments);
 		var sMethod = aArgs.shift();
 		if (sMethod in this._oParent) {
 			return this._oParent[sMethod].apply(this._oParent, aArgs);
@@ -940,8 +908,8 @@ O2.createClass('H5UI.WinControl', {
 	 * Appelle une methode si celle ci existe Utilisé lors d'appel d'évènement
 	 * facultativement défini
 	 */
-	callEvent : function() {
-		var aArgs = this.argObjectToArray(arguments);
+	_callEvent : function() {
+		var aArgs = this._argObjectToArray(arguments);
 		var sMethod = aArgs.shift();
 		if (sMethod in this) {
 			return this[sMethod].apply(this, aArgs);
@@ -955,7 +923,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @param o
 	 *            Controle à invalider
 	 */
-	invalidateControl : function(o) {
+	_invalidateControl : function(o) {
 		if (this._aInvalidControls.indexOf(o) < 0) {
 			this._aInvalidControls.push(o);
 		}
@@ -964,7 +932,7 @@ O2.createClass('H5UI.WinControl', {
 	/**
 	 * Dessine les controle enfant
 	 */
-	renderControls : function() {
+	_renderControls : function() {
 		var o;
 		while (this._aInvalidControls.length) {
 			o = this._aInvalidControls.shift();
@@ -977,13 +945,21 @@ O2.createClass('H5UI.WinControl', {
 	/**
 	 * Efface les controles caché de la surface
 	 */
-	hideControls : function() {
+	_hideControls : function() {
 		var o;
 		while (this._aHideControls.length) {
 			o = this._aHideControls.shift();
-			this._oContext.clearRect(o._x, o._y, o.getWidth(), o.getHeight());
+			this._oContext.clearRect(o._x, o._y, o.width(), o.height());
 		}
 	},
+
+
+
+
+
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
+	////// RENDERING ////// RENDERING ////// RENDERING ////// RENDERING //////
 
 	renderSelf : function() {
 	},
@@ -999,10 +975,10 @@ O2.createClass('H5UI.WinControl', {
 	render : function() {
 		var o;
 		if (this._bInvalid) {
-			this.hideControls();
+			this._hideControls();
 			this.renderSelf();
 			// repeindre les controle enfant
-			this.renderControls();
+			this._renderControls();
 			for (var i = 0; i < this._aControls.length; i++) {
 				o = this._aControls[i];
 				if (o.needRender()) {
@@ -1013,6 +989,98 @@ O2.createClass('H5UI.WinControl', {
 		}
 	},
 
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
+	////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS ////// SOURIS //////
+
+	/**
+	 * Gestion des évènement souris (click, mousein, mouseout, mousemove,
+	 * mousedown, mouseup) La méthode exécute une methode déléguée "on....."
+	 * puis transmet l'évènement à l'élément pointé par la souris
+	 * 
+	 * @param sEvent
+	 *            nom de l'évènement (Click, MouseIn, MouseOut, MouseMove,
+	 *            MouseDown, MouseUp)
+	 * @param x,
+	 *            y coordonnée de la souris lors de l'évènement
+	 * @param nButton
+	 *            bouton appuyé
+	 */
+	doMouseEvent : function(sEvent, x, y, nButton, oClicked) {
+		if (this._oDraggedControl !== null) {
+			this.doDragDropEvent(sEvent, x, y, nButton);
+			return;
+		}
+		if (oClicked === undefined) {
+			oClicked = this.peek(x, y);
+		}
+		if (oClicked != this._oPointedControl) {
+			if (this._oPointedControl !== null) {
+				this.doMouseEvent('mouseout', x, y, nButton,
+						this._oPointedControl);
+			}
+			this._oPointedControl = oClicked;
+			this.doMouseEvent('mousein', x, y, nButton, oClicked);
+		}
+		var oEvent;
+		if (oClicked) {
+			oEvent = {type: sEvent, target: oClicked, x: x - oClicked._x, y: y - oClicked._y, button: nButton, stop: false};
+			oClicked.trigger(sEvent, oEvent);
+			if (!oEvent.stop) {
+				oClicked.doMouseEvent(sEvent, x - oClicked._x, y - oClicked._y,
+					nButton);
+			}
+		} else {
+			oEvent = {type: sEvent, target: this, x: x, y: y, button: nButton, stop: false};
+			this.trigger(sEvent, this, x, y, nButton);
+		}
+	},
+	
+	/**
+	 * Renvoie la position relative du controle spécifié Intervien lors du drag
+	 * n drop
+	 */
+	getControlRelativePosition : function(oControl) {
+		var oPos = {
+			x : 0,
+			y : 0
+		};
+		while (oControl != this && oControl !== null) {
+			oPos.x += oControl._x;
+			oPos.y += oControl._y;
+			oControl = oControl._oParent;
+		}
+		return oPos;
+	},
+
+	doDragDropEvent : function(sEvent, x, y, nButton) {
+		var oPos = this.getControlRelativePosition(this._oDraggedControl);
+		switch (sEvent) {
+		case 'mousemove':
+			this._oDraggedControl._callEvent('onDragging', x - oPos.x, y - oPos.y, nButton);
+			break;
+
+		case 'mouseup': // fin du drag n drop
+			this._oDraggedControl._callEvent('onEndDragging', x - oPos.x, y - oPos.y, nButton);
+			this._oDraggedControl = null;
+			break;
+		}
+	},
+
+	/**
+	 * Initialise le drag n drop appelle le gestionnaire de DragDrop, s'il n'y
+	 * en a pas, appelle le parent
+	 */
+	startDragObject : function(oTarget, x, y, b) {
+		if (this._bDragHandler) {
+			this._oDraggedControl = oTarget;
+			oTarget._callEvent('onStartDragging', x, y, b);
+		} else {
+			this._callParentMethod('startDragObject', oTarget, x, y, b);
+		}
+	},
+
+
 	/** ************* Méthodes publiques ************* */
 	/** ************* Méthodes publiques ************* */
 	/** ************* Méthodes publiques ************* */
@@ -1022,13 +1090,13 @@ O2.createClass('H5UI.WinControl', {
 	/** ************* Méthodes publiques ************* */
 	/** ************* Méthodes publiques ************* */
 
-	/**
-	 * Renvoie la classe de widget. la "classe" est une simple variable.
-	 * 
-	 * @return string
-	 */
-	getClass : function() {
-		return this._sClass;
+	prop: function(sProp, xValue) {
+		if (xValue !== undefined) {
+			this._set(sProp, xValue);
+			return this;
+		} else {
+			return this[sProp];
+		}
 	},
 
 	/**
@@ -1037,8 +1105,8 @@ O2.createClass('H5UI.WinControl', {
 	 * 
 	 * @return int
 	 */
-	getWidth : function() {
-		return this._nWidth;
+	width : function(w) {
+		return this.prop('_nWidth', w);
 	},
 
 	/**
@@ -1047,8 +1115,8 @@ O2.createClass('H5UI.WinControl', {
 	 * 
 	 * @return int
 	 */
-	getHeight : function() {
-		return this._nHeight;
+	height : function(h) {
+		return this.prop('_nHeight', h);
 	},
 
 	/**
@@ -1099,7 +1167,7 @@ O2.createClass('H5UI.WinControl', {
 	 * fait appel au top du client
 	 */
 	top : function() {
-		this.callParentMethod('setTopControl', this);
+		this._callParentMethod('setTopControl', this);
 	},
 
 	/**
@@ -1114,12 +1182,12 @@ O2.createClass('H5UI.WinControl', {
 			throw new Error('out of bounds: ' + n.toString() + ' - range is 0 to ' + this._aControls.length);
 		}
 		oControl = this._aControls[n];
-		this.removeArrayItem(this._aControls, n, '_nIndex');
-		this.removeArrayItem(this._aInvalidControls, oControl);
+		this._removeArrayItem(this._aControls, n, '_nIndex');
+		this._removeArrayItem(this._aInvalidControls, oControl);
 		for ( var sAlign in this._aAlignedControls) {
-			this.removeArrayItem(this._aAlignedControls[sAlign], oControl);
+			this._removeArrayItem(this._aAlignedControls[sAlign], oControl);
 		}
-		this.removeArrayItem(this._aHideControls, oControl);
+		this._removeArrayItem(this._aHideControls, oControl);
 		/*
 		 * if (n == (this._aControls.length - 1)) { oControl =
 		 * this._aControls.pop(); } else { oControl = this._aControls[n];
@@ -1128,6 +1196,16 @@ O2.createClass('H5UI.WinControl', {
 		 */
 		oControl.__destruct();
 		this.invalidate();
+	},
+
+
+	/**
+	 *  Détruit tous les controles enfant
+	 */
+	clear : function() {
+		while (this.hasControls()) {
+			this.unlinkControl(0);
+		}
 	},
 
 	/**
@@ -1174,10 +1252,10 @@ O2.createClass('H5UI.WinControl', {
 	 *            est supprimé
 	 */
 	align : function(sDoko) {
-		if (sDoko === undefined) {
-			this.callParentMethod('unregisterAlignedControl', this);
+		if (sDoko in this._aAlignedControls) {
+			this._callParentMethod('_registerAlignedControl', this, sDoko);
 		} else {
-			this.callParentMethod('registerAlignedControl', this, sDoko);
+			this._callParentMethod('_unregisterAlignedControl', this);
 		}
 	},
 
@@ -1190,10 +1268,10 @@ O2.createClass('H5UI.WinControl', {
 	 *            taille y
 	 */
 	setSize : function(w, h) {
-		if (w != this.getWidth() || h != this.getHeight()) {
+		if (w != this.width() || h != this.height()) {
 			this._nWidth = this._oCanvas.width = w;
 			this._nHeight = this._oCanvas.height = h;
-			this.realignControls();
+			this._realignControls();
 			this.invalidate();
 		}
 	},
@@ -1208,7 +1286,7 @@ O2.createClass('H5UI.WinControl', {
 		if (x != this._x || y != this._y) {
 			this._x = x;
 			this._y = y;
-			this.realignControls();
+			this._realignControls();
 			this.invalidate();
 		}
 	},
@@ -1222,7 +1300,7 @@ O2.createClass('H5UI.WinControl', {
 	moveToCenter : function() {
 		var p = this.getParent();
 		if (p) {
-			this.moveTo(((p.getWidth() - this.getWidth()) >> 1), ((p.getHeight() - this.getHeight()) >> 1));
+			this.moveTo(((p.width() - this.width()) >> 1), ((p.height() - this.height()) >> 1));
 		}
 	},
 
@@ -1232,7 +1310,7 @@ O2.createClass('H5UI.WinControl', {
 	hide : function() {
 		if (this._bVisible) {
 			this._bVisible = false;
-			this.callParentMethod('hideControl', this);
+			this._callParentMethod('_hideControl', this);
 			this.invalidate();
 		}
 	},
@@ -1245,6 +1323,10 @@ O2.createClass('H5UI.WinControl', {
 			this._bVisible = true;
 			this.invalidate();
 		}
+	},
+
+	isVisible: function() {
+		return this._bVisible;
 	},
 
 	/**
@@ -1265,7 +1347,7 @@ O2.createClass('H5UI.WinControl', {
 	 * @return Object HTMLCanvasContext2d
 	 */
 	getParentSurface : function() {
-		return this.callParentMethod('getSurface');
+		return this._callParentMethod('getSurface');
 	},
 
 	/**
@@ -1274,15 +1356,15 @@ O2.createClass('H5UI.WinControl', {
 	 * @param x,
 	 *            y coordonnées
 	 */
-	getControlAt : function(x, y) {
+	peek : function(x, y) {
 		var o, ox, oy, w, h;
 		if (this._aControls) {
 			for (var i = this._aControls.length - 1; i >= 0; i--) {
 				o = this._aControls[i];
 				ox = o._x;
 				oy = o._y;
-				w = o.getWidth();
-				h = o.getHeight();
+				w = o.width();
+				h = o.height();
 				if (x >= ox && y >= oy && x < (ox + w) && y < (oy + h) && o._bVisible) {
 					return o;
 				}
@@ -1300,7 +1382,7 @@ O2.createClass('H5UI.WinControl', {
 	 *            bouttons de la souris enfoncé
 	 */
 	dragStart : function(x, y, b) {
-		this.callParentMethod('startDragObject', this, x, y, b);
+		this._callParentMethod('startDragObject', this, x, y, b);
 	},
 
 	/**
@@ -1308,8 +1390,8 @@ O2.createClass('H5UI.WinControl', {
 	 */
 	invalidate : function() {
 		this._bInvalid = true;
-		this.callParentMethod('invalidate');
-		this.callParentMethod('invalidateControl', this);
+		this._callParentMethod('invalidate');
+		this._callParentMethod('_invalidateControl', this);
 	},
 
 	/**
@@ -1319,14 +1401,19 @@ O2.createClass('H5UI.WinControl', {
 	 */
 	hasControls : function() {
 		return this._aControls !== null && this._aControls.length > 0;
-	}
+	} 
 });
 
+
+O2.mixin(H5UI.WinControl, O876.Mixin.Events);
+O2.mixin(H5UI.WinControl, O876.Mixin.Data);
+
 /**
- * This class will manage sound ambience events
- * It works well with O876.SoundSystem
+ * @class O876.Ambiance
+ * This class will manage sound ambiance events
+ * It works with O876.SoundSystem
  */
-O2.createClass('O876.Ambience', {
+O2.createClass('O876.Ambiance', {
 	
 	_nNextTime: 0,
 	_bValid: false,
@@ -1385,7 +1472,7 @@ O2.createClass('O876.Ambience', {
 	}
 });
 
-O2.mixin(O876.Ambience, O876.Mixin.Events);
+O2.mixin(O876.Ambiance, O876.Mixin.Events);
 O2.createClass('O876.Astar.Point', {
 	x : 0,
 	y : 0,
@@ -1682,6 +1769,149 @@ O2.createClass('O876.Astar.Grid', {
 
 O2.mixin(O876.Astar.Grid, O876.Mixin.Events);
 /**
+ * @class O876.Auto.State
+ * A simple state machine that triggers events.
+ * "enter" when enter a state
+ * "run" when running/looping a state
+ * "exit" when exiting a state
+ * "state" when a state is parsed from an input plain-object
+ * "trans" when a transition is parsed from an input plain-object
+ *
+ */
+O2.createClass('O876.Auto.State', {
+
+	_name: '',
+	_trans: null,
+	_current: null,
+	_start: null,
+
+	__construct: function() {
+		this._trans = [];
+	},
+
+	run: function() {
+		this._current = this._current.process();
+	},
+
+	reset: function() {
+		this._current = this._start;
+	},
+	
+	/**
+	 * Adds a new transition
+	 */
+	trans: function(t) {
+		if (t !== undefined) {
+			this._trans.push(t);
+			return this;
+		} else {
+			return this._trans;
+		}
+	},
+
+	process: function() {
+		// runs the states
+		if (this.name()) {
+			this.trigger('run', this);
+		}
+		// check all transition associated with the current states
+		var oState = this;
+		this._trans.some(function(t) {
+			if (t.pass(this)) {
+				this.trigger('exit', this);
+				oState = t.state();
+				oState.trigger('enter', oState);
+				return true;
+			} else {
+				return false;
+			}
+		}, this);
+		return oState;
+	},
+	
+	
+	parse: function(oData, oEvents) {
+		var sState, oState, oStates = {}, sTrans, oTrans, sTest;
+		this._start = null;
+		for (sState in oData) {
+			if (oData.hasOwnProperty(sState)) {
+                oState = new O876.Auto.State();
+                if (this._start === null) {
+                    this._start = oState;
+                }
+                oState.name(sState);
+                oStates[sState] = oState;
+                if (oEvents && 'exit' in oEvents) {
+                    oState.on('exit', oEvents.exit);
+                }
+                if (oEvents && 'enter' in oEvents) {
+                    oState.on('enter', oEvents.enter);
+                }
+                if (oEvents && 'run' in oEvents) {
+                    oState.on('run', oEvents.run);
+                }
+                this.trigger('state', oState);
+            }
+		}
+		for (sState in oData) {
+			if (oData.hasOwnProperty(sState)) {
+                oState = oData[sState];
+                for (sTrans in oState) {
+                    if ((sTrans in oStates) && oState.hasOwnProperty(sTrans)) {
+                        sTest = oState[sTrans];
+                        oTrans = new O876.Auto.Trans();
+                        if (oEvents && 'test' in oEvents) {
+                            oTrans.on('test', oEvents.test);
+                        }
+                        oTrans.test(sTest).state(oStates[sTrans]);
+                        oStates[sState].trans(oTrans);
+                        this.trigger('trans', oTrans);
+                    } else {
+                        throw new Error('unknown next-state "' + sTrans + '" in state "' + sState + '"');
+                    }
+                }
+            }
+		}
+		this.reset();
+		return oStates;
+	}
+});
+
+O2.mixin(O876.Auto.State, O876.Mixin.Prop);
+O2.mixin(O876.Auto.State, O876.Mixin.Events);
+
+/**
+ * @class O876.Auto.Trans
+ * Transition for the Automaton
+ * This class is a Transition.
+ * A test is done, and if a "true" boolean value is return then
+ * the automaton switches to another State
+ */
+
+O2.createClass('O876.Auto.Trans', {
+	_test: null,
+	_state: null,
+	
+	/**
+	 * Returns true if all tests pass
+	 * @return boolean
+	 */
+	pass: function(oState) {
+		var ev = {
+			state: oState,
+			test: this._test,
+			result: null
+		};
+		this.trigger('test', ev);
+		return !!ev.result;
+	}
+});
+
+
+O2.mixin(O876.Auto.Trans, O876.Mixin.Prop);
+O2.mixin(O876.Auto.Trans, O876.Mixin.Events);
+
+/**
  * This class implements the bresenham algorithm
  * and extend its use for other purpose than drawing pixel lines
  * good to GIT
@@ -1850,34 +2080,43 @@ O2.createObject('O876.Browser', {
 
 /**
  * Canvas factory
- * good to GIT
+ * @class O876.CanvasFactory
  */
 O2.createObject('O876.CanvasFactory', {
-	
+
+
+	defaultImageSmoothing: false,
+
 	/**
 	 * Create a new canvas
+     * @param w {int} width of the new canvas
+     * @param h {int} height of the new canvas
+	 * @param bImageSmoothing {boolean} default : true. if true, the new canvas will be smooth when resized
+	 * @return {*}
 	 */
 	getCanvas: function(w, h, bImageSmoothing) {
-		var oCanvas = document.createElement('canvas');
-		var oContext = oCanvas.getContext('2d');
+		let oCanvas = document.createElement('canvas');
+		let oContext = oCanvas.getContext('2d');
 		if (w && h) {
 			oCanvas.width = w;
 			oCanvas.height = h;
 		}
 		if (bImageSmoothing === undefined) {
-			bImageSmoothing = false;
+			bImageSmoothing = O876.CanvasFactory.defaultImageSmoothing;
 		}
-		O876.CanvasFactory.setImageSmoothing(oContext, false);
+		O876.CanvasFactory.setImageSmoothing(oContext, bImageSmoothing);
+		if (bImageSmoothing) {
+			oCanvas.style.imageRendering = 'pixelated';
+		}
 		return oCanvas;
 	},
 	
 	/**
 	 * Set canvas image smoothing flag on or off
-	 * @param Context2D oContext
-	 * @param bool b on = smoothing on // false = smoothing off
+	 * @param oContext HTMLContext2D
+	 * @param b {boolean} on = smoothing on // false = smoothing off
 	 */
 	setImageSmoothing: function(oContext, b) {
-		oContext.webkitImageSmoothingEnabled = b;
 		oContext.mozImageSmoothingEnabled = b;
 		oContext.msImageSmoothingEnabled = b;
 		oContext.imageSmoothingEnabled = b;
@@ -1889,11 +2128,11 @@ O2.createObject('O876.CanvasFactory', {
 
 	/**
 	 * Clones a canvas into a new one
-	 * @param oCanvas to be cloned
-	 * @return  Canvas
+	 * @param oCanvas {HTMLCanvasElement} to be cloned
+	 * @return  HTMLCanvasElement
 	 */
 	cloneCanvas: function(oCanvas) {
-		var c = O876.CanvasFactory.getCanvas(
+		let c = O876.CanvasFactory.getCanvas(
 			oCanvas.width, 
 			oCanvas.height, 
 			O876.CanvasFactory.getImageSmoothing(oCanvas.getContext('2d'))
@@ -1905,6 +2144,7 @@ O2.createObject('O876.CanvasFactory', {
 
 /** Interface de controle des mobile 
  * O876 Raycaster project
+ * @class O876.Easing
  * @date 2013-03-04
  * @author Raphaël Marandet 
  * Fait bouger un mobile de manière non-lineaire
@@ -1915,22 +2155,40 @@ O2.createObject('O876.CanvasFactory', {
 O2.createClass('O876.Easing', {	
 	xStart: 0,
 	xEnd: 0,
+    /**
+	 * @property x {number}
+     */
 	x: 0,
 	nTime: 0,
 	iTime: 0,
 	fWeight: 1,
 	pFunction: null,
-	
+
+    /**
+	 * Will define de starting value
+     * @param x {number}
+     * @returns {O876.Easing}
+     */
 	from: function(x) {
 		this.xStart = this.x = x;
 		return this;
 	},
 
+    /**
+	 * Will define the ending value
+     * @param x {number}
+     * @returns {O876.Easing}
+     */
 	to: function(x) {
 		this.xEnd = x;
 		return this;
 	},
 
+    /**
+	 * Will define the duration of the transition
+     * @param t {number} arbitrary unit
+     * @returns {O876.Easing}
+     */
 	during: function(t) {
 		this.nTime = t;
 		this.iTime = 0;
@@ -1974,19 +2232,27 @@ O2.createClass('O876.Easing', {
 	 * @param int t temps
 	 * si "t" est indéfini, utilise le timer interne 
 	 */
-	f: function(t) {
+	next: function(t) {
 		if (t === undefined) {
-			t = ++this.iTime;
+			t = this.iTime = Math.min(this.nTime, this.iTime + 1);
 		} else {
-			this.iTime = t;
+			t = this.iTime = Math.min(this.nTime, t);
 		}
 		var p = this.pFunction;
-		if (typeof p != 'function') {
+		if (typeof p !== 'function') {
 			throw new Error('easing function is invalid : ' + p);
 		}
 		var v = p(t / this.nTime);
 		this.x = this.xEnd * v + (this.xStart * (1 - v));
-		return t >= this.nTime;
+		return this;
+	},
+
+	val: function() {
+		return this.x;
+	},
+
+	over: function() {
+		return this.iTime >= this.nTime;
 	},
 
 	_linear: function(v) {
@@ -2050,161 +2316,6 @@ O2.createClass('O876.Easing', {
 		var ts = v * this.nTime;
 		var tc = ts * this.nTime;
 		return 4 * tc - 9 * ts + 6 * v;
-	}
-});
-
-O2.createClass('O876.LZW', {
-	DICT_SIZE: 4096,
-	PACKET_SEPARATOR: ':',
-	FILE_SIGN: 'O876' + String.fromCharCode(122) + ':',
-
-	nLastRatio: 0,		
-	nMystificator: 0,
-
-	encode: function(sData) {
-		var aPackets = this._createEncodedPackets(sData);
-		var sBin = this._bundlePackets(aPackets);
-		this.nLastRatio = sBin.length * 100 / sData.length | 0;
-		return this.FILE_SIGN + sBin;
-	},
-
-	decode: function(sZData) {
-		if (sZData.substr(0, this.FILE_SIGN.length) !== this.FILE_SIGN) {
-			throw new Error('bad format');
-		}
-		var aPacketCount = this._getPacketInt(sZData, this.FILE_SIGN.length);
-		var nCount = aPacketCount[0];
-		var iOffset = aPacketCount[1];
-		var aPackets = this._parsePackets(sZData, nCount, iOffset); 
-		return this._decodePackets(aPackets);
-	},
-
-	_bundlePackets: function(aPackets) {
-		var aOutput = [];
-		var sSep = this.PACKET_SEPARATOR;
-		aOutput.push(aPackets.length.toString(16));
-		aOutput.push(sSep);
-		for (var i = 0; i < aPackets.length; i++) {
-			aOutput.push(aPackets[i].length.toString(16));
-			aOutput.push(sSep);
-			aOutput.push(aPackets[i]);
-		}
-		return aOutput.join('');
-	},
-
-	_getPacketInt: function(sPacket, iFrom) {
-		var i = iFrom;
-		var sNumber = '0x';
-		var sSep = this.PACKET_SEPARATOR;
-		while (sPacket.substr(i, 1) != sSep) {
-			sNumber += sPacket.substr(i, 1);
-			i++;
-		}
-		var nNumber = parseInt(sNumber);
-		if (isNaN(nNumber)) {
-			throw new Error('corrupted data ' + sNumber);
-		}
-		return [parseInt(sNumber), i + 1];
-	},
-
-	_parsePackets: function(sPackets, nCount, iFrom) {
-		var aGPI, nLength, aOutput = [];
-		for (var i = 0; i < nCount; i++) {
-			aGPI = this._getPacketInt(sPackets, iFrom);
-			nLength = aGPI[0];
-			iFrom = aGPI[1];
-			aOutput.push(sPackets.substr(iFrom, nLength));
-			iFrom += nLength;
-		}
-		return aOutput;
-	},
-
-	_createEncodedPackets: function(s) {
-		var i = 0;
-		var o = [];
-		var aOutput = [];
-		do {
-			o = this._encodeFragment(s, i);
-			i = o[1];
-			aOutput.push(o[2]);
-		} while (!o[0]);
-		return aOutput;
-	},
-
-	_decodePackets: function(a) {
-		var o = [];
-		for (var i = 0; i < a.length; i++) {
-			o.push(this._decodeFragment(a[i]));
-		}
-		return o.join('');
-	},
-
-	_encodeFragment: function(s, iFrom) {
-		var d = {};
-		var i, iCode = 256;
-		for (i = 0; i < 256; i++) {
-			d[String.fromCharCode(i)] = i;
-		}
-		var w = '';
-		var c;
-		var wc;
-		var o = [];
-		var iIndex;
-		var nLen = s.length;
-		var bEnd = true;
-		for (iIndex = iFrom; iIndex < nLen; iIndex++) {
-			c = s.charAt(iIndex);
-			wc = w + c;
-			if (wc in d) {
-				w = wc;
-			} else {
-				d[wc] = iCode++;
-				o.push(d[w]);
-				w = c;
-			}
-			if (d.length >= this.DICT_SIZE) {
-				bEnd = false;
-				iIndex++;
-				break;
-			}
-		}
-		o.push(d[w]);
-		for (i = 0; i < o.length; i++) {
-			o[i] = String.fromCharCode(o[i] ^ this.nMystificator);
-		}
-		return [bEnd, iIndex, o.join('')];
-	},
-	
-	_decodeFragment: function(s) {
-		var a;
-		if (typeof s === 'string') {
-			a = s.split('');
-		} else {
-			a = s;
-		}
-		for (var i = 0; i < a.length; i++) {
-			a[i] = a[i].charCodeAt(0) ^ this.nMystificator;
-		}
-		var c, w, e = '', o = [], d = [];
-		for (i = 0; i < 256; i++) {
-			d.push(String.fromCharCode(i));
-		}
-		c = a[0];
-		o.push(w = String.fromCharCode(c));
-		for (i = 1; i < a.length; i++) {
-			c = a[i];
-			if (c > 255 && d[c] !== undefined) {
-				e = d[c];
-			} else if (c > 255 && d[c] === undefined) {
-				e = w + e.charAt(0);
-			} else {
-				e = String.fromCharCode(c);
-			}
-			o.push(e);
-			d.push(w + e.charAt(0));
-			w = e;
-		}
-		return o.join('');
 	}
 });
 
@@ -2388,6 +2499,296 @@ O2.createClass('O876.Mediator.Mediator', {
 		}
 	}
 });
+
+/**
+ * @class O876.Mixin.Prop
+ * Provide jquery like function to access private properties
+ */
+O2.createClass('O876.Mixin.Prop', {
+
+	_buildPropFunction: function(sProp) {
+		return function(value) {
+			if (value === undefined) {
+				return this[sProp];
+			} else {
+				this[sProp] = value;
+				return this;
+			}
+		};
+	},
+
+	mixin: function(p) {
+		var pProto = {
+			prop: function(variable, value) {
+				if (value === undefined) {
+					return this[variable];
+				} else {
+					this[variable] = value;
+					return this;
+				}
+			}
+		};
+		for (var i in p.prototype) {
+			if (i.match(/^_/)) {
+				if (!(i.substr(1) in p.prototype) && typeof p.prototype[i] !== 'function') {
+					pProto[i.substr(1)] = this._buildPropFunction(i);
+				}
+			}
+		}
+
+		p.extendPrototype(pProto);
+	}
+});
+
+O2.createClass('O876.Perlin', {
+
+	_rand: null,	// pseudo random generator
+	_width: 0,		// tile width
+	_height: 0,		// tile height
+	_octaves: 0,	// octave counts
+	_interpolate: null,	// string : interpolation function. Allowed values are 'cosine', 'linear', defualt is 'cosine'
+
+
+	__construct: function() {
+		this._rand = new O876.Random();
+		this.interpolation('cosine');
+	},
+
+	/**
+	 * Generate white noise on a matrix
+	 * @param w matrix width
+	 * @param h matrix height
+	 * @return matrix
+	 */
+	generateWhiteNoise: function(w, h) {
+		var r, a = [];
+		for (var x, y = 0; y < h; ++y) {
+			r = []; 
+			for (x = 0; x < w; ++x) {
+				r.push(this._rand.rand());
+			}
+			a.push(r);
+		}
+		return a;
+	},
+
+	/**
+	 * Linear interpolation
+	 * @param x1 minimum
+	 * @param x2 maximum
+	 * @param alpha value between 0 and 1
+	 * @return float, interpolation result
+	 */
+	linearInterpolate: function(x0, x1, alpha) {
+		return x0 * (1 - alpha) + alpha * x1;
+	},
+
+	/**
+	 * Cosine Interpolation
+	 */
+	cosineInterpolate: function(x0, x1, mu) {
+		var mu2 = (1 - Math.cos(mu * Math.PI)) / 2;
+   		return x0 * (1 - mu2) + x1 * mu2;
+	},
+
+	/**
+	 * selects an interpolation
+	 * @param f string | function the new interpolation function
+	 * f can be either a string ('cosine', 'linear') or a custom function
+	 */
+	interpolation: function(f) {
+		switch (typeof f) {
+			case 'string':
+				if ((f + 'Interpolate') in this) {
+					this._interpolate = this[f + 'Interpolate'];
+				} else {
+					throw new Error('only "linear" or "cosine" interpolation');
+				}
+				return this;
+				
+			case 'function':
+				this._interpolate = f;
+				return this;
+				
+			case 'undefined':
+				return this._interpolate;
+		}
+		return this;
+	},
+
+	generateSmoothNoise: function(aBaseNoise, nOctave) {
+		var w = aBaseNoise.length;
+		var h = aBaseNoise[0].length;
+		var aSmoothNoise = [];
+		var r;
+		var nSamplePeriod = 1 << nOctave;
+		var fSampleFreq = 1 / nSamplePeriod;
+		var xs = [], ys = [];
+		var hBlend, vBlend, fTop, fBottom;
+		for (var x, y = 0; y < h; ++y) {
+      		ys[0] = (y / nSamplePeriod | 0) * nSamplePeriod;
+      		ys[1] = (ys[0] + nSamplePeriod) % h;
+      		hBlend = (y - ys[0]) * fSampleFreq;
+      		r = [];
+      		for (x = 0; x < w; ++ x) {
+       			xs[0] = (x / nSamplePeriod | 0) * nSamplePeriod;
+      			xs[1] = (xs[0] + nSamplePeriod) % w;
+      			vBlend = (x - xs[0]) * fSampleFreq;
+
+      			fTop = this._interpolate(aBaseNoise[ys[0]][xs[0]], aBaseNoise[ys[1]][xs[0]], hBlend);
+      			fBottom = this._interpolate(aBaseNoise[ys[0]][xs[1]], aBaseNoise[ys[1]][xs[1]], hBlend);
+     			
+     			r.push(this._interpolate(fTop, fBottom, vBlend));
+      		}
+
+      		aSmoothNoise.push(r);
+		}
+		return aSmoothNoise;
+	},
+
+	generatePerlinNoise: function(aBaseNoise, nOctaveCount) {
+		var w = aBaseNoise.length;
+		var h = aBaseNoise[0].length;
+		var aSmoothNoise = [];
+		var fPersist = 0.5;
+
+		for (var i = 0; i < nOctaveCount; ++i) {
+			aSmoothNoise.push(this.generateSmoothNoise(aBaseNoise, i));
+		}
+
+		var aPerlinNoise = [];
+		var fAmplitude = 1;
+		var fTotalAmp = 0;
+		var x, y, r;
+
+		for (y = 0; y < h; ++y) {
+			r = [];
+			for (x = 0; x < w; ++x) {
+				r.push(0);
+			}
+			aPerlinNoise.push(r);
+		}
+
+		for (var iOctave = nOctaveCount - 1; iOctave >= 0; --iOctave) {
+			fAmplitude *= fPersist;
+			fTotalAmp += fAmplitude;
+
+			for (y = 0; y < h; ++y) {
+				r = [];
+				for (x = 0; x < w; ++x) {
+					aPerlinNoise[y][x] += aSmoothNoise[iOctave][y][x] * fAmplitude;
+				}
+			} 
+		}
+		for (y = 0; y < h; ++y) {
+			r = [];
+			for (x = 0; x < w; ++x) {
+				aPerlinNoise[y][x] /= fTotalAmp;
+			}
+		}
+		return aPerlinNoise;
+	},
+
+
+	hash: function (a) {
+	    a = (a ^ 61) ^ (a >> 16);
+	    a = a + (a << 3);
+	    a = a ^ (a >> 4);
+	    a = a * 0x27d4eb2d;
+	    a = a ^ (a >> 15);
+    	return a;
+    },
+
+	/** 
+	 * Calcule le hash d'une région
+	 * Permet de choisir une graine aléatoire
+	 * et de raccorder seamlessly les région adjacente
+	 */
+	getPointHash: function(x, y) {
+		var xh = this.hash(x).toString().split('');
+		var yh = this.hash(y).toString().split('');
+		var s = xh.shift() + yh.shift() + '.';
+		while (xh.length || yh.length) {
+			if (xh.length) {
+				s += xh.shift();
+			}
+			if (yh.length) {
+				s += yh.shift();
+			}
+		}
+		return parseFloat(s);
+	},
+
+	generate: function(x, y) {
+		var _self = this;
+
+		function gwn(xg, yg) {
+			var nSeed = _self.getPointHash(xg, yg);
+			_self.rand().seed(nSeed);
+			return _self.generateWhiteNoise(_self.width(), _self.height());
+		}
+
+		function merge33(a33) {
+			var h = _self.height();
+			var a = [];
+			for (var y, ya = 0; ya < 3; ++ya) {
+				for (y = 0; y < h; ++y) {
+					a.push(a33[ya][0][y].concat(a33[ya][1][y], a33[ya][2][y]));
+				}
+			}
+			return a;
+		}
+
+		function extract33(a) {
+			var w = _self.width();
+			var h = _self.height();
+			return a.slice(h, h * 2).map(r => r.slice(w, w * 2));
+		}
+
+		var a0 = [
+			[gwn(x - 1, y - 1), gwn(x, y - 1), gwn(x + 1, y - 1)],
+			[gwn(x - 1, y), gwn(x, y), gwn(x + 1, y)],
+			[gwn(x - 1, y + 1), gwn(x, y + 1), gwn(x + 1, y + 1)]
+		];
+
+		var a1 = merge33(a0);
+		var a2 = this.generatePerlinNoise(a1, this.octaves());
+		var a3 = extract33(a2);
+		return a3;
+	},
+
+
+	render: function(aNoise, oContext, aPalette) {
+		var oRainbow = new O876.Rainbow();
+		var aPalette = aPalette || oRainbow.gradient({
+			0: '#008',
+			49: '#00F',
+			50: '#840',
+			84: '#0A0',
+			85: '#888',
+			99: '#FFF'
+		});
+		var h = aNoise.length, w = aNoise[0].length, pl = aPalette.length;
+		var oImageData = oContext.createImageData(w, h);
+		var data = oImageData.data;
+		var oRainbow = new O876.Rainbow();
+		aNoise.forEach(function(r, y) {
+			r.forEach(function(p, x) {
+				var nOfs = (y * w + x) << 2;
+				var rgb = oRainbow.parse(aPalette[p * pl | 0]);
+				data[nOfs] = rgb.r;
+				data[nOfs + 1] = rgb.g;
+				data[nOfs + 2] = rgb.b;
+				data[nOfs + 3] = 255;
+			});
+		});
+		oContext.putImageData(oImageData, 0, 0);
+	}
+
+});
+
+
+O2.mixin(O876.Perlin, O876.Mixin.Prop);
 
 /**
  * A class for manipulating canvas
@@ -3109,13 +3510,167 @@ O2.createClass('O876.Philter', {
 O2.mixin(O876.Philter, O876.Mixin.Data);
 O2.mixin(O876.Philter, O876.Mixin.Events);
 
-/** Rainbow - Color Code Convertor Boîte à outil graphique
+/**
+ * @class O876.Rainbow
+ * Rainbow - Color Code Convertor Boîte à outil graphique
  * O876 raycaster project
  * 2012-01-01 Raphaël Marandet
  * good to GIT
  */
 
 O2.createClass('O876.Rainbow', {
+	
+	COLORS: {
+		aliceblue : '#F0F8FF',
+		antiquewhite : '#FAEBD7',
+		aqua : '#00FFFF',
+		aquamarine : '#7FFFD4',
+		azure : '#F0FFFF',
+		beige : '#F5F5DC',
+		bisque : '#FFE4C4',
+		black : '#000000',
+		blanchedalmond : '#FFEBCD',
+		blue : '#0000FF',
+		blueviolet : '#8A2BE2',
+		brown : '#A52A2A',
+		burlywood : '#DEB887',
+		cadetblue : '#5F9EA0',
+		chartreuse : '#7FFF00',
+		chocolate : '#D2691E',
+		coral : '#FF7F50',
+		cornflowerblue : '#6495ED',
+		cornsilk : '#FFF8DC',
+		crimson : '#DC143C',
+		cyan : '#00FFFF',
+		darkblue : '#00008B',
+		darkcyan : '#008B8B',
+		darkgoldenrod : '#B8860B',
+		darkgray : '#A9A9A9',
+		darkgrey : '#A9A9A9',
+		darkgreen : '#006400',
+		darkkhaki : '#BDB76B',
+		darkmagenta : '#8B008B',
+		darkolivegreen : '#556B2F',
+		darkorange : '#FF8C00',
+		darkorchid : '#9932CC',
+		darkred : '#8B0000',
+		darksalmon : '#E9967A',
+		darkseagreen : '#8FBC8F',
+		darkslateblue : '#483D8B',
+		darkslategray : '#2F4F4F',
+		darkslategrey : '#2F4F4F',
+		darkturquoise : '#00CED1',
+		darkviolet : '#9400D3',
+		deeppink : '#FF1493',
+		deepskyblue : '#00BFFF',
+		dimgray : '#696969',
+		dimgrey : '#696969',
+		dodgerblue : '#1E90FF',
+		firebrick : '#B22222',
+		floralwhite : '#FFFAF0',
+		forestgreen : '#228B22',
+		fuchsia : '#FF00FF',
+		gainsboro : '#DCDCDC',
+		ghostwhite : '#F8F8FF',
+		gold : '#FFD700',
+		goldenrod : '#DAA520',
+		gray : '#808080',
+		grey : '#808080',
+		green : '#008000',
+		greenyellow : '#ADFF2F',
+		honeydew : '#F0FFF0',
+		hotpink : '#FF69B4',
+		indianred  : '#CD5C5C',
+		indigo  : '#4B0082',
+		ivory : '#FFFFF0',
+		khaki : '#F0E68C',
+		lavender : '#E6E6FA',
+		lavenderblush : '#FFF0F5',
+		lawngreen : '#7CFC00',
+		lemonchiffon : '#FFFACD',
+		lightblue : '#ADD8E6',
+		lightcoral : '#F08080',
+		lightcyan : '#E0FFFF',
+		lightgoldenrodyellow : '#FAFAD2',
+		lightgray : '#D3D3D3',
+		lightgrey : '#D3D3D3',
+		lightgreen : '#90EE90',
+		lightpink : '#FFB6C1',
+		lightsalmon : '#FFA07A',
+		lightseagreen : '#20B2AA',
+		lightskyblue : '#87CEFA',
+		lightslategray : '#778899',
+		lightslategrey : '#778899',
+		lightsteelblue : '#B0C4DE',
+		lightyellow : '#FFFFE0',
+		lime : '#00FF00',
+		limegreen : '#32CD32',
+		linen : '#FAF0E6',
+		magenta : '#FF00FF',
+		maroon : '#800000',
+		mediumaquamarine : '#66CDAA',
+		mediumblue : '#0000CD',
+		mediumorchid : '#BA55D3',
+		mediumpurple : '#9370DB',
+		mediumseagreen : '#3CB371',
+		mediumslateblue : '#7B68EE',
+		mediumspringgreen : '#00FA9A',
+		mediumturquoise : '#48D1CC',
+		mediumvioletred : '#C71585',
+		midnightblue : '#191970',
+		mintcream : '#F5FFFA',
+		mistyrose : '#FFE4E1',
+		moccasin : '#FFE4B5',
+		navajowhite : '#FFDEAD',
+		navy : '#000080',
+		oldlace : '#FDF5E6',
+		olive : '#808000',
+		olivedrab : '#6B8E23',
+		orange : '#FFA500',
+		orangered : '#FF4500',
+		orchid : '#DA70D6',
+		palegoldenrod : '#EEE8AA',
+		palegreen : '#98FB98',
+		paleturquoise : '#AFEEEE',
+		palevioletred : '#DB7093',
+		papayawhip : '#FFEFD5',
+		peachpuff : '#FFDAB9',
+		peru : '#CD853F',
+		pink : '#FFC0CB',
+		plum : '#DDA0DD',
+		powderblue : '#B0E0E6',
+		purple : '#800080',
+		rebeccapurple : '#663399',
+		red : '#FF0000',
+		rosybrown : '#BC8F8F',
+		royalblue : '#4169E1',
+		saddlebrown : '#8B4513',
+		salmon : '#FA8072',
+		sandybrown : '#F4A460',
+		seagreen : '#2E8B57',
+		seashell : '#FFF5EE',
+		sienna : '#A0522D',
+		silver : '#C0C0C0',
+		skyblue : '#87CEEB',
+		slateblue : '#6A5ACD',
+		slategray : '#708090',
+		slategrey : '#708090',
+		snow : '#FFFAFA',
+		springgreen : '#00FF7F',
+		steelblue : '#4682B4',
+		tan : '#D2B48C',
+		teal : '#008080',
+		thistle : '#D8BFD8',
+		tomato : '#FF6347',
+		turquoise : '#40E0D0',
+		violet : '#EE82EE',
+		wheat : '#F5DEB3',
+		white : '#FFFFFF',
+		whitesmoke : '#F5F5F5',
+		yellow : '#FFFF00',
+		yellowgreen : '#9ACD32'
+	},
+	
 	/** 
 	 * Fabrique une chaine de caractère représentant une couleur au format CSS
 	 * @param xData une structure {r: int, g: int, b: int, a: float}
@@ -3135,6 +3690,10 @@ O2.createClass('O876.Rainbow', {
 		} else if (typeof xData === "number") {
 			return this._buildStructureFromInt(xData);
 		} else if (typeof xData === "string") {
+			xData = xData.toLowerCase();
+			if (xData in this.COLORS) {
+				xData = this.COLORS[xData];
+			}
 			switch (xData.length) {
 				case 3:
 					return this._buildStructureFromString3(xData);
@@ -3215,6 +3774,47 @@ O2.createClass('O876.Rainbow', {
 			return this.rgba(c);
 		}, this);
 	},
+	
+	/**
+	 * Generate a gradient
+	 * @param oPalette palette definition
+	 * 
+	 * {
+	 * 		start: value,
+	 * 		stop1: value,
+	 * 		stop2: value,
+	 * 		...
+	 * 		stopN: value,
+	 * 		end: value
+	 * },
+	 * 
+	 * example :
+	 * {
+	 * 		0: '#00F',
+	 * 		50: '#FF0',
+	 * 		100: '#F00'
+	 * }
+	 * rappel : une palette d'indices de 0 à 100 dispose de 101 entrée
+	 */
+	gradient: function(oPalette) {
+		var aPalette = [];
+		var sColor = null;
+		var sLastColor = null;
+		var nPal;
+		var nLastPal = 0;
+		for (var iPal in oPalette) {
+			nPal = iPal | 0;
+			sColor = oPalette[iPal];
+			if (sLastColor !== null) {
+				aPalette = aPalette.concat(this.spectrum(sLastColor, sColor, nPal - nLastPal + 1).slice(1));
+			} else {
+				aPalette[nPal] = this.rgba(sColor);
+			}
+			sLastColor = sColor;
+			nLastPal = nPal;
+		}
+		return aPalette;
+	},
 
 	_buildStructureFromInt: function(n) {
 		var r = (n >> 16) & 0xFF;
@@ -3254,6 +3854,62 @@ O2.createClass('O876.Rainbow', {
 		return sr + sg + sb;
 	}
 });
+
+/**
+ * @class O876.Random
+ * a FALSE random very false...
+ * generated random numbers, with seed
+ * used for predictable landscape generation
+ */
+
+O2.createClass('O876.Random', {
+
+	_seed: 1,
+
+	__construct: function() {
+		this._seed = Math.random();
+	},
+
+	seed: function(x) {
+    	return this.prop('_seed', x);
+	},
+
+
+	_rand: function() {
+		return this._seed = Math.abs(((Math.sin(this._seed) * 1e12) % 1e6) / 1e6);
+	},
+
+	rand: function(a, b) {
+		var r = this._rand();
+		switch (typeof a) {
+			case "undefined":
+				return r;
+				
+			case "number":
+				if (b === undefined) {
+					b = a - 1;
+					a = 0;
+				}
+				return Math.max(a, Math.min(b, (b - a + 1) * r + a | 0));
+			
+			case "object":
+				if (Array.isArray(a)) {
+					if (a.length > 0) {
+						return a[r * a.length | 0];
+					} else {
+						return undefined;
+					}
+				} else {
+					return this.rand(Object.keys(a));
+				}
+				
+			default:
+				return r;
+		}
+	}
+});
+
+O2.mixin(O876.Random, O876.Mixin.Prop);
 
 /**
  * This class will rasterize any XHTML document (including images
@@ -3540,6 +4196,64 @@ O2.createClass('O876.Rasterize', {
 
 O2.mixin(O876.Rasterize, O876.Mixin.Events);
 
+O2.createClass('O876.Snail', {
+	/**
+	 * Renvoie la largeur d'un carré de snail selon le niveau
+	 * @param nLevel niveau
+	 * @return int nombre d'élément sur le coté
+	 */
+	getLevelSquareWidth: function(nLevel) {
+		return nLevel * 2 + 1;
+	},
+	
+	/**
+	 * Renvoie le nombre d'élément qu'il y a dans un niveau
+	 * @param nLevel niveau
+	 * @return int nombre d'élément
+	 */
+	getLevelItemCount: function(nLevel) {
+		var w = this.getLevelSquareWidth(nLevel);
+		return 4 * w - 4;
+	},
+	
+	/**
+	 * Renvoie le niveau auquel appartient ce secteur
+	 * le niveau 0 correspond au point 0, 0
+	 */
+	getLevel: function(x, y) {
+		x = Math.abs(x);
+		y = Math.abs(y);
+		return Math.max(x, y);
+	},
+	
+	/**
+	 * Renvoie tous les secteur de niveau spécifié
+	 */
+	crawl: function(nLevelMin, nLevelMax) {
+		if (nLevelMax === undefined) {
+			nLevelMax = nLevelMin;
+		}
+		if (nLevelMin > nLevelMax) {
+			throw new Error('levelMin must be lower or equal levelMax');
+		}
+		if (nLevelMin < 0) {
+			return [];
+		}
+		var aSectors = [];
+		var n, x, y;
+		for (y = -nLevelMax; y <= nLevelMax; ++y) {
+			for (x = -nLevelMax; x <= nLevelMax; ++x) {
+				n = this.getLevel(x, y);
+				if (n >= nLevelMin && n <= nLevelMax) {
+					aSectors.push({x: x, y: y});
+				}
+			}
+		}
+		return aSectors;
+	}
+
+});
+
 /**
  * Class of multiple channels audio management
  * deals with sound effects and background music
@@ -3581,7 +4295,6 @@ O2.createClass('O876.SoundSystem', {
 		this.oBase = document.body;
 		this.aChans = [];
 		this.aAmbient = [];
-		this.aChans = [];
 		this._createMusicChannel();
 	},
 	
@@ -3675,12 +4388,13 @@ O2.createClass('O876.SoundSystem', {
 	 * Music tracks are play in a separated channel
 	 * @param sFile new file
 	 */
-	playMusic : function(sFile, bOverride) {
-		var oChan = this.oMusicChan;
-		oChan.loop = true;
-		this._setChanSource(oChan, sFile);
+	playMusic : function(sFile) {
+		var oChan = this._setChanSource(this.oMusicChan, sFile);
+        oChan.loop = true;
 		oChan.load();
-		oChan.play();
+		if (!this.bMute) {
+			oChan.play();
+		}
 	},
 
 	/**
@@ -3698,7 +4412,9 @@ O2.createClass('O876.SoundSystem', {
 	 * le programme d'ambience est reseté par cette manip
 	 */
 	crossFadeMusic: function(sFile) {
-        console.log('PM1', sFile);
+		if (sFile === undefined) {
+			throw new Error('sound file is not specified');
+		}
 		if (this.bCrossFading) {
 			this.sCrossFadeTo = sFile;
 			return;
@@ -3711,16 +4427,14 @@ O2.createClass('O876.SoundSystem', {
 		}
 		this.oInterval = window.setInterval((function() {
 			iVolume += nVolumeDelta;
-			this.oMusicChan.volume = iVolume / 100;
+			this.oMusicChan.volume = Math.min(1, Math.max(0, iVolume / 100));
 			if (iVolume <= 0) {
-                console.log('PM2', sFile);
 				this.playMusic(sFile);
 				this.oMusicChan.volume = 1;
 				window.clearInterval(this.oInterval);
 				this.oInterval = null;
 				this.bCrossFading = false;
 				if (this.sCrossFadeTo) {
-					console.log('CF to', this.sCrossFadeTo);
 					this.crossFadeMusic(this.sCrossFadeTo);
 					this.sCrossFadeTo = '';
 				}
@@ -3739,7 +4453,7 @@ O2.createClass('O876.SoundSystem', {
 			return -1;
 		}
 		// case : music channel -> redirect to playMusic
-		if (nChan == this.CHAN_MUSIC) {
+		if (nChan === this.CHAN_MUSIC) {
 			this.playMusic(sFile);
 			return nChan;
 		} else if (this._hasChan()) { 
@@ -3756,9 +4470,9 @@ O2.createClass('O876.SoundSystem', {
 		}
 		if (oChan !== null) {
 			// we got a channel
-			if (oChan.__file != sFile) {
+			if (oChan.__file !== sFile) {
 				// new file
-				this._setChanSource(oChan, sFile);
+				oChan = this._setChanSource(oChan, sFile);
 				oChan.__file = sFile;
 				oChan.load();
 			} else if (oChan.readyState > this.HAVE_NOTHING) {
@@ -3799,10 +4513,20 @@ O2.createClass('O876.SoundSystem', {
 	 * @param sSrc what file to play (neither path nor extension)
 	 */
 	_setChanSource: function(oChan, sSrc) {
-		if (sSrc == undefined) {
+		if (sSrc === undefined) {
 			throw new Error('undefined sound');
 		}
+		var iChan = this.aChans.indexOf(oChan);
+		if (iChan >= 0) {
+			console.log("remove chan", iChan);
+			oChan.remove();
+            oChan = this._addChan(iChan);
+		} else if (oChan === this.oMusicChan) {
+            console.log("remove music chan");
+            oChan = this._createMusicChannel();
+		}
 		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;
+		return oChan;
 	},
 	
 	
@@ -3821,12 +4545,16 @@ O2.createClass('O876.SoundSystem', {
 	 * Adds and initializes a new Audio channel
 	 * @return HTMLAudioElement
 	 */
-	_addChan : function() {
+	_addChan : function(i) {
 		var oChan = this._createChan();
 		oChan.setAttribute('preload', 'auto');
 		oChan.setAttribute('autoplay', 'autoplay');
 		oChan.__file = '';
-		this.aChans.push(oChan);
+		if (i === undefined) {
+            this.aChans.push(oChan);
+        } else {
+			this.aChans[i] = oChan;
+		}
 		this.bAllUsed = false;
 		return oChan;
 	},
@@ -3896,12 +4624,14 @@ O2.createClass('O876.SoundSystem', {
 		} else {
 			throw new Error('neither ogg nor mp3 can be played back by this browser');
 		}
+		return this.oMusicChan;
 	}
 
 });
 
 
 /**
+ * @class O876.ThemeGenerator
  * Générateur de Thème CSS
  * Permet de définir un theme dynamiquement à partir d'une couleur.
  * L'objet theme fournit est un objet associatif dont les clé sont des selecteur CSS 
@@ -3913,8 +4643,6 @@ O2.createClass('O876.SoundSystem', {
  * - $color-darken-2 : la couleur de base légèrement plus foncée (appliquée a des backgrounds)
  * - $color-text : la couleur de base (appliquée à du texte) 
  * - $color-text-lighten-5 : la couleur de base fortemennt éclaircée (appliquée a du texte)
- * - $color-border : la couleur de base (appliquée à des bordures) 
- * - $color-border-lighten-5 : la couleur de base fortemennt éclaircée (appliquée a des bordures)
  * 
  * exemple de thème :
  * 
@@ -3928,9 +4656,9 @@ O2.createClass('O876.ThemeGenerator', {
 	_oStyle: null,
 	
 	define: function(sColor, oTheme) {
-		var r = new O876.Rainbow();
-		var aLighten = r.spectrum(sColor, '#FFFFFF', 7);
-		var aDarken = r.spectrum(sColor, '#000000', 7);
+		var oRainbow = new O876.Rainbow();
+		var aLighten = oRainbow.spectrum(sColor, '#FFFFFF', 7);
+		var aDarken = oRainbow.spectrum(sColor, '#000000', 7);
 		var sName = '$color';
 	
 		var oCSS = {};
@@ -3949,11 +4677,14 @@ O2.createClass('O876.ThemeGenerator', {
 		var aTheme = [];
 		
 		for (var sClass in oTheme) {
-			aTheme.push(sClass + ' { ' + oTheme[sClass].map(function(t) { 
-				return oCSS[t];
-			}).join('; ') + '; }');
+			if (oTheme.hasOwnProperty(sClass)) {
+                aTheme.push(sClass + ' { ' + oTheme[sClass].map(function (t) {
+                        return oCSS[t];
+                    }).join('; ') + '; }');
+            }
 		}
 	
+		
 		if (this._oStyle) {
 			this._oStyle.remove();
 			this._oStyle = null;
@@ -3961,7 +4692,7 @@ O2.createClass('O876.ThemeGenerator', {
 		var oStyle = document.createElement('style');
 		oStyle.setAttribute('type', 'text/css');
 		oStyle.innerHTML = aTheme.join('\n').replace(/\$color/g, sName);
-		this._oStyle = oStyle;
+		this._oStyle = oStyle; 
 		document.getElementsByTagName('head')[0].appendChild(oStyle);
 	}
 });
@@ -4170,12 +4901,14 @@ O2.createClass('O876_Raycaster.Animation',  {
 	nCount : 0, // nombre total de frames
 	nDuration : 0, // durée de chaque frame, plus la valeur est grande plus l'animation est lente
 	nTime : 0, // temps
-	nLoop : 0, // type de boucle 1: boucle forward; 2: boucle yoyo
+	nLoop : 0, // type de boucle 1: boucle forward; 2: boucle yoyo 3: random
 	nFrame: 0, // Frame actuellement affichée
 	
 	nDirLoop: 1,  // direction de la boucle (pour yoyo)
+	bOver: false,
 	
 	assign: function(a) {
+		this.bOver = false;
 		if (a) {
 			this.nStart = a.nStart;
 			this.nCount = a.nCount;
@@ -4196,7 +4929,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 		// Dépassement de duration (pour une seule fois)
 		if (this.nTime >= this.nDuration) {
 			this.nTime -= this.nDuration;
-			if (this.nLoop === 3) {
+			if (this.nLoop == 3) {
 				this.nIndex = Math.random() * this.nCount | 0;
 			} else {
 				this.nIndex += this.nDirLoop;
@@ -4209,6 +4942,13 @@ O2.createClass('O876_Raycaster.Animation',  {
 		}
 		
 		switch (this.nLoop) {
+			case 0:
+				if (this.nIndex >= this.nCount) {
+					this.nIndex = this.nCount - 1;
+					this.bOver = true;
+				}
+				break;
+
 			case 1:
 				if (this.nIndex >= this.nCount) {
 					this.nIndex = 0;
@@ -4217,7 +4957,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 				
 			case 2:
 				if (this.nIndex >= this.nCount) {
-					this.nIndex = this.nCount - 2;
+					this.nIndex = this.nCount - 1;
 					this.nDirLoop = -1;
 				}
 				if (this.nIndex <= 0) {
@@ -4239,6 +4979,11 @@ O2.createClass('O876_Raycaster.Animation',  {
 		this.nIndex = 0;
 		this.nTime = 0;
 		this.nDirLoop = 1;
+		this.bOver = false;
+	},
+
+	isOver: function() {
+		return this.bOver;
 	}
 });
 
@@ -4587,32 +5332,57 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 	bUseBuffer: true,
 	nSecurityDelay: 0,
 	oElement: null,
-	
+	vMouse: null,
 	oHandlers: null,
 	
 	__construct: function() {
 		this.aEventBuffer = [];
 		this.oHandlers = {};
+		this.vMouse = {clientX: 0, clientY: 0};
 	},
 	
 	clearBuffer: function() {
 		this.aEventBuffer = [];
 	},
 
-	eventMouseUp: function(e) {
-		var oEvent = window.event ? window.event : e;
+	getElementPosition: function() {
+		var e = this.oElement;
+		var x = e.offsetLeft;
+		var y = e.offsetTop;
+		while (e.offsetParent) {
+			e = e.offsetParent;
+			x += e.offsetLeft;
+			y += e.offsetTop;
+		}
+		return {x: x, y: y};
+	},
+
+	getMousePosition: function(oEvent) {
+		var cx = oEvent.clientX || oEvent.x;
+		var cy = oEvent.clientY || oEvent.y;
+		var p = this.getElementPosition();
+		var x = cx - p.x;
+		var y = cy - p.y;
+		var e = this.oElement;
+		var xReal = x * e.width / e.offsetWidth | 0;
+		var yReal = y * e.height / e.offsetHeight | 0;
+		return {x: xReal, y: yReal};
+	},
+
+	eventMouseUp: function(oEvent) {
 		this.nButtons = oEvent.buttons;
 		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
-			this.aEventBuffer.push([0, oEvent.clientX, oEvent.clientY, oEvent.button]);
+			var p = this.getMousePosition(oEvent);
+			this.aEventBuffer.push([0, p.x, p.y, oEvent.button]);
 		}
 		return false;
 	},
 
-	eventMouseDown: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseDown: function(oEvent) {
 		this.nButtons = oEvent.buttons;
 		if (this.bUseBuffer && this.aEventBuffer.length < this.nKeyBufferSize) {
-			this.aEventBuffer.push([1, oEvent.clientX, oEvent.clientY, oEvent.button]);
+			var p = this.getMousePosition(oEvent);
+			this.aEventBuffer.push([1, p.x, p.y, oEvent.button]);
 		}
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
@@ -4622,9 +5392,13 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		}
 		return false;
 	},
+
+	eventMouseMove: function(oEvent) {
+		this.vMouse.x = oEvent.clientX;
+		this.vMouse.y = oEvent.clientY;
+	},
 	
-	eventMouseClick: function(e) {
-		var oEvent = window.event ? window.event : e;
+	eventMouseClick: function(oEvent) {
 		if (oEvent.button === 2) {
 			if (oEvent.stopPropagation) {
 				oEvent.stopPropagation();
@@ -4633,7 +5407,14 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		}
 		return false;
 	},
-	
+
+	/**
+	 * Renvoie la position du curseur de la souris dans le context du canvas associé
+	 * @return {*}
+	 */
+	getPixelPointer: function() {
+		return this.getMousePosition(this.vMouse);
+	},
 	
 	/** 
 	 * Renvoie le prochain message souris précédemment empilé
@@ -4706,14 +5487,11 @@ O2.createClass('O876_Raycaster.MouseDevice', {
 		this.plugHandler('mouseup', this.eventMouseUp);
 		this.plugHandler('mousewheel', this.mouseWheel);
 		this.plugHandler('DOMMouseScroll', this.mouseWheel);
+		this.plugHandler('mousemove', this.eventMouseMove);
 	},
 	
 	unplugHandlers: function() {
-		('mousedown click mouseup mousewheel DOMMouseScroll').split(' ').forEach(this.unplugHandler.bind(this));
-	},
-	
-	clearEvents: function() {
-		this.aEventBuffer = [];
+		('mousedown click mouseup mousewheel DOMMouseScroll mousemove').split(' ').forEach(this.unplugHandler.bind(this));
 	}
 });
 
@@ -4788,6 +5566,7 @@ O2.createObject('O876_Raycaster.FullScreen', {
 
 /** GXEffect : Classe de base pour les effets graphiques temporisés
  * O876 raycaster project
+ * @class O876_Raycaster.GXEffect
  * 2012-01-01 Raphaël Marandet
  */
 O2.createClass('O876_Raycaster.GXEffect', {
@@ -4832,6 +5611,8 @@ O2.createClass('O876_Raycaster.GXEffect', {
 
 /** Effet graphique temporisé
  * O876 Raycaster project
+ * @class O876_Raycaster.GXFade
+ * @extends O876_Raycaster.GXEffect
  * @date 2012-01-01
  * @author Raphaël Marandet
  * 
@@ -4862,7 +5643,7 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	fade: function(sColor, fTime, fFrom, fTo) {
 		this.oColor = this.oRainbow.parse(sColor);
 		this.oEasing.from(fFrom).to(fTo).during(fTime / this.oRaycaster.TIME_FACTOR | 0).use('smoothstep');
-		this.bOver = fFrom != fTo;
+		this.bOver = fFrom == fTo;
 		return this;
 	},
 	
@@ -4871,11 +5652,21 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	fadeIn: function(sColor, fTime) {
-		return this.fade(sColor, fTime, 1, 0);
+		var c = this.oRainbow.parse(sColor);
+		var f = 1;
+		if (c.a) {
+			f = c.a;
+		}
+		return this.fade(sColor, fTime, f, 0);
 	},
 	
 	fadeOut: function(sColor, fTime) {
-		return this.fade(sColor, fTime, 0, 1);
+        var c = this.oRainbow.parse(sColor);
+        var f = 1;
+        if (c.a) {
+            f = c.a;
+        }
+		return this.fade(sColor, fTime, 0, f);
 	},
 	
 	isOver : function() {
@@ -4887,8 +5678,10 @@ O2.extendClass('O876_Raycaster.GXFade', O876_Raycaster.GXEffect, {
 	},
 
 	process : function() {
-        this.oColor.a = this.oEasing.f();
-        this.bOver = this.oEasing.over();
+		if (!this.bOver) {
+            this.bOver = this.oEasing.next().over();
+            this.oColor.a = this.oEasing.val();
+        }
 	},
 
 	render : function() {
@@ -4958,6 +5751,10 @@ O2.createClass('O876_Raycaster.GXManager', {
 	addEffect : function(oEffect) {
 		this.aEffects.push(oEffect);
 		return oEffect;
+	},
+
+	getEffects: function() {
+		return this.aEffects;
 	},
 	
 	/**
@@ -5102,6 +5899,8 @@ O2.extendClass('O876_Raycaster.GXMessage', O876_Raycaster.GXEffect, {
 		this.oMessageCanvas = O876.CanvasFactory.getCanvas();
 		this.oMessageCanvas.width = this.wSize; 
 		this.oMessageCanvas.height = this.hSize;
+		O876.CanvasFactory.setImageSmoothing(this.oMessageCanvas, true);
+		O876.CanvasFactory.setImageSmoothing(this.oCanvas, true);
 		this.xPos = this.xTo = (this.oCanvas.width - this.oMessageCanvas.width) >> 1;
 		this.yPos = 0;
 		this.yTo = 16;
@@ -5460,6 +6259,7 @@ O2.extendClass('O876_Raycaster.GXSkyRotate', O876_Raycaster.GXEffect, {
 /** Gestion de la horde de sprite
  * L'indice des éléments de cette horde n'a pas d'importance.
  * O876 Raycaster project
+ * @class O876_Raycaster.Horde
  * @date 2012-01-01
  * @author Raphaël Marandet
  */
@@ -5522,12 +6322,19 @@ O2.createClass('O876_Raycaster.Horde',  {
 	},
 
 	/**
-	 * {id, tile, width, height, speed, rotspeed}
-	 *   
+	 * defines a new blueprint from a plain object of the worl definition
+	 * @param sId blueprint identifier
+	 * @param oData blueprint plain objet definition
 	 */
-	defineBlueprint : function(sId, aData) {
-		var oBP = new O876_Raycaster.Blueprint(aData);
-		oBP.oTile = this.oTiles[aData.tile];
+	defineBlueprint : function(sId, oData) {
+		var oBP = new O876_Raycaster.Blueprint(oData);
+		if (oData.tile in this.oTiles) {
+			oBP.oTile = this.oTiles[oData.tile];
+		} else if ('tile' in oData) {
+			throw new Error('this tile is unknown : "' + oData.tile + '" for blueprint ' + sId);
+		} else {
+			throw new Error('no tile is defined in "' + sId + '" data');
+		}
 		oBP.sId = sId;
 		this.oBlueprints[sId] = oBP;
 		this.oMobileDispenser.registerBlueprint(sId);
@@ -5614,7 +6421,7 @@ O2.createClass('O876_Raycaster.Horde',  {
 	 */
 	spawnMobile : function(sBlueprint, x, y, fTheta) {
 		var oMobile = this.oMobileDispenser.popMobile(sBlueprint);
-		if (oMobile === null) {
+		if (!oMobile) {
 			var aData = {
 				blueprint : sBlueprint,
 				x : x,
@@ -5853,13 +6660,12 @@ O2.createObject('MAIN', {
 		}
 		oCanvas.style.width = (wf | 0).toString() + 'px';
 		oCanvas.style.height = (hf | 0).toString() + 'px';
+		oCanvas.__ratio = wf / cw;
 	}
 });
 
 window.addEventListener('load', function() {
-	if ('CONFIG' in window) {
-		MAIN.run();
-	}
+	MAIN.run();
 });
 
 O2.createClass('O876_Raycaster.Minimap',  {
@@ -6003,8 +6809,10 @@ O2.createClass('O876_Raycaster.Minimap',  {
 	
 });
 
-/** La classe mobile permet de mémoriser la position des objets circulant dans le laby
+/**
+ * La classe mobile permet de mémoriser la position des objets circulant dans le laby
  * O876 Raycaster project
+ * @class O876_Raycaster.Mobile
  * @date 2012-01-01
  * @author Raphaël Marandet
  */
@@ -6048,6 +6856,14 @@ O2.createClass('O876_Raycaster.Mobile', {
 	//oData: null,
 
 
+    /**
+	 * Retreive the blueprint of the sprite associated with this mobile
+	 * If a parameter is given, the method will return its values
+	 * else the method return the blueprint object
+	 * if no sprite is defined, the method returns null
+     * @param sXData {string=} a parameter of the blueprint
+     * @returns {*}
+     */
 	getBlueprint: function(sXData) {
 		if (this.oSprite) {
 			if (sXData === undefined) {
@@ -6064,9 +6880,11 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 
-	/** Renvoie le type de blueprint
+	/**
+	 * Renvoie le type de blueprint
 	 * Si le mobile n'a pas de sprite (et n'a pas de blueprint)
 	 * On renvoie 0, c'est généralement le cas pour le mobile-caméra
+	 * @return {int}
 	 */
 	getType: function() {
 		if (this.nBlueprintType === null) {
@@ -6084,6 +6902,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 
 	// évènements
 
+    /**
+	 * Define the thinker
+     * @param oThinker {O876_Raycaster.Thinker}
+     */
 	setThinker: function(oThinker) {
 		this.oThinker = oThinker;
 		if (oThinker) {
@@ -6092,11 +6914,18 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.oWallCollision = {x: 0, y: 0};
 		this.gotoLimbo();
 	},
-	
+
+    /**
+	 * Get the thinker instance defined previously by setThinker
+     * @returns {O876_Raycaster.Thinker}
+     */
 	getThinker: function() {
 		return this.oThinker;
 	},
 
+    /**
+	 * Makes the thinker think
+     */
 	think: function() {
 		this.xSave = this.x;
 		this.ySave = this.y;
@@ -6107,44 +6936,49 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 	
-	/** Modifie l'angle de la caméra d'un delta.
-	 * @param f float delta en radiant
+	/**
+	 * Rotates the mobile point of view angle
+	 * @param f {number} delta en radiant
 	 */
 	rotate: function(f) {
 		this.setAngle(this.fTheta + f);
 	},
 
+    /**
+	 * Sets the mobile speed
+     * @param f {number} new speed
+     */
 	setSpeed: function(f) {
 		this.fSpeed = f;
 	},
 
-	getSpeed: function(f) {
+    /**
+	 * Get the mobile speed previously defined by blueprint or by setSpeed
+     * @returns {number}
+     */
+	getSpeed: function() {
 		return this.fSpeed;
 	},
 
+    /**
+	 * Define a new angle
+     * @param f {number}
+     */
 	setAngle: function(f) {
 		this.fTheta = f % (PI * 2);
-		/*
-		var f2Pi = 2 * PI;
-		if (f > 0) {
-			while (this.fTheta >= PI) {
-				this.fTheta -= f2Pi;
-			}
-		} else {
-			while (this.fTheta < -PI) {
-				this.fTheta += f2Pi;
-			}
-		}*/
 	},
-	
-	getAngle: function(f) {
+
+    /**
+	 * Get the angle value previously define by setAngle
+     * @returns {number}
+     */
+	getAngle: function() {
 		return this.fTheta;
 	},	
 	
 	/** 
 	 * Renvoie les coordonnée du bloc devant le mobile
-	 * @param oMobile
-	 * @return object x y
+	 * @return {x, y}
 	 */
 	getFrontCellXY: function() {
 		if (this.oFrontCell === null) {
@@ -6158,8 +6992,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	},
 
 
-	/** Quitte la grille de collision de manière à ne plus interférer avec les autres sprites
-	 *
+	/**
+	 * Quitte la grille de collision de manière à ne plus interférer avec les autres sprites
 	 */
 	gotoLimbo: function() {
 		this.oRaycaster.oMobileSectors.unregister(this);
@@ -6207,6 +7041,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	/**
 	 * Fait glisser le mobile
 	 * détecte les collision avec le mur
+	 * @param dx {number}
+	 * @param dy {number}
 	 */
 	slide: function(dx, dy) {
 		var xc = this.xCollisions;
@@ -6270,8 +7106,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 	
 	
 
-	/** Déplace la caméra d'un certain nombre d'unité vers l'avant
-	 * @param fDist float Distance de déplacement
+	/**
+	 * Déplace la caméra d'un certain nombre d'unité vers l'avant
+     * @param fAngle {number} Angle of displacement
+     * @param fDist {number} Distance de déplacement
 	 */
 	move: function(fAngle, fDist) {
 		if (this.fMovingAngle != fAngle || this.fMovingSpeed != fDist) {
@@ -6283,9 +7121,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.slide(this.xInertie, this.yInertie);
 	},
 
-	/** Test de collision avec le mobile spécifié
-	 * @param oMobile mobile susceptible d'entrer en collision
-	 * @returnn bool
+	/**
+	 * Test de collision avec le mobile spécifié
+	 * @param oMobile {O876_Raycaster.Mobile} mobile susceptible d'entrer en collision
+	 * @returnn {bool}
 	 */
 	hits: function(oMobile) {
 		if (this.bEthereal || oMobile.bEthereal) {
@@ -6299,39 +7138,45 @@ O2.createClass('O876_Raycaster.Mobile', {
 		return d2 < dMin;
 	},
 
-	/** Fait tourner le mobile dans le sens direct en fonction de la vitesse de rotation
+	/**
+	 * Fait tourner le mobile dans le sens direct en fonction de la vitesse de rotation
 	 * si la vitesse est négative le sens de rotation est inversé
 	 */
 	rotateLeft: function() {
 		this.rotate(-this.fRotSpeed);
 	},
 
-	/** Fait tourner le mobile dans le sens retrograde en fonction de la vitesse de rotation
+	/**
+	 * Fait tourner le mobile dans le sens retrograde en fonction de la vitesse de rotation
 	 * si la vitesse est négative le sens de rotation est inversé
 	 */
 	rotateRight: function() {
 		this.rotate(this.fRotSpeed);
 	},
 
-	/** Déplace le mobile vers l'avant, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile vers l'avant, en fonction de sa vitesse
 	 */
 	moveForward: function() {
 		this.move(this.fTheta, this.fSpeed);
 	},
 
-	/** Déplace le mobile vers l'arrière, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile vers l'arrière, en fonction de sa vitesse
 	 */
 	moveBackward: function() {
 		this.move(this.fTheta, -this.fSpeed);
 	},
 
-	/** Déplace le mobile d'un mouvement latéral vers la gauche, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile d'un mouvement latéral vers la gauche, en fonction de sa vitesse
 	 */
 	strafeLeft: function() {
 		this.move(this.fTheta - PI / 2, this.fSpeed);
 	},
 
-	/** Déplace le mobile d'un mouvement latéral vers la droite, en fonction de sa vitesse
+	/**
+	 * Déplace le mobile d'un mouvement latéral vers la droite, en fonction de sa vitesse
 	 */
 	strafeRight: function() {
 		this.move(this.fTheta + PI / 2, this.fSpeed);
@@ -6339,6 +7184,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 });
 
 O2.mixin(O876_Raycaster.Mobile, O876.Mixin.Data);
+
 /** Classe de distribution optimisée de mobiles
  * O876 Raycaster project
  * @date 2012-04-04
@@ -6525,13 +7371,14 @@ O2.createObject('O876_Raycaster.PointerLock', {
 	},
 
 	requestPointerLock: function(oElement) {
-		if (!O876_Raycaster.PointerLock.bEnabled) {
+		var pl = O876_Raycaster.PointerLock;
+		if (!pl.bEnabled) {
 			return;
 		}
-		if (O876_Raycaster.PointerLock.locked()) {
+		if (pl.locked()) {
 			return;
 		}
-		O876_Raycaster.PointerLock.oElement = oElement;
+		pl.oElement = oElement;
 		oElement.requestPointerLock = oElement.requestPointerLock || oElement.mozRequestPointerLockWithKeys || oElement.mozRequestPointerLock;
 		oElement.requestPointerLock();
 	},
@@ -6599,6 +7446,12 @@ O2.createObject('O876_Raycaster.PointerLock', {
  * - speed optimization.
  * - raster effects.
  * - ...
+ *
+ *
+ * Second storey
+ * in upper map :
+ * - all blocks above a ceiling must be ray-blocking except when explicitly defined
+ *
  */
 
 
@@ -6610,6 +7463,11 @@ O2.createObject('O876_Raycaster.PointerLock', {
  *   canvas: string | HTMLCanvasElement,   // canvas id or canvas instance
  *   drawMap: boolean,   // drawing map or not
  * }
+ *
+ *
+ *
+ *
+ *
  */
  
 /* jshint undef: false, unused: true */
@@ -6642,6 +7500,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	// Permet de régler les évènements liés au temps
 	TIME_FACTOR : 50,  // c'est le nombre de millisecondes qui s'écoule entre chaque calcul
 
+	bPause: false,
+
 	// World Render params
 	oWall : null,
 	oFloor : null,
@@ -6667,7 +7527,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	_oContext : null,
 	_oRenderCanvas : null,
 	_oRenderContext : null,
-	
+    _o3DBufferCanvas: null, // holds the stereoscopic left buffer screen
+    _o3DBufferContext: null, // holds the stereoscopic left buffer screen
+
 	b3d: false, // active l'option 3D
 	i3dFrame: 0, // what frame is being rendered
 	x3dOfs: 0, // offset 3D
@@ -6689,7 +7551,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	xScrSize : 0,
 	yScrSize : 0,
 	fViewAngle : 0,
+    /**
+	 * @property fViewHeight {number}
+     */
 	fViewHeight: 1,
+	bDoubleHeight: false, // texture will be double plus high
 
 	// Rendu des murs
 	nRayLimit: 100,
@@ -6707,6 +7573,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oContinueRay: null,
 	
 	// sprites
+    /**
+	 * @property oHorde {O876_Raycaster.Horde}
+     */
 	oHorde : null,
 	aScanSectors : null,
 	oMobileSectors : null,
@@ -6727,7 +7596,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oConfig : null,
 	
 	oUpper: null,
-	
 	/**
 	 * Set Raycaster Configuration
 	 * 	{
@@ -6749,7 +7617,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 		}
 	},
-	
+
 	setVR: function(b) {
 		if (b) {
 			this.b3d = true;
@@ -6760,6 +7628,8 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.oUpper.xLimitL = this.xScrSize * 0.25 | 0;
 				this.oUpper.xLimitR = this.xScrSize * 0.75 | 0;
 			}
+			this._o3DBufferCanvas = O876.CanvasFactory.cloneCanvas(this._oRenderCanvas);
+			this._o3DBufferContext = this._o3DBufferCanvas.getContext('2d');
 		} else {
 			this.b3d = false;
 			if (this.oUpper) {
@@ -6877,11 +7747,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	frameProcess : function() {
+		if (this.bPause) {
+			return;
+		}
 		this.aDiscardedMobiles = this.updateHorde();
 		this.oEffects.process();
 	},
 
 	frameRender : function() {
+		if (this.bPause) {
+			this.flipBuffer();
+			return;
+		}
 		if (this.b3d) {
 			var c = this.oCamera; // camera
 			var a = c.fTheta; // angle camera
@@ -6903,23 +7780,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this.i3dFrame = 0;
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
+			this.flipBuffer(true);
 			this.i3dFrame = 1;
 			c.x = cxr;
 			c.y = cyr;
 			this.i3dFrame = 1;
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
+			this.flipBuffer(true);
 			c.x = cx;
 			c.y = cy;
 		} else {
 			this.drawScreen();
 			this.oEffects.render();
-			this.flipBuffer();
 		}
 	},
-	
+
 	/**
 	 * Retreive a tile
 	 */
@@ -6957,6 +7833,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oEffects.addEffect(g);
 		return g;
 	},
+
 	
 	/** Rendu graphique de l'arme
 	 * canvas : référence du canvas source
@@ -7032,8 +7909,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			this._oRenderContext = this._oContext;
 		}
 		if ('smoothTextures' in this.oConfig) {
-			this._oRenderContext.mozImageSmoothingEnabled = this.oConfig.smoothTextures;
-			this._oRenderContext.webkitImageSmoothingEnabled = this.oConfig.smoothTextures;
+            O876.CanvasFactory.setImageSmoothing(this._oRenderContext, this.oConfig.smoothTextures);
 		}
 		this.xScrSize = this._oCanvas.width;
 		this.yScrSize = this._oCanvas.height >> 1;
@@ -7276,6 +8152,20 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 
+    /**
+	 * Renvoie la valeur de l'option spécifiée
+	 * si elle est défini dans la définition du niveau
+     * @param sOption
+     */
+	getWorldOption: function(sOption) {
+		var oOptions = this.aWorld.options || {};
+		if (sOption in oOptions) {
+			return oOptions[sOption];
+		} else {
+			return undefined;
+		}
+	},
+
 	/** Construction de la map avec les donnée contenues dans aWorld
 	 */
 	buildMap : function() {
@@ -7307,7 +8197,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			codes : oData.walls.codes,
 			animated : 'animated' in oData.walls ? oData.walls.animated : {}
 		};
-		if ('flats' in oData) {
+		if ('flats' in oData && oData.flats) {
 			this.bFloor = true;
 			var bEmptyCeil = oData.flats.codes.every(function(item) {
 				if (item) {
@@ -7372,10 +8262,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oXMap = new O876_Raycaster.XMap();
 		this.oXMap.setBlockSize(this.xTexture, this.yTexture);
 		this.oXMap.setSize(this.nMapSize, this.nMapSize);
+
 		if ('uppermap' in oData && !!oData.uppermap) {
 			this.buildSecondFloor();
+            this.oUpper.bDoubleHeight = !!this.getWorldOption('stretch');
 		}
 	},
+
+
 	
 	backgroundRedim: function() {
 		var oBackground = this.oBackground;
@@ -7402,6 +8296,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if ('uppermap' in oData) {
 			var SELF = this.constructor;
 			var urc = new SELF();
+			urc.nRayLimit = 16;
 			urc.TIME_FACTOR = this.TIME_FACTOR;
 			urc.setConfig(this.oConfig);
 			urc.bUseVideoBuffer = false;
@@ -7504,7 +8399,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var nMapSize = this.nMapSize;
 		var nScale = this.nPlaneSpacing;
 
-		//raycount++;
 		var xi, yi, xt, dxt, yt, dyt, t, dxi, dyi, xoff, yoff, cmax = oData.nRayLimit;
 		
 		var oContinue = oData.oContinueRay;
@@ -7563,8 +8457,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		var sameOffsetWall = this.sameOffsetWall;
 		var BF = O876_Raycaster.BF;
-		var BF_getPhys = BF.getPhys;
-		var BF_getOffs = BF.getOffs;
 		
 		while (done === 0) {
 			if (xt < yt) {
@@ -7580,7 +8472,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					if (nPhys >= nPHYS_FIRST_DOOR && nPhys <= nPHYS_LAST_DOOR) {
 						// entre PHYS_FIRST_DOOR et PHYS_LAST_DOOR
 						nOfs = nScale >> 1;
-					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
+					} else if (nPhys === nPHYS_SECRET_BLOCK || nPhys === nPHYS_TRANSPARENT_BLOCK || nPhys === nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
 						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
@@ -7593,7 +8485,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						if (sameOffsetWall(nOfs, xint, yint, xi, yi, dx, dy, nScale)) { // Même mur -> porte
 							nTOfs = (dxt / nScale) * nOfs;
 							yint = y + yScale * (xt + nTOfs);
-							if (((yint / nScale | 0)) != yi) {
+							if (((yint / nScale | 0)) !== yi) {
 								nPhys = nText = 0;
 							}
 							if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
@@ -7687,7 +8579,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		if (c < cmax) {
 			oData.nWallPanel = map[yi][xi];
-			oData.bSideWall = side == 1;
+			oData.bSideWall = side === 1;
 			oData.nSideWall = side - 1;
 			oData.nWallPos = oData.bSideWall ? yint % oData.xTexture
 					: xint % oData.xTexture;
@@ -7924,7 +8816,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			fBx += dx;
 			fBy += dy;
 		}
-		
 		// Optimisation ZBuffer -> suppression des drawImage inutile, élargissement des drawImage utiles.
 		// si le last est null on le rempli
 		// sinon on compare last et current
@@ -7946,6 +8837,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// dh  8
 		// z   9
 		// fx  10
+		// id  11 identifiant image
 		
 		var zb = this.aZBuffer;
 		var zbl = zb.length;
@@ -7960,12 +8852,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		for (i = 0; i < zbl; i++) {
 			b = zb[i];
-			// tant que c'est la même source de texture
-			if (b[10] == lb[10] && b[0] == lb[0] && b[1] == lb[1] && abs(b[9] - lb[9]) < 8) { 
+			// tant que c'est la même source de texture=
+			if (b[10] === lb[10] && b[0] === lb[0] && b[1] === lb[1] && abs(b[9] - lb[9]) < 8) {
 				nLast += z;
-			} else if (b[10] == llb[10] && b[0] == llb[0] && b[1] == llb[1] && abs(b[9] - llb[9]) < 8) {
+			} else if (b[10] === llb[10] && b[0] === llb[0] && b[1] === llb[1] && abs(b[9] - llb[9]) < 8) {
 				nLLast += z;
-			} else if (b[10] == lllb[10] && b[0] == lllb[0] && b[1] == lllb[1] && abs(b[9] - lllb[9]) < 8) {
+			} else if (b[10] === lllb[10] && b[0] === lllb[0] && b[1] === lllb[1] && abs(b[9] - lllb[9]) < 8) {
 				nLLLast += z;
 			} else {
 				lllb[7] = nLLLast;
@@ -7985,7 +8877,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		lb[7] = nLast;
 		aZ.push(lb);
 		
-		this.aZBuffer = aZ;
+		zb = this.aZBuffer = aZ;
 		this.drawHorde();
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
@@ -8016,41 +8908,83 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				rctx.fillRect(0, (this._oCanvas.height >> 1), this._oCanvas.width, this._oCanvas.height >> 1);
 			}
 		}
-		
 		// 2ndFloor
 		if (this.oUpper) {
 			this.drawUpper();
 		}
-
 		// floor
 		if (this.bFloor) {
-			if (this.bCeil && this.fViewHeight != 1) {
+			if (this.bCeil && this.fViewHeight !== 1) {
 				this.drawFloorAndCeil();
 			} else {
 				this.drawFloor();
 			}
 		}
-		
-		zbl = this.aZBuffer.length;
+		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
-			this.drawImage(i);
+			this.drawImage(zb[i]);
 		}
 		if (this.oConfig.drawMap) {
 			this.drawMap();
 		}
-		this.drawWeapon();
+	},
+
+	stats: function() {
+		function oneStat(a) {
+			return {
+				cast: a.cast - a.start,
+				sort: a.sort - a.cast,
+				bg: a.bg - a.sort,
+				upper: a.upper - a.bg,
+				flat: a.flat - a.upper,
+				render: a.render - a.flat,
+				map: a.map - a.render,
+				total: a.map - a.start
+			};
+		}
+		var oStat = this
+			.aChronoStat
+			.map(oneStat)
+			.reduce(function(oPrev, a) {
+				var oRes = {};
+				for (var x in oPrev) {
+					oRes[x] = a[x] + oPrev[x];
+				}
+				return oRes;
+			}, {
+				cast: 0,
+				sort: 0,
+				bg: 0,
+				upper: 0,
+				flat: 0,
+				render: 0,
+				map: 0,
+				total: 0
+			})
+		;
+		for (var x in oStat) {
+			oStat[x] = Math.floor(oStat[x]) / 10;
+
+		}
+		if (this.oUpper) {
+			oStat.upperdet = this.oUpper.stats();
+		}
+		return oStat;
 	},
 	
 	/**
 	 * Transfere le contenu du buffer mémoire vers le buffer écran
+	 * @param bPrerender {boolean} effectue le rendu dans un buffer intermediaire
 	 */
-	flipBuffer: function() {
+	flipBuffer: function(bPrerender) {
 		var rc = this._oRenderCanvas;
 		if (this.bUseVideoBuffer) {
-			if (this.b3d) {
+			var b3d = this.b3d;
+			if (b3d && bPrerender) {
+				// rendu stereo + pre rendu
 				var rcw2 = rc.width >> 1;
-				this._oContext.drawImage(
-					rc, 
+                this._o3DBufferContext.drawImage(
+					rc,
 					this.xLimitL,
 					0, 
 					rcw2, 
@@ -8060,8 +8994,11 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					rcw2, 
 					rc.height
 				);
+			} else if (b3d) {
+                // rendu stereo + rendu normal
+				this._oContext.drawImage(this._o3DBufferCanvas, 0, 0);
 			} else {
-				this._oContext.drawImage(rc, 0, 0);
+                this._oContext.drawImage(rc, 0, 0);
 			}
 		}
 	},
@@ -8626,6 +9563,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				aData[0] = null;
 				break;
 		}
+		if (this.bDoubleHeight) {
+			aData[6] -= aData[8];
+            aData[8] <<= 1;
+		}
 		if (aData[0]) {
 			this.aZBuffer.push(aData);
 		}
@@ -8634,9 +9575,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	/** Rendu de l'image stackée dans le Z Buffer
 	 * @param i rang de l'image
 	 */
-	drawImage : function(i) {
+	drawImage : function(zbi) {
 		var rc = this._oRenderContext;
-		var aLine = this.aZBuffer[i];
+		var aLine = zbi;
 		var sGCO = '';
 		var fGobalAlphaSave = 0;
 		var nFx = aLine[10];
@@ -8652,16 +9593,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// Si xStart est négatif c'est qu'on est sur un coté de block dont la texture est indéfinie (-1)
 		// Firefox refuse de dessiner des textures "négative" dont on skipe le dessin
 		if (xStart >= 0) {
-			rc.drawImage(
-				aLine[0], 
-				aLine[1] | 0,
-				aLine[2] | 0,
-				aLine[3] | 0,
-				aLine[4] | 0,
-				aLine[5] | 0,
-				aLine[6] | 0,
-				aLine[7] | 0,
-				aLine[8] | 0);
+			try {
+                rc.drawImage(
+                    aLine[0],
+                    aLine[1] | 0,
+                    aLine[2] | 0,
+                    aLine[3] | 0,
+                    aLine[4] | 0,
+                    aLine[5] | 0,
+                    aLine[6] | 0,
+                    aLine[7] | 0,
+                    aLine[8] | 0);
+            } catch (e) {}
 		}
 		if (sGCO !== '') {
 			rc.globalCompositeOperation = sGCO;
@@ -8789,18 +9732,17 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 });
 
 /**
+ * @class O876_Raycaster.Scheduler
  * Temporise et retarde l'exécution de certaines commandes
  */
 O2.createClass('O876_Raycaster.Scheduler', {
-	oCommands: null,
-	aIndex: null,
+	aCommands: null,
 	bInvalid: true,
 	nTime: 0,
 
 	
 	__construct: function() {
-		this.oCommands = {};
-		this.aIndex = [];
+		this.aCommands = [];
 	},
 
 	/** 
@@ -8810,15 +9752,19 @@ O2.createClass('O876_Raycaster.Scheduler', {
 	 * @param pCommand methode à appeler
 	 * @param nDelay int delai d'exécution
 	 */
-	delayCommand: function(oInstance, pCommand, nDelay) {
-		var aParams = Array.prototype.slice.call(arguments, 3);
-		var n = nDelay + this.nTime;
-		if (!(n in this.oCommands)) {
-			this.oCommands[n] = [];
+	delay: function(pCommand, nDelay) {
+		if (nDelay === undefined) {
+			throw new Error('need delay parameter');
 		}
-		this.oCommands[n].push([oInstance, pCommand, aParams]);
-		this.aIndex.push(n);
+		this.aCommands.push({
+			time: nDelay + this.nTime,
+			command: pCommand
+		});
 		this.bInvalid = true;
+	},
+
+	clear: function() {
+		this.aCommands = [];
 	},
 
 	/** 
@@ -8829,17 +9775,11 @@ O2.createClass('O876_Raycaster.Scheduler', {
 	schedule: function(nTime) {
 		this.nTime = nTime;
 		if (this.bInvalid) { // trier en cas d'invalidité
-			this.aIndex.sort(function(a, b) { return a - b; });
+			this.aCommands.sort(function(a, b) { return a.time - b.time; });
 			this.bInvalid = false;
 		}
-		var n, i, o;
-		while (this.aIndex.length && this.aIndex[0] < nTime) {
-			n = this.aIndex.shift();
-			o = this.oCommands[n];
-			for (i = 0; i < o.length; i++) {
-				o[i][2].apply(o[i][0], o[i][2]);
-			}
-			delete this.oCommands[n];
+		while (this.aCommands.length && this.aCommands[0].time <= nTime) {
+			this.aCommands.shift().command();
 		}
 	}
 });
@@ -8874,11 +9814,10 @@ O2.createClass('O876_Raycaster.Sprite',  {
 	/**
 	 * Change l'animation en cours
 	 * 
-	 * @param n
-	 *            numero de la nouvelle animation
+	 * @param n {Number} numero de la nouvelle animation
 	 */
 	playAnimation : function(n) {
-		if (n == this.nAnimation) {
+		if (n === this.nAnimation) {
 			return;
 		}
 		var aBTA = this.oBlueprint.oTile.aAnimations;
@@ -8940,6 +9879,7 @@ O2.createClass('O876_Raycaster.Sprite',  {
 
 /** Classe de déplacement automatisé et stupidité artificielle des mobiles
  * O876 Raycaster project
+ * @class O876_Raycaster.Thinker
  * @date 2012-01-01
  * @author Raphaël Marandet 
  * Classe de base pouvant être étendue
@@ -8964,7 +9904,7 @@ O2.createClass('O876_Raycaster.ThinkerManager', {
 		if (sThinker === undefined || sThinker === null) {
 			return null;
 		}
-		var pThinker = O2._loadObject(sThinker + 'Thinker');
+		var pThinker = O2.loadObject(sThinker + 'Thinker');
 		if (pThinker !== null) {
 			var oThinker = new pThinker();
 			oThinker.oGame = this.oGameInstance;
@@ -9082,14 +10022,6 @@ O2.createObject('ArrayTools', {
 	removeItem: function(aArray, nItem) {
 		var aItem = Array.prototype.splice.call(aArray, nItem, 1);
 		return aItem[0];
-		/*
-		if (nItem >= (aArray.length - 1)) {
-			return aArray.pop();
-		} else {
-			var oItem = aArray[nItem];
-			aArray[nItem] = aArray.pop();
-			return oItem;
-		}*/
 	},
 	
 	isArray: function(o) {
@@ -9190,6 +10122,78 @@ O2.createObject('GfxTools', {
 	}	
 });
 
+/**
+ * @class O876_Raycaster.ImageListLoader
+ * Précharge une liste d'image
+ * Surveille le chargement des images
+ * Envoie un évènement final lorsque les images sont toutes chargées
+ */
+O2.createClass('O876_Raycaster.ImageListLoader', {
+	aImg: null,
+	bAllLoaded: false,
+
+	__construct: function() {
+		this.aImg = [];
+	},
+
+    /**
+	 * Ajoute une image à la liste
+     * @param sSrc url de l'image
+     */
+	addImage: function(sSrc) {
+		this.aImg.push({
+			src: sSrc,
+			img: null
+		});
+	},
+
+    /**
+	 * Chargement d'une image
+     * @param oImgItem.src source de l'image
+	 * @param oImgItem.img HTMLImage qui recevra le cojntenu de l'image (quand celle ci sera chargée)
+     */
+	loadOne: function(oImgItem) {
+		let sSrc = oImgItem.src;
+		let oImg;
+		if (sSrc instanceof HTMLImageElement) {
+			oImg = sSrc;
+		} else if (sSrc instanceof HTMLCanvasElement) {
+			oImg = sSrc;
+			oImg.complete = true;
+		} else {
+			oImg = new Image();
+			oImg.src = sSrc; 
+		}
+		oImgItem.img = oImg;
+		if (!oImg.complete) {
+			oImg.addEventListener('load', e => this.imageLoaded(e));
+		}
+	},
+
+    /**
+	 * Charge toutes les images précédement ajoutée par addImage
+     */
+	loadAll: function() {
+		this.aImg.forEach(i => this.loadOne(i));
+		this.imageLoaded();
+	},
+
+    /**
+	 * Callback appelé quand une image est chargée
+     * @param oEvent
+     */
+	imageLoaded: function(oEvent) {
+		if (this.bAllLoaded) {
+			return;
+		}
+		if (this.aImg.every(i => i.img.complete)) {
+			this.bAllLoaded = true;
+			this.trigger('load', this.aImg.map(x => x.img));
+		}
+	}
+});
+
+O2.mixin(O876_Raycaster.ImageListLoader, O876.Mixin.Events);
 /**
  * Cette classe permet de définir des cartes 2D
  * ou plus généralement des tableau 2D d'entier.
@@ -9379,6 +10383,16 @@ var MathTools = {
 	 */
 	distance : function(dx, dy) {
 		return Math.sqrt((dx * dx) + (dy * dy));
+	},
+
+    /**
+	 * Limit le nombre aux deux bornes spécifiées
+	 * @param n {number} nombre
+     * @param nMin {number} min
+     * @param nMax {number} max
+     */
+	bound: function(nMin, n, nMax) {
+		return Math.min(nMax, Math.max(nMin, n));
 	},
 	
 	/**
@@ -9584,6 +10598,9 @@ var MathTools = {
 
 
 MathTools.rnd = MathTools.rndJS;
+/**
+ * @class O876_Raycaster.Transistate
+ */
 O2.createClass('O876_Raycaster.Transistate', {
 	nInterval : 160,
 	oInterval : null,
@@ -9605,25 +10622,18 @@ O2.createClass('O876_Raycaster.Transistate', {
 	 * @param sProc nom de la méthode de l'objet à lancer
 	 */
 	setDoomloop : function(sProc, sType) {
+		console.log(sProc);
 		this.sDoomloopType = sType;
 		if (!(sProc in this)) {
 			throw new Error('"' + sProc + '" is not a valid timer proc');
 		}
-		this.pDoomloop = this[this._sState = sProc].bind(this);
-		this.stopTimers();
-		switch (sType) {
-			case 'interval':
-				this.oInterval = window.setInterval(this.pDoomloop, this.nInterval);
-			break;
-			
-			case 'raf':
-				this.oRafInterval = window.requestAnimationFrame(this.pDoomloop);
-			break;
-			
-			default:
-				this.setDoomloop(sProc, this.sDefaultDoomloopType);
-			break;
+		try {
+            this.pDoomloop = this[this._sState = sProc].bind(this);
+        } catch (e) {
+			console.log(sProc, this[this._sState = sProc]);
 		}
+		this.stopTimers();
+		this.oInterval = window.setInterval(this.pDoomloop, this.nInterval);
 	},
 
 	/**
@@ -9806,22 +10816,105 @@ O2.createClass('O876_Raycaster.XMap', {
 	}
 });
 
+/**
+ * @const RC raycaster constants
+ */
 O2.createObject('RC', {
-  OBJECT_TYPE_NONE: 0,
-  OBJECT_TYPE_MOB: 1,			// Mobile object with Thinker procedure
-  OBJECT_TYPE_PLAYER: 2,		// Player (non visible, user controlled mob)
-  OBJECT_TYPE_PLACEABLE: 3,		// Non-mobile visible and collisionnable object
-  OBJECT_TYPE_MISSILE: 4,		// Short lived mobile with owner 
-  OBJECT_TYPE_ITEM: 5,			// Inventory objet
-  
-  FX_NONE: 0,					// Pas d'effet graphique associé au sprite
-  FX_LIGHT_ADD: 1,				// Le sprite est translucide (opération ADD lors du dessin)
-  FX_LIGHT_SOURCE: 2,			// Le sprite ne devien pas plus sombre lorsqu'il s'éloigne de la camera
-  FX_ALPHA_75: 1 << 2,
-  FX_ALPHA_50: 2 << 2,			// le sprite est Alpha 50 % transparent
-  FX_ALPHA_25: 3 << 2,
-  FX_ALPHA: [1, 0.75, 0.50, 0.25, 0],
-  FX_DIM0: 0x10,				// indicateur dim 0 pour corriger un bug graphique d'optimisation
+    /**
+     * @property OBJECT_TYPE_NONE
+     * Mobiles with this type are undefined
+     * This property is not used by the framework
+     * and should not be used
+     */
+    OBJECT_TYPE_NONE: 0,
+
+    /**
+     * @property OBJECT_TYPE_MOB
+     * Mobiles with this type are creatures that roam in the labyrinth
+     * They usually got a Thinker procedure and several animation frames.
+     */
+    OBJECT_TYPE_MOB: 1,
+
+    /**
+     * @property OBJECT_TYPE_PLAYER
+     * Mobiles with this type are human players.
+     * They are assigned a Thinker which is generally controlled by
+     * input devices (mouse or keyboard)
+     */
+    OBJECT_TYPE_PLAYER: 2,
+
+    /**
+     * @property OBJECT_TYPE_PLACEABLE
+     * Mobiles with this type are considered static objects and are
+     * kicked out of the Mobile list and added to the Static list
+     * (furniture, trees, structures are generally placeable)
+     */
+    OBJECT_TYPE_PLACEABLE: 3,
+
+    /**
+     * @property OBJECT_TYPE_MISSILE
+     * Mobiles with this type are missiles,
+     * Generally short lived mobile with a simple thinker and an owner
+     * The owner is the mobile (PLAYER or MOB that fired the missile.
+     */
+    OBJECT_TYPE_MISSILE: 4,
+
+    /**
+     * @property OBJECT_TYPE_ITEM
+     * A Mobile with this type is an item which can be added to an inventory.
+     * Behave like placeable, have no collision, can be picked up
+     */
+    OBJECT_TYPE_ITEM: 5,
+
+    /**
+     * @property FX_NONE
+     * No effect assigned to the sprite
+     */
+    FX_NONE: 0,
+
+    /**
+     * @property FX_LIGHT_ADD
+     * The sprite will be translucent with an "add" composite drawing operation
+     */
+    FX_LIGHT_ADD: 1,
+
+    /**
+     * @property FX_LIGHT_SOURCE
+     * The sprite is a light source, and will not be drawn darker when far
+     * from player's point of view
+     */
+    FX_LIGHT_SOURCE: 2,			// Le sprite ne devien pas plus sombre lorsqu'il s'éloigne de la camera
+
+    /**
+     * @property FX_ALPHA_75
+     * The sprite opacity is 75%
+     */
+    FX_ALPHA_75: 1 << 2,
+
+    /**
+     * @property FX_ALPHA_50
+     * The sprite opacity is 50%
+     */
+    FX_ALPHA_50: 2 << 2,
+
+    /**
+     * @property FX_ALPHA_25
+     * The sprite opacity is 25%, almost invisible
+     */
+    FX_ALPHA_25: 3 << 2,
+
+    /**
+     * @property FX_DIM0
+     * Undocumented. Used for optimisation.
+     */
+    FX_DIM0: 0x10,
+
+    /**
+     * @property FX_ALPHA
+     * This array is internally used by the framework
+     */
+    FX_ALPHA: [1, 0.75, 0.50, 0.25, 0],
+
 });
 
 
@@ -9963,6 +11056,12 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	_yGradEnd : 0,
 	_nGradOrientation : 0,
 	
+	
+	__construct: function() {
+		__inherited();
+		this.on('mousein', this.onMouseIn.bind(this));
+		this.on('mouseout', this.onMouseOut.bind(this));
+	},
 
 	setColor : function(sNormal, sHighlight) {
 		if (sHighlight === undefined) {
@@ -9993,7 +11092,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	 * @param y mouse position y (pixels)
 	 * @param b clicked button mask
 	 */
-	onMouseIn : function(x, y, b) {
+	onMouseIn : function(oEvent) {
+		var oSender = oEvent.target;
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
 		this._set('_sColorBorder', this._sColorBorderInside);
 		this._set('_sColor', this._sColorInside);
 	},
@@ -10004,7 +11107,11 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 	 * @param y mouse position y (pixels)
 	 * @param b clicked button mask
 	 */
-	onMouseOut : function(x, y, b) {
+	onMouseOut : function(oEvent) {
+		var oSender = oEvent.target;
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
 		this._set('_sColorBorder', this._sColorBorderOutside);
 		this._set('_sColor', this._sColorOutside);
 	},
@@ -10015,28 +11122,28 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 			this._xGradStart = 0;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.height() - 1;
 			break;
 
 		case 2: // Horiz
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
+			this._xGradEnd = this.width() - 1;
 			this._yGradEnd = 0;
 			break;
 	
 		case 3: // Diag 1
 			this._xGradStart = 0;
 			this._yGradStart = 0;
-			this._xGradEnd = this.getWidth() - 1;
-			this._yGradEnd = this.getHeight() - 1;
+			this._xGradEnd = this.width() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 	
 		case 4: // Diag 2
-			this._xGradStart = this.getWidth() - 1;
+			this._xGradStart = this.width() - 1;
 			this._yGradStart = 0;
 			this._xGradEnd = 0;
-			this._yGradEnd = this.getHeight() - 1;
+			this._yGradEnd = this.width() - 1;
 			break;
 		}
 	},
@@ -10084,14 +11191,14 @@ O2.extendClass('H5UI.Box', H5UI.WinControl, {
 		}
 		return xFillStyle;
 	},
-
+	
 	renderSelf : function() {
 		this._oContext.fillStyle = this.getFillStyle();
-		this._oContext.fillRect(0, 0, this.getWidth(), this.getHeight());
+		this._oContext.fillRect(0, 0, this.width(), this.height());
 		if (this._nBorderWidth) {
 			this._oContext.strokeStyle = this._sColorBorder;
 			this._oContext.lineWidth = this._nBorderWidth;
-			this._oContext.strokeRect(0, 0, this.getWidth(), this.getHeight());
+			this._oContext.strokeRect(0, 0, this.width(), this.height());
 		}
 	}
 });
@@ -10115,9 +11222,6 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 		this.setColor(this._sColorNormal, this._sColorOver);
 		this.setBorder(1, this._sColorBorder);
 		this.oText = this.linkControl(new H5UI.Text());
-		this.oText.font.setFont('Arial');
-		this.oText.font.setSize(12);
-		this.oText.font.setColor('#000');
 		this.oText.moveTo(4, 4);
 		this.oText.setCaption('Button');
 		this.oText.align('center');
@@ -10125,7 +11229,7 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 
 	setCaption : function(sCaption) {
 		this.oText.setCaption(sCaption);
-		this.realignControls();
+		this._realignControls();
 	},
 
 	getCaption : function() {
@@ -10144,37 +11248,28 @@ O2.extendClass('H5UI.Button', H5UI.Box, {
 O2.extendClass('H5UI.Image', H5UI.WinControl, {
 	_oTexture: null,
 	_bAutosize: true,
-	onLoad: null,
+	_sColorBorder : '#000000',
+	_nBorderWidth : 0,
 	
 	_loadEvent: function(oEvent) {
-		var i = oEvent.target.__image;
-		oEvent.target.__image = null;
-		if (i.onLoad) {
-			i.onLoad();
-		} else {
-			i.invalidate();
-		}
-	},
-	
-	setSource: function(sSrc) {
-		if (!this._oTexture) {
-			this._oTexture = new Image();
-		}
-		this._oTexture.src = sSrc;
-		this._oTexture.__image = this;
-		this._oTexture.addEventListener('load', this._loadEvent, true);
 		this.invalidate();
 	},
 	
-	setImage: function(oImage) {
-		if (this._oTexture != oImage) {
-			this._oTexture = oImage;
-			this._oTexture.__image = this;
-			this._oTexture.addEventListener('load', this._loadEvent, true);
+	setSource: function(sSrc) {
+		if (sSrc instanceof HTMLImageElement) {
+			this._oTexture = sSrc;
+		} else {
+			if (!this._oTexture) {
+				this._oTexture = new Image();
+			}
+			this._oTexture.src = sSrc;
+		}
+		if (this._oTexture.complete) {
 			this.invalidate();
+		} else {
+			this._oTexture.addEventListener('load', this._loadEvent.bind(this), true);
 		}
 	},
-	
 	
 	renderSelf: function() {
 		var s = this.getSurface();
@@ -10183,7 +11278,7 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 				this.setSize(this._oTexture.width, this._oTexture.height);
 				s.drawImage(this._oTexture,	0, 0);						
 			} else {
-				s.clearRect(0, 0, this.getWidth(), this.getHeight());
+				s.clearRect(0, 0, this.width(), this.height());
 				s.drawImage(
 					this._oTexture,
 					0, 
@@ -10192,10 +11287,204 @@ O2.extendClass('H5UI.Image', H5UI.WinControl, {
 					this._oTexture.height,
 					0, 
 					0, 
-					this.getWidth(),
-					this.getHeight()
+					this.width(),
+					this.height()
 				);
 			}
+		}
+		if (this._nBorderWidth) {
+			this._oContext.strokeStyle = this._sColorBorder;
+			this._oContext.lineWidth = this._nBorderWidth;
+			this._oContext.strokeRect(0, 0, this.width(), this.height());
+		}
+	}
+});
+
+
+/**
+ * Scrollbar Barre de défilement horizontal ou vertical
+ */
+O2.extendClass('H5UI.ScrollBar', H5UI.WinControl, {
+	_sClass : 'ScrollBar',
+	_sColorBar : '#888',
+	_sColorBarBorder : '#222',
+	_sColorBackground : '#CCC',
+
+	_nStepCount : 100, // zone couverte par la scrollbar
+	_nPosition : 0, // Position de la scrollbar
+	_nLength : 20, // Longueur de la scrollbar
+
+	ySize : 0, // Taille en pixel du pad
+	yRange : 0, // Zone dans laquelle le pad peut se déplacer
+	yPos : 0, // Position du pad
+
+	// Flags internes
+	bDragging : false,
+	yDragDock : 0,
+	yDragging : 0,
+	_bDragHandler: true,
+
+	_bVertical : false,
+
+	__construct: function() {
+		__inherited();
+		// marche plus :'(
+		// pas le temps de réparer
+		// 2016-12-17
+		//this.registerMouseEventHandlers();
+	},
+
+	getAxisValue : function(x, y) {
+		return this._bVertical ? y : x;
+	},
+
+	/**
+	 * Définit l'orientation
+	 * 
+	 * @param n
+	 *            1: Vertical, 0: Horizontal
+	 */
+	setOrientation : function(n) {
+		this._bVertical = n != 0;
+	},
+
+	/**
+	 * Modifie la taille logique de la barre
+	 * 
+	 * @param n
+	 *            Nouvelle taille
+	 */
+	setStepCount : function(n) {
+		this._set('_nStepCount', n);
+	},
+
+	/**
+	 * Modifie la position logique de la scrollbar
+	 * 
+	 * @param n
+	 *            Nouvelle position
+	 */
+	setPosition : function(n) {
+		if (n < 0) {
+			n = 0;
+		}
+		if ((n + this._nLength) > this._nStepCount) {
+			n = this._nStepCount - this._nLength;
+		}
+		this._set('_nPosition', n);
+	},
+
+	/**
+	 * Renvoie la position logique de la scrollbar
+	 * 
+	 * @return entier
+	 */
+	getPosition : function() {
+		return this._nPosition;
+	},
+
+	/**
+	 * Modifie la longueur logique de la scrollbar Par exemple si la scrollbar
+	 * est associé à une zone de texte de 30 lignes affichable, et que cette
+	 * zone contient un fichier texte de 500 lignes et qu'on souhaire voir les
+	 * lignes 100 à 129. on fait : sb.setStepCount(500); sb.setLength(30);
+	 * sb.setPosition(100);
+	 */
+	setLength : function(n) {
+		this._set('_nLength', n);
+	},
+
+	/**
+	 * Défini une nouvelle position en pixel
+	 */
+	setPixelPosition : function(y) {
+		this.setPosition(y * this._nStepCount / this.getAxisValue(this.width(), this.height()) | 0);
+	},
+
+	registerMouseEventHandlers: function() {
+		this.on('mousedown', this.onMouseDown.bind(this));
+		this.on('mouseup', this.onMouseUp.bind(this));
+	},
+
+	// MD Déterminer la zone cliquée
+	// Top : Page Up
+	// Bottom Page Down
+	// Mid : Initier drag du pad
+
+	onMouseDown : function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
+		y = this.getAxisValue(x, y);
+		if (y < this.yPos) {
+			// Page Up
+			this.setPixelPosition(this.yPos - this.ySize);
+			this.doScroll();
+		}
+		if (y > (this.yPos + this.ySize)) {
+			// Page Dn
+			this.setPixelPosition(this.yPos + this.ySize);
+			this.doScroll();
+		}
+		if (y >= this.yPos && y <= (this.yPos + this.ySize)) {
+			// Start drag
+			this.dragStart(x, y, b);
+		}
+		this.invalidate();
+	},
+
+	onMouseUp : function(oEvent) {
+		var x = oEvent.x;
+		var y = oEvent.y;
+		var b = oEvent.button;
+		if (this.bDragging) {
+			this.bDragging = false;
+			this.stopDrag();
+		}
+	},
+
+	onStartDragging : function(x, y, b) {
+		// Start drag
+		y = this.getAxisValue(x, y);
+		this.yDragging = y;
+		this.yDragDock = this.yPos;
+	},
+
+	onDragging : function(x, y, b) {
+		y = this.getAxisValue(x, y);
+		this.setPixelPosition(y - this.yDragging + this.yDragDock);
+		this.doScroll();
+		this.invalidate();
+	},
+
+	onEndDragging : function(x, y, b) {
+	},
+
+
+	doScroll : function() {
+		if ('onScroll' in this) {
+			this.onScroll();
+		}
+	},
+
+	renderSelf : function() {
+		var s = this.getSurface();
+		s.fillStyle = this._sColorBackground;
+		s.fillRect(0, 0, this.width(), this.height());
+		this.ySize = this._nLength *
+				this.getAxisValue(this.width(), this.height()) /
+				this._nStepCount | 0;
+		this.yRange = this.getAxisValue(this.width(), this.height())
+				- this.ySize;
+		this.yPos = this._nPosition * this.yRange / (this._nStepCount - this._nLength) | 0;
+		s.fillStyle = this._sColorBar;
+		s.strokeStyle = this._sColorBarBorder;
+		if (this._bVertical) {
+			s.fillRect(0, this.yPos, this.width(), this.ySize);
+			s.strokeRect(0, this.yPos, this.width(), this.ySize);
+		} else {
+			s.fillRect(this.yPos, 0, this.ySize, this.height());
+			s.strokeRect(0, this.yPos, this.width(), this.ySize);
 		}
 	}
 });
@@ -10213,6 +11502,7 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	_oContainer : null,
 	_xScroll : 0,
 	_yScroll : 0,
+	_bgColor: '',
 
 	/**
 	 * Methode modifiée qui linke le controle transmis en paramètre directement
@@ -10235,8 +11525,13 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 			__inherited(o);
 		} else {
 			this.getContainer().linkControl(o);
+			o.invalidate();
 		}
 		return o;
+	},
+
+	clear: function() {
+		this.getContainer().clear();
 	},
 
 	/**
@@ -10247,8 +11542,7 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	 */
 	getContainer : function() {
 		if (this._oContainer === null) {
-			this._oContainer = this.linkControl(new H5UI.WinControl(), true);
-			this._oContainer._sClass = 'ScrollBoxContainer';
+			this._oContainer = this.linkControl(new H5UI.ScrollBoxContainer(), true);
 		}
 		return this._oContainer;
 	},
@@ -10256,15 +11550,23 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	/**
 	 * Déplace la position de scrolling
 	 * 
-	 * @param x,
-	 *            y nouvelle position de scroll
+	 * @param x nouvelle position de scroll
+	 * @param y nouvelle position de scroll
 	 */
 	scrollTo : function(x, y) {
 		if (x != this._xScroll || y != this._yScroll) {
-			this._xScroll = x;
-			this._yScroll = y;
+			var yContSize = this.getContainer().height();
+			var yThisSize = this.height();
+			var yMax = Math.max(0, yContSize - yThisSize);
+			var xContSize = this.getContainer().width();
+			var xThisSize = this.width();
+			var xMax = Math.max(0, xContSize - xThisSize);
+			this._xScroll = x = Math.max(0, Math.min(x, xMax));
+			this._yScroll = y = Math.max(0, Math.min(y, yMax));
 			this.getContainer().moveTo(-x, -y);
-			this.invalidate();
+			if (this.getContainer()._bInvalid) {
+				this.invalidate();
+			}
 		}
 	},
 
@@ -10286,6 +11588,13 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		return this._yScroll;
 	},
 
+	/**
+	 * Couleur de fond
+	 */
+	setColor: function(sColor) {
+		this._set('_bgColor', sColor);
+	},
+
 	// la première errer de non transmission d'évènement souris était du a une
 	// Height mal calculée
 	// cette deuxième erreur est également du au fait d'une mauvaise redimension
@@ -10297,10 +11606,29 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		var c = this.getContainer();
 		for ( var i = 0; i < c._aControls.length; i++) {
 			o = c.getControl(i);
-			w = Math.max(w, o._x + o.getWidth());
-			h = Math.max(h, o._y + o.getHeight());
+			w = Math.max(w, o._x + o.width());
+			h = Math.max(h, o._y + o.height());
 		}
 		c.setSize(w, h);
+		if (this._bgColor) {
+			var s = this.getSurface();
+			var sColor = s.fillStyle;
+			s.fillStyle = this._bgColor;
+			s.fillRect(0, 0, this.width(), this.height());
+			s.fillStyle = sColor;
+		} else {
+			this.getSurface().clearRect(0, 0, this.width(), this.height());
+		}
+	}
+});
+
+/* globals O2, H5UI */
+
+O2.extendClass('H5UI.ScrollBoxContainer', H5UI.WinControl, {
+	_sClass : 'ScrollBoxContainer',
+	
+	renderSelf : function() {
+		this._oContext.clearRect(0, 0, this.width(), this.height());
 	}
 });
 
@@ -10317,7 +11645,7 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 	_nTextWidth: 0,	
 	_nLineHeight: 0,
 	_yLastWritten: 0,
-	
+	_bUseColorCodes: false,
 
 	// propriété publique
 	font : null,
@@ -10326,6 +11654,26 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		__inherited();
 		O876.CanvasFactory.setImageSmoothing(this.getSurface(), true);
 		this.font = new H5UI.Font(this);
+	},
+	
+	setFontStyle: function(sStyle) {
+		this.font.setStyle(sStyle);
+		this.invalidate();
+	},
+
+	setFontSize: function(nSize) {
+		this.font.setSize(nSize);
+		this.invalidate();
+	},
+
+	setFontColor: function(sColor, sOutline) {
+		this.font.setColor(sColor, sOutline);
+		this.invalidate();
+	},
+
+	setFontFace: function(sName) {
+		this.font.setFont(sName);
+		this.invalidate();
 	},
 
 	/**
@@ -10336,12 +11684,15 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 	 */
 	setCaption : function(s) {
 		this._set('_sCaption', s);
-		if (this._bAutosize && this._bInvalid) {
-			this.font.update();
+		this.font.update();
+		if (this._bAutosize && this._bInvalid && !this._bWordWrap) {
 			var oMetrics = this.getSurface().measureText(this._sCaption);
-			this.setSize(oMetrics.width, this.font._nFontSize + 1);
+			this.setSize(oMetrics.width, this.font._nFontSize);
+		} else {
+			this.renderSelf();
 		}
 	},
+
 
 	/**
 	 * Définition du flag autosize quand ce flag est actif, le control prend la
@@ -10359,31 +11710,64 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 		this._set('_bWordWrap', b);
 	},
 
+	multiColorLineRender: function (oSurface, sLine, x, y) {
+		// découper la chaine en tronçons
+		var i = 0, segm, color = '{#000}', t, r = /\{#[0-9A-Fa-f]+\}/g;
+		var aResult = [];
+		do {
+			t = r.exec(sLine);
+			if (t) {
+				segm = {
+					i: i,
+					t: sLine.substr(i, t.index - i),
+					c: color.substr(1, color.length - 2)
+				};
+				color = t[0];
+				i = t.index + color.length;
+			} else {
+				segm = {
+					i: i,
+					t: sLine.substr(i),
+					c: color.substr(1, color.length - 2)
+				};
+			}
+			aResult.push(segm);
+		} while (t);
+		i = 0;
+		aResult.forEach((function(s) {
+			var w = oSurface.measureText(s.t).width;
+			oSurface.fillStyle = s.c;
+			oSurface.fillText(s.t, x + i, y);
+			i += w;
+		}).bind(this));
+		return aResult;
+	},
+
+
+
 	renderSelf : function() {
 		var oSurface = this.getSurface();
 		var oMetrics;
 		// Redimensionnement du texte
-		oSurface.clearRect(0, 0, this.getWidth(), this.getHeight());
+		oSurface.clearRect(0, 0, this.width(), this.height());
 		if (this._bWordWrap){
+			var aRenderLines = [];
 			this.font.update();
 			var aWords;
 			var sLine = '', sWord, x = 0, y = 0;
 			var sSpace;
 			oSurface.textBaseline = 'top';
 			var aParas = this._sCaption.split('\n');
-			for (var iPara = 0; iPara < aParas.length; iPara++) {
+			for (var iPara = 0, nParaCount = aParas.length; iPara < nParaCount; ++iPara) {
 				aWords = aParas[iPara].split(' ');
 				while (aWords.length) {
 					sWord = aWords.shift();
 					sSpace = sLine ? ' ' : '';
 					oMetrics = oSurface.measureText(sLine + sSpace + sWord);
-					if (oMetrics.width >= this.getWidth()) {
+					if (oMetrics.width >= this.width()) {
 						// flush
 						x = 0;
-						if (this.font._bOutline) {
-							oSurface.strokeText(sLine, x, y);
-						}		
-						oSurface.fillText(sLine, x, y);
+						aRenderLines.push(sLine);
 						y += this.font._nFontSize + this._nLineHeight;
 						sLine = sWord;
 					} else {
@@ -10392,26 +11776,38 @@ O2.extendClass('H5UI.Text', H5UI.WinControl, {
 					}
 				}
 				x = 0;
-				if (this.font._bOutline) {
-					oSurface.strokeText(sLine, x, y);
-				}		
-				oSurface.fillText(sLine, x, y);
+				aRenderLines.push(sLine);
 				y += this.font._nFontSize + this._nLineHeight;
 				sLine = '';
 				this._yLastWritten = y;
 			}
+			if (this._bAutosize) {
+				this.setSize(this.width(), y + this.font._nFontSize);
+			}
+
+			aRenderLines.forEach((function(s, i) {
+				var x = 0, y = i * (this.font._nFontSize + this._nLineHeight);
+				if (this.font._bOutline) {
+					oSurface.strokeText(s, x, y);
+				}
+				if (this._bUseColorCodes) {
+					this.multiColorLineRender(oSurface, s, x, y);
+				} else {
+					oSurface.fillText(s, x, y);
+				}
+			}).bind(this));
 		} else {
 			if (this._bAutosize) {
 				this.font.update();
 				oMetrics = oSurface.measureText(this._sCaption);
-				this.setSize(oMetrics.width, this.font._nFontSize + 1);
+				this.setSize(oMetrics.width, this.font._nFontSize);
 			} else {
 			}
 			oSurface.textBaseline = 'middle';
 			if (this.font._bOutline) {
-				oSurface.strokeText(this._sCaption, 0, this.getHeight() >> 1);
-			}		
-			oSurface.fillText(this._sCaption, 0, this.getHeight() >> 1);
+				oSurface.strokeText(this._sCaption, 0, this.height() / 2);
+			}
+			oSurface.fillText(this._sCaption, 0, this.height() / 2);
 		}
 	}
 });
@@ -10531,6 +11927,10 @@ O2.extendClass('H5UI.TileGrid', H5UI.WinControl, {
 	}
 });
 
+/**
+ * @class O876_Raycaster.Engine
+ * @extends O876_Raycaster.Transistate
+ */
 O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	// Juste une copie du TIME_FACTOR du raycaster
 	TIME_FACTOR : 50, // Doit être identique au TIME_FACTOR du raycaster
@@ -10664,7 +12064,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	
 	/**
 	 * Renvoie le temps actuel en millisecondes
-	 * @return int
+	 * @return {int}
 	 */
 	getTime: function() {
 		return this._nTimeStamp;
@@ -10818,20 +12218,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this._callGameEvent('onInitialize');
 		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
 		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
-		switch (this._oConfig.game.doomloop) {
-			case 'interval':
-				this.stateRunning = this.stateRunningInt;
-				break;
-
-			case 'raf':
-				if (this.initRequestAnimationFrame()) {
-					this.stateRunning = this.stateRunningRAF;
-				} else {
-					this._oConfig.game.doomloop = 'interval';
-					this.stateRunning = this.stateRunningInt;
-				}
-				break;
-		}
 		this.setDoomloop('stateMenuLoop');
 		this.resume();
 	},
@@ -10918,73 +12304,43 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		}
 		// this._callGameEvent('onLoading', 'shd', 1, 1);
 		this._oFrameCounter = new O876_Raycaster.FrameCounter();
-		this.setDoomloop('stateRunning', this._oConfig.game.doomloop);
+		this.setDoomloop('stateRunning', 'interval');
 		this._callGameEvent('onLoading', 'end', 1, 1);
 		this._callGameEvent('onEnterLevel');
 	},
 
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunning : null,
-
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunningInt : function() {
-		var nNowTimeStamp = performance.now();
-		var nFrames = 0;
-		while (this._nTimeStamp < nNowTimeStamp) {
-			this.oRaycaster.frameProcess();
-			this._callGameEvent('onDoomLoop');
-			this._nTimeStamp += this.nInterval;
-			nFrames++;
-			if (nFrames > 10) {
-				// too much frames, the window has been minimized for too long
-				// restore time stamp
-				this._nTimeStamp = nNowTimeStamp;
-			}
-		}
-		if (nFrames) {
-			var fc = this._oFrameCounter;
-			this.oRaycaster.frameRender();
-			this._callGameEvent('onFrameRendered');
-			if (fc.check(nNowTimeStamp)) {
-				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-			}
-		}
+    stateRunning: function() {
+        this.setDoomloop('stateUpdate', 'interval');
 	},
 
-	/**
-	 * Déroulement du jeu
-	 */
-	stateRunningRAF : function(nTime) {
-		var nFrames = 0;
-		var rc = this.oRaycaster;
-		if (this._nTimeStamp === null) {
-			this._nTimeStamp = nTime;
-		}
-		while (this._nTimeStamp < nTime) {
-			rc.frameProcess();
-			this._callGameEvent('onDoomLoop');
-			this._nTimeStamp += this.nInterval;
-			nFrames++;
-			if (nFrames > 10) {
-				// too much frames, the window has been minimized for too long
-				// restore time stamp
-				this._nTimeStamp = nTime;
-			}
-		}
-		if (nFrames) {
-			rc.frameRender();
-			this._callGameEvent('onFrameRendered');
-			var fc = this._oFrameCounter;
-			if (fc.check(nTime | 0)) {
-				this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-			}
-		}
-		this.oRafInterval = window.requestAnimationFrame(this.pDoomloop);
+    stateUpdate: function() {
+		var nTime = performance.now();
+        var nFrames = 0;
+        var rc = this.oRaycaster;
+        if (this._nTimeStamp === null) {
+            this._nTimeStamp = nTime;
+        }
+        while (this._nTimeStamp < nTime) {
+            rc.frameProcess();
+            this._callGameEvent('onDoomLoop');
+            this._nTimeStamp += this.nInterval;
+            nFrames++;
+            if (nFrames > 10) {
+                // too many frames, the window has been minimized for too long
+                // restore time stamp
+                this._nTimeStamp = nTime;
+            }
+        }
+        if (nFrames) {
+            rc.frameRender();
+            this._callGameEvent('onFrameRendered');
+            requestAnimationFrame(function() {
+                rc.flipBuffer();
+            });
+        }
 	},
+
+
 
 	/**
 	 * Fin du programme
@@ -10992,11 +12348,36 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	stateEnd : function() {
 		this.pause();
+	},
+
+	/**
+	 * If the boolean parameter is false : it will stop the timer, 
+	 * effectively freezing all activities.
+	 * If the boolean parameter is true : it will only pause the raycaster
+	 * rendering process.
+	 */
+	pause: function(bSoft) {
+		if (bSoft) {
+			if (this.oRaycaster) {
+				this.oRaycaster.bPause = true;
+			}
+		} else {
+			__inherited();
+		}
+	},
+
+	resume: function() {
+		if (this.oRaycaster) {
+			this.oRaycaster.bPause = false;
+		}
+		__inherited();
 	}
 });
 
 /** Effet graphique temporisé
  * O876 Raycaster project
+ * @class O876_Raycaster.GXAmbientLight
+ * @extends O876_Raycaster.GXEffect
  * @date 2012-01-01
  * @author Raphaël Marandet
  * 
@@ -11014,6 +12395,7 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 	},
 	
 	setLight: function(x, t) {
+		console.log(x, t);
 		if (x > 0 && t > 0) {
 			var rc = this.oRaycaster;
 			this._bOver = false;
@@ -11032,11 +12414,12 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 
 	process: function() {
 		var e = this._oEasing;
-		this._bOver = e.f();
+		e.next();
+		this._bOver = e.over();
 	},
 
 	render: function() {
-		x = this._oEasing.x;
+		var x = this._oEasing.val();
 		if (x > 0) {
 			var rc = this.oRaycaster;
 			this._bOver = false;
@@ -11117,13 +12500,13 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.nPhase++;	/** no break on the next line */
 
 			case 1: // la porte s'ouvre jusqu'a : offset > limite
-				if (this.oEasing.f()) {
+				if (this.oEasing.next().over()) {
 					this.fOffset = this.nLimit - 1;
 					r.setMapPhys(this.x, this.y, 0);
 					this.nPhase++;
 					this.oEasing.from(this.fOffset).to(0).during(this.fSpeed);
 				}
-				this.fOffset = this.oEasing.x | 0;
+				this.fOffset = this.oEasing.val() | 0;
 				break;
 
 			case 2: // la porte attend avant de se refermer   
@@ -11140,10 +12523,10 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				break;
 		
 			case 3: // la porte se referme
-				if (this.oEasing.f()) {
+				if (this.oEasing.next().over()) {
 					this.terminate();
 				}
-				this.fOffset = this.oEasing.x;
+				this.fOffset = this.oEasing.val();
 				break;
 		}
 		r.setMapOffs(this.x, this.y, this.fOffset | 0);
@@ -11184,6 +12567,11 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 });
 
 /* globals O2, O876, O876_Raycaster, CONFIG, Marker */
+/**
+ * @class O876_Raycaster.GameAbstract
+ * @extends O876_Raycaster.Engine
+ *
+ */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_oScreenShot: null,
 	_oTagData: null,
@@ -11201,6 +12589,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		if ('init' in this) {
 			this.init();
 		}
+		this.trigger('init');
 	},
 
 	
@@ -11253,7 +12642,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.oRaycaster.bFlatSky = true;
 		var oCT;
 		if (('controlThinker' in this._oConfig.game) && (this._oConfig.game.controlThinker)) {
-			var ControlThinkerClass = O2._loadObject(this._oConfig.game.controlThinker);
+			var ControlThinkerClass = O2.loadObject(this._oConfig.game.controlThinker);
 			oCT = new ControlThinkerClass();
 		} else {
 			if (this._oConfig.game.fpsControl) {
@@ -11266,7 +12655,9 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			}).bind(oCT));
 		}
 		oCT.oGame = this;
-		this.oRaycaster.oCamera.setThinker(oCT);
+		var oCamera = this.oRaycaster.oCamera;
+		oCamera.setThinker(oCT);
+		oCamera.setXY(oCamera.x, oCamera.y);
 		// Tags data
 		var iTag, oTag;
 		var aTags = this.oRaycaster.aWorld.tags;
@@ -11435,6 +12826,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		rc.oEffects.removeEffect(function(e) {
 			return e.sClass === 'Message';
 		});
+
 		var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 		oMsg.setMessage(sMessage);
 		this._sLastPopupMessage == sMessage;
@@ -11466,17 +12858,21 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	/**
 	 * Effectue un screenshot de l'écran actuellement rendu
 	 * L'image (canvas) générée est stockée dans la propriété _oScreenShot
+	 * @param bPure si true, alors l'image est redessinée (sans les effect GX et sans la 3D)
 	 */
-	screenShot: function() {
+	screenShot: function(w, h) {
+		if (w === undefined) {
+			w = 192;
+		}
+		this.oRaycaster.drawScreen();
 		var oCanvas = O876.CanvasFactory.getCanvas();
 		var wr = this.oRaycaster.xScrSize;
 		var hr = this.oRaycaster.yScrSize << 1;
-		var w = 192;
-		var h = hr * w / wr | 0;
+		h = h || (hr * w / wr | 0);
 		oCanvas.width = w;
 		oCanvas.height = h;
 		var oContext = oCanvas.getContext('2d');
-		oContext.drawImage(this.oRaycaster.getScreenCanvas(), 0, 0, wr, hr, 0, 0, w, h);
+		oContext.drawImage(this.oRaycaster.getRenderCanvas(), 0, 0, wr, hr, 0, 0, w, h);
 		return this._oScreenShot = oCanvas;
 	},
 
@@ -11574,6 +12970,10 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 
 	/**
 	 * sets or gets values from the map data array
+	 * @param x {int} block coordinates
+	 * @param y {int}
+	 * @param sVariable {string} variable name
+	 * @param xValue {*} variable value
 	 */
 	mapData: function(x, y, sVariable, xValue) {
 		var s = this.oRaycaster.nMapSize;
@@ -12133,26 +13533,40 @@ O2.mixin(O876_Raycaster.MouseKeyboardThinker, O876.Mixin.Events);
 O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 	_oEasingX: null,
 	_oEasingY: null,
+	_oEasingA: null,
 
 	_aStart: 0,
-	
-	setMove: function(x, y, a, dx, dy, t, s) {
+
+	/**
+	 * Initie un déplacement
+	 * @param x coord de départ
+	 * @param y ...
+	 * @param a angle départ
+	 * @param dx coord relative arrivée
+	 * @param dy ...
+	 * @param t temps requies pour effectué le déplacement
+	 * @param s fonction easing
+	 */
+	setMove: function(x, y, a, dx, dy, fa, t, s) {
 		if (x === null || x === undefined) {
 			x = this.oMobile.x;
 		}
 		if (y === null || y === undefined) {
 			y = this.oMobile.y;
 		}
+		if (a === null || a === undefined) {
+			a = this.oMobile.fTheta;
+		}
+		if (fa === null || fa === undefined) {
+			fa = this.oMobile.fTheta;
+		}
 		this._oEasingX = this._oEasingX || new O876.Easing();
 		this._oEasingY = this._oEasingY || new O876.Easing();
-		if (a !== null && a !== undefined) {
-			this._aStart = a;
-		} else {
-			this._aStart = this.oMobile.fTheta;
-		}
+		this._oEasingA = this._oEasingA || new O876.Easing();
 		var tf = this.oGame.oRaycaster.TIME_FACTOR;
 		this._oEasingX.from(x).to(x + dx).during(t / tf | 0).use(s || 'smoothstep');
 		this._oEasingY.from(y).to(y + dy).during(t / tf | 0).use(s || 'smoothstep');
+		this._oEasingA.from(a).to(fa).during(t / tf | 0).use(s || 'smoothstep');
 	},
 
 	think : function() {
@@ -12166,17 +13580,19 @@ O2.extendClass('O876_Raycaster.NonLinearThinker', O876_Raycaster.Thinker, {
 	
 	thinkMove: function() {
 		if (this._oEasingX && this._oEasingY) {
-			var bx = this._oEasingX.f();
-			var by = this._oEasingY.f();
-			var x = this._oEasingX.x;
-			var y = this._oEasingY.x;		
+			var bx = this._oEasingX.next().over();
+			var by = this._oEasingY.next().over();
+			var x = this._oEasingX.val();
+			var y = this._oEasingY.val();
+			var a = this._oEasingA.next().val();
 			this.oMobile.setXY(x, y);
+			this.oMobile.setAngle(a);
 			if (bx && by) {
 				this.think = this.thinkStop;
 			}
 		}
 	},
-	
+
 	thinkStop: function() {
 	},
 	
@@ -12344,9 +13760,13 @@ O2.extendClass('O876_Raycaster.CameraKeyboardThinker', O876_Raycaster.KeyboardTh
 	}
 });
 
+/**
+ * @class O876_Raycaster.FirstPersonThinker
+ */
 O2.extendClass('O876_Raycaster.FirstPersonThinker', O876_Raycaster.MouseKeyboardThinker,
 {
 	nMouseSensitivity: 166,
+	_bFrozen: false,
 
 	__construct : function() {
 		this.defineKeys( {
@@ -12375,17 +13795,35 @@ O2.extendClass('O876_Raycaster.FirstPersonThinker', O876_Raycaster.MouseKeyboard
 	},
 
 	readMouseMovement: function(x, y) {
-		this.oMobile.rotate(x / this.nMouseSensitivity);
+		if (!this._bFrozen) {
+			this.oMobile.rotate(x / this.nMouseSensitivity);
+		}
+	},
+
+	/**
+	 * Freezes all movement and rotation
+	 */
+	freeze: function() {
+		this._bFrozen = true;
+	},
+
+	/**
+	 * if frozen then back to normal
+	 */
+	thaw: function() {
+		this._bFrozen = false;
 	},
 
 	think: function() {
-		this.updateKeys();
+		if (!this._bFrozen) {
+			this.updateKeys();
+		}
 	},
 
 	checkCollision: function() {
 		if (this.oMobile.oMobileCollision !== null) {
 			var oTarget = this.oMobile.oMobileCollision;
-			if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
+			if (oTarget.oSprite.oBlueprint.nType !== RC.OBJECT_TYPE_MISSILE) {
 				this.oMobile.rollbackXY();
 			}
 		}
