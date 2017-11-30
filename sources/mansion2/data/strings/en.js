@@ -54,6 +54,64 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			description: 'A monstrous figure, a messenger of unspeakable unholy entities from beyond our space and time.'
 		},
 
+        p_maya: {
+            title: 'Maya',
+            description: 'Steel color eyed, lively little girl. Private collection...'
+        },
+        p_karen: {
+            title: 'Karen',
+            description: 'Dark eyed little girl with beautiful long hair, Private collection...'
+        },
+		p_dorian: {
+			title: 'Portrait of Dorian Gray',
+			description: 'This painting of a monstrously ugly old man, bears a notch made with a knife.'
+		},
+		p_zoidberg: {
+			title: 'Dr. Zoidberg',
+			description: 'Need a good painting idea ? Why not Zoidberg ?'
+		},
+		p_thunder: {
+			title: 'Thunder',
+			description: 'This painting depicts a thunder strike.'
+		},
+		p_nightmare: {
+			title: 'The Nightmare',
+			description: 'A famous painting of Henry Fuseli. No wonder it is located in this hellish place.'
+		},
+		p_medusa: {
+			title: 'Medusa',
+			description: 'The infamous Gorgon, a mythical monstrer with a petrifying gaze.'
+		},
+		p_succubus: {
+			title: 'Succubus',
+			description: 'These demons are renowned for their taste for torture and seduction.'
+		},
+        p_innsmouth_1: {
+            title: 'Innsmouth fisherman',
+            description: 'This man is no more human. He looks more like a fish than a fisherman.'
+        },
+        p_innsmouth_2: {
+            title: 'Innsmouth lady',
+            description: 'Deep eyed lady with pale skin and large mouth.'
+        },
+        p_innsmouth_3: {
+            title: 'Innsmouth folk',
+            description: 'A grotesque painting of an old man looking at a monster by the window'
+        },
+		p_innsmouth_port: {
+			title: 'The city of Innsmouth',
+			description: 'The town of Innsmouth shelters a cult of Dagon, and is in a horrendous state of decay...'
+		},
+		p_jeff: {
+			title: 'Jeff the killer',
+			description: 'Bleached face and insane bloody smile.'
+		},
+		p_crosses: {
+			title: 'Crosses',
+			description: 'Is someone nailed on it ?'
+		},
+
+
 
 		// CLUES
 		c_sigil_exit: {
