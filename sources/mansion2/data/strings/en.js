@@ -118,7 +118,8 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 			title: 'A strange book',
 			description: 'A strange book appeared on the sigil photo, the two things could be related.'
 		},
-		
+
+
 		// WRAITH
 		w_cowled_skull: {
 			title: 'Cowled skull',
@@ -138,6 +139,71 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		w_stray_dancer: {
 			title: 'Stray dancer',
 			description: 'She ventured too far in the woods during and dark and misty night. She still searches how to get out.'
+		},
+
+		w_blind_cultist: {
+			title: 'Blind cultist',
+			description: 'He was blinded during the blind demon ritual. He died shortly after due to the ritual failure'
+		},
+		w_conserved_painter: {
+			title: 'Conserved painter',
+			description: 'She was a skilled painter and she paint many pictures and portraits in this mansion. The cultists did not want her to leave.'
+		},
+		w_crimson_hood: {
+			title: 'Little crimson hood',
+			description: 'Lost in the wood, she could not reach her grandmother\'s house... in this reality.'
+		},
+		w_dark_scholar: {
+			title: 'Dark scholar',
+			description: 'Fascinated by occult lore, he tried to collect as much knowledge as possible, until he knew too much...'
+		},
+		w_demented_knife: {
+			title: 'Demented knife',
+			description: 'Sometimes mental illness cannot just be cured...'
+		},
+		w_electric_fairy: {
+			title: 'Electric fairy',
+			description: 'A new divinity is trying to emerge.'
+		},
+		w_gothic_witch: {
+			title: 'Gothic witch',
+			description: 'An adept of wicca, she believes in forces of nature, and reject any social conformism.'
+		},
+		w_grim_reaper: {
+			title: 'Grim Reaper',
+			description: 'Time is of no importance for the Reaper. At the end all men must die.'
+		},
+		w_mad_folklorist: {
+			title: 'Mad folklorist',
+			description: 'He lost his sanity after witnessing the failed summoning of an outer entity.'
+		},
+		w_mischevious_doll: {
+			title: 'Mischevious doll',
+			description: 'Human sized doll inhabited by some malevolent spirit. She feels neither compassion nor remorses'
+		},
+		w_noble_cultist: {
+			title: 'Noble cultist',
+			description: 'Too many bored and wealthy people fall into decadence and turn themselves to evil worshipping.'
+		},
+		w_penitentia: {
+			title: 'Penitentia',
+			description: 'Nothing is known about her. But anything can happen in this world.'
+		},
+		w_pole_of_skulls: {
+			title: 'Pole of skulls',
+			description: 'An evil totem. Long ago, it was believed that the spirit could not flee outside the skull, after death'
+		},
+		w_tormented_grudge: {
+			title: 'Tormented grudge',
+			description: 'This thing can harm you, even if you watch it on TV.'
+		},
+		w_voracious_clown: {
+			title: 'Voracious clown',
+			description: 'Bad, very bad for coulrophobic people.'
+		},
+		w_wicked_crone: {
+			title: 'Wicked crone',
+			description: 'A classic figure of the mean old women brewing disgusting potion with lizard tails and toadstools.'
 		}
 	},
 
