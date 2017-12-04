@@ -503,6 +503,10 @@ O2.createClass('MANSION.Logic', {
             resistance:		0,
             speed:			0,
 			sight:			0,
+			blessfactor:	0,
+			cursefactor:	0,
+			chargefactor:	0,
+			frozen:			0
         };
         for (var sAttr in oBase) {
         	p.setAttribute(sAttr, oBase[sAttr]);
