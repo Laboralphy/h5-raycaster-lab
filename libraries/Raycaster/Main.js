@@ -88,6 +88,3 @@ O2.createObject('MAIN', {
 	}
 });
 
-window.addEventListener('load', function() {
-	MAIN.run();
-});

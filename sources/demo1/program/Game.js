@@ -87,3 +87,4 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 		this.openDoor(oBlock.x, oBlock.y);
 	}
 });
+window.addEventListener('load', function() { MAIN.run(); });
