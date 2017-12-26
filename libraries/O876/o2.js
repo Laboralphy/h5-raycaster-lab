@@ -38,7 +38,7 @@ Function.prototype.createClass = function(pPrototype) {
  * @private
  */
 O2._superizeFunction = function(f, fParent) {
-	var s = 'fNew = function() {\n' +
+	var fNew, s = 'fNew = function() {\n' +
 		'var __inherited = (function() {\n' +
 		'	return fParent.apply(this, arguments);\n' +
 		'}).bind(this);\n' +
