@@ -11,7 +11,7 @@ var O2 = {};
 
 /** Creation d'une nouvelle classe
  * @example NouvelleClasse = Function.createClass(function(param1) { this.data = param1; });
- * @param fConstructor prototype du constructeur
+ * @param pPrototype {*} prototype du constructeur
  * @return Function
  */
 Function.prototype.createClass = function(pPrototype) {
@@ -30,8 +30,14 @@ Function.prototype.createClass = function(pPrototype) {
 	}
 };
 
+/**
+ * Permet de superizer une fonction
+ * @param f
+ * @param fParent
+ * @return {any}
+ * @private
+ */
 O2._superizeFunction = function(f, fParent) {
-	var fNew;
 	var s = 'fNew = function() {\n' +
 		'var __inherited = (function() {\n' +
 		'	return fParent.apply(this, arguments);\n' +
@@ -53,7 +59,7 @@ O2._superizeFunction = function(f, fParent) {
  * @return Instance de lui-même.
  */
 Function.prototype.extendPrototype = function(aDefinition) {
-	var iProp = '', f, fInherited, f2;
+	var iProp, f, fInherited;
 	if (aDefinition instanceof Function) {
 		aDefinition = aDefinition.prototype;
 	}
@@ -186,7 +192,7 @@ O2.extendClass = function(sName, pParent, pPrototype) {
  */
 O2.mixin = function(pPrototype, pMixin) {
 	var oMixin;
-	if (typeof pPrototype == 'string') {
+	if (typeof pPrototype === 'string') {
 		pPrototype = O2.loadObject(pPrototype);
 	}
 	if (typeof pMixin === 'function') {
