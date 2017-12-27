@@ -104,7 +104,6 @@ O2.createClass('RCWE.PasteBin', {
 		}
 		for (var index = 0, l = items.length; index < l; ++index) {
 			item = items[index];
-			console.log(item);
 			if (item.kind === 'file' && item.type.indexOf('image') >= 0) {
 				blob = item.getAsFile();
 				reader = new FileReader();

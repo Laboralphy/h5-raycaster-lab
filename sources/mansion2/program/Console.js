@@ -34,6 +34,7 @@ O2.createClass('MANSION.Console', {
 			var sCaption = this._aLines.join('\n');
 			if (sCaption !== t._sCaption) {
 				t.setCaption(sCaption);
+				t.render();
 			}
 		}
 		var fGlobalAlpha = oContext.globalAlpha;

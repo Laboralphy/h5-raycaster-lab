@@ -5,6 +5,8 @@ require_once('RaycasterConverter.php');
 
 class ServiceImport {
 	
+	use PleaseFilePutContents;
+
 	const BASE_PATH = '../../../sources';
 	const TILE_PATH = 'tiles';
 	
@@ -150,7 +152,7 @@ class ServiceImport {
 		if (!file_exists($sPath)) {
 			mkdir($sPath, 0777, true);
 		}
-		file_put_contents("$sPath/$sName.png", $xData);
+		$this->filePutContents("$sPath/$sName.png", $xData);
 		return "$sRelPath/$sName.png";
 	}
 
@@ -183,11 +185,8 @@ class ServiceImport {
 		try {
 			$oNewData = $this->saveResources(self::BASE_PATH . '/' . $sProject, $oData);
 			$s = self::BASE_PATH . "/$sProject/data/levels/$sFile.lvl.js";
-			if (!is_writable(dirname($s)) || (file_exists($s) && !is_writable($s))) {
-				throw new Exception('Permission to write file ' . $s . ' is denied');
-			}
 			$sData = json_encode($oData);
-			file_put_contents($s, "O2.createObject('LEVEL_DATA.$sFile', $sData);");
+			$this->filePutContents($s, "O2.createObject('LEVEL_DATA.$sFile', $sData);");
 			chmod($s, 0777);
 		} catch (Exception $e) {
 			throw new Exception('Could not export level ' . $sFile . ' in project ' . $sProject . ' : ' . $e->getMessage());

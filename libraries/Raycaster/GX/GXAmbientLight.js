@@ -19,6 +19,7 @@ O2.extendClass('O876_Raycaster.GXAmbientLight', O876_Raycaster.GXEffect, {
 	},
 	
 	setLight: function(x, t) {
+		console.log(x, t);
 		if (x > 0 && t > 0) {
 			var rc = this.oRaycaster;
 			this._bOver = false;

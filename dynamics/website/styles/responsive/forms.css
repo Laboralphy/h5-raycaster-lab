@@ -1,0 +1,59 @@
+/**
+ * Default style for form elements
+ */
+
+
+/* by default, all element are 100% wide and 2.1em high */
+form input, form select {
+    width: 100%;
+    height: 2.1em;
+}
+
+/* text areas */
+form textarea {
+    width: 100%;
+}
+
+/* select elements retreive their initial size */
+form select[size] {
+    height: initial;
+}
+
+/* label are bold... */
+form label {
+    font-weight: bold;
+}
+
+/* ... except checkbox and radio button labels */
+form input[type="radio"] + label,
+form input[type="checkbox"] + label {
+    font-weight: normal;
+}
+
+/* checkbox and radio button are slightly bigger than normal */
+form input[type="radio"], form input[type="checkbox"] {
+    width: initial;
+    height: initial;
+    transform: scale(1.3);
+    vertical-align: middle;
+}
+
+/* form filedset are bold */
+form fieldset legend {
+    font-weight: bold;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+/* color of label error */
+form label.error {
+    color: rgb(192, 0, 0);
+}
+
+form label.error.invalid:after {
+    content: " (invalid)";
+}
+
+form label.error.required:after {
+    content: " (required)";
+}

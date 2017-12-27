@@ -32,6 +32,10 @@ O2.createClass('MANSION.Logic', {
 
 	_nTime: 0,
 	_nChronoSeconds: 0,
+	_nAutoSpawnDelayBetweenGhosts: 10,
+	_nAutoSpawnMaxLevel: 1,
+	_bClearAutoSpawn: false,
+    _bPauseAutoSpawn: false,
 
 	_nScore: 0,
 
@@ -317,8 +321,12 @@ O2.createClass('MANSION.Logic', {
 
 	/**
 	 * A photo of the specified subject is taken
+	 * @param id {string} subject identifier
+	 * @param nScore {integer} reward value
+	 * @param oPhotoCanvas {HTML5CanvasElement} photo content
+	 * @param nType {integer} painting = 1, wraith = 2, clue = 3
 	 */
-	setPhotoSubject: function(id, nScore, oPhotoCanvas) {
+	setPhotoSubject: function(id, nScore, oPhotoCanvas, nType) {
 		if (!this._aCameraSubjects) {
 			this._aCameraSubjects = [];
 		}
@@ -337,7 +345,9 @@ O2.createClass('MANSION.Logic', {
 		this._aAlbum.push({
 			ref: id,
 			score: nScore,
-			data: oPhotoCanvas.toDataURL()
+			data: oPhotoCanvas.toDataURL(),
+			type: nType,
+			date: Date.now()
 		});
 	},
 
@@ -407,7 +417,7 @@ O2.createClass('MANSION.Logic', {
             this._oNotes = JSON.parse(JSON.stringify(MANSION.NOTES));
             for (var n in this._oNotes) {
                 this.setNoteFlag(n, 'read', false);
-                this.setNoteFlag(n, 'found', true);
+                this.setNoteFlag(n, 'found', false);
             }
 		}
 		return this._oNotes;
@@ -420,11 +430,11 @@ O2.createClass('MANSION.Logic', {
 	},
 
     setNoteFlag: function(sNote, sFlag, xValue) {
-        this._oNotes[sNote][0][sFlag] = xValue;
+        this.getNotes()[sNote][0][sFlag] = xValue;
     },
 
     getNoteFlag: function(sNote, sFlag) {
-        return this._oNotes[sNote][0][sFlag];
+        return this.getNotes()[sNote][0][sFlag];
     },
 
 
@@ -493,6 +503,10 @@ O2.createClass('MANSION.Logic', {
             resistance:		0,
             speed:			0,
 			sight:			0,
+			blessfactor:	0,
+			cursefactor:	0,
+			chargefactor:	0,
+			frozen:			0
         };
         for (var sAttr in oBase) {
         	p.setAttribute(sAttr, oBase[sAttr]);
@@ -523,10 +537,17 @@ O2.createClass('MANSION.Logic', {
 				break;
 
 			case 'sight':
+				// deux effets GXAmbientLight en même temps... ça le fait pas
 				if (bPlayer) {
+					// eliminer un ancien GX
+					oMobile.oRaycaster.oEffects.getEffects().filter(function (e) {
+							return e.sClass === 'AmbientLight';
+						}).forEach(function(e) {
+							e.terminate();
+						});
                     oMobile.oRaycaster
                         .addGXEffect(O876_Raycaster.GXAmbientLight)
-                        .setLight(MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue, 1500);
+                        .setLight(Math.max(10, MANSION.CONST.AMBIENT_LIGHT_NORMAL + nValue), 1500);
                 }
                 break;
 		}
@@ -548,4 +569,7 @@ O2.createClass('MANSION.Logic', {
 	getEffectProcessor: function() {
         return this._oEffectProcessor;
 	}
+
+
+
 });

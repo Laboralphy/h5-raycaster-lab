@@ -27,6 +27,12 @@
  * - speed optimization.
  * - raster effects.
  * - ...
+ *
+ *
+ * Second storey
+ * in upper map :
+ * - all blocks above a ceiling must be ray-blocking except when explicitly defined
+ *
  */
 
 
@@ -38,6 +44,11 @@
  *   canvas: string | HTMLCanvasElement,   // canvas id or canvas instance
  *   drawMap: boolean,   // drawing map or not
  * }
+ *
+ *
+ *
+ *
+ *
  */
  
 /* jshint undef: false, unused: true */
@@ -125,6 +136,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	 * @property fViewHeight {number}
      */
 	fViewHeight: 1,
+	bDoubleHeight: false, // texture will be double plus high
 
 	// Rendu des murs
 	nRayLimit: 100,
@@ -165,7 +177,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oConfig : null,
 	
 	oUpper: null,
-	
 	/**
 	 * Set Raycaster Configuration
 	 * 	{
@@ -187,7 +198,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			}
 		}
 	},
-	
+
 	setVR: function(b) {
 		if (b) {
 			this.b3d = true;
@@ -403,6 +414,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oEffects.addEffect(g);
 		return g;
 	},
+
 	
 	/** Rendu graphique de l'arme
 	 * canvas : référence du canvas source
@@ -721,6 +733,20 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 
+    /**
+	 * Renvoie la valeur de l'option spécifiée
+	 * si elle est défini dans la définition du niveau
+     * @param sOption
+     */
+	getWorldOption: function(sOption) {
+		var oOptions = this.aWorld.options || {};
+		if (sOption in oOptions) {
+			return oOptions[sOption];
+		} else {
+			return undefined;
+		}
+	},
+
 	/** Construction de la map avec les donnée contenues dans aWorld
 	 */
 	buildMap : function() {
@@ -817,10 +843,14 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oXMap = new O876_Raycaster.XMap();
 		this.oXMap.setBlockSize(this.xTexture, this.yTexture);
 		this.oXMap.setSize(this.nMapSize, this.nMapSize);
+
 		if ('uppermap' in oData && !!oData.uppermap) {
 			this.buildSecondFloor();
+            this.oUpper.bDoubleHeight = !!this.getWorldOption('stretch');
 		}
 	},
+
+
 	
 	backgroundRedim: function() {
 		var oBackground = this.oBackground;
@@ -847,6 +877,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if ('uppermap' in oData) {
 			var SELF = this.constructor;
 			var urc = new SELF();
+			urc.nRayLimit = 16;
 			urc.TIME_FACTOR = this.TIME_FACTOR;
 			urc.setConfig(this.oConfig);
 			urc.bUseVideoBuffer = false;
@@ -949,7 +980,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var nMapSize = this.nMapSize;
 		var nScale = this.nPlaneSpacing;
 
-		//raycount++;
 		var xi, yi, xt, dxt, yt, dyt, t, dxi, dyi, xoff, yoff, cmax = oData.nRayLimit;
 		
 		var oContinue = oData.oContinueRay;
@@ -1008,8 +1038,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		var sameOffsetWall = this.sameOffsetWall;
 		var BF = O876_Raycaster.BF;
-		var BF_getPhys = BF.getPhys;
-		var BF_getOffs = BF.getOffs;
 		
 		while (done === 0) {
 			if (xt < yt) {
@@ -1025,7 +1053,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					if (nPhys >= nPHYS_FIRST_DOOR && nPhys <= nPHYS_LAST_DOOR) {
 						// entre PHYS_FIRST_DOOR et PHYS_LAST_DOOR
 						nOfs = nScale >> 1;
-					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
+					} else if (nPhys === nPHYS_SECRET_BLOCK || nPhys === nPHYS_TRANSPARENT_BLOCK || nPhys === nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
 						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
@@ -1038,7 +1066,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						if (sameOffsetWall(nOfs, xint, yint, xi, yi, dx, dy, nScale)) { // Même mur -> porte
 							nTOfs = (dxt / nScale) * nOfs;
 							yint = y + yScale * (xt + nTOfs);
-							if (((yint / nScale | 0)) != yi) {
+							if (((yint / nScale | 0)) !== yi) {
 								nPhys = nText = 0;
 							}
 							if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
@@ -1132,7 +1160,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		if (c < cmax) {
 			oData.nWallPanel = map[yi][xi];
-			oData.bSideWall = side == 1;
+			oData.bSideWall = side === 1;
 			oData.nSideWall = side - 1;
 			oData.nWallPos = oData.bSideWall ? yint % oData.xTexture
 					: xint % oData.xTexture;
@@ -1369,7 +1397,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			fBx += dx;
 			fBy += dy;
 		}
-		
 		// Optimisation ZBuffer -> suppression des drawImage inutile, élargissement des drawImage utiles.
 		// si le last est null on le rempli
 		// sinon on compare last et current
@@ -1391,6 +1418,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// dh  8
 		// z   9
 		// fx  10
+		// id  11 identifiant image
 		
 		var zb = this.aZBuffer;
 		var zbl = zb.length;
@@ -1405,12 +1433,12 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		
 		for (i = 0; i < zbl; i++) {
 			b = zb[i];
-			// tant que c'est la même source de texture
-			if (b[10] == lb[10] && b[0] == lb[0] && b[1] == lb[1] && abs(b[9] - lb[9]) < 8) { 
+			// tant que c'est la même source de texture=
+			if (b[10] === lb[10] && b[0] === lb[0] && b[1] === lb[1] && abs(b[9] - lb[9]) < 8) {
 				nLast += z;
-			} else if (b[10] == llb[10] && b[0] == llb[0] && b[1] == llb[1] && abs(b[9] - llb[9]) < 8) {
+			} else if (b[10] === llb[10] && b[0] === llb[0] && b[1] === llb[1] && abs(b[9] - llb[9]) < 8) {
 				nLLast += z;
-			} else if (b[10] == lllb[10] && b[0] == lllb[0] && b[1] == lllb[1] && abs(b[9] - lllb[9]) < 8) {
+			} else if (b[10] === lllb[10] && b[0] === lllb[0] && b[1] === lllb[1] && abs(b[9] - lllb[9]) < 8) {
 				nLLLast += z;
 			} else {
 				lllb[7] = nLLLast;
@@ -1430,7 +1458,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		lb[7] = nLast;
 		aZ.push(lb);
 		
-		this.aZBuffer = aZ;
+		zb = this.aZBuffer = aZ;
 		this.drawHorde();
 		// Le tri permet d'afficher les textures semi transparente après celles qui sont derrières
 		this.aZBuffer.sort(this.zBufferCompare);
@@ -1461,12 +1489,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				rctx.fillRect(0, (this._oCanvas.height >> 1), this._oCanvas.width, this._oCanvas.height >> 1);
 			}
 		}
-		
 		// 2ndFloor
 		if (this.oUpper) {
 			this.drawUpper();
 		}
-
 		// floor
 		if (this.bFloor) {
 			if (this.bCeil && this.fViewHeight !== 1) {
@@ -1475,15 +1501,56 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				this.drawFloor();
 			}
 		}
-		
-		zbl = this.aZBuffer.length;
+		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
-			this.drawImage(i);
+			this.drawImage(zb[i]);
 		}
 		if (this.oConfig.drawMap) {
 			this.drawMap();
 		}
-		//this.drawWeapon();
+	},
+
+	stats: function() {
+		function oneStat(a) {
+			return {
+				cast: a.cast - a.start,
+				sort: a.sort - a.cast,
+				bg: a.bg - a.sort,
+				upper: a.upper - a.bg,
+				flat: a.flat - a.upper,
+				render: a.render - a.flat,
+				map: a.map - a.render,
+				total: a.map - a.start
+			};
+		}
+		var oStat = this
+			.aChronoStat
+			.map(oneStat)
+			.reduce(function(oPrev, a) {
+				var oRes = {};
+				for (var x in oPrev) {
+					oRes[x] = a[x] + oPrev[x];
+				}
+				return oRes;
+			}, {
+				cast: 0,
+				sort: 0,
+				bg: 0,
+				upper: 0,
+				flat: 0,
+				render: 0,
+				map: 0,
+				total: 0
+			})
+		;
+		for (var x in oStat) {
+			oStat[x] = Math.floor(oStat[x]) / 10;
+
+		}
+		if (this.oUpper) {
+			oStat.upperdet = this.oUpper.stats();
+		}
+		return oStat;
 	},
 	
 	/**
@@ -2077,6 +2144,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				aData[0] = null;
 				break;
 		}
+		if (this.bDoubleHeight) {
+			aData[6] -= aData[8];
+            aData[8] <<= 1;
+		}
 		if (aData[0]) {
 			this.aZBuffer.push(aData);
 		}
@@ -2085,9 +2156,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	/** Rendu de l'image stackée dans le Z Buffer
 	 * @param i rang de l'image
 	 */
-	drawImage : function(i) {
+	drawImage : function(zbi) {
 		var rc = this._oRenderContext;
-		var aLine = this.aZBuffer[i];
+		var aLine = zbi;
 		var sGCO = '';
 		var fGobalAlphaSave = 0;
 		var nFx = aLine[10];
@@ -2103,16 +2174,18 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		// Si xStart est négatif c'est qu'on est sur un coté de block dont la texture est indéfinie (-1)
 		// Firefox refuse de dessiner des textures "négative" dont on skipe le dessin
 		if (xStart >= 0) {
-			rc.drawImage(
-				aLine[0], 
-				aLine[1] | 0,
-				aLine[2] | 0,
-				aLine[3] | 0,
-				aLine[4] | 0,
-				aLine[5] | 0,
-				aLine[6] | 0,
-				aLine[7] | 0,
-				aLine[8] | 0);
+			try {
+                rc.drawImage(
+                    aLine[0],
+                    aLine[1] | 0,
+                    aLine[2] | 0,
+                    aLine[3] | 0,
+                    aLine[4] | 0,
+                    aLine[5] | 0,
+                    aLine[6] | 0,
+                    aLine[7] | 0,
+                    aLine[8] | 0);
+            } catch (e) {}
 		}
 		if (sGCO !== '') {
 			rc.globalCompositeOperation = sGCO;

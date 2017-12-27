@@ -24,6 +24,7 @@ Cette méthode renvoie un tableau à indice numérique, dont chaque élément es
 	ref: référence du sujet tel que défini dans le fichier de chaine,
 	score: nombre de points obtenu pour la photo,
 	data: contenu de la photo (base 64)
+	type: numérique 1=tableau ; 2=spectre ; 3=indice
 }
 
 
@@ -32,4 +33,67 @@ Cette méthode renvoie un tableau à indice numérique, dont chaque élément es
 
 Comment créer un thinker de fantome vengeur
 -------------------------------------------
-Le thinker n'a besoin que d'une seule fonction thinkIdle qui sera lancée chaque fois que le fantôme n'a plus rien à faire. 
+Le thinker n'a besoin que d'une seule fonction thinkIdle qui sera lancée chaque fois que le fantôme n'a plus rien à faire.
+
+
+
+Comment créer une note accrochée au mur
+---------------------------------------
+On veut ajouter le livre ou le parchemon identifié par "xxx"
+Créer une entrée dans MANSION.STRING_DATA.SUBJECTS.xxx
+Tagger un mur "item book_xxx", ou "item note_xxx" ajouter un decal.
+Créer un fichier xxx.js dans data/notes contenant le json de description
+Ce json doit créer l'entrée MANSION.NOTES.xxx
+remplir correctement le json, prendre exemple sur d'autres json de notes.
+
+
+Comment ajouter un texte d'ambiance quand on active un bloc ou qu'on traverse une case
+--------------------------------------------------------------------------------------
+Sur le bloc ou la case tagger "message xxx"
+Ajouter une entrée dans MANSION.LEVELS.(nom du niveau).xxx
+
+
+
+Comment modifier la musique d'ambiance
+--------------------------------------
+bgm [music]
+liste des musiques disponibles :
+
+atrium
+combat
+cthulhu
+forest
+inside
+jail
+manor
+
+
+
+Comment verrouiller une porte et accrocher une clé quelque part
+---------------------------------------------------------------
+Soit la clé key_special.
+Accrocher la clé en "décal" sur un mur et tagger le block comme ceci :
+- item key_special
+Ajouter un décal sur la porte, mais "tourner" à 90° (sens horaire)
+Ajouter le tag
+- lock key_special
+Ajouter une entrée dans le fichier de chaines (data/Strings/en.js)
+
+
+Comment vérifier que le joueur possède un item
+----------------------------------------------
+verifier que la data "item-Identifiant_de_la_clé" soit bien à true
+
+
+
+
+comment créer une porte verrouillée par un glyphe
+-------------------------------------------------
+un glyphe est comme une clé
+mais on peut photographier le glyphe pour avoir un indice sur la localisation
+du fantome qui le bloque.
+1) sur le glyphe placer un tag "lock glyph_ggg; photoscript Zzz yyy"
+pour que le block soit verrouillée et photographiable
+2) placer deux locators "loc1" et "loc2" aux bon endroit pour créer une photo.
+3) au moment opportun faire : game.playerAcquireItem('glyph_ggg')
+4) dans le photoscript utiliser "takeLocatorPhoto"

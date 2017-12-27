@@ -1,0 +1,9 @@
+figure {
+	border: outset thin #AAA;
+	padding: 0.5em;
+	display: inline-block;
+}
+
+figure img {
+	width: 18em;
+}

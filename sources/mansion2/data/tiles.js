@@ -158,7 +158,34 @@ O2.createObject('MANSION.TILES_DATA', {
 			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
 		]
 	},
-	
+
+	g_smilie: {
+		src: 'resources/sprites/g_smilie.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
+
+	g_snow_white: {
+		src: 'resources/sprites/g_snow_white.png',
+		frames: 9,
+		width: 192,
+		height: 192,
+		scale: 0.333,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 1, 0],
+			[[0, 0, 0, 0, 0, 0, 0, 0], 5, 100, 2],
+			[[4, 4, 4, 4, 4, 4, 4, 4], 5, 100, 2],
+		]
+	},
 
 	g_spooky_doll: {
 		src: 'resources/sprites/g_spooky_doll.png',

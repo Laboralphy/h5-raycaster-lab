@@ -102,7 +102,7 @@ O2.createClass('ADV.EffectProcessor', {
 	 * Elimine les effets qui ont expiré
 	 */
 	processEffects: function() {
-		var nTime = ++this._nTime;
+		++this._nTime;
 		this._aEffects.forEach(function(e) {
 			e.run(this);
 		}, this);

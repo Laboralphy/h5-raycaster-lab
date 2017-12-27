@@ -1,0 +1,11 @@
+key_stairs_door
+la clé est dans la bicoque du nord, dans les passages secrets.
+la serure est sur la porte du RdC menant aux escaliers
+
+key_main_door
+la clé est dans le bosquet Ouest
+la serrure est sur la porte d'entrée du manoir
+
+key_backyard
+La
+La clé est la cabane Est

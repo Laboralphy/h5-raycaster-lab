@@ -37,17 +37,37 @@ levelData = {
                                  // Les textures sont alignées bout à bout.
                                  // La texture du coin 0, 0 à pour indice 0
 
-    codes: [                     // liste des couples d'indice-texture pour chaque code-texture d'un bloc
-                                 // Chaque block dispose d'un code-texture faisant référence à l'un des couple ci-dessous
-                                 // Le couple permet d'indiquer quelles sont les deux textures à peindre sur les face X et Y du bloc.
-      [ int,                     // Indice de la texture pour les faces X d'un bloc
+    codes: [                     // liste des définition des codes textures
+                                 // ces codes textures sont sous la forme de tableau []
+
+                                 // un code texture peut contenir :
+
+                                 // A) deux entiers : ce sont les deux références texture qui seront utilisé
+                                 // pour les face X et Y des block auxquels sera appliqué ce code texture
+
+                                 // B) quatre entiers : ce sont 4 références texture qui seront utilisées
+                                 // pour chaque face du block
+
+                                 // C) un tableau d'entier et 3 entier :
+                                 // c'est une texture animée.
+                                 // le premier élément (le tableau d'entier) contient 2 ou 4 entier
+                                 // faisant rénérence à des texture (ce sont des cas A) ou B) imbriqués)
+                                 // les 3 derniers int sont le nombre de frames, le delai de chaque frame (ms), et le flag de loop (1 ou 2)
+
+      [ int, int ],             // cas A)
+      ...
+
+      [ int,                    // cas B)
         int,
-        int,					 // il peut y avoir 2 ou 4 face par bloc
+        int,
         int ],
-      ...,
+      ...
 
-	  [[int, int], int, int, int], // en cas de block a textures animées : les 3 derniers int sont le nombre de frames, le delai de chaque frame (ms), et le flag de loop (1 ou 2)
-
+	  [[int, int],              // cas C)
+	    int,
+	    int,
+	    int ],
+      ...
     ],
 
   },
@@ -64,11 +84,12 @@ levelData = {
     							  // manquant
   },
 
-  map: [                         // Tableau double dimension contenant les codes-block-physiques, le nombre d'éléments conditionne la taille du labyrinthe
-    [ int, int, int, ... ],      // Carte du labyrinthe, chaque élément est un code-bloc-physique
-    [ int, int, int, ... ],
-    [ int, int, int, ... ],
-    ...  
+  map: [                         // Tableau double dimension contenant les codes-block, le nombre d'éléments conditionne la taille du labyrinthe
+    [ int, int, int, ... ],      // Carte du labyrinthe, chaque élément est un code-block
+    [ int, int, int, ... ],      // format d'ubn code block : 0xAABBCDDD
+    [ int, int, int, ... ],      // AA : 8 bits : aucune signification
+    [ int, int, int, ... ],      // BB : 8 bits : offset entre 0 et 63
+    ...                          // C :
   ],
   
   uppermap: [                    // Exactement le même type de tableau que "map"
@@ -77,6 +98,10 @@ levelData = {
     [ int, int, int, ... ],
     ...  
   ],
+
+  options: {                    // options
+    stretch: boolean,           // si true, etire les texture du premier etage
+  },
       
   visual: {                       // Données visuelle d'ambiance
     ceilColor: {r: int, g: int, b: int},      // couleur du plafond
@@ -143,14 +168,14 @@ levelData = {
   
   tags: [									// Enumération des tags
 	{
-		x: int,
+		x: int,                             // position
 		y: int,
-		tag: string
+		tag: string                         // valeur
 	}, 
 	...
   ]
   
-  background: ...
+  background: ...                           // src du background
 }
 
 

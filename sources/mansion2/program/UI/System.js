@@ -22,12 +22,10 @@ O2.createClass('UI.System', {
 
 	show: function() {
 		this.oScreen.show();
-		this.listenToMouseEvents(this.oRenderCanvas);
 	},
 
 	hide: function() {
 		this.oScreen.hide();
-		this.deafToMouseEvents(this.oRenderCanvas);
 	},
 
 	isVisible: function() {
@@ -272,7 +270,7 @@ O2.createClass('UI.System', {
 	},
 
 	render : function() {
-		if (!this.isVisible()) {
+		if (!this.isVisible() || !this.oRenderCanvas) {
 			return;
 		}
 		// check moz maximize / minimize bug

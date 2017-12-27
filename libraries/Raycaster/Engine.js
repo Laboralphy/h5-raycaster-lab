@@ -21,8 +21,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_oConfig: null,
 	
 	__construct : function() {
-        this.subStateRender = this.subStateRender.bind(this);
-        this.subStateUpdate = this.subStateUpdate.bind(this);
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
@@ -383,10 +381,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	},
 
     stateRunning: function() {
-        this.setDoomloop('subStateUpdate', 'interval');
+        this.setDoomloop('stateUpdate', 'interval');
 	},
 
-    subStateUpdate: function() {
+    stateUpdate: function() {
 		var nTime = performance.now();
         var nFrames = 0;
         var rc = this.oRaycaster;
@@ -399,28 +397,20 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
             this._nTimeStamp += this.nInterval;
             nFrames++;
             if (nFrames > 10) {
-                // too much frames, the window has been minimized for too long
+                // too many frames, the window has been minimized for too long
                 // restore time stamp
                 this._nTimeStamp = nTime;
             }
         }
         if (nFrames) {
-        	requestAnimationFrame(this.subStateRender);
+            rc.frameRender();
+            this._callGameEvent('onFrameRendered');
+            requestAnimationFrame(function() {
+                rc.flipBuffer();
+            });
         }
 	},
 
-	subStateRender: function() {
-        var rc = this.oRaycaster;
-        rc.frameRender();
-        this._callGameEvent('onFrameRendered');
-        requestAnimationFrame(function() {
-        	rc.flipBuffer();
-		});
-//        var fc = this._oFrameCounter;
-//        if (fc.check(nTime | 0)) {
-//            this._callGameEvent('onFrameCount', fc.nFPS, fc.getAvgFPS(), fc.nSeconds);
-//        }
-	},
 
 
 	/**

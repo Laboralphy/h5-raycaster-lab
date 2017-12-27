@@ -90,12 +90,12 @@ O2.createClass('O876.Easing', {
 	 */
 	next: function(t) {
 		if (t === undefined) {
-			t = ++this.iTime;
+			t = this.iTime = Math.min(this.nTime, this.iTime + 1);
 		} else {
-			this.iTime = t;
+			t = this.iTime = Math.min(this.nTime, t);
 		}
 		var p = this.pFunction;
-		if (typeof p != 'function') {
+		if (typeof p !== 'function') {
 			throw new Error('easing function is invalid : ' + p);
 		}
 		var v = p(t / this.nTime);

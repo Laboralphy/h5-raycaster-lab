@@ -11,6 +11,7 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 	_oContainer : null,
 	_xScroll : 0,
 	_yScroll : 0,
+	_bgColor: '',
 
 	/**
 	 * Methode modifiée qui linke le controle transmis en paramètre directement
@@ -96,6 +97,13 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 		return this._yScroll;
 	},
 
+	/**
+	 * Couleur de fond
+	 */
+	setColor: function(sColor) {
+		this._set('_bgColor', sColor);
+	},
+
 	// la première errer de non transmission d'évènement souris était du a une
 	// Height mal calculée
 	// cette deuxième erreur est également du au fait d'une mauvaise redimension
@@ -111,6 +119,14 @@ O2.extendClass('H5UI.ScrollBox', 'H5UI.WinControl', {
 			h = Math.max(h, o._y + o.height());
 		}
 		c.setSize(w, h);
-		this.getSurface().clearRect(0, 0, this.width(), this.height());
+		if (this._bgColor) {
+			var s = this.getSurface();
+			var sColor = s.fillStyle;
+			s.fillStyle = this._bgColor;
+			s.fillRect(0, 0, this.width(), this.height());
+			s.fillStyle = sColor;
+		} else {
+			this.getSurface().clearRect(0, 0, this.width(), this.height());
+		}
 	}
 });

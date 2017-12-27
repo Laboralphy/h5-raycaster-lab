@@ -1,0 +1,87 @@
+/*
+#     #
+#     #     #     ####   #    #    ##    #
+#     #     #    #       #    #   #  #   #
+#     #     #     ####   #    #  #    #  #
+ #   #      #         #  #    #  ######  #
+  # #       #    #    #  #    #  #    #  #
+   #        #     ####    ####   #    #  ######
+
+
+  ####   #    #   ####    #####   ####   #    #     #    ######    ##     #####    #     ####   #    #
+ #    #  #    #  #          #    #    #  ##  ##     #        #    #  #      #      #    #    #  ##   #
+ #       #    #   ####      #    #    #  # ## #     #       #    #    #     #      #    #    #  # #  #
+ #       #    #       #     #    #    #  #    #     #      #     ######     #      #    #    #  #  # #
+ #    #  #    #  #    #     #    #    #  #    #     #     #      #    #     #      #    #    #  #   ##
+  ####    ####    ####      #     ####   #    #     #    ######  #    #     #      #     ####   #    #
+*/
+
+
+/*
+ * This stylesheet is aimed at customizing the visual look of certain items
+ * some padding and margin may be adjusted here.
+ * but most of the time this will be the border-style, font-family domain.
+ */
+ 
+ 
+
+
+/* a card is a round-bordered portion of document */
+.card {
+	padding-top: 0.5em;
+	padding-right: 1em;
+	padding-left: 1em;
+	border: thin solid;
+	border-radius: 0.2em;
+}
+
+
+.title {
+	padding-left: 0.5em;
+	margin-left: -0.5em;
+	margin-right: -0.5em;
+	border-radius: 0.15em;
+}
+
+h1, h2, h3, h4, h5 {
+	font-family: monospace;
+	margin-bottom: 0;
+}
+
+p {
+	line-height: 1.45em;
+}
+
+
+
+
+/* this font is for letters, newspapers, typewriter-like */
+.font-courier {
+	font-family: "Courier New", Courier, monospace;
+}
+
+/* this font is for code examples or terminal outputs */
+.font-terminal {
+	font-family: "Lucida Console", Monaco, monospace;
+}
+
+/* this font is for reading large portion of text */
+.font-book {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* Another sets of button */
+
+.btn.b3d {
+	border: solid thin rgb(64, 64, 64);
+	background: linear-gradient(180deg, 
+		rgba(255, 255, 255, 0.6) 0%, 
+		transparent 50%, 
+		rgba(0, 0, 0, 0.3) 51%,
+		transparent
+	);
+}
+
+
+

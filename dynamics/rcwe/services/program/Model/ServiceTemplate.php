@@ -3,8 +3,10 @@ use O876\MVC as M;
 
 class ServiceTemplate {
 	
+	use PleaseFilePutContents;
+
 	const BASE_PATH = '../server.storage/templates/';
-	
+
 	protected function _checkPermissions($s) {
 		$sDir = self::BASE_PATH;
 		if ($s) {
@@ -42,12 +44,12 @@ class ServiceTemplate {
 		if (!file_exists($sFilePath)) {
 			mkdir($sFilePath, 0777, true);
 		}
-		file_put_contents($sFilePath . '/template.json', $sFileContent);
+		$this->filePutContents($sFilePath . '/template.json', $sFileContent);
 		if ($sThumbnail) {
 			if (strlen($sThumbnail) < 200) {
-				file_put_contents($sFilePath . '/thumbnail.txt', $sThumbnail);
+				$this->filePutContents($sFilePath . '/thumbnail.txt', $sThumbnail);
 			}
-			file_put_contents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
+			$this->filePutContents($sFilePath . '/thumbnail.png', base64_decode($sThumbnail));
 		}
 		if (!file_exists($sFilePath . '/template.json')) {
 			throw new Exception('could not write template file');

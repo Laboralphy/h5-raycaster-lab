@@ -1,0 +1,30 @@
+La porte d'entrée est verrouillée
+La clé de la porte d'entrée se trouve dans le fond du bosquet Ouest.
+Se diriger vers le bosquet ouest
+Rammasser la clé "key_main_door"
+
+porte :
+main_door
+nécessite la clé : key_main_door
+
+
+evenements :
+stray_dancer : fait apparaître le spectre du même nom, si on a la clé key_main_door
+
+
+après la main door
+la pièce de gauche contient un livre : "las reglas de ruina"
+la pièce de droite contient un tableau : "blood moon"
+
+
+
+la porte menant aux escaliers est fermée à clé ("key_stair_case")
+
+
+
+
+2) La clé du portail Est est dans la cabane Est
+
+
+
+

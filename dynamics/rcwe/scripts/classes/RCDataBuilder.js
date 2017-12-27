@@ -29,8 +29,17 @@ O2.createClass('RCWE.RCDataBuilder', {
 			objects: this.buildObjects(oData),
 			tags: this.buildTags(oData),
 			background: this.buildBackground(oData),
-			decals: this.buildDecals(oData)
+			decals: this.buildDecals(oData),
+			options: this.buildOptions(oData)
 		};
+	},
+
+	buildOptions: function(oData) {
+		if ('options' in oData) {
+			return oData.options;
+		} else {
+			return {};
+		}
 	},
 	
 	buildVisuals: function(oData) {

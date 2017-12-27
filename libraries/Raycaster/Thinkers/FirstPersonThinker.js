@@ -1,6 +1,10 @@
+/**
+ * @class O876_Raycaster.FirstPersonThinker
+ */
 O2.extendClass('O876_Raycaster.FirstPersonThinker', O876_Raycaster.MouseKeyboardThinker,
 {
 	nMouseSensitivity: 166,
+	_bFrozen: false,
 
 	__construct : function() {
 		this.defineKeys( {
@@ -29,17 +33,35 @@ O2.extendClass('O876_Raycaster.FirstPersonThinker', O876_Raycaster.MouseKeyboard
 	},
 
 	readMouseMovement: function(x, y) {
-		this.oMobile.rotate(x / this.nMouseSensitivity);
+		if (!this._bFrozen) {
+			this.oMobile.rotate(x / this.nMouseSensitivity);
+		}
+	},
+
+	/**
+	 * Freezes all movement and rotation
+	 */
+	freeze: function() {
+		this._bFrozen = true;
+	},
+
+	/**
+	 * if frozen then back to normal
+	 */
+	thaw: function() {
+		this._bFrozen = false;
 	},
 
 	think: function() {
-		this.updateKeys();
+		if (!this._bFrozen) {
+			this.updateKeys();
+		}
 	},
 
 	checkCollision: function() {
 		if (this.oMobile.oMobileCollision !== null) {
 			var oTarget = this.oMobile.oMobileCollision;
-			if (oTarget.oSprite.oBlueprint.nType != RC.OBJECT_TYPE_MISSILE) {
+			if (oTarget.oSprite.oBlueprint.nType !== RC.OBJECT_TYPE_MISSILE) {
 				this.oMobile.rollbackXY();
 			}
 		}
