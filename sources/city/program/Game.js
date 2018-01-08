@@ -190,3 +190,4 @@ O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 		}
 	}
 });
+window.addEventListener('load', function() { MAIN.run(); });

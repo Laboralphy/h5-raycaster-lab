@@ -385,3 +385,4 @@ déplacement automatique de la caméra
     },
 });
 
+window.addEventListener('load', function() { MAIN.run(); });
