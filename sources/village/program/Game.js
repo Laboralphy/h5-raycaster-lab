@@ -5,4 +5,7 @@ O2.extendClass('VILLAGE.Game', O876_Raycaster.GameAbstract, {
 		});
 	}
 });
-window.addEventListener('load', function() { MAIN.run(); });
+window.addEventListener('load', function() {
+    MAIN.configure(CONFIG);
+    MAIN.run();
+});

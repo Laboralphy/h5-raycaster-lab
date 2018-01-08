@@ -5,3 +5,7 @@ O2.extendClass('CITYFUN.Game', O876_Raycaster.GameAbstract, {
 		});
 	}
 });
+window.addEventListener('load', function() {
+    MAIN.configure(CONFIG);
+    MAIN.run();
+});
