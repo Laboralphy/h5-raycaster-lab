@@ -5,24 +5,33 @@ O2.createObject('MAIN', {
 	
 	game: null,
 	screen: null,
+	config: null,
+
+
+	configure: function(c) {
+		MAIN.config = c;
+	},
 	
 	/**
 	 * Will start a game
 	 * requires a CONFIG object
 	 */
-	run: function() {
-		if (!('CONFIG' in window)) {
-			throw new Error('Where is my CONFIG object ?');
+	run: function(oGameInstance) {
+		if (!(MAIN.config)) {
+			throw new Error('Where is my CONFIG object ? (use MAIN.configure)');
 		}
-		var oConfig = CONFIG;
+		var oConfig = MAIN.config;
 		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
 		if (oConfig.raycaster.canvasAutoResize) {
 			MAIN.screenResize();
 			window.addEventListener('resize', MAIN.screenResize);
 		}
-		var sNamespace = oConfig.game.namespace;
-		var P = window[sNamespace];
-		MAIN.game = new P.Game();
+		if (oGameInstance) {
+			MAIN.game = oGameInstance;
+		} else {
+			var sNamespace = oConfig.game.namespace;
+			MAIN.game = new window[sNamespace].Game();
+		}
 		MAIN.game.setConfig(oConfig);
 		if (oConfig.game.fpsControl && O876_Raycaster.PointerLock.init()) {
 			MAIN.screen.addEventListener('click', function(oEvent) {
@@ -48,7 +57,7 @@ O2.createObject('MAIN', {
 		if (O876_Raycaster.PointerLock.locked()) {
 			return false;
 		}
-		if (CONFIG.game.fullScreen) {
+		if (MAIN.config.game.fullScreen) {
 			O876_Raycaster.FullScreen.changeEvent = function(e) {
 				if (O876_Raycaster.FullScreen.isFullScreen()) {
 					O876_Raycaster.PointerLock.requestPointerLock(oElement);
@@ -88,6 +97,3 @@ O2.createObject('MAIN', {
 	}
 });
 
-window.addEventListener('load', function() {
-	MAIN.run();
-});
