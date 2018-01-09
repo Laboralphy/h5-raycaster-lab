@@ -64,7 +64,7 @@ O2.createClass('MANSION.Script.LevHtp', {
 		setTimeout(function() {
 			g.playAmbiance('music/manor');
 			g._halt();
-			O876_Raycaster.PointerLock.disable();
+            MAIN.pointerlock.disable();
 			var xhr = new O876.XHR();
 			xhr.get('resources/ui/screens/end.xml', function(data) {
 				document.body.innerHTML = data;

@@ -342,7 +342,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	gameEventCommand0: function() {
 		//this.spawnMissile('p_ecto', this.getPlayer());
-		if (!O876_Raycaster.PointerLock.locked()) {
+		if (!MAIN.pointerlock.locked()) {
 			return;
 		}
 		if (this.isCameraActive()) {
@@ -358,10 +358,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * Bring the camera up and down
 	 */
 	gameEventCommand2: function() {
-		if (!O876_Raycaster.PointerLock.locked()) {
+		if (!MAIN.pointerlock.locked()) {
 			return;
 		}
-		if (!O876_Raycaster.PointerLock.bEnabled) {
+		if (!MAIN.pointerlock.bEnabled) {
 			return;
 		}
 		this.toggleCamera();
@@ -786,7 +786,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				oPlayer.setThinker(new MANSION.IntroThinker());
 				oPlayer.setXY(oPlayer.x, oPlayer.y);
 				ct = oPlayer.getThinker();
-				O876_Raycaster.PointerLock.disable();
+                MAIN.pointerlock.disable();
 			break;
 
 			default:
@@ -803,7 +803,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 				.on('use.down', (function() {
 					this.trigger('activate');
 				}).bind(this));
-				O876_Raycaster.PointerLock.enable();
+                MAIN.pointerlock.enable();
 			break;
 		}
 		ct.oGame = this;
@@ -1222,7 +1222,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		ui.show();
 		ui.oSystem.oScreen.setBackground(this.oRaycaster.getRenderCanvas());
 		ui.displayWidget('menu');
-		O876_Raycaster.PointerLock.disable();
+        MAIN.pointerlock.disable();
 		this.pause(true);
         ui.oSystem.listenToMouseEvents(MAIN.screen);
 	},
@@ -1235,7 +1235,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.oHUD.show();
         ui.oSystem.deafToMouseEvents(MAIN.screen);
 		ui.hide();
-		O876_Raycaster.PointerLock.enable(ui.getRenderCanvas());
+        MAIN.pointerlock.enable(ui.getRenderCanvas());
 		this.resume();
 	},
 	
@@ -1587,7 +1587,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 */
 	displayXML: function(sURL) {
 		this._halt();
-		O876_Raycaster.PointerLock.disable();
+        MAIN.pointerlock.disable();
 		var oCvs = document.querySelector('#' + CONFIG.raycaster.canvas);
 		if (oCvs) {
 			oCvs.remove();

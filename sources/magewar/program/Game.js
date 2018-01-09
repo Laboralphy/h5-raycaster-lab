@@ -746,7 +746,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 			case 1: // waiting for map to be ready
 				if (this.bMapReady) {
 					this.nMenuState = 0;
-					O876_Raycaster.PointerLock.exitPointerLock();
+					MAIN.pointerlock.exitPointerLock();
 					ctx.exit = true;
 				}
 				break;
@@ -1100,7 +1100,7 @@ O2.extendClass('MW.Game', O876_Raycaster.GameAbstract, {
 						this.bBoss = false;
 						document.title = this.sBossModeTitle;
 					} else {
-						O876_Raycaster.PointerLock.exitPointerLock();
+                        MAIN.pointerlock.exitPointerLock();
 						this.oRaycaster.getScreenCanvas().style.display = 'none';
 						oBody.style.backgroundColor = 'white';
 						oBody.style.color = 'black';

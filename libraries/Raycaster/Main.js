@@ -6,6 +6,7 @@ O2.createObject('MAIN', {
 	game: null,
 	screen: null,
 	config: null,
+	pointerlock: null,
 
 
 	configure: function(c) {
@@ -17,6 +18,7 @@ O2.createObject('MAIN', {
 	 * requires a CONFIG object
 	 */
 	run: function(oGameInstance) {
+		var PL = MAIN.pointerlock = new O876_Raycaster.PointerLock();
 		if (!(MAIN.config)) {
 			throw new Error('Where is my CONFIG object ? (use MAIN.configure)');
 		}
@@ -33,7 +35,7 @@ O2.createObject('MAIN', {
 			MAIN.game = new window[sNamespace].Game();
 		}
 		MAIN.game.setConfig(oConfig);
-		if (oConfig.game.fpsControl && O876_Raycaster.PointerLock.init()) {
+		if (oConfig.game.fpsControl && PL.init()) {
 			MAIN.screen.addEventListener('click', function(oEvent) {
 				MAIN.lockPointer();
 			});
@@ -54,20 +56,20 @@ O2.createObject('MAIN', {
 		if (!rcc || !rcct) {
 			return false;
 		}
-		if (O876_Raycaster.PointerLock.locked()) {
+		if (MAIN.pointerlock.locked()) {
 			return false;
 		}
 		if (MAIN.config.game.fullScreen) {
 			O876_Raycaster.FullScreen.changeEvent = function(e) {
 				if (O876_Raycaster.FullScreen.isFullScreen()) {
-					O876_Raycaster.PointerLock.requestPointerLock(oElement);
-					O876_Raycaster.PointerLock.setHook(G.oRaycaster.oCamera.oThinker.readMouseMovement, G.oRaycaster.oCamera.oThinker);
+					MAIN.pointerlock.requestPointerLock(oElement);
+					//MAIN.pointerlock.on('mousemove', G.oRaycaster.oCamera.oThinker.readMouseMovement.bind(G.oRaycaster.oCamera.oThinker));
 				}
 			};
 			O876_Raycaster.FullScreen.enter(oElement);
 		} else {
-			O876_Raycaster.PointerLock.requestPointerLock(oElement);
-			O876_Raycaster.PointerLock.setHook(rcct.readMouseMovement, rcct);
+			MAIN.pointerlock.requestPointerLock(oElement);
+			//MAIN.pointerlock.on('mousemove', rcct.readMouseMovement.bind(rcct));
 		}
 		return true;
 	},

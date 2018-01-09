@@ -45,8 +45,8 @@ O2.extendClass('MW.UIPlugin', MW.Plugin, {
 			// désactivation du thinker de camera
 			this.oGame.setPlayerControllable(false);
 			// sortie du mode pointerlock
-			O876_Raycaster.PointerLock.exitPointerLock();
-			O876_Raycaster.PointerLock.bEnabled = false;
+            MAIN.pointerlock.exitPointerLock();
+            MAIN.pointerlock.bEnabled = false;
 		}
 		// activation des évènements UI et du système de rendu
 		this.oSystem.listenToMouseEvents(this.oCanvas);
@@ -65,8 +65,8 @@ O2.extendClass('MW.UIPlugin', MW.Plugin, {
 			// réactivation du thinker de camera
 			this.oGame.setPlayerControllable(true);
 			// retour au mode pointerlock
-			O876_Raycaster.PointerLock.bEnabled = true;
-			O876_Raycaster.PointerLock.requestPointerLock(document.getElementById(CONFIG.raycaster.canvas));
+            MAIN.pointerlock.bEnabled = true;
+            MAIN.pointerlock.requestPointerLock(document.getElementById(CONFIG.raycaster.canvas));
 		}
 		// désactivation des évènements UI et du système de rendu
 		this.oSystem.deafToMouseEvents(this.oCanvas);
