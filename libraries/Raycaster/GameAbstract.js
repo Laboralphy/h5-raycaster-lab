@@ -3,6 +3,73 @@
  * @class O876_Raycaster.GameAbstract
  * @extends O876_Raycaster.Engine
  *
+ *
+ *
+ *
+ *
+ * EVENTS :
+
+ init
+ - pas de paramètre
+ Appelé au démarrage du jeu
+
+
+ error
+ - message : libellé du message
+ - data : exception ayant déclenché l'erreur
+ Appelé dès qu'une exception non gérée est déclenchée
+
+
+ menuloop
+ - exit : boolean true par défaut, mettre à false pour rester dans le menu.
+
+
+ leveldata
+ - data : objet à remplir contenant le niveau qu'il faut charger
+
+
+ load
+ - phase : numéro de phase
+ - progress : progression de la phase
+ - max : maximuml de la valeur de progression possible
+
+
+ enter
+ - pas de paramètre
+ se lance lorsqu'on entre dans le niveau.
+ tout les objets sont chargés/instanciés à ce niveau.
+
+
+ doomloop
+ - pas de paramètre
+ se lance à chaque update des entités.
+
+
+ frame
+ - pas de paramètre
+ se lance chaque fois qu'une frame est rendue.
+
+
+ framecount
+ - fps : nombre d'image par seconde actuellement calculé
+ - avg : moyenne des images par secondes
+ - time : temps écoulé
+ permet d'obtenir des information sur les performances.
+
+
+ key.down & key.up
+ - k : code de la touche
+ permet de déterminer facilement lorsqu'une touche est appuyée ou relachée.
+
+
+ door
+ - x & y : position de la porte
+ - door : effet permettant de refermer manuellement la porte
+ se déclenche à l'ouverture d'une porte.
+
+
+
+ *
  */
 O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	_oScreenShot: null,
