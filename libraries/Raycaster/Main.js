@@ -96,6 +96,9 @@ O2.createObject('MAIN', {
 		oCanvas.style.width = (wf | 0).toString() + 'px';
 		oCanvas.style.height = (hf | 0).toString() + 'px';
 		oCanvas.__ratio = wf / cw;
+		if (oCanvas.style.position === 'absolute' && oCanvas.style['margin-left'] === 'auto') {
+			oCanvas.style.left = ((w - wf) >> 1 | 0).toString() + 'px';
+		}
 	}
 });
 

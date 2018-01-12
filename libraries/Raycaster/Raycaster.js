@@ -290,6 +290,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oImages.finalize();
 		this.oImages = null;
 		this.oThinkerManager = null;
+		this._oContext.clearRect(0, 0, this._oCanvas.width, this._oCanvas.height);
 	},
 
 	/** Le shade process est un processus qui peut prendre du temps
