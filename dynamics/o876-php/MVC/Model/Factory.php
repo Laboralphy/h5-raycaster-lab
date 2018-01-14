@@ -29,7 +29,7 @@ class Factory {
 	 * Renvoie l'instance du singleton
 	 * @return \O876\MVC\Model\Factory
 	 */
-	public function getInstance() {
+	public static function getInstance() {
 		if (self::$_oInstance === null) {
 			self::$_oInstance = new self();
 		}
