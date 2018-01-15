@@ -27,6 +27,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 	__construct: function(r) {
 		__inherited(r);
 		this.oEasing = new O876.Easing();
+		this.nMaxTime = this.nTime = RC.TIME_DOOR_AUTOCLOSE; // temps restant avant fermeture
 		this.setAutoClose(true);
 	},
 	
@@ -42,25 +43,26 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 				this.nCode = r.getMapPhys(this.x, this.y);
 				switch (this.nCode) {
 					case r.PHYS_DOOR_SLIDING_DOUBLE:
-						this.fSpeed = 600 / r.TIME_FACTOR;
+						this.fSpeed = RC.TIME_DOOR_DOUBLE / r.TIME_FACTOR;
 						this.nLimit = r.nPlaneSpacing >> 1;
 						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 			
 					case r.PHYS_DOOR_SLIDING_LEFT:
 					case r.PHYS_DOOR_SLIDING_RIGHT:
-						this.fSpeed = 600 / r.TIME_FACTOR;
+						this.fSpeed = RC.TIME_DOOR_SINGLE_HORIZ / r.TIME_FACTOR;
 						this.nLimit = r.nPlaneSpacing;
 						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 			
 					default:
-						this.fSpeed = 800 / r.TIME_FACTOR;
+						this.fSpeed = RC.TIME_DOOR_SINGLE_VERT / r.TIME_FACTOR;
 						this.nLimit = r.yTexture;
 						this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('smoothstep');
 						break;
 				}
 				this.nPhase++;	/** no break on the next line */
+				/** @fallthrough */
 
 			case 1: // la porte s'ouvre jusqu'a : offset > limite
 				if (this.oEasing.next().over()) {
@@ -100,7 +102,7 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 	 */
 	close : function(bForce) {
 		this.nTime = 0;
-		if (bForce && this.nPhase == 2) {
+		if (bForce && this.nPhase === 2) {
 			this.nPhase++;
 		}
 	},

@@ -21,10 +21,12 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 	fSpeed : 0, // vitesse d'incrémentation/décrémentation de la
 				// porte
 	nLimit : 0, // Limite d'offset de la porte
+	oEasing: null,
 
 	__construct: function(r) {
 		__inherited(r);
 		this.nLimit = r.nPlaneSpacing;
+		this.oEasing = new O876.Easing();
 	},
 	
 	isOver : function() {
@@ -33,7 +35,7 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 
 	seekBlockSecret : function(dx, dy) {
 		if (this.oRaycaster.getMapPhys(this.x + dx,
-				this.y + dy) == this.oRaycaster.PHYS_SECRET_BLOCK) {
+				this.y + dy) === this.oRaycaster.PHYS_SECRET_BLOCK) {
 			this.oRaycaster.setMapPhys(this.x, this.y, 0);
 			Marker.clearXY(this.oRaycaster.oDoors, this.x,
 					this.y);
@@ -66,36 +68,38 @@ O2.extendClass('O876_Raycaster.GXSecret', O876_Raycaster.GXEffect, {
 			case 0: // init
 				Marker.markXY(this.oRaycaster.oDoors, this.x,
 						this.y, this);
-				this.fSpeed = this.oRaycaster.TIME_FACTOR * 40 / 1000;
+				this.fSpeed = RC.TIME_DOOR_SECRET / this.oRaycaster.TIME_FACTOR;
 				this.nPhase++; /** no break here */
+				this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('squareAccel');
+				/** @fallthrough */
+
 				// passage au case suivant
 			case 1: // le block se pousse jusqu'a : offset > limite
-				this.fOffset += this.fSpeed;
-				if (this.fOffset >= this.nLimit) {
+				if (this.oEasing.next().over()) {
 					this.fOffset = this.nLimit - 1;
 					// rechercher le block secret suivant
 					this.seekBlockSecret4Corners();
 					this.nPhase++;
 					this.fOffset = 0;
+					this.oEasing.from(0).to(this.nLimit).during(this.fSpeed).use('squareDeccel');
+				} else {
+					this.fOffset = this.oEasing.val();
 				}
 				break;
 	
 			case 2: // le 2nd block se pousse jusqu'a : offset >
 					// limite
-				this.fOffset += this.fSpeed;
-				if (this.fOffset >= this.nLimit) {
-					this.fOffset = this.nLimit - 1;
-					this.oRaycaster.setMapPhys(this.x,
-							this.y, 0);
-					Marker.clearXY(this.oRaycaster.oDoors, this.x,
-							this.y);
+				if (this.oEasing.next().over()) {
+					this.oRaycaster.setMapPhys(this.x, this.y, 0);
+					Marker.clearXY(this.oRaycaster.oDoors, this.x, this.y);
 					this.nPhase++;
 					this.fOffset = 0;
+				} else {
+					this.fOffset = this.oEasing.val();
 				}
 				break;
 		}
-		this.oRaycaster.setMapOffs(this.x, this.y,
-				this.fOffset | 0);
+		this.oRaycaster.setMapOffs(this.x, this.y, this.fOffset | 0);
 	},
 
 	terminate : function() {

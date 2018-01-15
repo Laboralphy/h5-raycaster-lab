@@ -97,5 +97,37 @@ O2.createObject('RC', {
      */
     FX_ALPHA: [1, 0.75, 0.50, 0.25, 0],
 
+
+	/**
+     * @property TIME_DOOR_DOUBLE
+     * Time (in milliseconds) during a double panel door opening
+	 */
+	TIME_DOOR_DOUBLE: 600,
+
+	/**
+	 * @property TIME_DOOR_DOUBLE
+	 * Time (in milliseconds) during a single panel door opening (horizontally)
+	 */
+	TIME_DOOR_SINGLE_HORIZ: 800,
+
+	/**
+	 * @property TIME_DOOR_DOUBLE
+	 * Time (in milliseconds) during a single panel door opening (vertically)
+	 */
+	TIME_DOOR_SINGLE_VERT: 800,
+
+	/**
+	 * @property TIME_DOOR_DOUBLE
+	 * Time (in milliseconds) during a secret passage opening
+	 */
+	TIME_DOOR_SECRET: 2000,
+
+	/**
+	 * @property TIME_DOOR_AUTOCLOSE
+	 * Time (in milliseconds) during an autoclose door stays open
+	 */
+	TIME_DOOR_AUTOCLOSE: 3000,
+
+
 });
 
