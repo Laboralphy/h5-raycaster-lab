@@ -1038,7 +1038,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var xint = 0, yint = 0;
 		
 		var sameOffsetWall = this.sameOffsetWall;
-		var BF = O876_Raycaster.BF;
 		
 		while (done === 0) {
 			if (xt < yt) {
@@ -1110,7 +1109,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					if (nPhys >= nPHYS_FIRST_DOOR && nPhys <= nPHYS_LAST_DOOR) {
 						// entre PHYS_FIRST_DOOR et PHYS_LAST_DOOR
 						nOfs = nScale >> 1;
-					} else if (nPhys == nPHYS_SECRET_BLOCK || nPhys == nPHYS_TRANSPARENT_BLOCK || nPhys == nPHYS_OFFSET_BLOCK) {
+					} else if (nPhys === nPHYS_SECRET_BLOCK || nPhys === nPHYS_TRANSPARENT_BLOCK || nPhys === nPHYS_OFFSET_BLOCK) {
 						// PHYS_SECRET ou PHYS_TRANSPARENT
 						nOfs = (nText >> 16) & 0xFF; // **Code12** offs
 					} else {
@@ -1123,7 +1122,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 						if (sameOffsetWall(nOfs, xint, yint, xi, yi, dx, dy, nScale)) { // Même mur -> porte
 							nTOfs = (dyt / nScale) * nOfs;
 							xint = x + xScale * (yt + nTOfs);
-							if (((xint / nScale | 0)) != xi) {
+							if (((xint / nScale | 0)) !== xi) {
 								nPhys = nText = 0;
 							}
 							if (nText !== 0	&& Marker_getMarkXY(aExcludes, xi, yi)) {
@@ -1230,7 +1229,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 					Marker.markXY(aExcludes, oData.xWall, oData.yWall);
 				}
 			}
-			nMaxIterations--;
+			--nMaxIterations;
 		} while (oData.oContinueRay.bContinue && nMaxIterations > 0);
 		return aVisibles;
 	},
