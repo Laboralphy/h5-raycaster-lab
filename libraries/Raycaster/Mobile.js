@@ -269,17 +269,17 @@ O2.createClass('O876_Raycaster.Mobile', {
             xClip = pSolidFunction(ix + dx, iy);
             yClip = pSolidFunction(ix, iy + dy);
             if (xClip) {
-                vSpeed.x = 0;
+                dx = 0;
                 if (bCrashWall) {
-                    vSpeed.y = 0;
+                    dy = 0;
                 }
                 oWallCollision.x = xci;
                 bCorrection = true;
             }
             if (yClip) {
-                vSpeed.y = 0;
+                dy = 0;
                 if (bCrashWall) {
-                    vSpeed.x = 0;
+                    dx = 0;
                 }
                 oWallCollision.y = yci;
                 bCorrection = true;
@@ -289,16 +289,20 @@ O2.createClass('O876_Raycaster.Mobile', {
             // il y a eu collsion
             // corriger la coordonée impactée
             if (oWallCollision.x > 0) {
-                vPos.x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+                x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
             } else if (oWallCollision.x < 0) {
-                vPos.x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+                x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
             }
             if (oWallCollision.y > 0) {
-                vPos.y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+                y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
             } else if (oWallCollision.y < 0) {
-                vPos.y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+                y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
             }
         }
+        vPos.x = x;
+        vPos.y = y;
+        vSpeed.x = dx;
+        vSpeed.y = dy;
 	},
 
     /**
