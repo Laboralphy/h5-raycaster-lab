@@ -2244,8 +2244,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				return this.getMapPhys(xm, ym);
 			case 2:
 				return this.getMapOffs(xm, ym);
-			case 3:
-				return this.getMapXYTag(xm, ym);
 			default:
 				return this.aMap[ym][xm];
 		}

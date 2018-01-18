@@ -201,7 +201,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.y = y;
 		var xs = x / ps | 0;
 		var ys = y / ps | 0;
-		if (xs != this.xSector || ys != this.ySector) {
+		if (xs !== this.xSector || ys !== this.ySector) {
 			rc.oMobileSectors.unregister(this);
 			this.xSector = xs;
 			this.ySector = ys;
@@ -219,7 +219,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 		this.ySpeed = 0;
 		var xs = this.x / ps | 0;
 		var ys = this.y / ps | 0;
-		if (xs != this.xSector || ys != this.ySector) {
+		if (xs !== this.xSector || ys !== this.ySector) {
 			this.oRaycaster.oMobileSectors.unregister(this);
 			this.xSector = xs;
 			this.ySector = ys;
@@ -227,13 +227,112 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 
+    /**
+	 * Détermine la collision entre le mobile et les murs du labyrinthe
+	 * @typedef {Object} xy
+	 * @property {number} x
+	 * @property {number} y
+	 *
+     * @param vPos {xy} position du mobile. ATTENTION ce vecteur est mis à jour par la fonction !
+     * @param vSpeed {xy} delta de déplacement du mobile. ATTENTION ce vecteur est mis à jour par la fonction !
+     * @param nSize {number} demi-taille du mobile
+     * @param nPlaneSpacing {number} taille de la grille
+     * @param oWallCollision {xy} indicateurs de collision après calculs
+	 * (pour savoir ou est ce qu'on s'est collisionné). ATTENTION ce vecteur est mis à jour par la fonction !
+     * @param bCrashWall {boolean} si true alors il n'y a pas de correction de glissement
+     * @param pSolidFunction {function} fonction permettant de déterminer si un point est dans une zone collisionnable
+     */
+	computeWallCollisions: function(vPos, vSpeed, nSize, nPlaneSpacing, oWallCollision, bCrashWall, pSolidFunction) {
+        var dx = vSpeed.x;
+        var dy = vSpeed.y;
+        var x = vPos.x;
+        var y = vPos.y;
+        // une formule magique permettant d'igorer l'oeil "à la traine", evitant de se faire coincer dans les portes
+        var iIgnoredEye = (Math.abs(dx) > Math.abs(dy) ? 1 : 0) | ((dx > dy) || (dx === dy && dx < 0) ? 2 : 0);
+        var xClip, yClip, ix, iy, xci, yci;
+        var bCorrection = false;
+        // par defaut pas de colision détectée
+        oWallCollision.x = 0;
+        oWallCollision.y = 0;
+        // pour chaque direction...
+        for (var i = 0; i < 4; ++i) {
+            // si la direction correspond à l'oeil à la traine...
+            if (iIgnoredEye === i) {
+                continue;
+            }
+            // xci et yci valent entre -1 et 1 et correspondent aux coeficient de direction
+            xci = (i & 1) * Math.sign(2 - i);
+            yci = ((3 - i) & 1) * Math.sign(i - 1);
+            ix = nSize * xci + x;
+            iy = nSize * yci + y;
+            // déterminer les collsion en x et y
+            xClip = pSolidFunction(ix + dx, iy);
+            yClip = pSolidFunction(ix, iy + dy);
+            if (xClip) {
+                vSpeed.x = 0;
+                if (bCrashWall) {
+                    vSpeed.y = 0;
+                }
+                oWallCollision.x = xci;
+                bCorrection = true;
+            }
+            if (yClip) {
+                vSpeed.y = 0;
+                if (bCrashWall) {
+                    vSpeed.x = 0;
+                }
+                oWallCollision.y = yci;
+                bCorrection = true;
+            }
+        }
+        if (bCorrection) {
+            // il y a eu collsion
+            // corriger la coordonée impactée
+            if (oWallCollision.x > 0) {
+                vPos.x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+            } else if (oWallCollision.x < 0) {
+                vPos.x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+            }
+            if (oWallCollision.y > 0) {
+                vPos.y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+            } else if (oWallCollision.y < 0) {
+                vPos.y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+            }
+        }
+	},
+
+    /**
+     * Fait glisser le mobile
+     * détecte les collision avec le mur
+     * @param dx {number}
+     * @param dy {number}
+     */
+    slide: function(dx, dy) {
+    	var vPos = {x: this.x, y: this.y};
+        var vSpeed = {x: dx, y: dy};
+        var rc = this.oRaycaster;
+		this.computeWallCollisions(
+			vPos,
+			vSpeed,
+			this.nSize,
+			this.oRaycaster.nPlaneSpacing,
+			this.oWallCollision,
+			!this.bSlideWall,
+			function(x, y) { return rc.clip(x, y, 1); }
+		);
+	    this.setXY(vPos.x + vSpeed.x, vPos.y + vSpeed.y);
+        this.xSpeed = vSpeed.x;
+        this.ySpeed = vSpeed.y;
+    },
+
+
 	/**
 	 * Fait glisser le mobile
 	 * détecte les collision avec le mur
 	 * @param dx {number}
 	 * @param dy {number}
 	 */
-	slide: function(dx, dy) {
+	slide2: function(dx, dy) {
 		var xc = this.xCollisions;
 		var yc = this.yCollisions;
 		var x = this.x;
