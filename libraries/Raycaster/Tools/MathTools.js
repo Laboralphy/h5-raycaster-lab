@@ -48,7 +48,7 @@ var MathTools = {
 
 	/** Calcul de la distance entre deux point séparés par dx, dy
 	 * @param dx delta x
-	 * @param dx delta y
+	 * @param dy delta y
 	 * @return float
 	 */
 	distance : function(dx, dy) {
@@ -56,7 +56,7 @@ var MathTools = {
 	},
 
 	/**
-	 * Normalize la distance donnée
+	 * Normalize le vecteur donnée
 	 * @param dx  {number}
 	 * @param dy  {number}
 	 * @return {number}
@@ -64,8 +64,8 @@ var MathTools = {
 	normalize: function(dx, dy) {
 		var dist = MathTools.distance(dx, dy);
 		return {
-			dx: dx / dist,
-			dy: dy / dist
+			x: dx / dist,
+			y: dy / dist
 		};
 	},
 
