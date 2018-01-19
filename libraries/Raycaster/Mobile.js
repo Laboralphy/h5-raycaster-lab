@@ -227,6 +227,116 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 
+
+
+	/**
+	 * Détermine la collision entre le mobile et les murs du labyrinthe
+	 * @typedef {Object} xy
+	 * @property {number} x
+	 * @property {number} y
+	 *
+	 * @param vPos {xy} position du mobile. ATTENTION ce vecteur est mis à jour par la fonction !
+	 * @param vSpeed {xy} delta de déplacement du mobile. ATTENTION ce vecteur est mis à jour par la fonction !
+	 * @param nSize {number} demi-taille du mobile
+	 * @param nPlaneSpacing {number} taille de la grille
+	 * (pour savoir ou est ce qu'on s'est collisionné). ATTENTION ce vecteur est mis à jour par la fonction !
+	 * @param bCrashWall {boolean} si true alors il n'y a pas de correction de glissement
+	 * @param pSolidFunction {function} fonction permettant de déterminer si un point est dans une zone collisionnable
+	 */
+	computeWallCollisions: function(vPos, vSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction) {
+	var nDist = MathTools.distance(vSpeed.x, vSpeed.y);
+	if (nDist > nSize) {
+		var vSpeedNorm = MathTools.normalize(vSpeed.x, vSpeed.y);
+		var vSubSpeed = vSpeedNorm;
+		vSubSpeed.dx *= nSize;
+		vSubSpeed.dy *= nSize;
+		var nModDist = nDist % nSize;
+		var r, pos, speed;
+		if (nModDist) {
+			var vModSpeed = vSpeed.normalize().mul(nModDist);
+			r = Mobile.computeWallCollisions(vPos, vModSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
+			pos = r.pos;
+			speed = r.speed;
+		} else {
+			pos = vPos;
+			speed = Vector2D.zero();
+		}
+		for (var iIter = 0; iIter < nDist; iIter += nSize) {
+			r = Mobile.computeWallCollisions(pos, vSubSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
+			pos = r.pos;
+			speed = speed.add(r.speed);
+		}
+		return {
+			pos,
+			speed,
+			wcf: r.wcf
+		};
+	}
+	// par defaut pas de colision détectée
+	var oWallCollision = {x: 0, y: 0};
+	var dx = vSpeed.x;
+	var dy = vSpeed.y;
+	var x = vPos.x;
+	var y = vPos.y;
+	// une formule magique permettant d'igorer l'oeil "à la traine", evitant de se faire coincer dans les portes
+	var iIgnoredEye = (Math.abs(dx) > Math.abs(dy) ? 1 : 0) | ((dx > dy) || (dx === dy && dx < 0) ? 2 : 0);
+	var xClip, yClip, ix, iy, xci, yci;
+	var bCorrection = false;
+	// pour chaque direction...
+	for (var i = 0; i < 4; ++i) {
+		// si la direction correspond à l'oeil à la traine...
+		if (iIgnoredEye === i) {
+			continue;
+		}
+		// xci et yci valent entre -1 et 1 et correspondent aux coeficients de direction
+		xci = (i & 1) * Math.sign(2 - i);
+		yci = ((3 - i) & 1) * Math.sign(i - 1);
+		ix = nSize * xci + x;
+		iy = nSize * yci + y;
+		// déterminer les collsion en x et y
+		xClip = pSolidFunction(ix + dx, iy);
+		yClip = pSolidFunction(ix, iy + dy);
+		if (xClip) {
+			dx = 0;
+			if (bCrashWall) {
+				dy = 0;
+			}
+			oWallCollision.x = xci;
+			bCorrection = true;
+		}
+		if (yClip) {
+			dy = 0;
+			if (bCrashWall) {
+				dx = 0;
+			}
+			oWallCollision.y = yci;
+			bCorrection = true;
+		}
+	}
+	x += dx;
+	y += dy;
+	if (bCorrection) {
+		// il y a eu collsion
+		// corriger la coordonée impactée
+		if (oWallCollision.x > 0) {
+			x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+		} else if (oWallCollision.x < 0) {
+			x = (x / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+		}
+		if (oWallCollision.y > 0) {
+			y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nPlaneSpacing - 1 - nSize;
+		} else if (oWallCollision.y < 0) {
+			y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
+		}
+	}
+	return {
+		pos: new Vector2D(x, y),
+		speed: new Vector2D(x - vPos.x, y - vPos.y),
+		wcf: oWallCollision
+	};
+}
+
+
     /**
 	 * Détermine la collision entre le mobile et les murs du labyrinthe
 	 * @typedef {Object} xy
@@ -242,7 +352,7 @@ O2.createClass('O876_Raycaster.Mobile', {
      * @param bCrashWall {boolean} si true alors il n'y a pas de correction de glissement
      * @param pSolidFunction {function} fonction permettant de déterminer si un point est dans une zone collisionnable
      */
-	computeWallCollisions: function(vPos, vSpeed, nSize, nPlaneSpacing, oWallCollision, bCrashWall, pSolidFunction) {
+	computeWallCollisions2: function(vPos, vSpeed, nSize, nPlaneSpacing, oWallCollision, bCrashWall, pSolidFunction) {
         var dx = vSpeed.x;
         var dy = vSpeed.y;
         var x = vPos.x;

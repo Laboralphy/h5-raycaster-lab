@@ -55,6 +55,20 @@ var MathTools = {
 		return Math.sqrt((dx * dx) + (dy * dy));
 	},
 
+	/**
+	 * Normalize la distance donnée
+	 * @param dx  {number}
+	 * @param dy  {number}
+	 * @return {number}
+	 */
+	normalize: function(dx, dy) {
+		var dist = MathTools.distance(dx, dy);
+		return {
+			dx: dx / dist,
+			dy: dy / dist
+		};
+	},
+
     /**
 	 * Limit le nombre aux deux bornes spécifiées
 	 * @param n {number} nombre
