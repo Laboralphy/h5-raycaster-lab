@@ -539,9 +539,9 @@ O2.createClass('O876.Philter', {
 				}
 			}
 			variance = max - min,
-			mean_r = accumulated_r / count;
-			mean_g = accumulated_g / count;
-			mean_b = accumulated_b / count;
+			var mean_r = accumulated_r / count;
+			var mean_g = accumulated_g / count;
+			var mean_b = accumulated_b / count;
 			return {mean: {r: mean_r, g: mean_g, b: mean_b}, variance: variance};
 		}
 

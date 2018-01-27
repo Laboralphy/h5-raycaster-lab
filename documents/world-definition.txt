@@ -51,7 +51,7 @@ levelData = {
                                  // C) un tableau d'entier et 3 entier :
                                  // c'est une texture animée.
                                  // le premier élément (le tableau d'entier) contient 2 ou 4 entier
-                                 // faisant rénérence à des texture (ce sont des cas A) ou B) imbriqués)
+                                 // faisant référence à des texture (ce sont des cas A) ou B) imbriqués)
                                  // les 3 derniers int sont le nombre de frames, le delai de chaque frame (ms), et le flag de loop (1 ou 2)
 
       [ int, int ],             // cas A)
