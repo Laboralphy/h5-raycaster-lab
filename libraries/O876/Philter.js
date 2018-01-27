@@ -538,7 +538,7 @@ O2.createClass('O876.Philter', {
 					}
 				}
 			}
-			variance = max - min,
+			var variance = max - min;
 			var mean_r = accumulated_r / count;
 			var mean_g = accumulated_g / count;
 			var mean_b = accumulated_b / count;
