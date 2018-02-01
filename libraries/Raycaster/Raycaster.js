@@ -163,19 +163,13 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	oThinkerManager : null,
 	aVisibleMobiles: null,
 	aDiscardedMobiles: null,
-
-	// weapon Layer
-	oWeaponLayer: null,
-
 	oImages : null,
-
-	// Effects
 	oEffects : null,
-
-	// Data
 	aWorld : null,
 	oConfig : null,
-	
+	oWeaponLayer: null,
+
+	// upper level
 	oUpper: null,
 	/**
 	 * Set Raycaster Configuration
@@ -414,41 +408,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var g = new G(this);
 		this.oEffects.addEffect(g);
 		return g;
-	},
-
-	
-	/** Rendu graphique de l'arme
-	 * canvas : référence du canvas source
-	 * index : numero de la frame affiché
-	 * width : largeur en pixel d'une frame
-	 * height : hauteur d'une frame
-	 * x : position du sprite à l'écran
-	 * y : *        *         *
-	 * zoom : zoom appliqué au sprite 
-	 */
-	drawWeapon: function() {
-		var w = this.oWeaponLayer;
-		if (w.index >= 0 && w.canvas) {
-			var fAlpha = 1;
-			if (w.alpha != 1) {
-				fAlpha = this._oRenderContext.globalAlpha;
-				this._oRenderContext.globalAlpha = w.alpha;
-			}
-			this._oRenderContext.drawImage(
-				w.canvas,    // canvas des tiles d'arme 
-				w.index * w.width,   
-				0, 
-				w.width, 
-				w.height, 
-				w.x, 
-				w.y, 
-				w.width * w.zoom | 0, 
-				w.height * w.zoom | 0
-			);
-			if (w.alpha != 1) {
-				this._oRenderContext.globalAlpha = fAlpha;
-			}
-		}
 	},
 
 	buildLevel : function() {
@@ -856,7 +815,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	backgroundRedim: function() {
 		var oBackground = this.oBackground;
 		var dh = this.yScrSize << 1;
-		if (oBackground && oBackground.height != dh) {
+		if (oBackground && oBackground.height !== dh) {
 			var sw = oBackground.width;
 			var sh = oBackground.height;
 			var dw = sw * dh / sh | 0;
@@ -1377,7 +1336,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var yCam = this.oCamera.y;
 		var xCam8 = xCam / this.nPlaneSpacing | 0;
 		var yCam8 = yCam / this.nPlaneSpacing | 0;
-		var i = 0;
+		var i;
 		this.aZBuffer = [];
 		this.aScanSectors = Marker.create();
 		if (this.oBackground) { // Calculer l'offset camera en cas de background
@@ -2088,6 +2047,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			case this.PHYS_CURT_SLIDING_DOWN: // rideau coulissant vers le bas
 				aData[2] += nOffset; // no break here 
 				// suite au case 4...
+				/** @fallthrough */
 
 			case this.PHYS_DOOR_SLIDING_DOWN: // Porte coulissant vers le bas
 				if (nOffset > 0) {
