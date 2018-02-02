@@ -245,16 +245,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 		this.oThinkerManager = new O876_Raycaster.ThinkerManager();
 		this.oContinueRay = { bContinue: false };
-		this.oWeaponLayer = {
-			canvas: null,
-			x: -1024,
-			y: 0,
-			width: 0,
-			height: 0,
-			index: 0,
-			alpha: 1,
-			zoom: 1
-		};
 		// économiser la RAM en diminuant le nombre de shading degrees
 		if (this.oConfig.shades) {
 			this.nShadingThreshold = this.oConfig.shades;
@@ -327,6 +317,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			return;
 		}
 		this.aDiscardedMobiles = this.updateHorde();
+		if (this.oWeaponLayer) {
+			this.oWeaponLayer.process(this.TIME_FACTOR, this.oCamera);
+		}
 		this.oEffects.process();
 	},
 
@@ -408,6 +401,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var g = new G(this);
 		this.oEffects.addEffect(g);
 		return g;
+	},
+
+	weapon: function(w) {
+		this.oWeaponLayer = w;
 	},
 
 	buildLevel : function() {
@@ -1463,6 +1460,10 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		zbl = zb.length;
 		for (i = 0; i < zbl; ++i) {
 			this.drawImage(zb[i]);
+		}
+		// weapon
+		if (this.oWeaponLayer) {
+			this.oWeaponLayer.render(this._oRenderContext);
 		}
 		if (this.oConfig.drawMap) {
 			this.drawMap();

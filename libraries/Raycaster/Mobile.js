@@ -67,6 +67,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 		}
 	},
 
+	isMoving: function() {
+		return this.x !== this.xSave || this.y !== this.ySave;
+	},
+
 	/**
 	 * Renvoie le type de blueprint
 	 * Si le mobile n'a pas de sprite (et n'a pas de blueprint)

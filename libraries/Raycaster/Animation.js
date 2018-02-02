@@ -36,7 +36,7 @@ O2.createClass('O876_Raycaster.Animation',  {
 		// Dépassement de duration (pour une seule fois)
 		if (this.nTime >= this.nDuration) {
 			this.nTime -= this.nDuration;
-			if (this.nLoop == 3) {
+			if (this.nLoop === 3) {
 				this.nIndex = Math.random() * this.nCount | 0;
 			} else {
 				this.nIndex += this.nDirLoop;
