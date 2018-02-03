@@ -37,8 +37,6 @@ O2.createObject('O876.CanvasFactory', {
 	 * @param b {boolean} on = smoothing on // false = smoothing off
 	 */
 	setImageSmoothing: function(oContext, b) {
-		oContext.mozImageSmoothingEnabled = b;
-		oContext.msImageSmoothingEnabled = b;
 		oContext.imageSmoothingEnabled = b;
 	},
 	

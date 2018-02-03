@@ -168,6 +168,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	aWorld : null,
 	oConfig : null,
 	oWeaponLayer: null,
+	oArmory: null,
 
 	// upper level
 	oUpper: null,
@@ -373,7 +374,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (sTile in t) {
 			return t[sTile];
 		} else {
-			throw new Error('this tile is not defined : "' + sTile + '"');
+			var warn = 'this tile is not defined : "' + sTile + '"';
+			console.warn(warn);
+			throw new Error(warn);
 		}
 	},
 	
@@ -403,8 +406,23 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		return g;
 	},
 
+    /**
+	 * Selectionne une nouvelle arme
+     * @param w
+     */
 	weapon: function(w) {
-		this.oWeaponLayer = w;
+		var unsheat = (w) => {
+            var wl = this.oArmory[w];
+            this.oWeaponLayer = wl;
+            wl.unsheat();
+		};
+		if (this.oWeaponLayer) {
+            this.oWeaponLayer.sheat(() => {
+            	unsheat(w);
+            });
+        } else {
+            unsheat(w);
+		}
 	},
 
 	buildLevel : function() {
@@ -414,6 +432,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oMobileSectors = null;
 		this.buildMap();
 		this.buildHorde();
+		this.buildWeapons();
 	},
 
 	updateHorde : function() {
@@ -877,6 +896,22 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		for (i = 0; i < oMobs.length; i++) {
 			this.oHorde.defineMobile(oMobs[i]);
 		}
+	},
+
+	buildWeapons: function() {
+        this.oArmory = {};
+        var oData = this.aWorld;
+        if ('weapons' in oData && !!oData.weapons) {
+            var wl, wd;
+            for (var iw in oData.weapons) {
+                wd = oData.weapons[iw];
+                wl = new O876_Raycaster.WeaponLayer();
+                wl.tile = this.getTile(wd.tile);
+                wl.base(wd.x, wd.y, this.yScrSize << 1);
+                wl.playAnimation(0);
+                this.oArmory[iw] = wl;
+            }
+        }
 	},
 
 	/** Création des gradient

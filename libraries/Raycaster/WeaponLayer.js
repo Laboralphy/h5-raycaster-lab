@@ -48,6 +48,10 @@ O2.createClass('O876_Raycaster.WeaponLayer', {
 		this.easing.from(this.yDown).to(this.yBase).during(10).use('squareDeccel');
 	},
 
+	isReady: function() {
+		return this.changing === 0;
+	},
+
 	processChanging() {
 		switch (this.changing) {
 			case 1:

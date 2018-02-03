@@ -176,6 +176,14 @@ levelData = {
   ]
   
   background: ...                           // src du background
+
+  weapons : {                           // definition des armes
+    string: {               // identifiant de l'arme
+        tile: string,       // identifiant du tile utilisé
+        x: number,          // position de base
+        y: number
+    }, ....
+  }
 }
 
 
