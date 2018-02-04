@@ -50,7 +50,7 @@ O2.createObject('MAIN', {
 	lockPointer: function() {
 		var G = MAIN.game;
 		var rc = G.oRaycaster;
-		var oElement = rc.getScreenCanvas();
+		var oElement = MAIN.screen; // précédemment : rc.getScreenCanvas();
 		var rcc = rc.oCamera;
 		var rcct = rcc.oThinker;
 		if (!rcc || !rcct) {
