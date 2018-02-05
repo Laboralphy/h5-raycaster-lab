@@ -179,7 +179,7 @@ O2.createClass('O876.Rasterize', {
 	_processImg: function(img, cb) {
 		var sSrc = img.getAttribute('src');
 		var sSign = 'data:image/';
-		if (sSrc.substr(0, sSign.length) == sSign) {
+		if (sSrc.substr(0, sSign.length) === sSign) {
 			setTimeout(cb, 0);
 			return;
 		}
