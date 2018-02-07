@@ -6606,7 +6606,7 @@ O2.createObject('MAIN', {
 		}
 		oCanvas.style.width = (wf | 0).toString() + 'px';
 		oCanvas.style.height = (hf | 0).toString() + 'px';
-		oCanvas.__ratio = wf / cw;
+		oCanvas.__aspect = wf / cw;
 	}
 });
 

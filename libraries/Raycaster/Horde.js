@@ -204,16 +204,17 @@ O2.createClass('O876_Raycaster.Horde',  {
 				nSectorLength = oSector.length;
 				for (iOther = 0; iOther < nSectorLength; ++iOther) {
 					oOther = oSector[iOther];
-					if (oOther != oMobile) {
+					if (oOther !== oMobile) {
 						if (oMobile.hits(oOther)) {
 							oMobile.oMobileCollision = oOther;
-							return;
+							return true;
 						}
 					}
 				}
 			}
 		}
 		oMobile.oMobileCollision = null;
+		return false;
 	},
 	
 	getAllocatedMemory: function() {

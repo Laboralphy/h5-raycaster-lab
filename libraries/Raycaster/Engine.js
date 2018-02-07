@@ -274,8 +274,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 	// onEnterLevel: null,
 
-	// onMenuLoop: null,
-
 	// onDoomLoop: null,
 
 	// onFrameRendered: null,
@@ -290,19 +288,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this._callGameEvent('onInitialize');
 		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
 		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
-		this.setDoomloop('stateMenuLoop');
+		this.setDoomloop('stateStartRaycaster');
 		this.resume();
-	},
-
-	/**
-	 * Attend le choix d'une partie. Le programme doit afficher un menu ou un
-	 * écran d'accueil. Pour lancer la partie, l'évènement onMenuLoop doit
-	 * retourner la valeur 'true';
-	 */
-	stateMenuLoop : function() {
-		if (this._callGameEvent('onMenuLoop')) {
-			this.setDoomloop('stateStartRaycaster');
-		}
 	},
 
 	/**
@@ -319,8 +306,22 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this.oRaycaster.initialize();
 		this.oThinkerManager = this.oRaycaster.oThinkerManager;
 		this.oThinkerManager.oGameInstance = this;
+		this._callGameEvent('onRaycasterReady', this.oRaycaster);
 		this._callGameEvent('onLoading', 'lvl', 0, 2);
-		this.setDoomloop('stateBuildLevel');
+		this.setDoomloop('stateWaitingForLevel');
+	},
+
+
+	/**
+	 * attend que le level soit fournit
+	 * à l'époque ou cette fonction à été créer on n'avait pas de promise
+	 */
+	stateWaitingForLevel: function() {
+		var oData = this._callGameEvent('onRequestLevelData');
+		if (typeof oData === 'object' && oData !== null) {
+			this.oRaycaster.defineWorld(oData);
+			this.setDoomloop('stateBuildLevel');
+		}
 	},
 
 	/**
@@ -328,12 +329,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	stateBuildLevel : function() {
 		// Evènement chargement de niveau
-		var oData = this._callGameEvent('onRequestLevelData');
-		if (typeof oData != 'object') {
-			this._halt('no world data : without world data I can\'t build the world. (onRequestLevelData did not return object)');
-			return;
-		}
-		this.oRaycaster.defineWorld(oData);
 		try {
 			this.oRaycaster.buildLevel();
 		} catch (e) {

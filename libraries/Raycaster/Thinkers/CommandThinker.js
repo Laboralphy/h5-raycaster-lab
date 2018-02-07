@@ -20,7 +20,7 @@ O2.extendClass('O876_Raycaster.CommandThinker', O876_Raycaster.Thinker, {
 	ANIMATION_DEATH : 3,
 
 	setMovement : function(a, s) {
-		if (this.fma != a || this.fms != s) {
+		if (this.fma !== a || this.fms !== s) {
 			this.fma = a;
 			this.fms = s;
 			var oSprite = this.oMobile.oSprite;

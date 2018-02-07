@@ -103,6 +103,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 			this.oThinker.oMobile = this;
 		}
 		this.oWallCollision = {x: 0, y: 0};
+		this.bWallCollision = false;
 		this.gotoLimbo();
 	},
 
@@ -256,7 +257,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 		if (nDist > nSize) {
 			var vSubSpeed = this._vecScale(vSpeed, nSize);
 			var nModDist = nDist % nSize;
-			var r, pos, speed;
+			var r, pos, speed = {x: 0, y: 0};
 			if (nModDist) {
 				var vModSpeed = this._vecScale(vSpeed, nModDist);
 				r = this.computeWallCollisions(vPos, vModSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
@@ -269,7 +270,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 			for (var iIter = 0; iIter < nDist; iIter += nSize) {
 				r = this.computeWallCollisions(pos, vSubSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
 				pos = r.pos;
-				speed = speed.add(r.speed);
+				speed.x += r.speed.x;
+				speed.y += r.speed.y;
 			}
 			return {
 				pos: pos,
@@ -305,6 +307,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 				dx = 0;
 				if (bCrashWall) {
 					dy = 0;
+					oWallCollision.y = yci;
 				}
 				oWallCollision.x = xci;
 				bCorrection = true;
@@ -313,6 +316,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 				dy = 0;
 				if (bCrashWall) {
 					dx = 0;
+					oWallCollision.x = xci;
 				}
 				oWallCollision.y = yci;
 				bCorrection = true;
@@ -363,7 +367,9 @@ O2.createClass('O876_Raycaster.Mobile', {
 	    this.setXY(r.pos.x, r.pos.y);
         this.xSpeed = r.speed.x;
         this.ySpeed = r.speed.y;
-        this.oWallCollision = r.wcf;
+        var wcf = r.wcf;
+        this.oWallCollision = wcf;
+        this.bWallCollision = wcf.x !== 0 || wcf.y !== 0;
     },
 
 
@@ -373,7 +379,7 @@ O2.createClass('O876_Raycaster.Mobile', {
      * @param fDist {number} Distance de déplacement
 	 */
 	move: function(fAngle, fDist) {
-		if (this.fMovingAngle != fAngle || this.fMovingSpeed != fDist) {
+		if (this.fMovingAngle !== fAngle || this.fMovingSpeed !== fDist) {
 			this.fMovingAngle = fAngle;
 			this.fMovingSpeed = fDist;
 			this.xInertie = Math.cos(fAngle) * fDist;

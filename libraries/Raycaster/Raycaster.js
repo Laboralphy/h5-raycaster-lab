@@ -440,9 +440,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	initCanvas : function() {
-		if (typeof this.oConfig.canvas == 'string') {
+		if (typeof this.oConfig.canvas === 'string') {
 			this._oCanvas = document.getElementById(this.oConfig.canvas);
-		} else if (typeof this.oConfig.canvas == 'object' && this.oConfig.canvas !== null) {
+		} else if (typeof this.oConfig.canvas === 'object' && this.oConfig.canvas !== null) {
 			this._oCanvas = this.oConfig.canvas;
 		} else {
 			throw new Error('initCanvas failed: configuration object needs a valid canvas entry (dom or string id)');

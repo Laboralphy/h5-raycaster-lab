@@ -33,5 +33,17 @@ O2.createObject('TILES_DATA', {
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
 			[[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0]
 		]
-    }
+    },
+
+    m_blast_1: {
+		src: 'resources/tiles/m_blast_1.png',
+		width: 38,
+		height: 48,
+		frames: 21,
+		noshading: true,
+		animations: [
+			[[0, 2, 4, 6, 8, 10, 12, 14], 2, 500, 1],
+			[[17, 17, 17, 17, 17, 17, 17, 17], 5, 120, 0]
+		]
+	}
 });

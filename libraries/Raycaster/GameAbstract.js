@@ -20,8 +20,6 @@
  Appelé dès qu'une exception non gérée est déclenchée
 
 
- menuloop
- - exit : boolean true par défaut, mettre à false pour rester dans le menu.
 
 
  leveldata
@@ -98,19 +96,11 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 			this.trigger('error', {message: sError, data: oError});
 		}
 	},
-	
-	/**
-	 * Cette évènement doit renvoyer TRUE pour pouvoir passer à l'étape suivante
-	 * @return bool
-	 */
-	onMenuLoop: function() {
-		var data = { exit: true };
-		this.trigger('menuloop', data);
-		return data.exit;
-		// Doit retourner TRUE pour indiquer la validation du menu et passer à l'étape suivante
-		// ici il n'y a pas de menu donc "true" pour passer directement à l'étape suivante
+
+	onRaycasterReady: function(oRaycasyter) {
+		this.trigger('raycaster', {raycaster: oRaycasyter});
 	},
-	
+
 	
 	/**
 	 * Evènement appelé lors du chargement d'un niveau,

@@ -101,8 +101,8 @@ O2.createClass('UI.System', {
 	setRenderCanvas : function(oCanvas) {
 		this.oRenderCanvas = oCanvas;
 		this.oRenderContext = oCanvas.getContext('2d');
-		if (!('__ratio' in this.oRenderCanvas)) {
-			this.oRenderCanvas.__ratio = 1;
+		if (!('__aspect' in this.oRenderCanvas)) {
+			this.oRenderCanvas.__aspect = 1;
 		}
 		this.oScreen.setSize(oCanvas.width, oCanvas.height);
 		if (this.oWidget) {
@@ -114,8 +114,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		oThis.doMouseEvent('Click', x - oThis._x, y - oThis._y, e.which);
 	},
 
@@ -123,8 +123,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		oThis.doMouseEvent('Dblclick', x - oThis._x, y - oThis._y, e.which);
 	},
 
@@ -132,8 +132,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		oThis.doMouseEvent('MouseMove', x - oThis._x, y - oThis._y, e.which);
 	},
 
@@ -141,8 +141,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		oThis.doMouseEvent('MouseDown', x - oThis._x, y - oThis._y, e.which);
 	},
 
@@ -150,8 +150,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		oThis.doMouseEvent('MouseUp', x - oThis._x, y - oThis._y, e.which);
 	},
 
@@ -159,8 +159,8 @@ O2.createClass('UI.System', {
 		var oThis = this.__this;
 		var x = e.offsetX || e.clientX - this.__x;
 		var y = e.offsetY || e.clientY - this.__y;
-		x = x / this.__ratio | 0;
-		y = y / this.__ratio | 0;
+		x = x / this.__aspect | 0;
+		y = y / this.__aspect | 0;
 		var nDelta = 0;
 		if (e.wheelDelta) {
 			nDelta = e.wheelDelta;
