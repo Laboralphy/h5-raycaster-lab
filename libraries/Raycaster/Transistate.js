@@ -13,16 +13,11 @@ O2.createClass('O876_Raycaster.Transistate', {
 	_sState : '',
 	bBound: false,
 
-	__construct : function(sFirst) {
-		this.setDoomloop(sFirst);
-	},
-
 
 	/** Definie la procédure à lancer à chaque doomloop
 	 * @param sProc nom de la méthode de l'objet à lancer
 	 */
 	setDoomloop : function(sProc, sType) {
-		console.log(sProc);
 		this.sDoomloopType = sType;
 		if (!(sProc in this)) {
 			throw new Error('"' + sProc + '" is not a valid timer proc');

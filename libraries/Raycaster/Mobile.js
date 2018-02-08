@@ -359,7 +359,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 			vSpeed,
 			nSize,
 			nPlaneSpacing,
-			bCrashWalll,
+			bCrashWall,
 			pSolidFunction
 		);
 		this.setXY(r.pos.x, r.pos.y);

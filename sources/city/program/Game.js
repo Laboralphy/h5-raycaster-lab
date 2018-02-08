@@ -13,34 +13,9 @@ O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 	 * Appelé une seule fois.
 	 */
 	onInitialize: function() {
+		this.initRaycaster(LEVEL_DATA.street);
 	},
-	
-	/**
-	 * Cette évènement doit renvoyer TRUE pour pouvoir passer à l'étape suivante
-	 * @return bool
-	 */
-	onMenuLoop: function() {
-		return true; // Doit retourner TRUE pour indiquer la validation du menu et passer à l'étape suivante
-		// ici il n'y a pas de menu donc "true" pour passer directement à l'étape suivante
-	},
-	
-	
-	/**
-	 * Evènement appelé lors du chargement d'un niveau,
-	 * cet évènement doit renvoyer des données au format du Raycaster.
-	 * @return object
-	 */
-	onRequestLevelData: function() {
-		var aWorldDataKeys = Object.keys(LEVEL_DATA);
-		this._sLevelIndex = aWorldDataKeys[aWorldDataKeys.indexOf(this._sLevelIndex) + 1];
-		return LEVEL_DATA[this._sLevelIndex];
-	},
-	
-	/**
-	 * 2vnèement appelé quand une ressource et chargée
-	 * sert à faire des barres de progressions
-	 */
-	// onLoading: null,
+
 	
 	/**
 	 * Evènement appelé lorsqu'un niveau a été chargé
@@ -190,7 +165,4 @@ O2.extendClass('STUB.Game', O876_Raycaster.Engine, {
 		}
 	}
 });
-window.addEventListener('load', function() {
-    MAIN.configure(CONFIG);
-    MAIN.run();
-});
+MAIN.autorun(CONFIG);

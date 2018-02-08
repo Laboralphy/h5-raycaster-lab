@@ -17,11 +17,15 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   TIME_FACTOR: 50,
 
     __construct: function() {
-      __inherited('stateInitialize');
+      this.stateInitialize();
       //this.resume();
     },
 
     setConfig: function() {},
+
+    getConfig: function() { return CONFIG; },
+
+    initRaycaster: function() {},
 
   /** Initialisation du moteur
    * Initialise le canvas, le timer, le gestionnaire de taches...
@@ -335,3 +339,4 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   }
 });
 
+MAIN.autorun(CONFIG);

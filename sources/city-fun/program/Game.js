@@ -3,18 +3,16 @@ O2.extendClass('CITYFUN.Game', O876_Raycaster.GameAbstract, {
 	_weapons: null,
 
 	init: function() {
-		this.on('leveldata', function(wd) {
-			wd.data = LEVEL_DATA[Object.keys(LEVEL_DATA)[0]];
-			wd.data.tiles = TILES_DATA;
-			wd.data.blueprints = BLUEPRINTS_DATA;
-            wd.data.weapons = WEAPONS_DATA;
-		});
 
-		this.on('enter', function() {
-			this.weapon('w_rick_pistol');
-			this.oRaycaster.oCamera.getThinker().on('button0.down', this.gameEventCommand0.bind(this));
-		});
-
+        let wd = LEVEL_DATA[Object.keys(LEVEL_DATA)[0]];
+		wd.tiles = TILES_DATA;
+		wd.blueprints = BLUEPRINTS_DATA;
+		wd.weapons = WEAPONS_DATA;
+		this.initRaycaster(wd);
+        this.on('enter', (function() {
+            this.weapon('w_rick_pistol');
+            this.oRaycaster.oCamera.getThinker().on('button0.down', this.gameEventCommand0.bind(this));
+        }).bind(this));
 	},
 
 	fire: function() {
@@ -41,6 +39,5 @@ O2.extendClass('CITYFUN.Game', O876_Raycaster.GameAbstract, {
 
 });
 window.addEventListener('load', function() {
-    MAIN.configure(CONFIG);
-    MAIN.run();
+    MAIN.run(new CITYFUN.Game(CONFIG));
 });

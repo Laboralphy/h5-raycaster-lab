@@ -27,10 +27,11 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 
 		this.on('menuloop', this.gameEventMenu.bind(this));	
-		this.on('leveldata', this.gameEventBuild.bind(this));	
-		this.on('enter', this.gameEventLevel.bind(this));	
+		this.on('enter', this.gameEventLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
+
+		this.initRaycaster(this.gameEventBuild());
 	},
 	
 	initAudio: function() {
@@ -78,7 +79,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return data.exit = this.bStart;
 	},
 	
-	gameEventBuild: function(wd) {
+	gameEventBuild: function() {
 		var data = LEVEL_DATA.level1;
 		var i = '';
 		for (i in TILES_DATA) {
@@ -93,7 +94,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			oTagIndex[t.tag] = [t.x, t.y];
 		});
 		this.oTagIndex = oTagIndex;
-		wd.data = data;
+		return data;
 	},
 	
 	gameEventLoad: function(data) {
@@ -396,6 +397,5 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 });
 window.addEventListener('load', function() {
-    MAIN.configure(CONFIG);
-    MAIN.run();
+    MAIN.run(new MANSION.Game(CONFIG));
 });

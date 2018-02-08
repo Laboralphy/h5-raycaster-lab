@@ -97,10 +97,6 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		}
 	},
 
-	onRaycasterReady: function(oRaycasyter) {
-		this.trigger('raycaster', {raycaster: oRaycasyter});
-	},
-
 	
 	/**
 	 * Evènement appelé lors du chargement d'un niveau,
@@ -112,6 +108,8 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		this.trigger('leveldata', wd);
 		return wd.data;
 	},
+
+
 	
 	/**
 	 * Evènement appelé quand une ressource et chargée

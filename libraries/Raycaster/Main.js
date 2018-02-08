@@ -36,13 +36,7 @@ O2.createObject('MAIN', {
 	},
 
 	setupGameInstance: function(oGameInstance) {
-		if (oGameInstance) {
-			MAIN.game = oGameInstance;
-		} else {
-			var sNamespace = MAIN.config.game.namespace;
-			MAIN.game = new window[sNamespace].Game();
-			MAIN.game.setConfig(MAIN.config);
-		}
+		MAIN.game = oGameInstance;
 	},
 
 	/**
@@ -50,12 +44,26 @@ O2.createObject('MAIN', {
 	 * requires a CONFIG object
 	 */
 	run: function(oGameInstance) {
+		MAIN.configure(oGameInstance.getConfig());
 		if (!(MAIN.config)) {
 			throw new Error('Where is my CONFIG object ? (use MAIN.configure)');
 		}
 		MAIN.setupScreen();
 		MAIN.setupPointerlock();
 		MAIN.setupGameInstance(oGameInstance);
+	},
+
+	autorun: function(config) {
+		MAIN.configure(config);
+        window.addEventListener('load', function() {
+            MAIN.configure(MAIN.config);
+            var ns = MAIN.config.game.namespace;
+            var gcn = ns + '.Game';
+            var gc = O2.loadObject(gcn);
+            var data = LEVEL_DATA[Object.keys(LEVEL_DATA)[0]];
+            MAIN.run(new gc(MAIN.config));
+            MAIN.game.initRaycaster(data);
+        });
 	},
 	
 	/**

@@ -20,12 +20,12 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	_nShadedTileCount : 0,
 	_oConfig: null,
 	
-	__construct : function() {
+	__construct : function(oConfig) {
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
-		__inherited('stateInitialize');
-		this.resume();
+		this.setConfig(oConfig);
+        this._callGameEvent('onInitialize');
 	},
 
 	/**
@@ -35,30 +35,28 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this._oConfig = c;
 	},
 
-	initRequestAnimationFrame : function() {
-		if ('requestAnimationFrame' in window) {
-			return true;
-		}
-		var RAF = null;
-		if ('requestAnimationFrame' in window) {
-			RAF = window.requestAnimationFrame;
-		} else if ('webkitRequestAnimationFrame' in window) {
-			RAF = window.webkitRequestAnimationFrame;
-		} else if ('mozRequestAnimationFrame' in window) {
-			RAF = window.mozRequestAnimationFrame;
-		}
-		if (RAF) {
-			window.requestAnimationFrame = RAF;
-			return true;
-		} else {
-			return false;
-		}
+	getConfig: function() {
+		return this._oConfig;
 	},
-	
-	initDoomLoop: function() {
-		__inherited();
-		this._nTimeStamp = null;
+
+	initRaycaster: function(oData) {
+        this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
+        this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
+        if (this.oRaycaster) {
+            this.oRaycaster.finalize();
+        } else {
+            this.oRaycaster = new O876_Raycaster.Raycaster();
+            this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
+        }
+        this.oRaycaster.setConfig(this._oConfig.raycaster);
+        this.oRaycaster.initialize();
+        this.oThinkerManager = this.oRaycaster.oThinkerManager;
+        this.oThinkerManager.oGameInstance = this;
+        this._callGameEvent('onLoading', 'lvl', 0, 2);
+        this.oRaycaster.defineWorld(oData);
+        this.setDoomloop('stateBuildLevel');
 	},
+
 
 	/**
 	 * Déclenche un évènement
@@ -153,18 +151,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 	// ////////// METHODES PUBLIQUES API ////////////////
 
-	/**
-	 * Charge un nouveau niveau et ralnce la machine. Déclenche l'évènement
-	 * onExitLevel avant de changer de niveau. Utiliser cet évènement afin de
-	 * sauvegarder les données utiles entre les niveaux.
-	 * 
-	 * @param sLevel
-	 *            référence du niveau à charger
-	 */
-	enterLevel : function() {
-		this._callGameEvent('onExitLevel');
-		this.setDoomloop('stateStartRaycaster');
-	},
 
 	/**
 	 * Returns true if the block at the specified coordinates
@@ -280,49 +266,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 	// ////////////// ETATS ///////////////
 
-	/**
-	 * Initialisation du programme Ceci n'intervient qu'une fois
-	 */
-	stateInitialize : function() {
-		// Evènement initialization
-		this._callGameEvent('onInitialize');
-		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
-		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
-		this.setDoomloop('stateStartRaycaster');
-		this.resume();
-	},
-
-	/**
-	 * Initialisation du Raycaster Ceci survient à chaque chargement de niveau
-	 */
-	stateStartRaycaster : function() {
-		if (this.oRaycaster) {
-			this.oRaycaster.finalize();
-		} else {
-			this.oRaycaster = new O876_Raycaster.Raycaster();
-			this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
-		}
-		this.oRaycaster.setConfig(this._oConfig.raycaster);
-		this.oRaycaster.initialize();
-		this.oThinkerManager = this.oRaycaster.oThinkerManager;
-		this.oThinkerManager.oGameInstance = this;
-		this._callGameEvent('onRaycasterReady', this.oRaycaster);
-		this._callGameEvent('onLoading', 'lvl', 0, 2);
-		this.setDoomloop('stateWaitingForLevel');
-	},
-
-
-	/**
-	 * attend que le level soit fournit
-	 * à l'époque ou cette fonction à été créer on n'avait pas de promise
-	 */
-	stateWaitingForLevel: function() {
-		var oData = this._callGameEvent('onRequestLevelData');
-		if (typeof oData === 'object' && oData !== null) {
-			this.oRaycaster.defineWorld(oData);
-			this.setDoomloop('stateBuildLevel');
-		}
-	},
 
 	/**
 	 * Prépare le chargement du niveau. RAZ de tous les objets.

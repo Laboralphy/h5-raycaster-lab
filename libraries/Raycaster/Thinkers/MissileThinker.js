@@ -96,7 +96,7 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
       this.advance();
       if (this.isCollisioned()) {
         this.explode();
-        break;
+        //break;
       }
     //}
   },

@@ -12,7 +12,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbianceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_sLevelIndex: 'ch1',
+	_sLevelIndex: '',
 	_oLocators: null,
 	_oConsole: null,
 
@@ -46,7 +46,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initPopup();
 		this.initRandom();
 		this._oConsole = new MANSION.Console();
-		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
@@ -82,6 +81,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 		this.on('key.down', this.gameEventKey.bind(this));
 
+        this.loadLevel('ch1');
 
 	},
 
@@ -228,9 +228,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * de rassemblage.
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
-	gameEventBuild: function(wd) {
+	buildMansionLevel: function() {
 		const data = LEVEL_DATA[this._sLevelIndex];
-		wd.data = data;
 		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
@@ -248,6 +247,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (let s in MANSION.WRAITH_BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
+		return data;
 	},
 
 	/**
@@ -768,9 +768,9 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return this._sLevelIndex;
 	},
 
-	setLevel: function(s) {
+	loadLevel: function(s) {
 		this._sLevelIndex = s;
-		this.enterLevel();	
+		this.initRaycaster(this.buildMansionLevel());
 	},
 	
 	/**
@@ -1611,6 +1611,5 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 });
 
 window.addEventListener('load', function() {
-	MAIN.configure(CONFIG);
-	MAIN.run();
+    MAIN.run(new MANSION.Game(CONFIG));
 });
