@@ -92,13 +92,13 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
       this.extinct();
       return;
 	}
-    for (var i = 0; i < this.nStepSpeed; i++) {
+    //for (var i = 0; i < this.nStepSpeed; i++) {
       this.advance();
       if (this.isCollisioned()) {
         this.explode();
         break;
       }
-    }
+    //}
   },
 
   thinkHit: function() {

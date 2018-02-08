@@ -24,9 +24,9 @@ O2.extendClass('CITYFUN.Game', O876_Raycaster.GameAbstract, {
 		let xoffs = 12 * Math.cos(p.fTheta + Math.PI / 2);
 		let yoffs = 12 * Math.sin(p.fTheta + Math.PI / 2);
 		let m = this.spawnMobile('m_blast_1', xoffs + p.x, yoffs + p.y, p.fTheta);
-		m.fSpeed = 16;
+		m.fSpeed = 64;
 		let th = m.getThinker();
-		th.nStepSpeed = 4;
+		th.nStepSpeed = 1;
 		th.fire(p);
 	},
 
