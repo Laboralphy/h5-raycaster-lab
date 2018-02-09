@@ -285,17 +285,41 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.nShadingThreshold === 0) {
 			return true;
 		}
-		var i = '';
-		var w = this.shadeImage(this.oWall.image, false);
+		var w, i = '';
+        if (!this.oWall.image.complete) {
+			console.warn('shadeprocess : the wall image ' + this.oWall.image.src + ' is not loaded yet.');
+        }
+        try {
+            w = this.shadeImage(this.oWall.image, false);
+		} catch (e) {
+			throw new Error('could not shade the wall textures');
+		}
 		this.oWall.image = w;
 		if (this.bFloor) {
-			w = this.shadeImage(this.oFloor.image, false);
+			try {
+                if (!this.oFloor.image.complete) {
+                    console.warn('shadeprocess : the flat image ' + this.oFloor.image.src + ' is not loaded yet.');
+                }
+                w = this.shadeImage(this.oFloor.image, false);
+			} catch (e) {
+                console.log(this.oFloor.image);
+                console.error(e.message);
+                throw new Error('could not shade the flat textures');
+			}
 			this.oFloor.image = w;
 		}
 		
 		for (i in this.oHorde.oTiles) {
 			if (this.oHorde.oTiles[i].bShading) {
-				w = this.shadeImage(this.oHorde.oTiles[i].oImage, true);
+				try {
+                    if (!this.oHorde.oTiles[i].oImage.complete) {
+                        console.warn('shadeprocess : the sprite image of horde item "' + i + '" is not loaded yet.');
+                    }
+                    w = this.shadeImage(this.oHorde.oTiles[i].oImage, true);
+				} catch (e) {
+                    console.error(e.message);
+                    throw new Error('could not shade the horde item ' + i);
+				}
 				this.oHorde.oTiles[i].bShading = false;
 				this.oHorde.oTiles[i].oImage = w;
 				return false;
