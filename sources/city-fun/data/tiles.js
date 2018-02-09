@@ -27,13 +27,25 @@ O2.createObject('TILES_DATA', {
 		src: 'resources/tiles/w_tromblon.png',
 		width: 93,
 		height: 150,
-		frames: 1,
+		frames: 7,
 		noshading: true,
 		animations: [
 			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
 			[[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0]
 		]
     },
+
+	w_bertha: {
+		src: 'resources/tiles/w_bertha.png',
+		width: 200,
+		height: 138,
+		frames: 7,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+			[[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0]
+		]
+	},
 
     m_blast_1: {
 		src: 'resources/tiles/m_blast_1.png',
