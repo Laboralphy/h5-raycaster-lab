@@ -341,7 +341,6 @@ O2.createClass('O876_Raycaster.Mobile', {
 		if (nDist > nSize) {
 			var vSubSpeed = this._vecScale(vSpeed, nSize);
 			var nModDist = nDist % nSize;
-			var pos, speed = {x: 0, y: 0};
 			if (nModDist) {
 				var vModSpeed = this._vecScale(vSpeed, nModDist);
 				this.computeWallCollisions(vPos, vModSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
