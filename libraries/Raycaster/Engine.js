@@ -107,8 +107,26 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	getKeyboardDevice : function() {
 		if (this.oKbdDevice === null) {
-			this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-			this.oKbdDevice.plugHandlers();
+			var kbd = null;
+			var cfgGame = this._oConfig.game;
+			if ('devices' in cfgGame) {
+				var cfgDev = cfgGame.devices;
+				if (typeof cfgDev !== 'object') {
+					throw new Error('config.game.devices must be an object');
+				}
+				if (!cfgDev) {
+                    throw new Error('config.game.devices must not be null');
+				}
+				if ('keyboard' in cfgDev) {
+                    var pClass = new O2.loadObject(cfgDev.keyboard);
+                    kbd = new pClass();
+				}
+			}
+			if (!kbd) {
+				kbd = new O876_Raycaster.KeyboardDevice();
+			}
+            kbd.plugHandlers();
+			this.oKbdDevice = kbd;
 		}
 		return this.oKbdDevice;
 	},

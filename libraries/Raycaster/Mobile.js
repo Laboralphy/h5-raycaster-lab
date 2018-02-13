@@ -331,7 +331,6 @@ O2.createClass('O876_Raycaster.Mobile', {
         var vSpeed = {x: dx, y: dy};
         var rc = this.oRaycaster;
 
-
 		var nDist = MathTools.distance(vSpeed.x, vSpeed.y);
 		var nSize = this.nSize;
 		var nPlaneSpacing = rc.nPlaneSpacing;

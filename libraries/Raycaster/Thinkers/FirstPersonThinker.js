@@ -89,7 +89,7 @@ O2.extendClass('O876_Raycaster.FirstPersonThinker', O876_Raycaster.Thinker,
             aKeyData = kb[nKey];
             sEvent = aKeyData[0];
             sProc = '';
-            switch (oKbd.aKeys[nKey]) {
+            switch (oKbd.getKey(nKey)) {
                 case 1: // down
                     if (aKeyData[1] === 0) {
                         sProc = sEvent + '.down';

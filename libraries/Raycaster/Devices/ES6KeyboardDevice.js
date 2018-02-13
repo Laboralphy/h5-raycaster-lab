@@ -1,11 +1,11 @@
-/** Entrée sortie clavier
+/** Entrée sortie clavier - utilise les code ES6
  * O876 Raycaster project
- * @date 2012-01-01
+ * @date 2018-02-12
  * @author Raphaël Marandet 
  * Memorise les touches clavier enfoncées
  */
-O2.createClass('O876_Raycaster.KeyboardDevice', {
-	aKeys: null,	// Index inversée Code->Action
+O2.createClass('O876_Raycaster.ES6KeyboardDevice', {
+	oKeys: null,	// Index inversée Code->Action
 	aKeyBuffer: null,
 	nKeyBufferSize: 16,
 	bUseBuffer: true,
@@ -13,54 +13,53 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 	oHandlers: null,
 
 	__construct: function() {
-		this.aKeys = [];
+		this.oKeys = {};
 		this.oHandlers = {};
 		this.aAliases = {};
 		// Gros tableau pour capter plus rapidement les touches...
 		// peu élégant et peu économe mais efficace.
-		for (var i = 0; i < 256; i++) {
-			this.aKeys.push(0);	 
-		}
 		this.aKeyBuffer = [];
 	},
 
-	getKey: function(n) {
-		return this.aKeys[n];
-	},
-	
-	setAliases: function(a) {
+    getKey: function(sCode) {
+		if (sCode in this.oKeys) {
+            return this.oKeys[sCode];
+		} else {
+			return 0;
+		}
+    },
+
+    setAliases: function(a) {
 		this.aAliases = a;
 	},
 
-	keyAction: function(k, n) {
-		this.aKeys[k] = n;
+	keyAction: function(sCode, nVal) {
+        this.oKeys[sCode] = nVal;
 	},
-	
+
 	keyBufferPush: function(nKey) {
 		if (this.bUseBuffer && nKey && this.aKeyBuffer.length < this.nKeyBufferSize) {
 			this.aKeyBuffer.push(nKey);
 		}
 	},
 
-	eventKeyUp: function(e) {
-		var oEvent = window.event ? window.event : e;
-		var nCode = oEvent.charCode ? oEvent.charCode : oEvent.keyCode;
-		if (nCode in this.aAliases) {
-			nCode = this.aAliases[nCode];
+	eventKeyUp: function(oEvent) {
+		var sCode = oEvent.key;
+		if (sCode in this.aAliases) {
+			sCode = this.aAliases[sCode];
 		}
-		this.keyBufferPush(-nCode);
-		this.keyAction(nCode, 2);
+		this.keyBufferPush('-' + sCode);
+		this.keyAction(sCode, 2);
 		return false;
 	},
 
-	eventKeyDown: function(e) {
-		var oEvent = window.event ? window.event : e;
-		var nCode = oEvent.charCode ? oEvent.charCode : oEvent.keyCode;
-		if (nCode in this.aAliases) {
-			nCode = this.aAliases[nCode];
+	eventKeyDown: function(oEvent) {
+		var sCode = oEvent.key;
+		if (sCode in this.aAliases) {
+			sCode = this.aAliases[sCode];
 		}
-		this.keyBufferPush(nCode);
-		this.keyAction(nCode, 1);
+		this.keyBufferPush(sCode);
+		this.keyAction(sCode, 1);
 		return false;
 	},
 

@@ -33,7 +33,6 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   stateInitialize: function() {
     // Initialise le canvas
     this.nInterval = CONFIG.game.interval;
-    this.sDoomloopType = CONFIG.game.doomloop;
     this.oRaycaster = new O876_Raycaster.Raycaster();
     if (this.oKbdDevice == null) {
       this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
