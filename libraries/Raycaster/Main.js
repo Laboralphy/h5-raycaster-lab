@@ -53,10 +53,17 @@ O2.createObject('MAIN', {
 		MAIN.setupGameInstance(oGameInstance);
 	},
 
+	/**
+	 * Auto stats game using default config
+	 * @param config
+	 */
 	autorun: function(config) {
 		MAIN.configure(config);
         window.addEventListener('load', function() {
             MAIN.configure(MAIN.config);
+            if (!('namespace' in MAIN.config.game)) {
+            	throw new Error('"namespace" key is mandatory in CONFIG.game while using autorun feature');
+			}
             var ns = MAIN.config.game.namespace;
             var gcn = ns + '.Game';
             var gc = O2.loadObject(gcn);

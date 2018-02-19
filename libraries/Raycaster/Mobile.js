@@ -275,8 +275,10 @@ O2.createClass('O876_Raycaster.Mobile', {
 			ix = nSize * xci + x;
 			iy = nSize * yci + y;
 			// déterminer les collsion en x et y
-			xClip = pSolidFunction(ix + dx, iy);
-			yClip = pSolidFunction(ix, iy + dy);
+			// xClip = pSolidFunction(ix + dx, iy);
+			// yClip = pSolidFunction(ix, iy + dy);
+			xClip = pSolidFunction((ix + dx) / nPlaneSpacing | 0, iy / nPlaneSpacing | 0);
+			yClip = pSolidFunction(ix / nPlaneSpacing | 0, (iy + dy) / nPlaneSpacing | 0);
 			if (xClip) {
 				dx = 0;
 				if (bCrashWall) {
@@ -336,7 +338,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 		var nPlaneSpacing = rc.nPlaneSpacing;
 		var bCrashWall = !this.bSlideWall;
 		var r;
-		var pSolidFunction = function(x, y) { return rc.clip(x, y, 1); };
+		var pSolidFunction = function(x, y) { return rc.getMapPhys(x, y); };
 		if (nDist > nSize) {
 			var vSubSpeed = this._vecScale(vSpeed, nSize);
 			var nModDist = nDist % nSize;

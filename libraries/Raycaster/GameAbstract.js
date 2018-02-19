@@ -285,7 +285,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 		var x = rcc.xSector;
 		var y = rcc.ySector;
 		var sTag = this.getBlockTag(x, y);
-		if (sTag && sTag != this._sTag) {
+		if (sTag && sTag !== this._sTag) {
 			sTag = this.triggerTag(x, y, sTag);
 		}
 		this._sTag = sTag;
@@ -316,7 +316,7 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 
 		var oMsg = rc.addGXEffect(O876_Raycaster.GXMessage);
 		oMsg.setMessage(sMessage);
-		this._sLastPopupMessage == sMessage;
+		this._sLastPopupMessage = sMessage;
 		return oMsg;
 	},
 	
