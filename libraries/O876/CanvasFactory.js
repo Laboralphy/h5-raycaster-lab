@@ -8,6 +8,15 @@ O2.createObject('O876.CanvasFactory', {
 	defaultImageSmoothing: false,
 
 	/**
+	 * Return true if "c" is a canvas
+	 * @param c
+	 * @return {boolean}
+	 */
+	isCanvas: function(c) {
+		return c instanceof HTMLCanvasElement;
+	},
+
+	/**
 	 * Create a new canvas
      * @param w {int} width of the new canvas
      * @param h {int} height of the new canvas

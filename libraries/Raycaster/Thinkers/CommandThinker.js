@@ -19,7 +19,14 @@ O2.extendClass('O876_Raycaster.CommandThinker', O876_Raycaster.Thinker, {
 	ANIMATION_ACTION : 2,
 	ANIMATION_DEATH : 3,
 
-	setMovement : function(a, s) {
+	setMovement : function(a, x, y, sx, sy) {
+		this.oMobile.setXY(x, y);
+		var s;
+		if (sy === undefined) {
+			s = sx;
+		} else {
+			s = Math.sqrt(sx * sx + sy * sy);
+		}
 		if (this.fma !== a || this.fms !== s) {
 			this.fma = a;
 			this.fms = s;

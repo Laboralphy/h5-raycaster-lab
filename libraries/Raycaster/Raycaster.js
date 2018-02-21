@@ -286,7 +286,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			return true;
 		}
 		var w, i = '';
-        if (!this.oWall.image.complete) {
+        if (!O876.CanvasFactory.isCanvas(this.oWall.image) && !this.oWall.image.complete) {
 			console.warn('shadeprocess : the wall image ' + this.oWall.image.src + ' is not loaded yet.');
         }
         try {
@@ -297,7 +297,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		this.oWall.image = w;
 		if (this.bFloor) {
 			try {
-                if (!this.oFloor.image.complete) {
+                if (!O876.CanvasFactory.isCanvas(this.oFloor.image) && !this.oFloor.image.complete) {
                     console.warn('shadeprocess : the flat image ' + this.oFloor.image.src + ' is not loaded yet.');
                 }
                 w = this.shadeImage(this.oFloor.image, false);
