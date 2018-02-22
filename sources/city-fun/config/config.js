@@ -11,7 +11,7 @@ O2.createObject('CONFIG', {
 		canvas: 'screen',
 		canvasAutoResize: true,
 		drawMap: false,
-		smoothTextures: false,
+		smoothTextures: true,
 		vr: false
 	}
 });

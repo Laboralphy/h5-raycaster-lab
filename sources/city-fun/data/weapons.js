@@ -15,5 +15,11 @@ O2.createObject('WEAPONS_DATA', {
 		tile: 'w_bertha',
 		x: 200,
 		y: 250 - 138
+    },
+
+    w_plasma: {
+		tile: 'w_plasma',
+		x: 240,
+		y: 100
     }
 });

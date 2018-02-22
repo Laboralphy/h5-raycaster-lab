@@ -47,6 +47,18 @@ O2.createObject('TILES_DATA', {
 		]
 	},
 
+	w_plasma: {
+		src: 'resources/tiles/w_plasma.png',
+		width: 158,
+		height: 150,
+		frames: 6,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+			[[1, 1, 1, 1, 1, 1, 1, 1], 5, 40, 0]
+		]
+	},
+
     m_blast_1: {
 		src: 'resources/tiles/m_blast_1.png',
 		width: 38,
