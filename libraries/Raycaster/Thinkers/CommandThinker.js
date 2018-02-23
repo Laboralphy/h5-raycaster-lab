@@ -51,10 +51,11 @@ O2.extendClass('O876_Raycaster.CommandThinker', O876_Raycaster.Thinker, {
 	},
 
 	die : function() {
-		this.setMovement(this.fma, 0);
-		this.oMobile.oSprite.playAnimationType(this.ANIMATION_DEATH);
-		this.oMobile.bEthereal = true;
-		this.nDeadTime = this.oMobile.oSprite.oAnimation.nDuration * this.oMobile.oSprite.oAnimation.nCount;
+		var m = this.oMobile;
+		this.setMovement(this.fma, m.x, m.y, 0);
+		m.oSprite.playAnimationType(this.ANIMATION_DEATH);
+		m.bEthereal = true;
+		this.nDeadTime = m.oSprite.oAnimation.nDuration * m.oSprite.oAnimation.nCount;
 		this.think = this.thinkDying;
 	},
 
