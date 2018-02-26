@@ -15,6 +15,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 	// flags
 	bActive: false,							// Flag d'activité
 	bEthereal: false,						// Flage de collision globale
+	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
 
 	fTheta: 0,								// Angle de rotation
 	fMovingAngle: 0,						// Angle de déplacement
@@ -37,7 +38,6 @@ O2.createClass('O876_Raycaster.Mobile', {
 
 	nBlueprintType: null,					// type de mobile : une des valeurs de GEN_DATA.blueprintTypes
 	bSlideWall: true,						// True: corrige la trajectoire en cas de collision avec un mur
-	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
 	bWallCollision: false,
 
 	//oData: null,
