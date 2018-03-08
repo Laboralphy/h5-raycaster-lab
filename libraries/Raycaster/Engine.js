@@ -361,7 +361,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
         }
         if (nFrames) {
             rc.frameRender();
-            eng = this;
+            var eng = this;
             this._callGameEvent('onFrameRendered');
             requestAnimationFrame(function() {
                 rc.flipBuffer();
