@@ -80,6 +80,7 @@ O2.createClass('O876_Raycaster.Horde',  {
 		oBP.sId = sId;
 		this.oBlueprints[sId] = oBP;
 		this.oMobileDispenser.registerBlueprint(sId);
+		return oBP;
 	},
 
 	// {blueprint}

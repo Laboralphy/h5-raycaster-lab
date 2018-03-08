@@ -762,8 +762,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			'visual'
 		]);
 		this.nMapSize = oData.map.length;
-		this.oMobileSectors = new O876_Raycaster.MobileRegister(
-				this.nMapSize);
+		this.oMobileSectors = new O876_Raycaster.MobileRegister(this.nMapSize);
 		this.oDoors = Marker.create();
 		this.aMap = [];
 		var yMap, xMap;

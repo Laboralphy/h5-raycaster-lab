@@ -110,6 +110,14 @@ O2.extendClass('O876_Raycaster.GameAbstract', O876_Raycaster.Engine, {
 	},
 
 
+	/**
+	 * Appelé à l'interieur d'un requestAnimationFrame
+	 */
+	onVsync: function() {
+		this.trigger('vsync');
+	},
+
+
 	
 	/**
 	 * Evènement appelé quand une ressource et chargée
