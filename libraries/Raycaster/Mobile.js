@@ -9,6 +9,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	oRaycaster: null,						// Référence de retour au raycaster
 	x: 0,									// position du mobile
 	y: 0,									// ...
+	xOfs: 0,
+	yOfs: 0,								// ces offset permet de décaler la position visuelle de la position physique (celle qui sert à la collision)
 	xSave: 0,
 	ySave: 0,
 

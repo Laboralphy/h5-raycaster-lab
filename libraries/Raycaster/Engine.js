@@ -16,6 +16,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	// protected
 	_oFrameCounter: null,
 	_nTimeStamp : 0,
+	_nTicks: 0,
 	_nShadedTiles : 0,
 	_nShadedTileCount : 0,
 	_oConfig: null,
@@ -156,6 +157,14 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	getTime: function() {
 		return this._nTimeStamp;
+	},
+
+	/**
+	 * Nombre de fois que la doomloop a calculé d'updates
+	 * @return {number}
+	 */
+	getTicks: function() {
+		return this._nTicks;
 	},
 
 	/**
@@ -343,7 +352,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
     stateUpdate: function() {
 		var nTime = performance.now();
-        var nFrames = 0;
+        var nLoops = 0;
         var rc = this.oRaycaster;
         if (this._nTimeStamp === null) {
             this._nTimeStamp = nTime;
@@ -352,14 +361,15 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
             rc.frameProcess();
             this._callGameEvent('onDoomLoop');
             this._nTimeStamp += this.nInterval;
-            nFrames++;
-            if (nFrames > 10) {
+            nLoops++;
+            if (nLoops > 10) {
                 // too many frames, the window has been minimized for too long
                 // restore time stamp
                 this._nTimeStamp = nTime;
             }
         }
-        if (nFrames) {
+        if (nLoops) {
+        	this._nTicks += nLoops;
             rc.frameRender();
             var eng = this;
             this._callGameEvent('onFrameRendered');
