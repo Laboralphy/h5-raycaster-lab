@@ -1611,7 +1611,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			return;
 		}
 		var oTile = oSprite.oBlueprint.oTile;
-		var oCam = this.oCam
+		var oCam = this.oCamera;
 		var dx = oMobile.x + oMobile.xOfs - oCam.x - oCam.xOfs;
 		var dy = oMobile.y + oMobile.yOfs - oCam.y - oCam.yOfs;
 
