@@ -98,7 +98,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		if (this.oMouseDevice) {
 			this.oMouseDevice.unplugHandlers();
 		}
-        this.oRaycaster.finalize();
+		if (this.oRaycaster) {
+			this.oRaycaster.finalize();
+			this.oRaycaster = null;
+		}
 	},
 
 	/**
