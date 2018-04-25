@@ -101,17 +101,30 @@ O2.createClass('O876_Raycaster.Horde',  {
 		return oMobile;
 	},
 
+	unlinkSprite: function(oSprite) {
+		var nSpriteRank = this.aSprites.indexOf(oSprite);
+		if (nSpriteRank >= 0) {
+			ArrayTools.removeItem(this.aSprites, nSpriteRank);
+		}
+	},
+
 	unlinkMobile : function(oMobile) {
+		console.log('unlink mobile', oMobile);
 		var nHordeRank = this.aMobiles.indexOf(oMobile);
 		if (nHordeRank < 0) {
 			this.unlinkStatic(oMobile);
 			return;
+		}
+		if (oMobile.oSprite) {
+			this.unlinkSprite(oMobile.oSprite);
+
 		}
 		ArrayTools.removeItem(this.aMobiles, nHordeRank);
 	},
 	
 
 	unlinkStatic : function(oMobile) {
+		console.log('unlink static', oMobile);
 		var nHordeRank = this.aStatics.indexOf(oMobile);
 		if (nHordeRank < 0) {
 			return;
