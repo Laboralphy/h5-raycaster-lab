@@ -317,12 +317,18 @@ O2.createClass('O876_Raycaster.Mobile', {
 			} else if (oWallCollision.y < 0) {
 				y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
 			}
+			return {
+				pos: {x: x, y: y},
+				speed: {x: x - vPos.x, y: y - vPos.y},
+				wcf: oWallCollision
+			};
+		} else {
+			return {
+				pos: {x: x, y: y},
+				speed: {x: dx, y: dy},
+				wcf: oWallCollision
+			};
 		}
-		return {
-			pos: {x: x, y: y},
-			speed: {x: x - vPos.x, y: y - vPos.y},
-			wcf: oWallCollision
-		};
 	},
 
 

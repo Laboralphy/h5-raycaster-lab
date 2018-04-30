@@ -119,7 +119,6 @@ O2.createClass('O876_Raycaster.Horde',  {
 	
 
 	unlinkStatic : function(oMobile) {
-		console.log('unlink static', oMobile);
 		var nHordeRank = this.aStatics.indexOf(oMobile);
 		if (nHordeRank < 0) {
 			return;
@@ -142,7 +141,6 @@ O2.createClass('O876_Raycaster.Horde',  {
 		oMobile.oRaycaster = this.oRaycaster;
 		oMobile.oSprite = this.defineSprite(aData);
 		var bp = oMobile.getBlueprint();
-		console.log(bp);
 		var oThinker = null;
 		if (bp.sThinker !== null) {
 			oThinker = this.oThinkerManager.createThinker(bp.sThinker);
