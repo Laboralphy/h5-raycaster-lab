@@ -2332,3 +2332,5 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	}
 });
+
+O876_Raycaster.Raycaster.version = 180431;
