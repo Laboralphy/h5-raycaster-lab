@@ -194,6 +194,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		return nPhys >= 2 && nPhys <= 9;
 	},
 
+	getDoorEffectAt: function(x, y) {
+		return Marker.getMarkXY(this.oRaycaster.oDoors, x, y);
+	},
+
 	/**
 	 * Active un effet d'ouverture de porte ou passage secret sur un block
 	 * donné. L'effet d'ouverture inclue la modification temporaire de la
@@ -223,6 +227,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			case 7:
 			case 8: // Raycaster::PHYS_LAST_DOOR
 				if (!Marker.getMarkXY(rc.oDoors, x, y)) {
+					// c'est dégueu mais c'est l'effet GXDoor qui va mettre à jour oDoors...
 					o = rc.addGXEffect(O876_Raycaster.GXDoor);
 					o.x = x;
 					o.y = y;
@@ -233,7 +238,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				break;
 	
 			case 9: // Raycaster::PHYS_SECRET_BLOCK
-				if (!Marker.getMarkXY(this.oRaycaster.oDoors, x, y)) {
+				if (!Marker.getMarkXY(rc.oDoors, x, y)) {
 					o = rc.addGXEffect(O876_Raycaster.GXSecret);
 					o.x = x;
 					o.y = y;

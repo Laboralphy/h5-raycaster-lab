@@ -35,6 +35,35 @@ O2.extendClass('O876_Raycaster.GXDoor', O876_Raycaster.GXEffect, {
 		return this.nPhase > 3;
 	},
 
+	/**
+	 * Set to door state
+	 * @param nPhase
+	 * @param nOffset
+	 */
+	setPhase: function(nPhase, nOffset) {
+		this.terminate();
+		switch (nPhase) {
+			case 0:
+				// pas vraiment grand chose à faire
+				this.nPhase = 0;
+				break;
+
+			case 1:
+				this.process();
+				for (let i = 0; i < nOffset; ++i) {
+					this.process();
+				}
+				break;
+
+			case 2:
+				this.process();
+				this.fOffset = this.nLimit - 1;
+				r.setMapPhys(this.x, this.y, 0);
+				this.oEasing.from(this.fOffset).to(0).during(this.fSpeed);
+
+		}
+	},
+
 	process : function() {
 		var r = this.oRaycaster;
 		switch (this.nPhase) {
