@@ -747,6 +747,16 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 
+	/**
+	 * Renvoie un objet permettant de modifier l'état d'une porte
+	 * @param x {number}
+	 * @param y {number}
+	 * @return {GXDoor}
+	 */
+	getDoor: function(x, y) {
+		return Marker.getMarkXY(this.oDoors, x, y);
+	},
+
 	/** Construction de la map avec les donnée contenues dans aWorld
 	 */
 	buildMap : function() {
