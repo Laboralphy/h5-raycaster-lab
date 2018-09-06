@@ -656,11 +656,6 @@ O2.createClass('RCWE.Application', {
         var xCell = x / mg.wCell | 0;
         var yCell = y / mg.wCell | 0;
         var sTag = mg.getTagXY(xCell, yCell);
-		if (sTag) {
-			this.oMapGrid.oCanvas.setAttribute('title', sTag);
-		} else {
-            this.oMapGrid.oCanvas.removeAttribute('title');
-		}
 	},
 	
 	cmd_labygrid_paint1: function() {
