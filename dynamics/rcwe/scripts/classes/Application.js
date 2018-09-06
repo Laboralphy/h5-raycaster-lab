@@ -640,12 +640,26 @@ O2.createClass('RCWE.Application', {
 	cmd_labygrid_mouseunrest: function(x, y) {
 		this.oHintBox.hide();
 	},
-	
+
+    /**
+	 * il faut changer le title si la case est sur un tag
+     * @param x
+     * @param y
+     */
 	cmd_labygrid_click: function(x, y) {
 		if (this.isVisiblePanel('thingbrowser')) {
 			this.cmd_thingbrowser_gridclick(x, y);
 		} else if (this.isVisiblePanel('startpointlocator')) {
 			this.cmd_startpointlocator_gridclick(x, y);
+		}
+		var mg = this.oMapGrid;
+        var xCell = x / mg.wCell | 0;
+        var yCell = y / mg.wCell | 0;
+        var sTag = mg.getTagXY(xCell, yCell);
+		if (sTag) {
+			this.oMapGrid.oCanvas.setAttribute('title', sTag);
+		} else {
+            this.oMapGrid.oCanvas.removeAttribute('title');
 		}
 	},
 	

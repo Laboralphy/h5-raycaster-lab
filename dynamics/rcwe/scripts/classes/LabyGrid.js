@@ -467,6 +467,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.aTags = t;
 	},
 
+	getTagXY(x, y) {
+		return Marker.getMarkXY(this.aTags, x, y);
+	},
+
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
