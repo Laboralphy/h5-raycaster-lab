@@ -726,7 +726,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		var sKeyType = this.getItemType(sKey);
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
-		if (this.hasItem(sKey)) {
+		if (this.playerHasItem(sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
@@ -924,6 +924,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
         var nMaxLevel = this.oLogic._nAutoSpawnMaxLevel;
         var fSecondProb = 0;
         switch (nMaxLevel) {
+			case 1:
+				fSecondProb = 0;
+				break;
+				
             case 2:
                 fSecondProb = 0.03;
                 break;
@@ -936,7 +940,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
                 fSecondProb = 0.12;
                 break;
 
-            case 5:
+            default: // 5 and more....
                 fSecondProb = 0.18;
                 break;
 		}
@@ -990,6 +994,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
     autoSpawnResume: function() {
         this.oLogic._bPauseAutoSpawn = false;
     },
+    
+    /**
+     * Augmente le niveau d'auto spawn
+     */
+    autoSpawnLevelUp: function() {
+	},
 
     autoSpawnProcedure: function() {
 		if (this.oLogic._bClearAutoSpawn) {
@@ -997,7 +1007,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return;
 		}
 		var dbg = this.oLogic._nAutoSpawnDelayBetweenGhosts;
-		var dbgMax = dbg + (dbg >> 1);
+		var dbgMax = dbg * 3;
 		var nNextGhostTime = this.oRandom.rand(dbg, dbgMax);
 		this.oScheduler.delay((function() {
 			if (this.getGhostCount() === 0 && !this.oLogic._bPauseAutoSpawn) {

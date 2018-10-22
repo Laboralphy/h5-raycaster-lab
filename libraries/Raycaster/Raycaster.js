@@ -302,7 +302,6 @@ O2.createClass('O876_Raycaster.Raycaster',  {
                 }
                 w = this.shadeImage(this.oFloor.image, false);
 			} catch (e) {
-                console.log(this.oFloor.image);
                 console.error(e.message);
                 throw new Error('could not shade the flat textures');
 			}
@@ -716,7 +715,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				// Vérifier premier objet
 				return this.checkObjectStructure(oObj[sKey0], aKeys.join('.'));
 			} else {
-				throw new Error('invalid object structure: missing key [' + xKeys + ']');
+				throw new Error('invalid object structure: missing key [' + xKeys + ']  - got keys: [' + Object.keys(oObj).join(', ') + ']');
 			}
 		} else {
 			if (typeof oObj != 'object') {
@@ -728,7 +727,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			if (xKeys in oObj) {
 				return true;
 			} else {
-				throw new Error('invalid object structure: missing key [' + xKeys + ']');
+				throw new Error('invalid object structure: missing key [' + xKeys + ']  - got keys: [' + Object.keys(oObj).join(', ') + ']');
 			}
 		}
 	},

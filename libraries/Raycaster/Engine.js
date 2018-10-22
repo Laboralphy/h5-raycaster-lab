@@ -54,7 +54,13 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
         this.oThinkerManager = this.oRaycaster.oThinkerManager;
         this.oThinkerManager.oGameInstance = this;
         this._callGameEvent('onLoading', 'lvl', 0, 2);
-        this.oRaycaster.defineWorld(oData);
+        if (!oData) {
+			oData = this._callGameEvent('onRequestLevelData');
+			if (!oData) {
+				throw new Error('request level data did not send data');
+			}
+		}
+		this.oRaycaster.defineWorld(oData);
         this.setDoomloop('stateBuildLevel');
 	},
 
