@@ -36,10 +36,24 @@ O2.extendClass('RCWE.TagFactory', RCWE.Factory, {
                 return t.substr(1);
             }).forEach(function(ht) {
                 bSign = true;
+                ht = ht.split(' ').shift();
                 var sForm = ht.substr(0, 1);
                 var sColor = ht.substr(1);
                 sColor = sColor | 0;
-                var aCOLORS = ['#000', '#F00', '#0F0', '#FF0', '#00F', '#F0F', '#0FF', '#FFF', '#333', '#800', '#080', '#880', '#008', '#808', '#088', '#888', '#666', '#F66', '#6F6', '#FF6', '#66F', '#F6F', '#6FF', '#FFF'];
+                var aCOLORS = [
+                    '#F00',
+                    '#F80',
+                    '#FF0',
+                    '#8F0',
+                    '#0F0',
+                    '#0FF',
+                    '#08F',
+                    '#00F',
+                    '#80F',
+                    '#F0F',
+                    '#F8F',
+                    '#FFF'
+                ];
                 var w = oCanvas.width;
                 var w2 = w >> 1;
                 var w4 = w >> 2;
