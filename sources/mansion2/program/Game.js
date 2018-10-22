@@ -770,6 +770,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 	loadLevel: function(s) {
 		this._sLevelIndex = s;
+		this.oScheduler.clear();
 		this.initRaycaster(this.buildMansionLevel());
 	},
 	

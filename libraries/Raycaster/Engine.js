@@ -54,6 +54,8 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
         this.oThinkerManager = this.oRaycaster.oThinkerManager;
         this.oThinkerManager.oGameInstance = this;
         this._callGameEvent('onLoading', 'lvl', 0, 2);
+        // si les données n'ont pas été fournies en paramètre
+		// proposer l'évènement onRequestLevelData pour les charger
         if (!oData) {
 			oData = this._callGameEvent('onRequestLevelData');
 			if (!oData) {
