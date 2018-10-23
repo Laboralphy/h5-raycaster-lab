@@ -72,8 +72,19 @@ O2.extendClass('MANSION.Script.Lev1', MANSION.Script.Abstract, {
      * On penetre la clairiere de l'est
      */
     enteringEastGlade: function() {
-        this.spawnGhost('g_severed_jaw');
+        this.spawnGhost('g_decaying');
         this.removeEvent();
+    },
+
+    enteringPreJail: function() {
+        var oEvent = this._event;
+        var oGhost = this.spawnWraithAtLocator('w_mad_folklorist', 'sp_prejail_wraith', {
+            duration: 3000,
+            boo: true
+        });
+        var gt = oGhost.getThinker();
+        gt.move('n', 1);
+        oEvent.remove = true;
     },
 
     /**
