@@ -1,36 +1,7 @@
 O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 	sGeneratorUrl : '../../dynamics/laby/laby.php',
 	///////////// EVENEMENTS /////////////
-
-	/** 
-	 * Evènement apellé lors de l'initialisation du jeu
-	 * Appelé une seule fois.
-	 */
-	onInitialize: function() {
-	},
-	
-	/**
-	 * Cette évènement doit renvoyer TRUE pour pouvoir passer à l'étape suivante
-	 * @return bool
-	 */
-	onMenuLoop: function() {
-		return true; // Doit retourner TRUE pour indiquer la validation du menu et passer à l'étape suivante
-		// ici il n'y a pas de menu donc "true" pour passer directement à l'étape suivante
-	},
-	
-	
-	/**
-	 * Evènement appelé lors du chargement d'un niveau,
-	 * cet évènement doit renvoyer des données au format du Raycaster.
-	 * @return object
-	 */
-	onRequestLevelData: function() {
-		return LEVEL_DATA.demo;
-	},
-	
-	
-	// onLoading: null,
-	
+//LEVEL_DATA.demo
 	/**
 	 * Evènement appelé lorsqu'un niveau a été chargé
 	 * Permet l'initialisation des objet nouvellement créés (comme la caméra)
@@ -87,7 +58,4 @@ O2.extendClass('Stub.Game', O876_Raycaster.Engine, {
 		this.openDoor(oBlock.x, oBlock.y);
 	}
 });
-window.addEventListener('load', function() {
-    MAIN.configure(CONFIG);
-    MAIN.run();
-});
+MAIN.autorun(CONFIG);

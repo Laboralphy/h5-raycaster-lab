@@ -12,7 +12,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	_sAmbianceAfterFight: '',
 	_oScripts: null,
 	_oDarkHaze: null,
-	_sLevelIndex: 'ch1',
+	_sLevelIndex: '',
 	_oLocators: null,
 	_oConsole: null,
 
@@ -46,7 +46,6 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		this.initPopup();
 		this.initRandom();
 		this._oConsole = new MANSION.Console();
-		this.on('leveldata', this.gameEventBuild.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
 		this.on('door', this.gameEventDoor.bind(this));
@@ -82,6 +81,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 
 		this.on('key.down', this.gameEventKey.bind(this));
 
+        this.loadLevel('ch1');
 
 	},
 
@@ -228,9 +228,8 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 	 * de rassemblage.
 	 * On peut agir sur les données ici, pour ajouter des ressources
 	 */
-	gameEventBuild: function(wd) {
+	buildMansionLevel: function() {
 		const data = LEVEL_DATA[this._sLevelIndex];
-		wd.data = data;
 		for (let s in MANSION.TILES_DATA) {
 			data.tiles[s] = MANSION.TILES_DATA[s];
 		}
@@ -248,6 +247,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		for (let s in MANSION.WRAITH_BLUEPRINTS_DATA) {
 			data.blueprints[s] = MANSION.WRAITH_BLUEPRINTS_DATA[s];
 		}
+		return data;
 	},
 
 	/**
@@ -726,7 +726,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		}
 		var sKeyType = this.getItemType(sKey);
 		var sItemStr = MANSION.STRINGS_DATA.ITEMS[sKey];
-		if (this.hasItem(sKey)) {
+		if (this.playerHasItem(sKey)) {
 			this.unlockDoor(oEvent.x, oEvent.y);
 			this.popupMessage(MANSION.STRINGS_DATA.EVENTS.unlock, {
 				$item: sItemStr
@@ -768,9 +768,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 		return this._sLevelIndex;
 	},
 
-	setLevel: function(s) {
+	loadLevel: function(s) {
 		this._sLevelIndex = s;
-		this.enterLevel();	
+		this.oScheduler.clear();
+		this.initRaycaster(this.buildMansionLevel());
 	},
 	
 	/**
@@ -924,6 +925,10 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
         var nMaxLevel = this.oLogic._nAutoSpawnMaxLevel;
         var fSecondProb = 0;
         switch (nMaxLevel) {
+			case 1:
+				fSecondProb = 0;
+				break;
+				
             case 2:
                 fSecondProb = 0.03;
                 break;
@@ -936,7 +941,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
                 fSecondProb = 0.12;
                 break;
 
-            case 5:
+            default: // 5 and more....
                 fSecondProb = 0.18;
                 break;
 		}
@@ -990,6 +995,12 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
     autoSpawnResume: function() {
         this.oLogic._bPauseAutoSpawn = false;
     },
+    
+    /**
+     * Augmente le niveau d'auto spawn
+     */
+    autoSpawnLevelUp: function() {
+	},
 
     autoSpawnProcedure: function() {
 		if (this.oLogic._bClearAutoSpawn) {
@@ -997,7 +1008,7 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 			return;
 		}
 		var dbg = this.oLogic._nAutoSpawnDelayBetweenGhosts;
-		var dbgMax = dbg + (dbg >> 1);
+		var dbgMax = dbg * 3;
 		var nNextGhostTime = this.oRandom.rand(dbg, dbgMax);
 		this.oScheduler.delay((function() {
 			if (this.getGhostCount() === 0 && !this.oLogic._bPauseAutoSpawn) {
@@ -1611,6 +1622,5 @@ O2.extendClass('MANSION.Game', O876_Raycaster.GameAbstract, {
 });
 
 window.addEventListener('load', function() {
-	MAIN.configure(CONFIG);
-	MAIN.run();
+    MAIN.run(new MANSION.Game(CONFIG));
 });

@@ -16,16 +16,17 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	// protected
 	_oFrameCounter: null,
 	_nTimeStamp : 0,
+	_nTicks: 0,
 	_nShadedTiles : 0,
 	_nShadedTileCount : 0,
 	_oConfig: null,
 	
-	__construct : function() {
+	__construct : function(oConfig) {
 		if (!O876.Browser.checkHTML5('O876 Raycaster Engine')) {
 			throw new Error('browser is not full html 5');
 		}
-		__inherited('stateInitialize');
-		this.resume();
+		this.setConfig(oConfig);
+        this._callGameEvent('onInitialize');
 	},
 
 	/**
@@ -35,30 +36,36 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		this._oConfig = c;
 	},
 
-	initRequestAnimationFrame : function() {
-		if ('requestAnimationFrame' in window) {
-			return true;
-		}
-		var RAF = null;
-		if ('requestAnimationFrame' in window) {
-			RAF = window.requestAnimationFrame;
-		} else if ('webkitRequestAnimationFrame' in window) {
-			RAF = window.webkitRequestAnimationFrame;
-		} else if ('mozRequestAnimationFrame' in window) {
-			RAF = window.mozRequestAnimationFrame;
-		}
-		if (RAF) {
-			window.requestAnimationFrame = RAF;
-			return true;
-		} else {
-			return false;
-		}
+	getConfig: function() {
+		return this._oConfig;
 	},
-	
-	initDoomLoop: function() {
-		__inherited();
-		this._nTimeStamp = null;
+
+	initRaycaster: function(oData) {
+        this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
+        this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
+        if (this.oRaycaster) {
+            this.oRaycaster.finalize();
+        } else {
+            this.oRaycaster = new O876_Raycaster.Raycaster();
+            this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
+        }
+        this.oRaycaster.setConfig(this._oConfig.raycaster);
+        this.oRaycaster.initialize();
+        this.oThinkerManager = this.oRaycaster.oThinkerManager;
+        this.oThinkerManager.oGameInstance = this;
+        this._callGameEvent('onLoading', 'lvl', 0, 2);
+        // si les données n'ont pas été fournies en paramètre
+		// proposer l'évènement onRequestLevelData pour les charger
+        if (!oData) {
+			oData = this._callGameEvent('onRequestLevelData');
+			if (!oData) {
+				throw new Error('request level data did not send data');
+			}
+		}
+		this.oRaycaster.defineWorld(oData);
+        this.setDoomloop('stateBuildLevel');
 	},
+
 
 	/**
 	 * Déclenche un évènement
@@ -99,7 +106,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 		if (this.oMouseDevice) {
 			this.oMouseDevice.unplugHandlers();
 		}
-        this.oRaycaster.finalize();
+		if (this.oRaycaster) {
+			this.oRaycaster.finalize();
+			this.oRaycaster = null;
+		}
 	},
 
 	/**
@@ -109,8 +119,26 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	 */
 	getKeyboardDevice : function() {
 		if (this.oKbdDevice === null) {
-			this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
-			this.oKbdDevice.plugHandlers();
+			var kbd = null;
+			var cfgGame = this._oConfig.game;
+			if ('devices' in cfgGame) {
+				var cfgDev = cfgGame.devices;
+				if (typeof cfgDev !== 'object') {
+					throw new Error('config.game.devices must be an object');
+				}
+				if (!cfgDev) {
+                    throw new Error('config.game.devices must not be null');
+				}
+				if ('keyboard' in cfgDev) {
+                    var pClass = new O2.loadObject(cfgDev.keyboard);
+                    kbd = new pClass();
+				}
+			}
+			if (!kbd) {
+				kbd = new O876_Raycaster.KeyboardDevice();
+			}
+            kbd.plugHandlers();
+			this.oKbdDevice = kbd;
 		}
 		return this.oKbdDevice;
 	},
@@ -143,6 +171,14 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	},
 
 	/**
+	 * Nombre de fois que la doomloop a calculé d'updates
+	 * @return {number}
+	 */
+	getTicks: function() {
+		return this._nTicks;
+	},
+
+	/**
 	 * Define time
 	 * May be usefull whn using pause, to update the last time stamp
 	 * and avoid a large amount of compensating calc.
@@ -153,18 +189,6 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 	// ////////// METHODES PUBLIQUES API ////////////////
 
-	/**
-	 * Charge un nouveau niveau et ralnce la machine. Déclenche l'évènement
-	 * onExitLevel avant de changer de niveau. Utiliser cet évènement afin de
-	 * sauvegarder les données utiles entre les niveaux.
-	 * 
-	 * @param sLevel
-	 *            référence du niveau à charger
-	 */
-	enterLevel : function() {
-		this._callGameEvent('onExitLevel');
-		this.setDoomloop('stateStartRaycaster');
-	},
 
 	/**
 	 * Returns true if the block at the specified coordinates
@@ -176,6 +200,10 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 	isDoor: function(x, y) {
 		var nPhys = this.oRaycaster.getMapPhys(x, y);
 		return nPhys >= 2 && nPhys <= 9;
+	},
+
+	getDoorEffectAt: function(x, y) {
+		return Marker.getMarkXY(this.oRaycaster.oDoors, x, y);
 	},
 
 	/**
@@ -207,6 +235,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 			case 7:
 			case 8: // Raycaster::PHYS_LAST_DOOR
 				if (!Marker.getMarkXY(rc.oDoors, x, y)) {
+					// c'est dégueu mais c'est l'effet GXDoor qui va mettre à jour oDoors...
 					o = rc.addGXEffect(O876_Raycaster.GXDoor);
 					o.x = x;
 					o.y = y;
@@ -217,7 +246,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 				break;
 	
 			case 9: // Raycaster::PHYS_SECRET_BLOCK
-				if (!Marker.getMarkXY(this.oRaycaster.oDoors, x, y)) {
+				if (!Marker.getMarkXY(rc.oDoors, x, y)) {
 					o = rc.addGXEffect(O876_Raycaster.GXSecret);
 					o.x = x;
 					o.y = y;
@@ -274,66 +303,18 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
 	// onEnterLevel: null,
 
-	// onMenuLoop: null,
-
 	// onDoomLoop: null,
 
 	// onFrameRendered: null,
 
 	// ////////////// ETATS ///////////////
 
-	/**
-	 * Initialisation du programme Ceci n'intervient qu'une fois
-	 */
-	stateInitialize : function() {
-		// Evènement initialization
-		this._callGameEvent('onInitialize');
-		this.TIME_FACTOR = this.nInterval = this._oConfig.game.interval;
-		this._oConfig.game.doomloop = this._oConfig.game.doomloop || 'raf';
-		this.setDoomloop('stateMenuLoop');
-		this.resume();
-	},
-
-	/**
-	 * Attend le choix d'une partie. Le programme doit afficher un menu ou un
-	 * écran d'accueil. Pour lancer la partie, l'évènement onMenuLoop doit
-	 * retourner la valeur 'true';
-	 */
-	stateMenuLoop : function() {
-		if (this._callGameEvent('onMenuLoop')) {
-			this.setDoomloop('stateStartRaycaster');
-		}
-	},
-
-	/**
-	 * Initialisation du Raycaster Ceci survient à chaque chargement de niveau
-	 */
-	stateStartRaycaster : function() {
-		if (this.oRaycaster) {
-			this.oRaycaster.finalize();
-		} else {
-			this.oRaycaster = new O876_Raycaster.Raycaster();
-			this.oRaycaster.TIME_FACTOR = this.TIME_FACTOR;
-		}
-		this.oRaycaster.setConfig(this._oConfig.raycaster);
-		this.oRaycaster.initialize();
-		this.oThinkerManager = this.oRaycaster.oThinkerManager;
-		this.oThinkerManager.oGameInstance = this;
-		this._callGameEvent('onLoading', 'lvl', 0, 2);
-		this.setDoomloop('stateBuildLevel');
-	},
 
 	/**
 	 * Prépare le chargement du niveau. RAZ de tous les objets.
 	 */
 	stateBuildLevel : function() {
 		// Evènement chargement de niveau
-		var oData = this._callGameEvent('onRequestLevelData');
-		if (typeof oData != 'object') {
-			this._halt('no world data : without world data I can\'t build the world. (onRequestLevelData did not return object)');
-			return;
-		}
-		this.oRaycaster.defineWorld(oData);
 		try {
 			this.oRaycaster.buildLevel();
 		} catch (e) {
@@ -387,7 +368,7 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
 
     stateUpdate: function() {
 		var nTime = performance.now();
-        var nFrames = 0;
+        var nLoops = 0;
         var rc = this.oRaycaster;
         if (this._nTimeStamp === null) {
             this._nTimeStamp = nTime;
@@ -396,18 +377,21 @@ O2.extendClass('O876_Raycaster.Engine', O876_Raycaster.Transistate, {
             rc.frameProcess();
             this._callGameEvent('onDoomLoop');
             this._nTimeStamp += this.nInterval;
-            nFrames++;
-            if (nFrames > 10) {
+            nLoops++;
+            if (nLoops > 10) {
                 // too many frames, the window has been minimized for too long
                 // restore time stamp
                 this._nTimeStamp = nTime;
             }
         }
-        if (nFrames) {
+        if (nLoops) {
+        	this._nTicks += nLoops;
             rc.frameRender();
+            var eng = this;
             this._callGameEvent('onFrameRendered');
             requestAnimationFrame(function() {
                 rc.flipBuffer();
+                eng._callGameEvent('onVsync');
             });
         }
 	},

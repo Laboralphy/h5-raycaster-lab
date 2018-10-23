@@ -15,14 +15,12 @@ O2.createClass('O876_Raycaster.Horde',  {
 	oTiles : null,
 	nTileCount : 0,
 	oImageLoader : null,
-	oMobileDispenser : null,
 	xTonari: [ 0, 0, 1, 1, 1, 0, -1, -1, -1 ],
 	yTonari: [ 0, -1, -1, 0, 1, 1, 1, 0, -1 ],
 
 	__construct : function(r) {
 		this.oRaycaster = r;
 		this.oImageLoader = this.oRaycaster.oImages;
-		this.oMobileDispenser = new O876_Raycaster.MobileDispenser();
 		this.aMobiles = [];
 		this.aStatics = [];
 		this.aSprites = [];
@@ -46,7 +44,6 @@ O2.createClass('O876_Raycaster.Horde',  {
 				}
 				aDiscarded.push(oMobile);
 				this.unlinkMobile(oMobile);
-				this.oMobileDispenser.pushMobile(oMobile.oSprite.oBlueprint.sId, oMobile);
 			}
 		}
 		return aDiscarded;
@@ -79,7 +76,7 @@ O2.createClass('O876_Raycaster.Horde',  {
 		}
 		oBP.sId = sId;
 		this.oBlueprints[sId] = oBP;
-		this.oMobileDispenser.registerBlueprint(sId);
+		return oBP;
 	},
 
 	// {blueprint}
@@ -100,11 +97,22 @@ O2.createClass('O876_Raycaster.Horde',  {
 		return oMobile;
 	},
 
+	unlinkSprite: function(oSprite) {
+		var nSpriteRank = this.aSprites.indexOf(oSprite);
+		if (nSpriteRank >= 0) {
+			ArrayTools.removeItem(this.aSprites, nSpriteRank);
+		}
+	},
+
 	unlinkMobile : function(oMobile) {
 		var nHordeRank = this.aMobiles.indexOf(oMobile);
 		if (nHordeRank < 0) {
 			this.unlinkStatic(oMobile);
 			return;
+		}
+		if (oMobile.oSprite) {
+			this.unlinkSprite(oMobile.oSprite);
+
 		}
 		ArrayTools.removeItem(this.aMobiles, nHordeRank);
 	},
@@ -162,20 +170,14 @@ O2.createClass('O876_Raycaster.Horde',  {
 	 * @return O876_Raycaster.Mobile
 	 */
 	spawnMobile : function(sBlueprint, x, y, fTheta) {
-		var oMobile = this.oMobileDispenser.popMobile(sBlueprint);
-		if (!oMobile) {
-			var aData = {
-				blueprint : sBlueprint,
-				x : x,
-				y : y,
-				angle : fTheta
-			};
-			oMobile = this.defineMobile(aData);
-		} else {
-			this.linkMobile(oMobile);
-			oMobile.fTheta = fTheta;
-			oMobile.setXY(x, y);
-		}
+		var oMobile;
+		var aData = {
+			blueprint : sBlueprint,
+			x : x,
+			y : y,
+			angle : fTheta
+		};
+		oMobile = this.defineMobile(aData);
 		return oMobile;
 	},
 
@@ -204,16 +206,17 @@ O2.createClass('O876_Raycaster.Horde',  {
 				nSectorLength = oSector.length;
 				for (iOther = 0; iOther < nSectorLength; ++iOther) {
 					oOther = oSector[iOther];
-					if (oOther != oMobile) {
+					if (oOther !== oMobile) {
 						if (oMobile.hits(oOther)) {
 							oMobile.oMobileCollision = oOther;
-							return;
+							return true;
 						}
 					}
 				}
 			}
 		}
 		oMobile.oMobileCollision = null;
+		return false;
 	},
 	
 	getAllocatedMemory: function() {

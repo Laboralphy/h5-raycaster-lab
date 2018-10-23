@@ -262,11 +262,9 @@ O2.createClass('O876.SoundSystem', {
 		}
 		var iChan = this.aChans.indexOf(oChan);
 		if (iChan >= 0) {
-			console.log("remove chan", iChan);
 			oChan.remove();
             oChan = this._addChan(iChan);
 		} else if (oChan === this.oMusicChan) {
-            console.log("remove music chan");
             oChan = this._createMusicChannel();
 		}
 		oChan.src = this.sPath + '/' + this.sFormat + '/' + sSrc + '.' + this.sFormat;

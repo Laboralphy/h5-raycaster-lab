@@ -6660,7 +6660,7 @@ O2.createObject('MAIN', {
 		}
 		oCanvas.style.width = (wf | 0).toString() + 'px';
 		oCanvas.style.height = (hf | 0).toString() + 'px';
-		oCanvas.__ratio = wf / cw;
+		oCanvas.__aspect = wf / cw;
 	}
 });
 
@@ -13152,7 +13152,7 @@ O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
 
 	updateKeys : function() {
 		var sKey = '', nKey, sProc, pProc, aButton;
-		var aKeys = this.aKeys;
+		var aKeys = this.oKeys;
 		var aCmds = this.aCommands;
 		var oKbd = this.oGame.getKeyboardDevice();
 		var aKeyData;
@@ -13164,7 +13164,7 @@ O2.extendClass('O876_Raycaster.KeyboardThinker', O876_Raycaster.Thinker, {
 			aKeyData = kb[nKey];
 			sEvent = aKeyData[0];
 			sProc = '';
-			switch (oKbd.aKeys[nKey]) {
+			switch (oKbd.oKeys[nKey]) {
 				case 1: // down
 					if (aKeyData[1] === 0) {
 						sProc = sEvent + '.down';
@@ -13441,7 +13441,7 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 
 	updateKeys : function() {
 		var sKey = '', nKey, sProc, pProc, aButton;
-		var aKeys = this.aKeys;
+		var aKeys = this.oKeys;
 		var aCmds = this.aCommands;
 		var oKbd = this.oGame.getKeyboardDevice();
 		var aKeyData;
@@ -13453,7 +13453,7 @@ O2.extendClass('O876_Raycaster.MouseKeyboardThinker', O876_Raycaster.Thinker, {
 			aKeyData = kb[nKey];
 			sEvent = aKeyData[0];
 			sProc = '';
-			switch (oKbd.aKeys[nKey]) {
+			switch (oKbd.oKeys[nKey]) {
 				case 1: // down
 					if (aKeyData[1] === 0) {
 						sProc = sEvent + '.down';

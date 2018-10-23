@@ -23,6 +23,10 @@ O2.createClass('O876_Raycaster.KeyboardDevice', {
 		}
 		this.aKeyBuffer = [];
 	},
+
+	getKey: function(n) {
+		return this.aKeys[n];
+	},
 	
 	setAliases: function(a) {
 		this.aAliases = a;

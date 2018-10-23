@@ -467,6 +467,10 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 		this.aTags = t;
 	},
 
+	getTagXY(x, y) {
+		return Marker.getMarkXY(this.aTags, x, y);
+	},
+
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
 	////// MOUSE EVENTS ////// MOUSE EVENTS ////// MOUSE EVENTS //////
@@ -758,7 +762,7 @@ O2.extendClass('RCWE.LabyGrid', RCWE.Window, {
 			W.error('Could not set region tag : no region selected');
 			return;
 		}
-		var sTag = prompt('Enter tag new value for the selected region (empty string = erase tag).', Marker.getMarkXY(this.aTags, s.x1, s.y1));
+		var sTag = prompt('Enter tag new value for the selected region (empty string = erase tag). Multiple tags may be separated by ";" semicolon.', Marker.getMarkXY(this.aTags, s.x1, s.y1));
 		if (sTag === null) {
 			return;
 		}

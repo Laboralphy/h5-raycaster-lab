@@ -1,7 +1,5 @@
 O2.extendClass('RCWE.Game', O876_Raycaster.GameAbstract, {
-	__construct: function(oData) {
-		__inherited();
-		this._sLevelIndex = 'level';
+	__construct: function(oData, oConfig) {
 		this.on('leveldata', function(wd) {
 			wd.data = oData;
 		});
@@ -15,5 +13,13 @@ O2.extendClass('RCWE.Game', O876_Raycaster.GameAbstract, {
 		this.on('error', (function(s, d) {
 			this.trigger('stop');
 		}).bind(this));
+		this._sLevelIndex = 'level';
+		__inherited(oConfig);
+	},
+	
+	
+	init: function() {
+		this.initRaycaster();
 	}
+	
 });

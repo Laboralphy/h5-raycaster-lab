@@ -15,10 +15,10 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
   bExiting: true,			// Temoin de sortie du canon pour eviter les fausse collision avec le tireur
   oLastHitMobile: null,		// Dernier mobile touché
   nStepSpeed: 4,			// Nombre de déplacement par frame
-  
-  ANIMATION_EXPLOSION: 0,
-  ANIMATION_MOVING: 1,
-  
+
+  ANIMATION_MOVING: 0,
+  ANIMATION_EXPLOSION: 1,
+
   nLifeOut: 0,
   
   __construct: function() {
@@ -31,10 +31,10 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
     var bWallCollision = this.oMobile.bWallCollision;  // collision murale
     var bMobileCollision = this.oMobile.oMobileCollision !== null;                        // collision avec un mobile
     var nTargetType = bMobileCollision ? this.oMobile.oMobileCollision.getType() : 0;
-    var bOwnerCollision = this.oMobile.oMobileCollision == this.oOwner;                   // collision avec le tireur
+    var bOwnerCollision = this.oMobile.oMobileCollision === this.oOwner;                   // collision avec le tireur
     var bSolidCollision = bMobileCollision &&                                             // collision avec un mobile solide (non missile, et non item)
-      nTargetType != RC.OBJECT_TYPE_MISSILE &&
-      nTargetType != RC.OBJECT_TYPE_ITEM;
+      nTargetType !== RC.OBJECT_TYPE_MISSILE &&
+      nTargetType !== RC.OBJECT_TYPE_ITEM;
 
     if (bWallCollision) {
       this.oMobile.oMobileCollision = null;
@@ -92,13 +92,13 @@ O2.extendClass('O876_Raycaster.MissileThinker', O876_Raycaster.Thinker, {
       this.extinct();
       return;
 	}
-    for (var i = 0; i < this.nStepSpeed; i++) {
+    //for (var i = 0; i < this.nStepSpeed; i++) {
       this.advance();
       if (this.isCollisioned()) {
         this.explode();
-        break;
+        //break;
       }
-    }
+    //}
   },
 
   thinkHit: function() {

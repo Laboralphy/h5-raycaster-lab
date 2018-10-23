@@ -6,27 +6,61 @@ O2.createClass('RCWE.HintBox', {
 	_bFixed: false,
 	
 	_oData: null,
+	_sSetup: '',
 	
 	onAction: null,
 	
 	build: function() {
 		var $structure = $('<div class="hintbox">' +
-		'<table><tr>' + 
-		'<td class="commands"></td>' +
-		'<td><canvas width="96" height="96"></canvas></td>' +
-		'</tr></table>' +
 		'</div>');
-
 		this._oContainer = $structure;
-		
-		var $commands = $('td.commands', $structure);
-		$commands.append('<button class="command" type="button" data-command="remove" title="remove this thing">✖</button><br/>');
-		$commands.append('<button class="command" type="button" data-command="select" title="select the blueprint">⬚</button><br/>');
-		$('button.command', $structure).on('click', this.cmd_command.bind(this));
+		this.setupThingSelection();
 		this.hide();
 	},
-	
-	doAction: RCWE.Window.prototype.doAction,
+
+    /**
+	 * Configure la hintbox pour un usage Thing
+     */
+    setupThingSelection: function() {
+    	if (this._sSetup === 'thing') {
+    		return;
+		}
+		this._sSetup = 'thing';
+        var $structure = this._oContainer;
+        $structure.empty();
+        $structure.append(
+            '<table><tr>' +
+            '<td class="commands"></td>' +
+            '<td><canvas width="96" height="96"></canvas></td>' +
+            '</tr></table>'
+        );
+        var $commands = $('td.commands', $structure);
+        $commands.append('<button class="command" type="button" data-command="remove" title="remove this thing">✖</button><br/>');
+        $commands.append('<button class="command" type="button" data-command="select" title="select the blueprint">⬚</button><br/>');
+        $('button.command', $structure).on('click', this.cmd_command.bind(this));
+    },
+
+    /**
+     * Configure la hintbox pour un usage Tag
+     */
+    setupTagSelection: function() {
+        if (this._sSetup === 'tag') {
+            return;
+        }
+        this._sSetup = 'tag';
+        var $structure = this._oContainer;
+        $structure.empty();
+        $structure.append(
+            '<div class="tag-description"></div>'
+        );
+    },
+
+	setTagLabel: function(sTagLabel) {
+        $('div.tag-description', this._oContainer).text(sTagLabel);
+	},
+
+
+    doAction: RCWE.Window.prototype.doAction,
 	
 	cmd_command: function(oEvent) {
 		this.doAction($(oEvent.target).data('command'), this._oData.x, this._oData.y);

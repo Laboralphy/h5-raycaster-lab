@@ -74,13 +74,15 @@ O2.createClass('O876_Raycaster.WeaponLayer', {
 
 	fire: function() {
 		this.firetime = this.time + 700;
-		this.playAnimation(1);
+		this.playAnimation(8);
 	},
 
 	playAnimation: function(n) {
 		if (this.tile.aAnimations[n]) {
 			this.animation = new O876_Raycaster.Animation();
             this.animation.assign(this.tile.aAnimations[n]);
+		} else {
+			throw new Error('bad anim : ' + n);
 		}
 	},
 

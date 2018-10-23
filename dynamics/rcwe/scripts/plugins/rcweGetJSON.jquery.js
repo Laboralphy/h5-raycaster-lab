@@ -22,8 +22,8 @@
 			$.getJSON(sURL, function(data) {
 				pComplete(data);
 				goAjax();
-			}).fail(function(ajax, err) {
-				pError(err);
+			}).fail(function(ajax) {
+				pError(ajax.responseText);
 				goAjax();
 			}).progress(function(x, y, z) {
 			});

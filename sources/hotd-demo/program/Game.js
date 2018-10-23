@@ -33,7 +33,6 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 	init: function() {
     	this.initAudio();
 		this._oLocators = {};
-		this.on('leveldata', this.gameEventLevelData.bind(this));
 		this.on('load', this.gameEventLoad.bind(this));
 		this.on('enter', this.gameEventEnterLevel.bind(this));
 
@@ -43,28 +42,16 @@ O2.extendClass('HOTD.Game', O876_Raycaster.GameAbstract, {
 		this.on('itag.shadow', this.tagEventShadow.bind(this));
 		this.on('itag.diffuse', this.tagEventDiffuse.bind(this));
 		this.on('itag.locator', this.tagEventLocator.bind(this));
-		// this.on('itag.lock', this.tagEventLock.bind(this));
-
-
-		/*
-		// activable
-		this.on('tag.message', this.tagEventMessage.bind(this));
-		this.on('tag.script', this.tagEventScript.bind(this));
-		this.on('tag.bgm', this.tagEventBgm.bind(this));
-		this.on('tag.teleport', this.tagEventTeleport.bind(this));
-		this.on('tag.item', this.tagEventItem.bind(this));
-		this.on('tag.lock', this.tagEventUnlock.bind(this));
-
-		this.on('command0', this.gameEventCommand0.bind(this));
-		this.on('command2', this.gameEventCommand2.bind(this));
-		this.on('activate', this.gameEventActivate.bind(this));
-		this.on('hit', this.gameEventHit.bind(this));
-        this.on('attack', this.gameEventAttack.bind(this));
-        this.on('death', this.gameEventDeath.bind(this));
-
-		this.on('key.down', this.gameEventKey.bind(this));
-*/
-
+        let data = LEVEL_DATA.level1;
+        const monsterTiles = HOTD.TILES_MONSTERS;
+        const monsterBP = HOTD.BLUEPRINTS_MONSTERS;
+        for (let s in monsterTiles) {
+            data.tiles[s] = monsterTiles[s];
+        }
+        for (let s in monsterBP) {
+            data.blueprints[s] = monsterBP[s];
+        }
+        this.initRaycaster(data);
 	},
 
 /*
@@ -87,18 +74,6 @@ déplacement automatique de la caméra
 
 
 
-	gameEventLevelData: function(wd) {
-		let data = LEVEL_DATA.level1;
-		const monsterTiles = HOTD.TILES_MONSTERS;
-		const monsterBP = HOTD.BLUEPRINTS_MONSTERS;
-		for (let s in monsterTiles) {
-			data.tiles[s] = monsterTiles[s];
-		}
-		for (let s in monsterBP) {
-			data.blueprints[s] = monsterBP[s];
-		}
-		wd.data = data;
-	},
 
 	/**
 	 * Evènement déclenché lorsque le niveau est un cours de chargement
@@ -386,6 +361,5 @@ déplacement automatique de la caméra
 });
 
 window.addEventListener('load', function() {
-    MAIN.configure(CONFIG);
-    MAIN.run();
+    MAIN.run(new HOTD.Game(CONFIG));
 });

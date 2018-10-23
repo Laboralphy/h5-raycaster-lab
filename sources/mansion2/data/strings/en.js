@@ -224,8 +224,21 @@ O2.createObject('MANSION.STRINGS_DATA_EN', {
 		key_backyard: 'Backyard key',
 
 		// book
-		book_sigils: 'Tome of Sigils',
-		book_reglas: 'Las Reglas de Ruina'
+		book_eibon: 'Liber Ivonis',
+		book_goules: 'Le Culte des Goules',
+		book_kulten: 'Unaussprechlichen Kulten',
+		book_mutus: 'Mutus Liber',
+		book_necronomicon: 'Necronomicon',
+		book_octavo: 'Octavo',
+		note_pnakotic: 'Pnakotic Fragments',
+		book_prodigiorum: 'Prodigiorum Ac',
+        book_reglas: 'Las Reglas de Ruina',
+		note_rohonc: 'Rohonc Codex',
+        book_sigils: 'Tome of Sigils',
+		book_smithfield: 'Smithfield Decretals',
+		book_vermis: 'De Vermis Mysterii',
+		book_voynich: 'Voynich Manuscripts',
+		book_xarces: 'Mysterium Xarces'
 	},
 
 	INTRO: {

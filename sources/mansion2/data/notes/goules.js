@@ -13,7 +13,7 @@ O2.createObject('MANSION.NOTES.goules', [
     },
     {
         type: 'text',
-        content: 'Writen by a french author, August Comte d\'Erlette.'
+        content: 'Writen by a french author, Auguste Comte d\'Erlette.'
     },
     {
         type: 'photo',

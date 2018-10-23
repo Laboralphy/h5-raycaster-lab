@@ -12,34 +12,65 @@ O2.createObject('MAIN', {
 	configure: function(c) {
 		MAIN.config = c;
 	},
-	
+
+
+	setupScreen: function() {
+		var screen = document.getElementById(MAIN.config.raycaster.canvas);
+		if (screen === null) {
+			throw new Error('the final canvas does not exist');
+		}
+		MAIN.screen = screen;
+		if (MAIN.config.raycaster.canvasAutoResize) {
+			MAIN.screenResize();
+			window.addEventListener('resize', MAIN.screenResize);
+		}
+	},
+
+	setupPointerlock: function() {
+		var PL = MAIN.pointerlock = new O876_Raycaster.PointerLock();
+		if (MAIN.config.game.fpsControl && PL.init()) {
+			MAIN.screen.addEventListener('click', function(oEvent) {
+				MAIN.lockPointer();
+			});
+		}
+	},
+
+	setupGameInstance: function(oGameInstance) {
+		MAIN.game = oGameInstance;
+	},
+
 	/**
 	 * Will start a game
 	 * requires a CONFIG object
 	 */
 	run: function(oGameInstance) {
-		var PL = MAIN.pointerlock = new O876_Raycaster.PointerLock();
+		MAIN.configure(oGameInstance.getConfig());
 		if (!(MAIN.config)) {
 			throw new Error('Where is my CONFIG object ? (use MAIN.configure)');
 		}
-		var oConfig = MAIN.config;
-		MAIN.screen = document.getElementById(oConfig.raycaster.canvas);
-		if (oConfig.raycaster.canvasAutoResize) {
-			MAIN.screenResize();
-			window.addEventListener('resize', MAIN.screenResize);
-		}
-		if (oGameInstance) {
-			MAIN.game = oGameInstance;
-		} else {
-			var sNamespace = oConfig.game.namespace;
-			MAIN.game = new window[sNamespace].Game();
-		}
-		MAIN.game.setConfig(oConfig);
-		if (oConfig.game.fpsControl && PL.init()) {
-			MAIN.screen.addEventListener('click', function(oEvent) {
-				MAIN.lockPointer();
-			});
-		}
+		MAIN.setupScreen();
+		MAIN.setupPointerlock();
+		MAIN.setupGameInstance(oGameInstance);
+	},
+
+	/**
+	 * Auto stats game using default config
+	 * @param config
+	 */
+	autorun: function(config) {
+		MAIN.configure(config);
+        window.addEventListener('load', function() {
+            MAIN.configure(MAIN.config);
+            if (!('namespace' in MAIN.config.game)) {
+            	throw new Error('"namespace" key is mandatory in CONFIG.game while using autorun feature');
+			}
+            var ns = MAIN.config.game.namespace;
+            var gcn = ns + '.Game';
+            var gc = O2.loadObject(gcn);
+            var data = LEVEL_DATA[Object.keys(LEVEL_DATA)[0]];
+            MAIN.run(new gc(MAIN.config));
+            MAIN.game.initRaycaster(data);
+        });
 	},
 	
 	/**
@@ -95,7 +126,7 @@ O2.createObject('MAIN', {
 		}
 		oCanvas.style.width = (wf | 0).toString() + 'px';
 		oCanvas.style.height = (hf | 0).toString() + 'px';
-		oCanvas.__ratio = wf / cw;
+		oCanvas.__aspect = wf / cw;
 		if (oCanvas.style.position === 'absolute' && oCanvas.style['margin-left'] === 'auto') {
 			oCanvas.style.left = ((w - wf) >> 1 | 0).toString() + 'px';
 		}

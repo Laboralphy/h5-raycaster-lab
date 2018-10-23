@@ -634,19 +634,47 @@ O2.createClass('RCWE.Application', {
 	cmd_labygrid_mouserest: function(x, y) {
 		if (this.isVisiblePanel('thingbrowser')) {
 			this.cmd_thingbrowser_hintbox();
-		}
+		} else {
+            var mg = this.oMapGrid;
+            var w = mg.wCell;
+            var t = mg.getTagXY(x / w | 0, y / w | 0);
+            if (t) {
+                t = t.split(';')
+                    .map(function (x) {
+                        return x.trim();
+                    })
+                    .filter(function (x) {
+                        return x.substr(0, 1) === '#';
+                    }).shift();
+            }
+			if (t) {
+				t = t.split(' ').slice(1).join(' ');
+            }
+            if (t) {
+                this.cmd_tag_hintbox(t);
+            }
+        }
 	},
 
 	cmd_labygrid_mouseunrest: function(x, y) {
 		this.oHintBox.hide();
 	},
-	
+
+    /**
+	 * il faut changer le title si la case est sur un tag
+     * @param x
+     * @param y
+     */
 	cmd_labygrid_click: function(x, y) {
 		if (this.isVisiblePanel('thingbrowser')) {
 			this.cmd_thingbrowser_gridclick(x, y);
 		} else if (this.isVisiblePanel('startpointlocator')) {
 			this.cmd_startpointlocator_gridclick(x, y);
 		}
+		var mg = this.oMapGrid;
+        var xCell = x / mg.wCell | 0;
+        var yCell = y / mg.wCell | 0;
+        var sTag = mg.getTagXY(xCell, yCell);
 	},
 	
 	cmd_labygrid_paint1: function() {
@@ -997,14 +1025,54 @@ O2.createClass('RCWE.Application', {
 	cmd_thingbrowser_loadtemplate: function() {
 		this.showPanel('thingtemplateloader');
 	},
+
+	cmd_place_hintbox: function(bFix) {
+        var h = this.oHintBox;
+        var mg = this.oMapGrid;
+        var xp = mg.xPage;
+        var yp = mg.yPage;
+        var wScreen = innerWidth;
+        var hScreen = innerHeight;
+        var bX = xp > (wScreen >> 1);
+        var bY = yp > (hScreen >> 1);
+        var nPad = 16;
+        var sMeth = !!bFix ? 'fix' : 'show';
+        switch ((bY ? 2 : 0) | (bX ? 1 : 0)) {
+            case 0: // top left
+                h[sMeth](xp + nPad, yp + nPad);
+                break;
+
+            case 1: // top right
+                h[sMeth](xp - h.getWidth() - nPad, yp + nPad);
+                break;
+
+            case 2: // bottom left
+                h[sMeth](xp + nPad, yp - h.getHeight() - nPad);
+                break;
+
+            case 3: // bottom right
+                h[sMeth](xp - h.getWidth() - nPad, yp - h.getHeight() - nPad);
+                break;
+        }
+	},
+
+	cmd_tag_hintbox: function(sLabel) {
+		var h = this.oHintBox;
+        h.setupTagSelection();
+        this.cmd_place_hintbox(false);
+        h.setTagLabel(sLabel);
+	},
+
 	/**
 	 * Will display a hint box show what Thing is currently pointed by the mouse cursor
 	 * Will no nothing if nothing is pointed
 	 */
 	cmd_thingbrowser_hintbox: function(bFix) {
-		if (this.oHintBox.isFixed()) {
+        var h = this.oHintBox;
+		if (h.isFixed()) {
 			return;
 		}
+        h.setupThingSelection();
 		var mg = this.oMapGrid;
 		var xm = mg.xMouse;
 		var ym = mg.yMouse;
@@ -1020,36 +1088,8 @@ O2.createClass('RCWE.Application', {
 		if (!oThing) {
 			throw new Error('there is no such thing : #thing_' + sThing);
 		}
-		
-		var xp = mg.xPage;
-		var yp = mg.yPage;
-		var wScreen = innerWidth;
-		var hScreen = innerHeight;
-		var bX = xp > (wScreen >> 1);
-		var bY = yp > (hScreen >> 1);
-		var h = this.oHintBox;
-		var nPad = 16;
-		
-		var sMeth = !!bFix ? 'fix' : 'show';
-		
-		switch ((bY ? 2 : 0) | (bX ? 1 : 0)) {
-			case 0: // top left
-				h[sMeth](xp + nPad, yp + nPad);
-				break;
-				
-			case 1: // top right
-				h[sMeth](xp - h.getWidth() - nPad, yp + nPad);
-				break;
-				
-			case 2: // bottom left
-				h[sMeth](xp + nPad, yp - h.getHeight() - nPad);
-				break;
-				
-			case 3: // bottom right
-				h[sMeth](xp - h.getWidth() - nPad, yp - h.getHeight() - nPad);
-				break;
-		}
 
+        this.cmd_place_hintbox(bFix);
 		oThing.render(h.getCanvas());
 		h.setThingXY(x3, y3);
 	},

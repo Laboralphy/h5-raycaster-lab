@@ -69,8 +69,8 @@ O2.extendClass('RCWE.FileOpenDialog', RCWE.Window, {
 				$d.addClass('remote');
 			}, this);
 		}).bind(this),
-		function(data) {
-			W.error(data.responseText);
+		function(err) {
+			W.error(err);
 		});
 	},
 

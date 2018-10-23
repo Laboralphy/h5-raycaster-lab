@@ -9,12 +9,15 @@ O2.createClass('O876_Raycaster.Mobile', {
 	oRaycaster: null,						// Référence de retour au raycaster
 	x: 0,									// position du mobile
 	y: 0,									// ...
+	xOfs: 0,
+	yOfs: 0,								// ces offset permet de décaler la position visuelle de la position physique (celle qui sert à la collision)
 	xSave: 0,
 	ySave: 0,
 
 	// flags
 	bActive: false,							// Flag d'activité
 	bEthereal: false,						// Flage de collision globale
+	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
 
 	fTheta: 0,								// Angle de rotation
 	fMovingAngle: 0,						// Angle de déplacement
@@ -37,7 +40,6 @@ O2.createClass('O876_Raycaster.Mobile', {
 
 	nBlueprintType: null,					// type de mobile : une des valeurs de GEN_DATA.blueprintTypes
 	bSlideWall: true,						// True: corrige la trajectoire en cas de collision avec un mur
-	bVisible: true,							// Visibilité au niveau du mobile (le sprite dispose de sont propre flag de visibilité prioritaire à celui du mobile)
 	bWallCollision: false,
 
 	//oData: null,
@@ -103,6 +105,7 @@ O2.createClass('O876_Raycaster.Mobile', {
 			this.oThinker.oMobile = this;
 		}
 		this.oWallCollision = {x: 0, y: 0};
+		this.bWallCollision = false;
 		this.gotoLimbo();
 	},
 
@@ -252,33 +255,8 @@ O2.createClass('O876_Raycaster.Mobile', {
 	 * @param pSolidFunction {function} fonction permettant de déterminer si un point est dans une zone collisionnable
 	 */
 	computeWallCollisions: function(vPos, vSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction) {
-		var nDist = MathTools.distance(vSpeed.x, vSpeed.y);
-		if (nDist > nSize) {
-			var vSubSpeed = this._vecScale(vSpeed, nSize);
-			var nModDist = nDist % nSize;
-			var r, pos, speed;
-			if (nModDist) {
-				var vModSpeed = this._vecScale(vSpeed, nModDist);
-				r = this.computeWallCollisions(vPos, vModSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
-				pos = r.pos;
-				speed = r.speed;
-			} else {
-				pos = vPos;
-				speed = {x: 0, y: 0};
-			}
-			for (var iIter = 0; iIter < nDist; iIter += nSize) {
-				r = this.computeWallCollisions(pos, vSubSpeed, nSize, nPlaneSpacing, bCrashWall, pSolidFunction);
-				pos = r.pos;
-				speed = speed.add(r.speed);
-			}
-			return {
-				pos: pos,
-				speed: speed,
-				wcf: r.wcf
-			};
-		}
 		// par defaut pas de colision détectée
-		var oWallCollision = {x: 0, y: 0};
+		var oWallCollision = {x: 0, y: 0, c: false};
 		var dx = vSpeed.x;
 		var dy = vSpeed.y;
 		var x = vPos.x;
@@ -299,20 +277,26 @@ O2.createClass('O876_Raycaster.Mobile', {
 			ix = nSize * xci + x;
 			iy = nSize * yci + y;
 			// déterminer les collsion en x et y
-			xClip = pSolidFunction(ix + dx, iy);
-			yClip = pSolidFunction(ix, iy + dy);
+			// xClip = pSolidFunction(ix + dx, iy);
+			// yClip = pSolidFunction(ix, iy + dy);
+			xClip = pSolidFunction((ix + dx) / nPlaneSpacing | 0, iy / nPlaneSpacing | 0);
+			yClip = pSolidFunction(ix / nPlaneSpacing | 0, (iy + dy) / nPlaneSpacing | 0);
 			if (xClip) {
+				oWallCollision.c = true;
 				dx = 0;
 				if (bCrashWall) {
 					dy = 0;
+					oWallCollision.y = yci;
 				}
 				oWallCollision.x = xci;
 				bCorrection = true;
 			}
 			if (yClip) {
+				oWallCollision.c = true;
 				dy = 0;
 				if (bCrashWall) {
 					dx = 0;
+					oWallCollision.x = xci;
 				}
 				oWallCollision.y = yci;
 				bCorrection = true;
@@ -333,12 +317,18 @@ O2.createClass('O876_Raycaster.Mobile', {
 			} else if (oWallCollision.y < 0) {
 				y = (y / nPlaneSpacing | 0) * nPlaneSpacing + nSize;
 			}
+			return {
+				pos: {x: x, y: y},
+				speed: {x: x - vPos.x, y: y - vPos.y},
+				wcf: oWallCollision
+			};
+		} else {
+			return {
+				pos: {x: x, y: y},
+				speed: {x: dx, y: dy},
+				wcf: oWallCollision
+			};
 		}
-		return {
-			pos: {x: x, y: y},
-			speed: {x: x - vPos.x, y: y - vPos.y},
-			wcf: oWallCollision
-		};
 	},
 
 
@@ -352,18 +342,27 @@ O2.createClass('O876_Raycaster.Mobile', {
     	var vPos = {x: this.x, y: this.y};
         var vSpeed = {x: dx, y: dy};
         var rc = this.oRaycaster;
-		var r = this.computeWallCollisions(
+
+		//var nDist = MathTools.distance(vSpeed.x, vSpeed.y);
+		var nSize = this.nSize;
+		var nPlaneSpacing = rc.nPlaneSpacing;
+		var bCrashWall = !this.bSlideWall;
+		var r;
+		var pSolidFunction = function(x, y) { return rc.getMapPhys(x, y); };
+		r = this.computeWallCollisions(
 			vPos,
 			vSpeed,
-			this.nSize,
-			this.oRaycaster.nPlaneSpacing,
-			!this.bSlideWall,
-			function(x, y) { return rc.clip(x, y, 1); }
+			nSize,
+			nPlaneSpacing,
+			bCrashWall,
+			pSolidFunction
 		);
-	    this.setXY(r.pos.x, r.pos.y);
+		this.setXY(r.pos.x, r.pos.y);
         this.xSpeed = r.speed.x;
         this.ySpeed = r.speed.y;
-        this.oWallCollision = r.wcf;
+        var wcf = r.wcf;
+        this.oWallCollision = wcf;
+        this.bWallCollision = wcf.c;
     },
 
 
@@ -373,7 +372,7 @@ O2.createClass('O876_Raycaster.Mobile', {
      * @param fDist {number} Distance de déplacement
 	 */
 	move: function(fAngle, fDist) {
-		if (this.fMovingAngle != fAngle || this.fMovingSpeed != fDist) {
+		if (this.fMovingAngle !== fAngle || this.fMovingSpeed !== fDist) {
 			this.fMovingAngle = fAngle;
 			this.fMovingSpeed = fDist;
 			this.xInertie = Math.cos(fAngle) * fDist;

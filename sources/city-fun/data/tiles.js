@@ -1,12 +1,13 @@
 O2.createObject('TILES_DATA', {
     w_rick_pistol: {
         src: 'resources/tiles/w_rick_pistol.png',
-        width: 113,
-        height: 122,
-        frames: 4,
+        width: 112,
+        height: 151,
+        frames: 7,
         noshading: true,
         animations: [
-            [[0, 0, 0, 0, 0, 0, 0, 0], 4, 100, 1]
+            [[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+            [[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0],
         ]
     },
 
@@ -24,12 +25,49 @@ O2.createObject('TILES_DATA', {
 
     w_tromblon: {
 		src: 'resources/tiles/w_tromblon.png',
-		width: 112,
-		height: 104,
-		frames: 1,
+		width: 93,
+		height: 150,
+		frames: 7,
 		noshading: true,
 		animations: [
-			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 1]
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+			[[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0]
 		]
-    }
+    },
+
+	w_bertha: {
+		src: 'resources/tiles/w_bertha.png',
+		width: 200,
+		height: 138,
+		frames: 7,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+			[[1, 1, 1, 1, 1, 1, 1, 1], 6, 40, 0]
+		]
+	},
+
+	w_plasma: {
+		src: 'resources/tiles/w_plasma.png',
+		width: 158,
+		height: 150,
+		frames: 6,
+		noshading: true,
+		animations: [
+			[[0, 0, 0, 0, 0, 0, 0, 0], 1, 100, 0],
+			[[1, 1, 1, 1, 1, 1, 1, 1], 5, 40, 0]
+		]
+	},
+
+    m_blast_1: {
+		src: 'resources/tiles/m_blast_1.png',
+		width: 38,
+		height: 48,
+		frames: 21,
+		noshading: true,
+		animations: [
+			[[0, 2, 4, 6, 8, 10, 12, 14], 2, 500, 1],
+			[[17, 17, 17, 17, 17, 17, 17, 17], 5, 120, 0]
+		]
+	}
 });

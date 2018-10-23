@@ -285,17 +285,40 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		if (this.nShadingThreshold === 0) {
 			return true;
 		}
-		var i = '';
-		var w = this.shadeImage(this.oWall.image, false);
+		var w, i = '';
+        if (!O876.CanvasFactory.isCanvas(this.oWall.image) && !this.oWall.image.complete) {
+			console.warn('shadeprocess : the wall image ' + this.oWall.image.src + ' is not loaded yet.');
+        }
+        try {
+            w = this.shadeImage(this.oWall.image, false);
+		} catch (e) {
+			throw new Error('could not shade the wall textures');
+		}
 		this.oWall.image = w;
 		if (this.bFloor) {
-			w = this.shadeImage(this.oFloor.image, false);
+			try {
+                if (!O876.CanvasFactory.isCanvas(this.oFloor.image) && !this.oFloor.image.complete) {
+                    console.warn('shadeprocess : the flat image ' + this.oFloor.image.src + ' is not loaded yet.');
+                }
+                w = this.shadeImage(this.oFloor.image, false);
+			} catch (e) {
+                console.error(e.message);
+                throw new Error('could not shade the flat textures');
+			}
 			this.oFloor.image = w;
 		}
 		
 		for (i in this.oHorde.oTiles) {
 			if (this.oHorde.oTiles[i].bShading) {
-				w = this.shadeImage(this.oHorde.oTiles[i].oImage, true);
+				try {
+                    if (!this.oHorde.oTiles[i].oImage.complete) {
+                        console.warn('shadeprocess : the sprite image of horde item "' + i + '" is not loaded yet.');
+                    }
+                    w = this.shadeImage(this.oHorde.oTiles[i].oImage, true);
+				} catch (e) {
+                    console.error(e.message);
+                    throw new Error('could not shade the horde item ' + i);
+				}
 				this.oHorde.oTiles[i].bShading = false;
 				this.oHorde.oTiles[i].oImage = w;
 				return false;
@@ -440,9 +463,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 	},
 
 	initCanvas : function() {
-		if (typeof this.oConfig.canvas == 'string') {
+		if (typeof this.oConfig.canvas === 'string') {
 			this._oCanvas = document.getElementById(this.oConfig.canvas);
-		} else if (typeof this.oConfig.canvas == 'object' && this.oConfig.canvas !== null) {
+		} else if (typeof this.oConfig.canvas === 'object' && this.oConfig.canvas !== null) {
 			this._oCanvas = this.oConfig.canvas;
 		} else {
 			throw new Error('initCanvas failed: configuration object needs a valid canvas entry (dom or string id)');
@@ -692,7 +715,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 				// Vérifier premier objet
 				return this.checkObjectStructure(oObj[sKey0], aKeys.join('.'));
 			} else {
-				throw new Error('invalid object structure: missing key [' + xKeys + ']');
+				throw new Error('invalid object structure: missing key [' + xKeys + ']  - got keys: [' + Object.keys(oObj).join(', ') + ']');
 			}
 		} else {
 			if (typeof oObj != 'object') {
@@ -704,7 +727,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			if (xKeys in oObj) {
 				return true;
 			} else {
-				throw new Error('invalid object structure: missing key [' + xKeys + ']');
+				throw new Error('invalid object structure: missing key [' + xKeys + ']  - got keys: [' + Object.keys(oObj).join(', ') + ']');
 			}
 		}
 	},
@@ -723,6 +746,16 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	},
 
+	/**
+	 * Renvoie un objet permettant de modifier l'état d'une porte
+	 * @param x {number}
+	 * @param y {number}
+	 * @return {GXDoor}
+	 */
+	getDoor: function(x, y) {
+		return Marker.getMarkXY(this.oDoors, x, y);
+	},
+
 	/** Construction de la map avec les donnée contenues dans aWorld
 	 */
 	buildMap : function() {
@@ -738,8 +771,7 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			'visual'
 		]);
 		this.nMapSize = oData.map.length;
-		this.oMobileSectors = new O876_Raycaster.MobileRegister(
-				this.nMapSize);
+		this.oMobileSectors = new O876_Raycaster.MobileRegister(this.nMapSize);
 		this.oDoors = Marker.create();
 		this.aMap = [];
 		var yMap, xMap;
@@ -1364,8 +1396,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var dy = (wy2 - wy1) / this.xScrSize;
 		var fBx = wx1;
 		var fBy = wy1;
-		var xCam = this.oCamera.x;
-		var yCam = this.oCamera.y;
+		var oCam = this.oCamera;
+		var xCam = oCam.x + oCam.xOfs;
+		var yCam = oCam.y + oCam.yOfs;
 		var xCam8 = xCam / this.nPlaneSpacing | 0;
 		var yCam8 = yCam / this.nPlaneSpacing | 0;
 		var i;
@@ -1587,8 +1620,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 			return;
 		}
 		var oTile = oSprite.oBlueprint.oTile;
-		var dx = oMobile.x - this.oCamera.x;
-		var dy = oMobile.y - this.oCamera.y;
+		var oCam = this.oCamera;
+		var dx = oMobile.x + oMobile.xOfs - oCam.x - oCam.xOfs;
+		var dy = oMobile.y + oMobile.yOfs - oCam.y - oCam.yOfs;
 
 		// Gaffe fAlpha est un angle ici, et pour un sprite c'est une transparence
 		var fTarget = Math.atan2(dy, dx);
@@ -1778,8 +1812,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var ofsDstCeil; // offset de l'array pixel de destination (plancher)
 		var wyCeil;
 
-		var xCam = this.oCamera.x; // coord caméra x
-		var yCam = this.oCamera.y; // coord caméra y
+		var oCam = this.oCamera;
+		var xCam = oCam.x + oCam.xOfs; // coord caméra x
+		var yCam = oCam.y + oCam.yOfs; // coord caméra y
 		var nFloorWidth = oFloor.image.width; // taille pixel des tiles de flats
 		var ofsSrc; // offset de l'array pixel source
 		var xOfs = 0; // code du block flat à afficher
@@ -1922,8 +1957,9 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		var ofsDstCeil; // offset de l'array pixel de destination (plafon) 
 		var wyCeil = 0;
 
-		var xCam = this.oCamera.x; // coord caméra x
-		var yCam = this.oCamera.y; // coord caméra y
+		var oCam = this.oCamera;
+		var xCam = oCam.x + oCam.xOfs; // coord caméra x
+		var yCam = oCam.y + oCam.yOfs; // coord caméra y
 		var nFloorWidth = oFloor.image.width; // taille pixel des tiles de flats
 		var ofsSrc; // offset de l'array pixel source
 		var xOfs = 0; // code du block flat à afficher
@@ -2305,3 +2341,5 @@ O2.createClass('O876_Raycaster.Raycaster',  {
 		}
 	}
 });
+
+O876_Raycaster.Raycaster.version = 180431;

@@ -17,11 +17,15 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   TIME_FACTOR: 50,
 
     __construct: function() {
-      __inherited('stateInitialize');
+      this.stateInitialize();
       //this.resume();
     },
 
     setConfig: function() {},
+
+    getConfig: function() { return CONFIG; },
+
+    initRaycaster: function() {},
 
   /** Initialisation du moteur
    * Initialise le canvas, le timer, le gestionnaire de taches...
@@ -29,7 +33,6 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   stateInitialize: function() {
     // Initialise le canvas
     this.nInterval = CONFIG.game.interval;
-    this.sDoomloopType = CONFIG.game.doomloop;
     this.oRaycaster = new O876_Raycaster.Raycaster();
     if (this.oKbdDevice == null) {
       this.oKbdDevice = new O876_Raycaster.KeyboardDevice();
@@ -335,3 +338,4 @@ O2.extendClass('WHITEROOM.Game', O876_Raycaster.Transistate, {
   }
 });
 
+MAIN.autorun(CONFIG);
